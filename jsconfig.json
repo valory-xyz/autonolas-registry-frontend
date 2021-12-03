@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "sourceMap": true,
+    "paths": {
+      "common-util": ["./common-util"],
+      "components": ["./components"],
+      "util": ["./util"],
+      "static": ["./static"],
+      "images": ["./public/images"]
+    }
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}
