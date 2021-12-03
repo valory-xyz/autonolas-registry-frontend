@@ -8,6 +8,8 @@
   },
   "dependencies": {
     "@ant-design/icons": "^4.5.0",
+    "@ethersproject/units": "^5.5.0",
+    "@usedapp/core": "^0.6.3",
     "@web3-react/core": "^6.1.9",
     "@zeit/next-css": "^1.0.1",
     "@zeit/next-less": "^1.0.1",

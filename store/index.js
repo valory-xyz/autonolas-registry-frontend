@@ -20,4 +20,5 @@ const composedEnhancers = composeWithDevTools(
   ...enhancers,
 );
 
-export default () => createStore(rootReducer, composedEnhancers);
+const Store = () => createStore(rootReducer, composedEnhancers);
+export default Store;

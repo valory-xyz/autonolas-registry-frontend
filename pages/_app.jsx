@@ -3,6 +3,7 @@ import Head from 'next/head';
 import { createWrapper } from 'next-redux-wrapper';
 import PropTypes from 'prop-types';
 import GlobalStyle from 'components/GlobalStyles';
+import { DAppProvider } from '@usedapp/core';
 import initStore from '../store';
 import './styles.less';
 
@@ -24,7 +25,9 @@ class MyApp extends App {
           <title>Protocal</title>
           <meta name="description" content="Protocol" />
         </Head>
-        <Component {...pageProps} />
+        <DAppProvider config={{}}>
+          <Component {...pageProps} />
+        </DAppProvider>
         <GlobalStyle />
       </>
     );
