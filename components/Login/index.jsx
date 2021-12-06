@@ -1,55 +1,84 @@
+import React, { useCallback, useState } from 'react';
 import { Button, Typography } from 'antd';
-import { useEthers, useEtherBalance } from '@usedapp/core';
-import { formatEther } from '@ethersproject/units';
+
+import { useWeb3React } from '@web3-react/core';
+import { injected } from './wallet/connector';
 import { Container } from './styles';
 
 const { Title } = Typography;
 
-const Login = () => {
-  const { activateBrowserWallet, account, deactivate } = useEthers();
-  const balance = useEtherBalance(account);
+const MetamaskProvider = () => {
+  const {
+    active: networkActive,
+    error: networkError,
+    activate: activateNetwork,
+    deactivate: deactivateNetwork,
+    account,
+  } = useWeb3React();
+  const [loaded, setLoaded] = useState(false);
 
-  const handleMetamaskLogin = () => {
-    activateBrowserWallet();
+  const loginCallback = useCallback(() => {
+    injected
+      .isAuthorized()
+      .then((isAuthorized) => {
+        setLoaded(true);
+        if (isAuthorized && !networkActive && !networkError) {
+          activateNetwork(injected);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoaded(true);
+      });
+  }, [activateNetwork, networkActive, networkError]);
+
+  const handleMetamaskLogin = async () => {
+    loginCallback();
   };
 
-  const handleMetamaskLogout = () => {
-    deactivate();
+  const handleMetamaskLogout = async () => {
+    setLoaded(false);
+    try {
+      deactivateNetwork();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-  console.log(balance, account);
+  console.log({
+    networkActive,
+    networkError,
+    account,
+  });
+
+  if (loaded) {
+    return (
+      <Container>
+        <div>
+          <Title level={4}>
+            Address:&nbsp;
+            {account ? `${account}` : 'NA'}
+          </Title>
+          <Title>
+            {/* Balance:&nbsp; */}
+            {/* {balance ? `${balance} ETH` : "NA"} */}
+          </Title>
+
+          <Button type="danger" size="large" onClick={handleMetamaskLogout}>
+            Disconnect
+          </Button>
+        </div>
+      </Container>
+    );
+  }
 
   return (
-    <>
-      <Container data-testid="login">
-        {account ? (
-          <div>
-            <Title level={4}>
-              Address:&nbsp;
-              {account ? `${account}` : 'NA'}
-            </Title>
-            <Title>
-              Balance:&nbsp;
-              {balance ? `${formatEther(balance)} ETH` : 'NA'}
-            </Title>
-
-            <Button type="danger" size="large" onClick={handleMetamaskLogout}>
-              Logout
-            </Button>
-          </div>
-        ) : (
-          <Button type="primary" size="large" onClick={handleMetamaskLogin}>
-            Connect to wallet!
-          </Button>
-        )}
-      </Container>
-    </>
+    <Container>
+      <Button type="primary" size="large" onClick={handleMetamaskLogin}>
+        Connect to wallet!
+      </Button>
+    </Container>
   );
 };
 
-export default Login;
-
-/**
- * account trim: xxxx${account.slice(account.length - 6, account.length)}
- *
- */
+export default MetamaskProvider;
