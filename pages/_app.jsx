@@ -22,7 +22,7 @@ class MyApp extends App {
     return (
       <>
         <Head>
-          <title>Protocal</title>
+          <title>Protocol</title>
           <meta name="description" content="Protocol" />
         </Head>
         <DAppProvider config={{}}>

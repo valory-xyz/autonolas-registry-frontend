@@ -20,7 +20,6 @@ export default class MyDocument extends Document {
     return (
       <Html lang="en">
         <Head>
-          <link href="/fonts/TeX-Gyre-Heros/stylesheet.css" rel="stylesheet" />
           {styleTags}
         </Head>
 
