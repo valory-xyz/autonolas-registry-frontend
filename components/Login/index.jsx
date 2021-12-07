@@ -1,80 +1,106 @@
-import React, { useCallback, useState } from 'react';
-import { Button, Typography } from 'antd';
-
-import { useWeb3React } from '@web3-react/core';
-import { injected } from './wallet/connector';
-import { Container } from './styles';
+import React, { useState, useEffect } from 'react';
+import { Button, Typography, Alert } from 'antd';
+import { ethers } from 'ethers';
+import { Container, DetailsContainer } from './styles';
 
 const { Title } = Typography;
 
 const MetamaskProvider = () => {
-  const {
-    active: networkActive,
-    error: networkError,
-    activate: activateNetwork,
-    deactivate: deactivateNetwork,
-    account,
-  } = useWeb3React();
-  const [loaded, setLoaded] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [account, setAccount] = useState(null);
+  const [balance, setUserBalance] = useState(null);
 
-  const loginCallback = useCallback(() => {
-    injected
-      .isAuthorized()
-      .then((isAuthorized) => {
-        setLoaded(true);
-        if (isAuthorized && !networkActive && !networkError) {
-          activateNetwork(injected);
-        }
+  /**
+   * helpers to check if metamask is present
+   */
+  useEffect(() => {}, []);
+
+  const getBalance = (accoundPassed) => {
+    window.ethereum
+      .request({
+        method: 'eth_getBalance',
+        params: [accoundPassed, 'latest'],
       })
-      .catch((error) => {
-        console.log(error);
-        setLoaded(true);
+      .then((b) => {
+        setUserBalance(b);
+        setUserBalance(ethers.utils.formatEther(balance));
+      })
+      .catch((e) => {
+        setErrorMessage(e.message);
       });
-  }, [activateNetwork, networkActive, networkError]);
-
-  const handleMetamaskLogin = async () => {
-    loginCallback();
   };
 
-  const handleMetamaskLogout = async () => {
-    setLoaded(false);
-    try {
-      deactivateNetwork();
-    } catch (error) {
-      console.error(error);
+  const handleLogin = () => {
+    if (window.ethereum && window.ethereum.isMetaMask) {
+      window.ethereum
+        .request({ method: 'eth_requestAccounts' })
+        .then((result) => {
+          setAccount(result[0]);
+          getBalance(result[0]);
+        })
+        .catch((e) => {
+          setErrorMessage(e.message);
+        });
+    } else {
+      setErrorMessage('Please install MetaMask browser extension');
     }
   };
 
-  console.log({
-    networkActive,
-    networkError,
-    account,
-  });
+  const handleMetamaskLogout = async () => {};
 
-  if (loaded) {
+  /**
+   * listener for account, chain changes
+   */
+  const handleAccountChange = (newAccount) => {
+    setAccount(newAccount);
+    getBalance(newAccount.toString());
+  };
+
+  // reload the page to on chain change to avoid errors
+  const handleChainChange = () => {
+    window.location.reload();
+  };
+
+  if (typeof window !== 'undefined') {
+    window.ethereum.on('accountsChanged', handleAccountChange);
+    window.ethereum.on('chainChanged', handleChainChange);
+  }
+
+  console.log(account);
+  if (account) {
     return (
       <Container>
-        <div>
+        <DetailsContainer>
           <Title level={4}>
             Address:&nbsp;
             {account ? `${account}` : 'NA'}
           </Title>
           <Title>
-            {/* Balance:&nbsp; */}
-            {/* {balance ? `${balance} ETH` : "NA"} */}
+            Balance:&nbsp;
+            {balance ? `${balance} ETH` : 'NA'}
           </Title>
 
           <Button type="danger" size="large" onClick={handleMetamaskLogout}>
             Disconnect
           </Button>
-        </div>
+
+          <br />
+          {errorMessage && (
+            <Alert
+              message="Error"
+              description={errorMessage}
+              type="error"
+              showIcon
+            />
+          )}
+        </DetailsContainer>
       </Container>
     );
   }
 
   return (
     <Container>
-      <Button type="primary" size="large" onClick={handleMetamaskLogin}>
+      <Button type="primary" size="large" onClick={handleLogin}>
         Connect to wallet!
       </Button>
     </Container>
