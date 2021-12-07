@@ -11,7 +11,7 @@ import GlobalStyle from 'components/GlobalStyles';
 import initStore from '../store';
 import './styles.less';
 
-const getLibrary = provider => new Web3(provider);
+const getLibrary = (provider) => new Web3(provider);
 
 class MyApp extends App {
   static async getInitialProps({ Component, ctx }) {

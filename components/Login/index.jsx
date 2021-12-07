@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Typography, Alert } from 'antd';
 import { ethers } from 'ethers';
+import { CONSTANTS } from 'util/constants';
 import { Container, DetailsContainer } from './styles';
 
 const { Title } = Typography;
@@ -18,12 +19,11 @@ const MetamaskProvider = () => {
   const getBalance = (accoundPassed) => {
     window.ethereum
       .request({
-        method: 'eth_getBalance',
+        method: CONSTANTS.ETH_GETBALANCE,
         params: [accoundPassed, 'latest'],
       })
       .then((b) => {
-        setUserBalance(b);
-        setUserBalance(ethers.utils.formatEther(balance));
+        setUserBalance(ethers.utils.formatEther(b));
       })
       .catch((e) => {
         setErrorMessage(e.message);
@@ -33,8 +33,9 @@ const MetamaskProvider = () => {
   const handleLogin = () => {
     if (window.ethereum && window.ethereum.isMetaMask) {
       window.ethereum
-        .request({ method: 'eth_requestAccounts' })
+        .request({ method: CONSTANTS.ETH_REQUESTACCOUNTS })
         .then((result) => {
+          // setting only the 1st account
           setAccount(result[0]);
           getBalance(result[0]);
         })
@@ -66,7 +67,6 @@ const MetamaskProvider = () => {
     window.ethereum.on('chainChanged', handleChainChange);
   }
 
-  console.log(account);
   if (account) {
     return (
       <Container>
@@ -77,10 +77,15 @@ const MetamaskProvider = () => {
           </Title>
           <Title>
             Balance:&nbsp;
-            {balance ? `${balance} ETH` : 'NA'}
+            {balance ? `${balance}` : 'NA'}
           </Title>
 
-          <Button type="danger" size="large" onClick={handleMetamaskLogout}>
+          <Button
+            type="danger"
+            size="large"
+            onClick={handleMetamaskLogout}
+            disabled
+          >
             Disconnect
           </Button>
 
