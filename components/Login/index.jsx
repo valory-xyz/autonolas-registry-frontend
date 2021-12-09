@@ -1,20 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import { Button, Typography, Alert } from 'antd';
 import { ethers } from 'ethers';
 import { CONSTANTS } from 'util/constants';
+import {
+  setUserAccount as setUserAccountFn,
+  setUserBalance as setUserBalanceFn,
+  setErrorMessage as setErrorMessageFn,
+} from 'store/setup/actions';
 import { Container, DetailsContainer } from './styles';
 
 const { Title } = Typography;
 
-const MetamaskProvider = () => {
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [account, setAccount] = useState(null);
-  const [balance, setUserBalance] = useState(null);
-
+const Login = ({
+  account,
+  errorMessage,
+  setUserAccount,
+  setUserBalance,
+  setErrorMessage,
+}) => {
   /**
-   * helpers to check if metamask is present
+   * TODO: helpers to check if metamask is present
    */
-  useEffect(() => {}, []);
 
   const getBalance = (accoundPassed) => {
     window.ethereum
@@ -36,7 +43,7 @@ const MetamaskProvider = () => {
         .request({ method: CONSTANTS.ETH_REQUESTACCOUNTS })
         .then((result) => {
           // setting only the 1st account
-          setAccount(result[0]);
+          setUserAccount(result[0]);
           getBalance(result[0]);
         })
         .catch((e) => {
@@ -47,13 +54,11 @@ const MetamaskProvider = () => {
     }
   };
 
-  const handleMetamaskLogout = async () => {};
-
   /**
    * listener for account, chain changes
    */
   const handleAccountChange = (newAccount) => {
-    setAccount(newAccount);
+    setUserAccount(newAccount);
     getBalance(newAccount.toString());
   };
 
@@ -62,45 +67,65 @@ const MetamaskProvider = () => {
     window.location.reload();
   };
 
-  if (typeof window !== 'undefined') {
+  if (typeof window !== 'undefined' && window.ethereum) {
     window.ethereum.on('accountsChanged', handleAccountChange);
     window.ethereum.on('chainChanged', handleChainChange);
   }
 
-  if (account) {
+  if (!account) {
     return (
       <Container>
-        <DetailsContainer>
-          {errorMessage ? (
-            <Alert message={errorMessage} type="error" showIcon />
-          ) : (
-            <Alert
-              message={(
-                <Title level={5}>
-                  Address:&nbsp;
-                  {account ? `${account}` : 'NA'}
-                </Title>
-              )}
-              type="success"
-              showIcon
-            />
-          )}
-        </DetailsContainer>
+        <Button type="primary" onClick={handleLogin}>
+          Connect Wallet
+        </Button>
       </Container>
     );
   }
 
   return (
     <Container>
-      <Button
-        type="primary"
-        // size="large"
-        onClick={handleLogin}
-      >
-        Connect Wallet
-      </Button>
+      <DetailsContainer>
+        {errorMessage ? (
+          <Alert message={errorMessage} type="error" showIcon />
+        ) : (
+          <Alert
+            type="success"
+            showIcon
+            message={(
+              <Title level={5}>
+                Address:&nbsp;
+                {account ? `${account}` : 'NA'}
+              </Title>
+            )}
+          />
+        )}
+      </DetailsContainer>
     </Container>
   );
 };
 
-export default MetamaskProvider;
+Login.propTypes = {
+  account: PropTypes.string,
+  errorMessage: PropTypes.string,
+  setUserAccount: PropTypes.func.isRequired,
+  setUserBalance: PropTypes.func.isRequired,
+  setErrorMessage: PropTypes.func.isRequired,
+};
+
+Login.defaultProps = {
+  account: null,
+  errorMessage: null,
+};
+
+const mapStateToProps = (state) => {
+  const { account, balance, errorMessage } = state.setup;
+  return { account, balance, errorMessage };
+};
+
+const mapDispatchToProps = {
+  setUserAccount: setUserAccountFn,
+  setUserBalance: setUserBalanceFn,
+  setErrorMessage: setErrorMessageFn,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

@@ -45,7 +45,8 @@ class MyApp extends App {
 }
 
 MyApp.propTypes = {
-  Component: PropTypes.func.isRequired,
+  Component: PropTypes.oneOfType([PropTypes.func, PropTypes.shape({})])
+    .isRequired,
   pageProps: PropTypes.shape({}).isRequired,
 };
 
