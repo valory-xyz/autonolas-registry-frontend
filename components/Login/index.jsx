@@ -71,30 +71,17 @@ const MetamaskProvider = () => {
     return (
       <Container>
         <DetailsContainer>
-          <Title level={4}>
-            Address:&nbsp;
-            {account ? `${account}` : 'NA'}
-          </Title>
-          <Title>
-            Balance:&nbsp;
-            {balance ? `${balance}` : 'NA'}
-          </Title>
-
-          <Button
-            type="danger"
-            size="large"
-            onClick={handleMetamaskLogout}
-            disabled
-          >
-            Disconnect
-          </Button>
-
-          <br />
-          {errorMessage && (
+          {errorMessage ? (
+            <Alert message={errorMessage} type="error" showIcon />
+          ) : (
             <Alert
-              message="Error"
-              description={errorMessage}
-              type="error"
+              message={(
+                <Title level={5}>
+                  Address:&nbsp;
+                  {account ? `${account}` : 'NA'}
+                </Title>
+              )}
+              type="success"
               showIcon
             />
           )}
@@ -105,8 +92,12 @@ const MetamaskProvider = () => {
 
   return (
     <Container>
-      <Button type="primary" size="large" onClick={handleLogin}>
-        Connect to wallet!
+      <Button
+        type="primary"
+        // size="large"
+        onClick={handleLogin}
+      >
+        Connect Wallet
       </Button>
     </Container>
   );
