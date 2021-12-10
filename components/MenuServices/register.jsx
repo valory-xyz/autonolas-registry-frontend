@@ -4,16 +4,16 @@ import { RegisterFooter } from '../styles';
 
 const { Title } = Typography;
 
-const RegisterOperators = () => {
+const RegisterServices = () => {
   const router = useRouter();
 
   const handleCancel = () => {
-    router.push('/operators');
+    router.push('/services');
   };
 
   return (
     <>
-      <Title level={2}>Register Operator</Title>
+      <Title level={2}>Register Service</Title>
       <RegisterFooter>
         <p>To register, connect to wallet</p>
         <Button onClick={handleCancel}>Cancel</Button>
@@ -22,4 +22,4 @@ const RegisterOperators = () => {
   );
 };
 
-export default RegisterOperators;
+export default RegisterServices;

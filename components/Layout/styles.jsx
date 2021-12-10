@@ -33,6 +33,7 @@ export const CustomLayout = styled(Layout)`
 export const Logo = styled.div`
   width: 96px;
   font-weight: bold;
+  cursor: pointer;
 `;
 
 export const RightMenu = styled.div`

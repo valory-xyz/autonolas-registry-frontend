@@ -3,4 +3,6 @@ export const CONSTANTS = {
   ETH_REQUESTACCOUNTS: 'eth_requestAccounts',
 };
 
-export const EX = {};
+export const URL = {
+  root: '/',
+};

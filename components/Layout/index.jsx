@@ -12,7 +12,7 @@ const NavigationBar = ({ children }) => {
   return (
     <CustomLayout>
       <Header>
-        <Logo>Registry</Logo>
+        <Logo onClick={() => router.push('/')}>Registry</Logo>
 
         <Menu
           theme="light"
@@ -22,7 +22,7 @@ const NavigationBar = ({ children }) => {
           <Menu.Item key="components" onClick={() => router.push('/')}>
             Components
           </Menu.Item>
-          <Menu.Item key="services" disabled onClick={() => router.push('/services')}>
+          <Menu.Item key="services" onClick={() => router.push('/services')}>
             Services
           </Menu.Item>
           <Menu.Item key="operators" onClick={() => router.push('/operators')}>
