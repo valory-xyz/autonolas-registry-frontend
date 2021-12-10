@@ -5,7 +5,10 @@ export const Container = styled.div`
   align-items: center;
   justify-content: center;
   height: 100vh;
-  text-align: center;
 `;
 
-export const EG = styled.div``;
+export const DetailsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;

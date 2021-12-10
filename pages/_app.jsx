@@ -2,10 +2,16 @@ import App from 'next/app';
 import Head from 'next/head';
 import { createWrapper } from 'next-redux-wrapper';
 import PropTypes from 'prop-types';
+
+// web3 libraries
+import Web3 from 'web3';
+import { Web3ReactProvider } from '@web3-react/core';
+
 import GlobalStyle from 'components/GlobalStyles';
-import { DAppProvider } from '@usedapp/core';
 import initStore from '../store';
 import './styles.less';
+
+const getLibrary = (provider) => new Web3(provider);
 
 class MyApp extends App {
   static async getInitialProps({ Component, ctx }) {
@@ -25,9 +31,9 @@ class MyApp extends App {
           <title>Protocol</title>
           <meta name="description" content="Protocol" />
         </Head>
-        <DAppProvider config={{}}>
+        <Web3ReactProvider getLibrary={getLibrary}>
           <Component {...pageProps} />
-        </DAppProvider>
+        </Web3ReactProvider>
         <GlobalStyle />
       </>
     );
