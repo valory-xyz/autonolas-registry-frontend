@@ -8,6 +8,7 @@ import Web3 from 'web3';
 import { Web3ReactProvider } from '@web3-react/core';
 
 import GlobalStyle from 'components/GlobalStyles';
+import Layout from 'components/Layout';
 import initStore from '../store';
 import './styles.less';
 
@@ -25,6 +26,7 @@ class MyApp extends App {
   render() {
     const { Component, pageProps } = this.props;
     // TODO: ask Oak about title, meta, etc
+
     return (
       <>
         <Head>
@@ -32,7 +34,9 @@ class MyApp extends App {
           <meta name="description" content="Protocol" />
         </Head>
         <Web3ReactProvider getLibrary={getLibrary}>
-          <Component {...pageProps} />
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
         </Web3ReactProvider>
         <GlobalStyle />
       </>
@@ -41,7 +45,8 @@ class MyApp extends App {
 }
 
 MyApp.propTypes = {
-  Component: PropTypes.func.isRequired,
+  Component: PropTypes.oneOfType([PropTypes.func, PropTypes.shape({})])
+    .isRequired,
   pageProps: PropTypes.shape({}).isRequired,
 };
 

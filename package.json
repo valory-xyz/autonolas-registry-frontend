@@ -1,7 +1,7 @@
 {
   "scripts": {
     "dev": "next",
-    "build": "next build",
+    "build": "CI= next build",
     "start": "next start",
     "lint": "eslint ./",
     "testc": "jest --coverage --verbose"
