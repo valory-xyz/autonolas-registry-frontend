@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 
 const { Title } = Typography;
 
-const Services = () => {
+const Service = () => {
   const router = useRouter();
   const { id } = router.query;
   console.log(`service_id = ${id}`);
@@ -15,4 +15,4 @@ const Services = () => {
   );
 };
 
-export default Services;
+export default Service;
