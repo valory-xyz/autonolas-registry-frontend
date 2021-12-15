@@ -1,7 +1,7 @@
 import { Button, Typography } from 'antd';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
-import { EmptyMessage } from '../styles';
+import { MenuEmptyMessage } from 'common-util/MenuCommon';
 
 const { Title } = Typography;
 
@@ -13,8 +13,6 @@ export const Header = styled.div`
     margin: 0;
   }
 `;
-
-const DEFAULT_MESSAGE = <EmptyMessage>No operators registered</EmptyMessage>;
 
 const MenuComponents = () => {
   const router = useRouter();
@@ -31,7 +29,7 @@ const MenuComponents = () => {
           Register
         </Button>
       </Header>
-      <div>{DEFAULT_MESSAGE}</div>
+      <MenuEmptyMessage type="operator" />
     </>
   );
 };
