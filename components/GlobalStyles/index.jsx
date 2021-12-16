@@ -20,6 +20,10 @@ const GlobalStyle = createGlobalStyle`
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+  body {
+    /* uncomment for dark mode */
+    filter: invert(1) hue-rotate(180deg);
+  }
 `;
 
 export default GlobalStyle;
