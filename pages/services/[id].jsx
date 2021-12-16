@@ -1,3 +1,3 @@
-import Service from 'components/MenuServices/service';
+import Service from 'components/ListServices/service';
 
 export default Service;

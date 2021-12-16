@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Tabs, Button, Typography } from 'antd';
 import { useRouter } from 'next/router';
-import { MenuEmptyMessage } from 'common-util/MenuCommon';
+import { ListEmptyMessage } from 'common-util/ListCommon';
 import { EmptyMessage } from '../styles';
 
 const { TabPane } = Tabs;
@@ -33,11 +33,11 @@ const MenuServices = ({ account }) => {
         )}
       >
         <TabPane tab="All" key="all">
-          <MenuEmptyMessage type="service" />
+          <ListEmptyMessage type="service" />
         </TabPane>
         <TabPane tab="My Services" key="my_services">
           {account ? (
-            <MenuEmptyMessage type="service" />
+            <ListEmptyMessage type="service" />
           ) : (
             <EmptyMessage width="180px">
               To see your services, connect a wallet.

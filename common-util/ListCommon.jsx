@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { Button } from 'antd';
 import { EmptyMessage } from 'components/styles';
 
-export const MenuEmptyMessage = ({ type }) => {
+export const ListEmptyMessage = ({ type }) => {
   const router = useRouter();
 
   const getValues = () => {
@@ -48,11 +48,11 @@ export const MenuEmptyMessage = ({ type }) => {
   );
 };
 
-MenuEmptyMessage.propTypes = {
+ListEmptyMessage.propTypes = {
   type: PropTypes.string,
 };
 
-MenuEmptyMessage.defaultProps = {
+ListEmptyMessage.defaultProps = {
   type: null,
 };
 

@@ -1,7 +1,7 @@
 import { Button, Typography } from 'antd';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
-import { MenuEmptyMessage } from 'common-util/MenuCommon';
+import { ListEmptyMessage } from 'common-util/ListCommon';
 
 const { Title } = Typography;
 
@@ -29,7 +29,7 @@ const MenuComponents = () => {
           Register
         </Button>
       </Header>
-      <MenuEmptyMessage type="operator" />
+      <ListEmptyMessage type="operator" />
     </>
   );
 };

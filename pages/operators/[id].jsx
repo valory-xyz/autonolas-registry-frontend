@@ -1,3 +1,3 @@
-import Operator from 'components/MenuOperators/operator';
+import Operator from 'components/ListOperators/operator';
 
 export default Operator;

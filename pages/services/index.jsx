@@ -1,3 +1,3 @@
-import MenuServices from 'components/MenuServices';
+import MenuServices from 'components/ListServices';
 
 export default MenuServices;
