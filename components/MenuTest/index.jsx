@@ -3,13 +3,18 @@ import { connect } from 'react-redux';
 // import Web3 from 'web3';
 import { Button, Typography } from 'antd';
 // import { EmptyMessage } from '../styles';
-import { getProviderAndSigner, getBalance } from './utils';
-
+import {
+  getProviderAndSigner,
+  getBalance,
+  deposit,
+  callContract,
+  waitTransaction,
+} from './utils';
 
 const { Title } = Typography;
 
 const MenuServices = ({ account }) => {
-  console.log(account);
+  // console.log(account);
   const btnClick = async () => {
     console.log('object');
     // const itx = Web3.providers.WebsocketProvider(
@@ -19,27 +24,21 @@ const MenuServices = ({ account }) => {
 
     const { itx, signer } = getProviderAndSigner();
 
-    getBalance(itx, signer);
+    console.log(itx, signer);
+    await getBalance(itx, signer);
 
-    /**
-     * DEPOSIT
-     */
-    // const depositTx = await signer.sendTransaction({
-    //   // Address of the ITX deposit contract
-    //   to: '0x015C7C7A7D65bbdb117C573007219107BD7486f9',
-    //   // The amount of ether you want to deposit in your ITX gas tank
-    //   value: ethers.utils.parseUnits('0.00001', 'ether'),
-    // });
-    // console.log('Mining deposit transaction...');
-    // console.log(
-    //   `https://${ETHEREUM_NETWORK}.etherscan.io/tx/${depositTx.hash}`,
-    // );
+    // deposit to ITX if you don't have sufficient balance
+    // await deposit(signer);
 
-    // Waiting for the transaction to be mined
-    // const receipt = await depositTx.wait();
+    const relay = await callContract(itx, signer);
 
-    // The transaction is now on chain!
-    // console.log(`Mined in block ${receipt.blockNumber}`);
+    if (relay) {
+      const hash = relay.relayTransactionHash;
+      console.log(relay, hash);
+
+      const receipt = await waitTransaction(itx, hash);
+      console.log({ receipt });
+    }
   };
 
   return (

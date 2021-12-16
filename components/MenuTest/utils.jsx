@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable no-await-in-loop */
 const { ethers } = require('ethers');
 
@@ -19,25 +20,8 @@ export async function getBalance(itx, signer) {
     const response = await itx.send('relay_getBalance', [signer.address]);
     console.log(`Your current ITX balance is ${response.balance}`);
   } catch (e) {
-    //
     console.log(e.error.message);
   }
-
-  // try {
-  //   const response = await fetch(
-  //     `https://ropsten.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_PROJECT_ID}#relay_getBalance`,
-  //     {
-  //       jsonrpc: '2.0',
-  //       id: 0,
-  //       method: 'relay_getBalance',
-  //       params: ['0xc783df8a850f42e7F7e57013759C285caa701eB6'],
-  //     },
-  //   );
-
-  //   console.log(response);
-  // } catch (error) {
-  //   console.error(error);
-  // }
 }
 
 export async function deposit(signer) {
@@ -48,38 +32,48 @@ export async function deposit(signer) {
     value: ethers.utils.parseUnits('0.1', 'ether'),
   });
   // Waiting for the transaction to be mined
+  console.log({ tx });
   await tx.wait();
 }
 
-export async function signRequest(tx, signer) {
+async function signRequest(tx, signer) {
   const relayTransactionHash = ethers.utils.keccak256(
     ethers.utils.defaultAbiCoder.encode(
       ['address', 'bytes', 'uint', 'uint', 'string'],
-      [tx.to, tx.data, tx.gas, 4, tx.schedule], // Rinkeby chainId is 4
+      [tx.to, tx.data, tx.gas, 3, tx.schedule], // Rinkeby chainId is 4
     ),
   );
+  console.log(' === signRequest === ', signer);
   const value = await signer.signMessage(
     ethers.utils.arrayify(relayTransactionHash),
   );
+  console.log({ value });
   return value;
 }
 
-export async function callContract(itx) {
+export async function callContract(itx, signer) {
   const iface = new ethers.utils.Interface(['function echo(string message)']);
-  const data = iface.encodeFunctionData('echo', ['Hello world!']);
+  const data = iface.encodeFunctionData('echo', ['Hello MoHan dAs!']);
   const tx = {
     to: '0x6663184b3521bF1896Ba6e1E776AB94c317204B6',
     data,
-    gas: '100000',
+    gas: '50000',
     schedule: 'fast',
   };
-  const signature = await signRequest(tx);
-  const relayTransactionHash = await itx.send('relay_sendTransaction', [
-    tx,
-    signature,
-  ]);
-  console.log(`ITX relay hash: ${relayTransactionHash}`);
-  return relayTransactionHash;
+  console.log(' >> callContract >> ', signer);
+
+  try {
+    const signature = await signRequest(tx, signer);
+    const relayTransactionHash = await itx.send('relay_sendTransaction', [
+      tx,
+      signature,
+    ]);
+    console.log(`ITX relay hash: ${relayTransactionHash}`);
+    return relayTransactionHash;
+  } catch (e) {
+    console.log((e.error || '').message);
+    return null;
+  }
 }
 
 const wait = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
@@ -107,5 +101,3 @@ export async function waitTransaction(itx, relayTransactionHash) {
 
   return null;
 }
-
-export const BB = null;
