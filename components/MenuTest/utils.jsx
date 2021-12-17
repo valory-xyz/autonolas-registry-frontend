@@ -1,38 +1,62 @@
 /* eslint-disable no-console */
 /* eslint-disable no-await-in-loop */
+import getConfig from 'next/config';
+import { notification } from 'antd';
+
 const { ethers } = require('ethers');
 
-export const getProviderAndSigner = () => {
-  console.log({ network: process.env.NEXT_PUBLIC_NETWORK });
-  const itx = new ethers.providers.InfuraProvider(
-    process.env.NEXT_PUBLIC_NETWORK,
-    process.env.NEXT_PUBLIC_INFURA_PROJECT_ID,
-  );
+const { publicRuntimeConfig } = getConfig();
+const { INFURA_PROJECT_ID, TEST_NETWORK, INFURA_TO_PUBLIC_ADDRESS } = publicRuntimeConfig;
 
-  const signer = new ethers.Wallet(process.env.NEXT_PUBLIC_SECRET_ID, itx);
-  console.log(itx, signer);
+/**
+ * function to setup infura transaction (ITX) provider
+ */
+export const getProviderAndSigner = (privateKey) => {
+  const itx = new ethers.providers.InfuraProvider(
+    TEST_NETWORK,
+    INFURA_PROJECT_ID,
+  );
+  const signer = new ethers.Wallet(privateKey, itx);
 
   return { itx, signer };
 };
 
+/**
+ * function to show balance
+ * @param {Object} itx
+ * @param {Object} signer
+ */
 export async function getBalance(itx, signer) {
   try {
     const response = await itx.send('relay_getBalance', [signer.address]);
     console.log(`Your current ITX balance is ${response.balance}`);
+    return response;
   } catch (e) {
-    console.log(e.error.message);
+    console.error(e.error.message);
+    return null;
   }
 }
 
-export async function deposit(signer) {
+/**
+ * function to deposit ETH
+ * @param {Object} signer
+ */
+export async function deposit(signer, amount) {
   const tx = await signer.sendTransaction({
     // ITX deposit contract (same address for all public Ethereum networks)
-    to: '0x015C7C7A7D65bbdb117C573007219107BD7486f9',
-    // Choose how much ether you want to deposit to your ITX gas tank
-    value: ethers.utils.parseUnits('0.1', 'ether'),
+    to: INFURA_TO_PUBLIC_ADDRESS,
+
+    // ether you want to deposit to your ITX gas tank
+    value: ethers.utils.parseUnits(amount, 'ether'),
   });
-  // Waiting for the transaction to be mined
+
   console.log({ tx });
+  notification.info({
+    message: 'Depositted Successfully',
+    description: `Amount: ${amount}`,
+  });
+
+  // Waiting for the transaction to be mined
   await tx.wait();
 }
 
@@ -40,7 +64,7 @@ async function signRequest(tx, signer) {
   const relayTransactionHash = ethers.utils.keccak256(
     ethers.utils.defaultAbiCoder.encode(
       ['address', 'bytes', 'uint', 'uint', 'string'],
-      [tx.to, tx.data, tx.gas, 3, tx.schedule], // Rinkeby chainId is 4
+      [tx.to, tx.data, tx.gas, 3, tx.schedule], // Ropsten chainId is 4
     ),
   );
   console.log(' === signRequest === ', signer);
@@ -51,16 +75,15 @@ async function signRequest(tx, signer) {
   return value;
 }
 
-export async function callContract(itx, signer) {
+export async function callContract(itx, signer, toAddress, contractMessage) {
   const iface = new ethers.utils.Interface(['function echo(string message)']);
-  const data = iface.encodeFunctionData('echo', ['Hello MoHan dAs!']);
+  const data = iface.encodeFunctionData('echo', [contractMessage]);
   const tx = {
-    to: '0x6663184b3521bF1896Ba6e1E776AB94c317204B6',
+    to: toAddress,
     data,
     gas: '50000',
     schedule: 'fast',
   };
-  console.log(' >> callContract >> ', signer);
 
   try {
     const signature = await signRequest(tx, signer);
@@ -76,7 +99,7 @@ export async function callContract(itx, signer) {
   }
 }
 
-const wait = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
+const wait = (milliseconds = 3000) => new Promise((resolve) => setTimeout(resolve, milliseconds));
 
 export async function waitTransaction(itx, relayTransactionHash) {
   let mined = false;
@@ -96,7 +119,7 @@ export async function waitTransaction(itx, relayTransactionHash) {
         }
       }
     }
-    await wait(1000);
+    await wait(3000);
   }
 
   return null;

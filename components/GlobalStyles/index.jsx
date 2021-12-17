@@ -22,7 +22,7 @@ const GlobalStyle = createGlobalStyle`
   }
   body {
     /* uncomment for dark mode */
-    filter: invert(1) hue-rotate(180deg);
+    /* filter: invert(1) hue-rotate(180deg); */
   }
 `;
 
