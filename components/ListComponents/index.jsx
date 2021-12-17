@@ -2,21 +2,25 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Tabs, Button, Typography } from 'antd';
 import { useRouter } from 'next/router';
+import { ListEmptyMessage } from 'common-util/ListCommon';
 import { EmptyMessage } from '../styles';
 
 const { TabPane } = Tabs;
 const { Title } = Typography;
 
-const MenuServices = ({ account }) => {
+const MenuComponents = ({ account, balance }) => {
   const router = useRouter();
 
   const handleTab = (key) => {
     console.log(key);
   };
 
+  // TODO: remove later
+  console.log({ account, balance });
+
   return (
     <>
-      <Title level={2}>Services</Title>
+      <Title level={2}>Components</Title>
       <Tabs
         type="card"
         defaultActiveKey="all"
@@ -25,21 +29,21 @@ const MenuServices = ({ account }) => {
           <Button
             ghost
             type="primary"
-            onClick={() => router.push('/services/register')}
+            onClick={() => router.push('/components/register')}
           >
             Register
           </Button>
         )}
       >
         <TabPane tab="All" key="all">
-          <EmptyMessage>No services registered</EmptyMessage>
+          <ListEmptyMessage type="component" />
         </TabPane>
-        <TabPane tab="My Services" key="my_services">
+        <TabPane tab="My Components" key="my_components">
           {account ? (
-            <EmptyMessage>No services registered</EmptyMessage>
+            <ListEmptyMessage type="component" />
           ) : (
-            <EmptyMessage width="180px">
-              To see your services, connect a wallet.
+            <EmptyMessage width="200px">
+              To see your components, connect a wallet.
             </EmptyMessage>
           )}
         </TabPane>
@@ -48,17 +52,19 @@ const MenuServices = ({ account }) => {
   );
 };
 
-MenuServices.propTypes = {
+MenuComponents.propTypes = {
   account: PropTypes.string,
+  balance: PropTypes.string,
 };
 
-MenuServices.defaultProps = {
+MenuComponents.defaultProps = {
   account: null,
+  balance: null,
 };
 
 const mapStateToProps = (state) => {
-  const { account } = state.setup;
-  return { account };
+  const { account, balance } = state.setup;
+  return { account, balance };
 };
 
-export default connect(mapStateToProps, {})(MenuServices);
+export default connect(mapStateToProps, {})(MenuComponents);
