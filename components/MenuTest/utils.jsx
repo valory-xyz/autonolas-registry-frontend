@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /* eslint-disable no-await-in-loop */
 import getConfig from 'next/config';
 import { notification } from 'antd';
@@ -29,7 +28,6 @@ export const getProviderAndSigner = (privateKey) => {
 export async function getBalance(itx, signer) {
   try {
     const response = await itx.send('relay_getBalance', [signer.address]);
-    console.log(`Your current ITX balance is ${response.balance}`);
     return response;
   } catch (e) {
     console.error(e.error.message);
@@ -50,7 +48,6 @@ export async function deposit(signer, amount) {
     value: ethers.utils.parseUnits(amount, 'ether'),
   });
 
-  console.log({ tx });
   notification.info({
     message: 'Depositted Successfully',
     description: `Amount: ${amount}`,
@@ -64,14 +61,12 @@ async function signRequest(tx, signer) {
   const relayTransactionHash = ethers.utils.keccak256(
     ethers.utils.defaultAbiCoder.encode(
       ['address', 'bytes', 'uint', 'uint', 'string'],
-      [tx.to, tx.data, tx.gas, 3, tx.schedule], // Ropsten chainId is 4
+      [tx.to, tx.data, tx.gas, 3, tx.schedule], // Ropsten chainId is 3
     ),
   );
-  console.log(' === signRequest === ', signer);
   const value = await signer.signMessage(
     ethers.utils.arrayify(relayTransactionHash),
   );
-  console.log({ value });
   return value;
 }
 
@@ -91,10 +86,9 @@ export async function callContract(itx, signer, toAddress, contractMessage) {
       tx,
       signature,
     ]);
-    console.log(`ITX relay hash: ${relayTransactionHash}`);
     return relayTransactionHash;
   } catch (e) {
-    console.log((e.error || '').message);
+    console.error((e.error || '').message);
     return null;
   }
 }

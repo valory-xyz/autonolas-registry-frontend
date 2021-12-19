@@ -155,13 +155,3 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, {})(MenuServices);
-
-/**
- * - not much progress!
- * - not able to get any ether from faucet in testnetwork - ropsten
- * - getting infura error for getting balance
- *
- * - metamask login issue
- *
- * what you want to do in routes ticket?
- */
