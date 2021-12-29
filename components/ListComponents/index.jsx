@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Tabs, Button, Typography } from 'antd';
 import { useRouter } from 'next/router';
+import { ListEmptyMessage } from 'common-util/ListCommon';
 import { EmptyMessage } from '../styles';
 
 const { TabPane } = Tabs;
@@ -36,11 +37,11 @@ const MenuComponents = ({ account, balance }) => {
         )}
       >
         <TabPane tab="All" key="all">
-          <EmptyMessage>No components registered</EmptyMessage>
+          <ListEmptyMessage type="component" />
         </TabPane>
         <TabPane tab="My Components" key="my_components">
           {account ? (
-            <EmptyMessage>No components registered</EmptyMessage>
+            <ListEmptyMessage type="component" />
           ) : (
             <EmptyMessage width="200px">
               To see your components, connect a wallet.

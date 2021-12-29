@@ -1,3 +1,3 @@
-import RegisterOperator from 'components/MenuOperators/register';
+import RegisterOperator from 'components/ListOperators/register';
 
 export default RegisterOperator;

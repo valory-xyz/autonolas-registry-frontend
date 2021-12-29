@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-
 // import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Web3 from 'web3';
@@ -8,7 +7,7 @@ import { useRouter } from 'next/router';
 import {
   Button, Typography, Form, Input, notification,
 } from 'antd';
-import { CONTRACT, CONTRACT_ADDRESS } from './machMinter';
+import { CONTRACT, CONTRACT_ADDRESS } from './helpers/mechMinter';
 import { RegisterFooter } from '../styles';
 
 const { Title } = Typography;
