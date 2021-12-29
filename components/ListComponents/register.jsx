@@ -111,7 +111,7 @@ const RegisterComponents = ({ account }) => {
 
           <Form.Item
             label="Dependencies (comma seperated)"
-            name="dependecies"
+            name="dependencies"
             rules={[
               { required: false, message: 'Please input the list of components on which this component depends' },
             ]}
