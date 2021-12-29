@@ -71,7 +71,7 @@ const RegisterComponents = ({ account }) => {
             rules={[
               {
                 required: true,
-                message: 'Please input your Developer address',
+                message: 'Please input the address of the component developer',
               },
             ]}
           >
