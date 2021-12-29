@@ -83,7 +83,7 @@ const RegisterComponents = ({ account }) => {
             name="to_address"
             initialValue={account}
             rules={[
-              { required: true, message: 'Please input your To address' },
+              { required: true, message: 'Please input the address to which the component is to be minted' },
             ]}
           >
             <Input />
