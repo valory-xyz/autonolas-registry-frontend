@@ -103,7 +103,7 @@ const RegisterComponents = ({ account }) => {
             name="description"
             initialValue="Description"
             rules={[
-              { required: true, message: 'Please input your Description' },
+              { required: true, message: 'Please input the component Description' },
             ]}
           >
             <Input />
