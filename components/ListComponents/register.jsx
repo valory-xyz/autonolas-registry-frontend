@@ -113,7 +113,7 @@ const RegisterComponents = ({ account }) => {
             label="Dependencies (comma seperated)"
             name="dependecies"
             rules={[
-              { required: false, message: 'Please input your Dependecies' },
+              { required: false, message: 'Please input the list of components on which this component depends' },
             ]}
           >
             <Input />
