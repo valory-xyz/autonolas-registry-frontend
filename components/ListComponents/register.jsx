@@ -34,7 +34,7 @@ const RegisterComponents = ({ account }) => {
           values.to_address,
           values.hash,
           values.description,
-          values.dependecies ? values.dependecies.split(', ') : [],
+          values.dependencies ? values.dependencies.split(', ') : [],
         )
         .call()
         .then((tx) => {
