@@ -93,7 +93,7 @@ const RegisterComponents = ({ account }) => {
             label="Hash"
             name="hash"
             initialValue="0x0"
-            rules={[{ required: true, message: 'Please input your Hash' }]}
+            rules={[{ required: true, message: 'Please input the IPFS hash of the component' }]}
           >
             <Input />
           </Form.Item>
