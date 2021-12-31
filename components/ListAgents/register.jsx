@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-// import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Web3 from 'web3';
 import { connect } from 'react-redux';
@@ -13,27 +12,23 @@ import {
 
 const { Title } = Typography;
 
-const RegisterComponents = ({ account }) => {
+const RegisterAgents = ({ account }) => {
   const router = useRouter();
 
   const handleCancel = () => {
-    router.push('/');
+    router.push('/agents');
   };
 
   const handleSubmit = (values) => {
     if (account) {
-      console.log(account);
       window.ethereum.enable();
       const web3 = new Web3(window.web3.currentProvider);
 
       // contractAddress and abi are setted after contract deploy
-      const contract = new web3.eth.Contract(
-        MECH_MINTER_CONTRACT.abi,
-        MECH_MINTER_ADDRESS,
-      );
+      const contract = new web3.eth.Contract(MECH_MINTER_CONTRACT.abi, MECH_MINTER_ADDRESS);
 
       contract.methods
-        .mintComponent(
+        .mintAgent(
           values.dev_address,
           values.to_address,
           values.hash,
@@ -43,7 +38,7 @@ const RegisterComponents = ({ account }) => {
         .call()
         .then((tx) => {
           console.log('Transaction: ', tx);
-          notification.success({ message: 'Component Minted' });
+          notification.success({ message: 'Agent Minted' });
         })
         .catch((e) => {
           console.error(e);
@@ -53,9 +48,9 @@ const RegisterComponents = ({ account }) => {
 
   return (
     <>
-      <Title level={2}>Register Component</Title>
+      <Title level={2}>Register Agent</Title>
       <RegisterForm
-        listType="component"
+        listType="agent"
         handleSubmit={handleSubmit}
         handleCancel={handleCancel}
       />
@@ -63,11 +58,11 @@ const RegisterComponents = ({ account }) => {
   );
 };
 
-RegisterComponents.propTypes = {
+RegisterAgents.propTypes = {
   account: PropTypes.string,
 };
 
-RegisterComponents.defaultProps = {
+RegisterAgents.defaultProps = {
   account: null,
 };
 
@@ -76,4 +71,4 @@ const mapStateToProps = (state) => {
   return { account, balance };
 };
 
-export default connect(mapStateToProps, {})(RegisterComponents);
+export default connect(mapStateToProps, {})(RegisterAgents);

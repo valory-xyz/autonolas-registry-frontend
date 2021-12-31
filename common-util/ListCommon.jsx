@@ -23,6 +23,11 @@ export const ListEmptyMessage = ({ type }) => {
           text: 'operator',
           route: '/operators/1',
         };
+      case 'agent':
+        return {
+          text: 'agent',
+          route: '/agents/1',
+        };
       default:
         return null;
     }

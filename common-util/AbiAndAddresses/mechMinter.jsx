@@ -1,12 +1,22 @@
-export const CONTRACT_ADDRESS = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
+export const MECH_MINTER_ADDRESS = '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0';
 
-export const CONTRACT = {
+export const MECH_MINTER_CONTRACT = {
   _format: 'hh-sol-artifact-1',
-  contractName: 'ComponentRegistry',
-  sourceName: 'contracts/ComponentRegistry.sol',
+  contractName: 'MechMinter',
+  sourceName: 'contracts/MechMinter.sol',
   abi: [
     {
       inputs: [
+        {
+          internalType: 'address',
+          name: '_componentRegistry',
+          type: 'address',
+        },
+        {
+          internalType: 'address',
+          name: '_agentRegistry',
+          type: 'address',
+        },
         {
           internalType: 'string',
           name: '_name',
@@ -15,11 +25,6 @@ export const CONTRACT = {
         {
           internalType: 'string',
           name: '_symbol',
-          type: 'string',
-        },
-        {
-          internalType: 'string',
-          name: '_bURI',
           type: 'string',
         },
       ],
@@ -99,6 +104,19 @@ export const CONTRACT = {
       anonymous: false,
       inputs: [
         {
+          indexed: false,
+          internalType: 'address',
+          name: 'account',
+          type: 'address',
+        },
+      ],
+      name: 'Paused',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
           indexed: true,
           internalType: 'address',
           name: 'from',
@@ -121,13 +139,26 @@ export const CONTRACT = {
       type: 'event',
     },
     {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          internalType: 'address',
+          name: 'account',
+          type: 'address',
+        },
+      ],
+      name: 'Unpaused',
+      type: 'event',
+    },
+    {
       inputs: [],
-      name: '_BASEURI',
+      name: 'agentRegistry',
       outputs: [
         {
-          internalType: 'string',
+          internalType: 'address',
           name: '',
-          type: 'string',
+          type: 'address',
         },
       ],
       stateMutability: 'view',
@@ -171,65 +202,13 @@ export const CONTRACT = {
       type: 'function',
     },
     {
-      inputs: [
-        {
-          internalType: 'address',
-          name: 'newMinter',
-          type: 'address',
-        },
-      ],
-      name: 'changeMinter',
-      outputs: [],
-      stateMutability: 'nonpayable',
-      type: 'function',
-    },
-    {
-      inputs: [
-        {
-          internalType: 'address',
-          name: 'owner',
-          type: 'address',
-        },
-        {
-          internalType: 'address',
-          name: 'developer',
-          type: 'address',
-        },
-        {
-          internalType: 'string',
-          name: 'componentHash',
-          type: 'string',
-        },
-        {
-          internalType: 'string',
-          name: 'description',
-          type: 'string',
-        },
-        {
-          internalType: 'uint256[]',
-          name: 'dependencies',
-          type: 'uint256[]',
-        },
-      ],
-      name: 'createComponent',
-      outputs: [],
-      stateMutability: 'nonpayable',
-      type: 'function',
-    },
-    {
-      inputs: [
-        {
-          internalType: 'uint256',
-          name: '_tokenId',
-          type: 'uint256',
-        },
-      ],
-      name: 'exists',
+      inputs: [],
+      name: 'componentRegistry',
       outputs: [
         {
-          internalType: 'bool',
+          internalType: 'address',
           name: '',
-          type: 'bool',
+          type: 'address',
         },
       ],
       stateMutability: 'view',
@@ -279,6 +258,72 @@ export const CONTRACT = {
       type: 'function',
     },
     {
+      inputs: [
+        {
+          internalType: 'address',
+          name: 'owner',
+          type: 'address',
+        },
+        {
+          internalType: 'address',
+          name: 'developer',
+          type: 'address',
+        },
+        {
+          internalType: 'string',
+          name: 'componentHash',
+          type: 'string',
+        },
+        {
+          internalType: 'string',
+          name: 'description',
+          type: 'string',
+        },
+        {
+          internalType: 'uint256[]',
+          name: 'dependencies',
+          type: 'uint256[]',
+        },
+      ],
+      name: 'mintAgent',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: 'owner',
+          type: 'address',
+        },
+        {
+          internalType: 'address',
+          name: 'developer',
+          type: 'address',
+        },
+        {
+          internalType: 'string',
+          name: 'componentHash',
+          type: 'string',
+        },
+        {
+          internalType: 'string',
+          name: 'description',
+          type: 'string',
+        },
+        {
+          internalType: 'uint256[]',
+          name: 'dependencies',
+          type: 'uint256[]',
+        },
+      ],
+      name: 'mintComponent',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
       inputs: [],
       name: 'name',
       outputs: [
@@ -318,6 +363,19 @@ export const CONTRACT = {
           internalType: 'address',
           name: '',
           type: 'address',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'paused',
+      outputs: [
+        {
+          internalType: 'bool',
+          name: '',
+          type: 'bool',
         },
       ],
       stateMutability: 'view',
@@ -435,49 +493,6 @@ export const CONTRACT = {
       inputs: [
         {
           internalType: 'uint256',
-          name: 'index',
-          type: 'uint256',
-        },
-      ],
-      name: 'tokenByIndex',
-      outputs: [
-        {
-          internalType: 'uint256',
-          name: '',
-          type: 'uint256',
-        },
-      ],
-      stateMutability: 'view',
-      type: 'function',
-    },
-    {
-      inputs: [
-        {
-          internalType: 'address',
-          name: 'owner',
-          type: 'address',
-        },
-        {
-          internalType: 'uint256',
-          name: 'index',
-          type: 'uint256',
-        },
-      ],
-      name: 'tokenOfOwnerByIndex',
-      outputs: [
-        {
-          internalType: 'uint256',
-          name: '',
-          type: 'uint256',
-        },
-      ],
-      stateMutability: 'view',
-      type: 'function',
-    },
-    {
-      inputs: [
-        {
-          internalType: 'uint256',
           name: 'tokenId',
           type: 'uint256',
         },
@@ -488,19 +503,6 @@ export const CONTRACT = {
           internalType: 'string',
           name: '',
           type: 'string',
-        },
-      ],
-      stateMutability: 'view',
-      type: 'function',
-    },
-    {
-      inputs: [],
-      name: 'totalSupply',
-      outputs: [
-        {
-          internalType: 'uint256',
-          name: '',
-          type: 'uint256',
         },
       ],
       stateMutability: 'view',

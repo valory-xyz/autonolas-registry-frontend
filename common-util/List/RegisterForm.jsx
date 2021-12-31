@@ -1,17 +1,12 @@
 /* eslint-disable no-console */
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { useRouter } from 'next/router';
 import { Button, Form, Input } from 'antd';
 import { RegisterFooter } from './styles';
 
-const RegisterForm = ({ account, listType, handleSubmit }) => {
-  const router = useRouter();
-
-  const handleCancel = () => {
-    router.push('/');
-  };
-
+const RegisterForm = ({
+  account, listType, handleSubmit, handleCancel,
+}) => {
   const onFinish = (values) => {
     if (account) {
       handleSubmit(values);
@@ -123,6 +118,7 @@ RegisterForm.propTypes = {
   account: PropTypes.string,
   listType: PropTypes.string,
   handleSubmit: PropTypes.func.isRequired,
+  handleCancel: PropTypes.func.isRequired,
 };
 
 RegisterForm.defaultProps = {

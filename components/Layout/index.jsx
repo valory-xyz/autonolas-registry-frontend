@@ -22,6 +22,9 @@ const NavigationBar = ({ children }) => {
           <Menu.Item key="components" onClick={() => router.push('/')}>
             Components
           </Menu.Item>
+          <Menu.Item key="agents" onClick={() => router.push('/agents')}>
+            Agents
+          </Menu.Item>
           <Menu.Item key="services" onClick={() => router.push('/services')}>
             Services
           </Menu.Item>
