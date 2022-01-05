@@ -1,15 +1,15 @@
 /* eslint-disable no-console */
-// import { useEffect } from 'react';
+import { useState } from 'react';
 import Web3 from 'web3';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { useRouter } from 'next/router';
-import { Typography, notification } from 'antd';
+import { Typography, notification, Alert } from 'antd';
 import RegisterForm from 'common-util/List/RegisterForm';
 import {
   COMPONENT_REGISTRY_ADDRESS,
   COMPONENT_REGISTRY,
-} from 'common-util/AbiAndAddresses/contract';
+} from 'common-util/AbiAndAddresses/componentRegistry';
 import {
   MECH_MINTER_ADDRESS,
   MECH_MINTER_CONTRACT,
@@ -18,6 +18,8 @@ import {
 const { Title } = Typography;
 
 const RegisterComponents = ({ account }) => {
+  const [error, setError] = useState(null);
+  const [information, setInformation] = useState(null);
   const router = useRouter();
 
   const handleCancel = () => {
@@ -25,8 +27,11 @@ const RegisterComponents = ({ account }) => {
   };
 
   const handleSubmit = async (values) => {
+    console.log(account);
     if (account) {
-      console.log(account);
+      setError(null);
+      setInformation(null);
+
       window.ethereum.enable();
       const web3 = new Web3(window.web3.currentProvider);
 
@@ -36,120 +41,36 @@ const RegisterComponents = ({ account }) => {
         MECH_MINTER_ADDRESS,
       );
 
-      const registryContract = new web3.eth.Contract(
+      const componentRegistryContract = new web3.eth.Contract(
         COMPONENT_REGISTRY.abi,
         COMPONENT_REGISTRY_ADDRESS,
       );
 
       contract.methods
         .mintComponent(
-          values.dev_address,
-          values.to_address,
+          values.owner_address,
+          values.developer_address,
           values.hash,
           values.description,
           values.dependencies ? values.dependencies.split(', ') : [],
         )
-        // .call({ from: account })
         .send({ from: account })
-        /*
-        .send((error, result) => {
-          console.log(result);
-        });
-        */
         .then((result) => {
           console.log(result);
+          setInformation(result);
           notification.success({ message: 'Component Minted' });
 
-          registryContract.methods
-            // .ownerOf('3')
+          // checking the total supply after the component has been minted
+          componentRegistryContract.methods
             .totalSupply()
             .call()
-            .then((e) => console.log(e))
+            .then((response) => console.log(`Now the total supply is: ${response}`))
             .catch((e) => console.log(e));
-
-          // registryContract.getPastEvents('Transfer', {
-          //   filter: {
-          //     from: values.dev_address,
-          //     to: values.to_address,
-          //     tokenId: result,
-          //   },
-          //   fromBlock: 0,
-          // }, (error, eventResult) => {
-          //   console.log(error);
-          //   console.log(eventResult);
-          // });
-
-          // registryContract.getPastEvents('AllEvents', {
-          //   fromBlock: 0,
-          //   toBlock: 'latest',
-          // }, (error, eventResult) => {
-          //   console.log(error);
-          //   console.log(eventResult);
-          // });
-
-          // Transfer(address from, address to, uint256 tokenId)
-
-          // contract.once(
-          //   'Transfer',
-          //   {
-          //     filter: {
-          //       from: values.dev_address,
-          //       to: values.to_address,
-          //       tokenId: result,
-          //     },
-          //   },
-          //   (error, event) => {
-          //     console.log(error);
-          //     console.log(event);
-          //   },
-          // );
         })
         .catch((e) => {
+          setError(e);
           console.error(e);
         });
-
-      registryContract.methods.balanceOf(account).call((error, result) => {
-        console.log(result);
-      });
-
-      // ==================
-      // const abc = await contract.methods
-      //   .mintComponent(
-      //     values.dev_address,
-      //     values.to_address,
-      //     values.hash,
-      //     values.description,
-      //     values.dependencies ? values.dependencies.split(', ') : [],
-      //   )
-      //   .call();
-      // // .send({ from: account });
-      // console.log('Transaction ==>>', abc);
-
-      // const xyz = await contract.methods.componentRegistry().call();
-      // console.log(xyz);
-
-      // ===================
-      // const minter = await contract.methods
-      //   .mintComponent(
-      //     values.dev_address,
-      //     values.to_address,
-      //     values.hash,
-      //     values.description,
-      //     values.dependencies ? values.dependencies.split(', ') : [],
-      //   )
-      //   .call();
-      // console.log(minter);
-
-      // const conTwo = new web3.eth.Contract(
-      //   COMPONENT_REGISTRY.abi,
-      //   COMPONENT_REGISTRY_ADDRESS,
-      // );
-
-      // const component = await conTwo.methods
-      //   .balanceOf(account)
-      //   .call();
-      //   // .balanceOf(account);
-      // console.log(component);
     }
   };
 
@@ -161,6 +82,30 @@ const RegisterComponents = ({ account }) => {
         handleSubmit={handleSubmit}
         handleCancel={handleCancel}
       />
+      {information && (
+        <Alert
+          message="Registered successfully!"
+          description={(
+            <div>
+              <pre>{JSON.stringify(information, null, 2)}</pre>
+            </div>
+          )}
+          type="info"
+          showIcon
+        />
+      )}
+      {error && (
+        <Alert
+          message="Error on Register!"
+          description={(
+            <div>
+              <pre>{error.stack}</pre>
+            </div>
+          )}
+          type="error"
+          showIcon
+        />
+      )}
     </>
   );
 };

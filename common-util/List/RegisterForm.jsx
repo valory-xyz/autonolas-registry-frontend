@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import PropTypes from 'prop-types';
-import { ethers } from 'ethers';
+// import { ethers } from 'ethers';
 import { connect } from 'react-redux';
 import { Button, Form, Input } from 'antd';
 import { RegisterFooter } from './styles';
@@ -31,32 +31,38 @@ const RegisterForm = ({
           autoComplete="off"
         >
           <Form.Item
-            label="Developer Address"
-            name="dev_address"
+            label="Owner Address"
+            name="owner_address"
             initialValue={account}
             rules={[
               {
                 required: true,
-                message: `Please input the address of the ${listType} developer`,
+                message: `Please input the address of the ${listType} Owner`,
               },
-              {
-                required: ethers.utils.isAddress(account),
-                message: `Please input the valid address of the ${listType} developer`,
-              },
+              // TODO
+              // {
+              //   required: ethers.utils.isAddress(account),
+              //   message: `Please input the valid address of the ${listType} Owner`,
+              // },
             ]}
           >
             <Input />
           </Form.Item>
 
           <Form.Item
-            label="To Address"
-            name="to_address"
+            label="Developer Address"
+            name="developer_address"
             initialValue={account}
             rules={[
               {
                 required: true,
-                message: `Please input the address to which the ${listType} is to be minted`,
+                message: `Please input the address to which the ${listType} Developer`,
               },
+              // TODO
+              // {
+              //   required: ethers.utils.isAddress(account),
+              //   message: `Please input the valid address of the ${listType} Owner`,
+              // },
             ]}
           >
             <Input />

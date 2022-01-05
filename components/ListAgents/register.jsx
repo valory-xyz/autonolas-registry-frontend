@@ -15,6 +15,7 @@ const { Title } = Typography;
 
 const RegisterAgents = ({ account }) => {
   const [error, setError] = useState(null);
+  const [information, setInformation] = useState(null);
   const router = useRouter();
 
   const handleCancel = () => {
@@ -22,8 +23,10 @@ const RegisterAgents = ({ account }) => {
   };
 
   const handleSubmit = (values) => {
-    setError(null);
     if (account) {
+      setError(null);
+      setInformation(null);
+
       window.ethereum.enable();
       const web3 = new Web3(window.web3.currentProvider);
 
@@ -35,25 +38,27 @@ const RegisterAgents = ({ account }) => {
 
       contract.methods
         .mintAgent(
-          values.dev_address,
-          values.to_address,
+          values.owner_address,
+          values.developer_address,
           values.hash,
           values.description,
           values.dependencies ? values.dependencies.split(', ') : [],
         )
-        .call()
-        .then((tx) => {
-          console.log('Transaction: ', tx);
+        .send({ from: account })
+        .then((result) => {
+          console.log(result);
+          setInformation(result);
           notification.success({ message: 'Agent Minted' });
+
+          // TODO: check the total supply
         })
         .catch((e) => {
-          console.error(e);
           setError(e);
+          console.error(e);
         });
     }
   };
 
-  console.log(error);
   return (
     <>
       <Title level={2}>Register Agent</Title>
@@ -62,11 +67,27 @@ const RegisterAgents = ({ account }) => {
         handleSubmit={handleSubmit}
         handleCancel={handleCancel}
       />
+      {information && (
+        <Alert
+          message="Registered successfully!"
+          description={(
+            <div>
+              <pre>{JSON.stringify(information, null, 2)}</pre>
+            </div>
+          )}
+          type="info"
+          showIcon
+        />
+      )}
       {error && (
         <Alert
-          message="Information"
-          description={<pre>{JSON.stringify(error, null, 2)}</pre>}
-          type="info"
+          message="Error on Register!"
+          description={(
+            <div>
+              <pre>{error.stack}</pre>
+            </div>
+          )}
+          type="error"
           showIcon
         />
       )}

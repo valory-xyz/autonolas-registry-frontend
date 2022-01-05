@@ -8,19 +8,15 @@ import {
 import { useRouter } from 'next/router';
 import { ListEmptyMessage } from 'common-util/ListCommon';
 import {
-  MECH_MINTER_ADDRESS,
-  MECH_MINTER_CONTRACT,
-} from 'common-util/AbiAndAddresses/mechMinter';
-import {
   COMPONENT_REGISTRY_ADDRESS,
   COMPONENT_REGISTRY,
-} from 'common-util/AbiAndAddresses/contract';
+} from 'common-util/AbiAndAddresses/componentRegistry';
 import { EmptyMessage } from '../styles';
 
 const { TabPane } = Tabs;
 const { Title } = Typography;
 
-const MenuComponents = ({ account, balance }) => {
+const MenuComponents = ({ account }) => {
   const [list, setList] = useState([]);
   const router = useRouter();
 
@@ -29,7 +25,6 @@ const MenuComponents = ({ account, balance }) => {
   };
 
   useEffect(() => {
-    console.log(account);
     if (account) {
       window.ethereum.enable();
 
@@ -40,45 +35,26 @@ const MenuComponents = ({ account, balance }) => {
       );
 
       contract.methods
-        // .totalSupply()
-        // .ownerOf(1)
         .balanceOf(account)
         .call()
         .then(async (length) => {
-          console.log(length);
-
           const promises = [];
-          for (let i = 1; i <= length; i += 1) {
-            // eslint-disable-next-line no-await-in-loop
-            // const element = await contract.methods.getComponentInfo(account, i).call();
-            const element = contract.methods.getComponentInfo(account, `${i}`).call();
+          for (let i = 0; i < length; i += 1) {
+            const element = contract.methods
+              .tokenOfOwnerByIndex(account, `${i}`)
+              .call();
             promises.push(element);
-            console.log(element);
           }
-
-          console.log(promises);
 
           Promise.all(promises).then((results) => {
             setList(results);
           });
-
-          // ===========>>>>>
-          // for (let i = 0; i < length; i += 1) {
-          //   // eslint-disable-next-line no-await-in-loop
-          //   const element = await contract.methods.getComponentInfo(account, i).call();
-          //   console.log(i, element);
-          // }
-
-          // console.log(length);
         })
         .catch((e) => {
           console.error(e);
         });
     }
   }, [account]);
-
-  // TODO: remove later
-  console.log({ account, balance });
 
   return (
     <>
@@ -102,8 +78,15 @@ const MenuComponents = ({ account, balance }) => {
             <ListEmptyMessage type="component" />
           ) : (
             list.map((item, index) => (
-              <Card title="Default size card" extra={null} key={`eachComponent-${index + 1}`}>
-                {JSON.stringify(item || {})}
+              <Card
+                title={`Id: ${item}`}
+                extra={null}
+                key={`eachComponent-${index + 1}`}
+                style={{ marginBottom: 16 }}
+              >
+                ..
+                {/* TODO */}
+                {/* {JSON.stringify(item || {})} */}
               </Card>
             ))
           )}
@@ -124,12 +107,10 @@ const MenuComponents = ({ account, balance }) => {
 
 MenuComponents.propTypes = {
   account: PropTypes.string,
-  balance: PropTypes.string,
 };
 
 MenuComponents.defaultProps = {
   account: null,
-  balance: null,
 };
 
 const mapStateToProps = (state) => {
