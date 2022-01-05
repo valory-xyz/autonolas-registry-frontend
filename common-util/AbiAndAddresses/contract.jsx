@@ -1,6 +1,6 @@
-export const CONTRACT_ADDRESS = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
+export const COMPONENT_REGISTRY_ADDRESS = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
 
-export const CONTRACT = {
+export const COMPONENT_REGISTRY = {
   _format: 'hh-sol-artifact-1',
   contractName: 'ComponentRegistry',
   sourceName: 'contracts/ComponentRegistry.sol',
@@ -212,7 +212,13 @@ export const CONTRACT = {
         },
       ],
       name: 'createComponent',
-      outputs: [],
+      outputs: [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256',
+        },
+      ],
       stateMutability: 'nonpayable',
       type: 'function',
     },
@@ -543,6 +549,8 @@ export const CONTRACT = {
       type: 'function',
     },
   ],
+  bytecode: '',
+  deployedBytecode: '',
   linkReferences: {},
   deployedLinkReferences: {},
 };

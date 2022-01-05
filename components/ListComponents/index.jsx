@@ -1,20 +1,81 @@
-// import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import Web3 from 'web3';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Tabs, Button, Typography } from 'antd';
+import {
+  Tabs, Button, Typography, Card,
+} from 'antd';
 import { useRouter } from 'next/router';
 import { ListEmptyMessage } from 'common-util/ListCommon';
+import {
+  MECH_MINTER_ADDRESS,
+  MECH_MINTER_CONTRACT,
+} from 'common-util/AbiAndAddresses/mechMinter';
+import {
+  COMPONENT_REGISTRY_ADDRESS,
+  COMPONENT_REGISTRY,
+} from 'common-util/AbiAndAddresses/contract';
 import { EmptyMessage } from '../styles';
 
 const { TabPane } = Tabs;
 const { Title } = Typography;
 
 const MenuComponents = ({ account, balance }) => {
+  const [list, setList] = useState([]);
   const router = useRouter();
 
   const handleTab = (key) => {
     console.log(key);
   };
+
+  useEffect(() => {
+    console.log(account);
+    if (account) {
+      window.ethereum.enable();
+
+      const web3 = new Web3(window.web3.currentProvider);
+      const contract = new web3.eth.Contract(
+        COMPONENT_REGISTRY.abi,
+        COMPONENT_REGISTRY_ADDRESS,
+      );
+
+      contract.methods
+        // .totalSupply()
+        // .ownerOf(1)
+        .balanceOf(account)
+        .call()
+        .then(async (length) => {
+          console.log(length);
+
+          const promises = [];
+          for (let i = 1; i <= length; i += 1) {
+            // eslint-disable-next-line no-await-in-loop
+            // const element = await contract.methods.getComponentInfo(account, i).call();
+            const element = contract.methods.getComponentInfo(account, `${i}`).call();
+            promises.push(element);
+            console.log(element);
+          }
+
+          console.log(promises);
+
+          Promise.all(promises).then((results) => {
+            setList(results);
+          });
+
+          // ===========>>>>>
+          // for (let i = 0; i < length; i += 1) {
+          //   // eslint-disable-next-line no-await-in-loop
+          //   const element = await contract.methods.getComponentInfo(account, i).call();
+          //   console.log(i, element);
+          // }
+
+          // console.log(length);
+        })
+        .catch((e) => {
+          console.error(e);
+        });
+    }
+  }, [account]);
 
   // TODO: remove later
   console.log({ account, balance });
@@ -37,7 +98,15 @@ const MenuComponents = ({ account, balance }) => {
         )}
       >
         <TabPane tab="All" key="all">
-          <ListEmptyMessage type="component" />
+          {list.length === 0 ? (
+            <ListEmptyMessage type="component" />
+          ) : (
+            list.map((item, index) => (
+              <Card title="Default size card" extra={null} key={`eachComponent-${index + 1}`}>
+                {JSON.stringify(item || {})}
+              </Card>
+            ))
+          )}
         </TabPane>
         <TabPane tab="My Components" key="my_components">
           {account ? (

@@ -1,9 +1,10 @@
 /* eslint-disable no-console */
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 import Web3 from 'web3';
 import { connect } from 'react-redux';
 import { useRouter } from 'next/router';
-import { Typography, notification } from 'antd';
+import { Typography, notification, Alert } from 'antd';
 import RegisterForm from 'common-util/List/RegisterForm';
 import {
   MECH_MINTER_ADDRESS,
@@ -13,6 +14,7 @@ import {
 const { Title } = Typography;
 
 const RegisterAgents = ({ account }) => {
+  const [error, setError] = useState(null);
   const router = useRouter();
 
   const handleCancel = () => {
@@ -20,12 +22,16 @@ const RegisterAgents = ({ account }) => {
   };
 
   const handleSubmit = (values) => {
+    setError(null);
     if (account) {
       window.ethereum.enable();
       const web3 = new Web3(window.web3.currentProvider);
 
       // contractAddress and abi are setted after contract deploy
-      const contract = new web3.eth.Contract(MECH_MINTER_CONTRACT.abi, MECH_MINTER_ADDRESS);
+      const contract = new web3.eth.Contract(
+        MECH_MINTER_CONTRACT.abi,
+        MECH_MINTER_ADDRESS,
+      );
 
       contract.methods
         .mintAgent(
@@ -42,10 +48,12 @@ const RegisterAgents = ({ account }) => {
         })
         .catch((e) => {
           console.error(e);
+          setError(e);
         });
     }
   };
 
+  console.log(error);
   return (
     <>
       <Title level={2}>Register Agent</Title>
@@ -54,6 +62,14 @@ const RegisterAgents = ({ account }) => {
         handleSubmit={handleSubmit}
         handleCancel={handleCancel}
       />
+      {error && (
+        <Alert
+          message="Information"
+          description={<pre>{JSON.stringify(error, null, 2)}</pre>}
+          type="info"
+          showIcon
+        />
+      )}
     </>
   );
 };

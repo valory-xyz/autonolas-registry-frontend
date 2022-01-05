@@ -286,7 +286,13 @@ export const MECH_MINTER_CONTRACT = {
         },
       ],
       name: 'mintAgent',
-      outputs: [],
+      outputs: [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256',
+        },
+      ],
       stateMutability: 'nonpayable',
       type: 'function',
     },
@@ -319,7 +325,13 @@ export const MECH_MINTER_CONTRACT = {
         },
       ],
       name: 'mintComponent',
-      outputs: [],
+      outputs: [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256',
+        },
+      ],
       stateMutability: 'nonpayable',
       type: 'function',
     },
@@ -545,6 +557,8 @@ export const MECH_MINTER_CONTRACT = {
       type: 'function',
     },
   ],
+  bytecode: '',
+  deployedBytecode: '',
   linkReferences: {},
   deployedLinkReferences: {},
 };

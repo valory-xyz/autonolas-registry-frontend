@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import PropTypes from 'prop-types';
+import { ethers } from 'ethers';
 import { connect } from 'react-redux';
 import { Button, Form, Input } from 'antd';
 import { RegisterFooter } from './styles';
@@ -37,6 +38,10 @@ const RegisterForm = ({
               {
                 required: true,
                 message: `Please input the address of the ${listType} developer`,
+              },
+              {
+                required: ethers.utils.isAddress(account),
+                message: `Please input the valid address of the ${listType} developer`,
               },
             ]}
           >
