@@ -263,6 +263,40 @@ export const COMPONENT_REGISTRY = {
     {
       inputs: [
         {
+          internalType: 'uint256',
+          name: '_tokenId',
+          type: 'uint256',
+        },
+      ],
+      name: 'getComponentInfo',
+      outputs: [
+        {
+          internalType: 'address',
+          name: 'developer',
+          type: 'address',
+        },
+        {
+          internalType: 'string',
+          name: 'componentHash',
+          type: 'string',
+        },
+        {
+          internalType: 'string',
+          name: 'description',
+          type: 'string',
+        },
+        {
+          internalType: 'uint256[]',
+          name: 'dependencies',
+          type: 'uint256[]',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
           internalType: 'address',
           name: 'owner',
           type: 'address',

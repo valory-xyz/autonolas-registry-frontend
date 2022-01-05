@@ -39,11 +39,12 @@ const MenuComponents = ({ account }) => {
         .call()
         .then(async (length) => {
           const promises = [];
-          for (let i = 0; i < length; i += 1) {
-            const element = contract.methods
-              .tokenOfOwnerByIndex(account, `${i}`)
+          for (let i = 1; i <= length; i += 1) {
+            const componentId = `${i}`;
+            const result = contract.methods
+              .getComponentInfo(componentId)
               .call();
-            promises.push(element);
+            promises.push(result);
           }
 
           Promise.all(promises).then((results) => {
@@ -79,14 +80,12 @@ const MenuComponents = ({ account }) => {
           ) : (
             list.map((item, index) => (
               <Card
-                title={`Id: ${item}`}
+                title={`Id: ${index + 1}`}
                 extra={null}
                 key={`eachComponent-${index + 1}`}
                 style={{ marginBottom: 16 }}
               >
-                ..
-                {/* TODO */}
-                {/* {JSON.stringify(item || {})} */}
+                <pre>{JSON.stringify(item || {}, null, 2)}</pre>
               </Card>
             ))
           )}
