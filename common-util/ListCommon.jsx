@@ -1,8 +1,17 @@
 import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
-import { Button } from 'antd';
+import { Button, Alert } from 'antd';
 import { EmptyMessage } from 'components/styles';
 
+// functions
+/**
+ *
+ * @param {String}
+ * @returns {Array}
+ */
+export const getMappedArrayFromString = (str) => str.split(',').map((e) => e.trim());
+
+// compponents
 export const ListEmptyMessage = ({ type }) => {
   const router = useRouter();
 
@@ -61,4 +70,52 @@ ListEmptyMessage.defaultProps = {
   type: null,
 };
 
-export const ABC = null;
+// AlertInfo
+export const AlertInfo = ({ type, information }) => {
+  if (!information) return null;
+  return (
+    <Alert
+      message={`${type || 'Registered'} successfully!`}
+      description={(
+        <div>
+          <pre>{JSON.stringify(information, null, 2)}</pre>
+        </div>
+      )}
+      type="info"
+      showIcon
+    />
+  );
+};
+AlertInfo.propTypes = {
+  information: PropTypes.shape({}),
+  type: PropTypes.string,
+};
+AlertInfo.defaultProps = {
+  information: null,
+  type: null,
+};
+
+// AlertError
+export const AlertError = ({ error }) => {
+  if (!error) return null;
+  return (
+    <Alert
+      message="Error on Register!"
+      description={(
+        <div>
+          <pre>{error.stack}</pre>
+        </div>
+      )}
+      type="error"
+      showIcon
+    />
+  );
+};
+AlertError.propTypes = {
+  error: PropTypes.shape({
+    stack: PropTypes.string,
+  }),
+};
+AlertError.defaultProps = {
+  error: null,
+};
