@@ -27,6 +27,7 @@
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
     "styled-components": "^5.0.1",
+    "use-deep-compare-effect": "^1.8.1",
     "web3": "^1.6.1"
   },
   "devDependencies": {

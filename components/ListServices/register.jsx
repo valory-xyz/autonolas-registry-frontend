@@ -74,7 +74,7 @@ const RegisterServices = ({ account }) => {
       {account ? (
         <RegisterForm
           account={account}
-          formInitialValues={null}
+          formInitialValues={{}}
           handleSubmit={handleSubmit}
         />
       ) : (

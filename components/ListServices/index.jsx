@@ -1,12 +1,13 @@
+/* eslint-disable no-console */
 import { useState, useEffect } from 'react';
 import Web3 from 'web3';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
-  Tabs, Button, Typography, Card,
+  Tabs, Button, Typography, Card, Skeleton,
 } from 'antd';
 import { useRouter } from 'next/router';
-import { ListEmptyMessage } from 'common-util/ListCommon';
+import { ListEmptyMessage, PrintJson } from 'common-util/ListCommon';
 import {
   SERVICE_REGISTRY_ADDRESS,
   SERVICE_REGISTRY,
@@ -17,6 +18,7 @@ const { TabPane } = Tabs;
 const { Title } = Typography;
 
 const MenuServices = ({ account }) => {
+  const [isServicesListLoading, setServicesListLoading] = useState(false);
   const [list, setList] = useState([]);
   const router = useRouter();
 
@@ -27,6 +29,7 @@ const MenuServices = ({ account }) => {
   useEffect(() => {
     if (account) {
       window.ethereum.enable();
+      setServicesListLoading(true);
       setList([]);
 
       const web3 = new Web3(window.web3.currentProvider);
@@ -35,34 +38,63 @@ const MenuServices = ({ account }) => {
         SERVICE_REGISTRY_ADDRESS,
       );
 
-      console.log(contract);
-      // contract.methods
-      //   // .balanceOf(account)
-      //   .totalSupply()
-      //   // .exists('1')
-      //   .call()
-      //   .then(async (result) => {
-      //     console.log(result);
-      //     // const promises = [];
-      //     // for (let i = 1; i <= length; i += 1) {
-      //     //   const componentId = `${i}`;
-      //     //   const result = contract.methods
-      //     //     .getComponentInfo(componentId)
-      //     //     .call();
-      //     //   promises.push(result);
-      //     // }
+      contract.methods
+        .balanceOf(account)
+        .call()
+        .then(async (length) => {
+          const promises = [];
+          for (let i = 1; i <= length; i += 1) {
+            const componentId = `${i}`;
+            const result = contract.methods.getServiceInfo(componentId).call();
+            promises.push(result);
+          }
 
-      //     // Promise.all(promises).then((results) => {
-      //     //   setList(results);
-      //     // });
-      //   })
-      //   .catch((e) => {
-      //     console.error(e);
-      //   });
+          Promise.all(promises).then((results) => {
+            setServicesListLoading(false);
+            setList(results);
+          });
+        })
+        .catch((e) => {
+          console.error(e);
+        });
     }
   }, [account]);
 
-  console.log(list);
+  const getAllTabDetails = () => {
+    if (isServicesListLoading) {
+      return <Skeleton active />;
+    }
+
+    return (
+      <>
+        {list.length === 0 ? (
+          <ListEmptyMessage type="service" />
+        ) : (
+          list.map((item, index) => {
+            const serviceId = index + 1;
+            return (
+              <Card
+                title={`Id: ${serviceId}`}
+                extra={(
+                  <Button
+                    ghost
+                    type="primary"
+                    onClick={() => router.push(`/services/${serviceId}`)}
+                  >
+                    Update
+                  </Button>
+                )}
+                key={`eachService-${index + 1}`}
+                style={{ marginBottom: 16 }}
+              >
+                <PrintJson value={item} />
+              </Card>
+            );
+          })
+        )}
+      </>
+    );
+  };
 
   return (
     <>
@@ -82,31 +114,7 @@ const MenuServices = ({ account }) => {
         )}
       >
         <TabPane tab="All" key="all">
-          {list.length === 0 ? (
-            <ListEmptyMessage type="component" />
-          ) : (
-            list.map((item, index) => {
-              const serviceId = index + 1;
-              return (
-                <Card
-                  title={`Id: ${serviceId}`}
-                  extra={(
-                    <Button
-                      ghost
-                      type="primary"
-                      onClick={() => router.push(`/services/${serviceId}`)}
-                    >
-                      Update
-                    </Button>
-                  )}
-                  key={`eachService-${index + 1}`}
-                  style={{ marginBottom: 16 }}
-                >
-                  <pre>{JSON.stringify(item || {}, null, 2)}</pre>
-                </Card>
-              );
-            })
-          )}
+          {getAllTabDetails()}
         </TabPane>
         <TabPane tab="My Services" key="my_services">
           {account ? (
@@ -136,3 +144,14 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, {})(MenuServices);
+
+/**
+ * totalSupply() & then loop it through
+ *
+ * then call OwnerOf => create map => can also call balanceOf or getServiceOfOwners
+ * => will return set of IDs => loop through
+ *
+ * {
+ *   address: 0
+ * }
+ */

@@ -12,6 +12,16 @@ export const SERVICE_REGISTRY = {
           name: '_agentRegistry',
           type: 'address',
         },
+        {
+          internalType: 'address payable',
+          name: '_gnosisSafeL2',
+          type: 'address',
+        },
+        {
+          internalType: 'address',
+          name: '_gnosisSafeProxyFactory',
+          type: 'address',
+        },
       ],
       stateMutability: 'nonpayable',
       type: 'constructor',
@@ -226,6 +236,25 @@ export const SERVICE_REGISTRY = {
       inputs: [
         {
           internalType: 'address',
+          name: 'owner',
+          type: 'address',
+        },
+      ],
+      name: 'balanceOf',
+      outputs: [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
           name: 'newManager',
           type: 'address',
         },
@@ -247,9 +276,50 @@ export const SERVICE_REGISTRY = {
           name: 'serviceId',
           type: 'uint256',
         },
+        {
+          internalType: 'address',
+          name: 'to',
+          type: 'address',
+        },
+        {
+          internalType: 'bytes',
+          name: 'data',
+          type: 'bytes',
+        },
+        {
+          internalType: 'address',
+          name: 'fallbackHandler',
+          type: 'address',
+        },
+        {
+          internalType: 'address',
+          name: 'paymentToken',
+          type: 'address',
+        },
+        {
+          internalType: 'uint256',
+          name: 'payment',
+          type: 'uint256',
+        },
+        {
+          internalType: 'address payable',
+          name: 'paymentReceiver',
+          type: 'address',
+        },
+        {
+          internalType: 'uint256',
+          name: 'nonce',
+          type: 'uint256',
+        },
       ],
       name: 'createSafe',
-      outputs: [],
+      outputs: [
+        {
+          internalType: 'address',
+          name: '',
+          type: 'address',
+        },
+      ],
       stateMutability: 'nonpayable',
       type: 'function',
     },
@@ -292,7 +362,13 @@ export const SERVICE_REGISTRY = {
         },
       ],
       name: 'createService',
-      outputs: [],
+      outputs: [
+        {
+          internalType: 'uint256',
+          name: 'serviceId',
+          type: 'uint256',
+        },
+      ],
       stateMutability: 'nonpayable',
       type: 'function',
     },
@@ -334,8 +410,126 @@ export const SERVICE_REGISTRY = {
       type: 'function',
     },
     {
+      inputs: [
+        {
+          internalType: 'address',
+          name: 'owner',
+          type: 'address',
+        },
+      ],
+      name: 'getServiceIdsOfOwner',
+      outputs: [
+        {
+          internalType: 'uint256[]',
+          name: '',
+          type: 'uint256[]',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'uint256',
+          name: 'serviceId',
+          type: 'uint256',
+        },
+      ],
+      name: 'getServiceInfo',
+      outputs: [
+        {
+          internalType: 'address',
+          name: 'owner',
+          type: 'address',
+        },
+        {
+          internalType: 'string',
+          name: 'name',
+          type: 'string',
+        },
+        {
+          internalType: 'string',
+          name: 'description',
+          type: 'string',
+        },
+        {
+          internalType: 'uint256',
+          name: 'numAgentIds',
+          type: 'uint256',
+        },
+        {
+          internalType: 'uint256[]',
+          name: 'agentIds',
+          type: 'uint256[]',
+        },
+        {
+          internalType: 'uint256[]',
+          name: 'agentNumSlots',
+          type: 'uint256[]',
+        },
+        {
+          internalType: 'address[]',
+          name: 'agentInstances',
+          type: 'address[]',
+        },
+        {
+          internalType: 'bool',
+          name: 'active',
+          type: 'bool',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'gnosisSafeL2',
+      outputs: [
+        {
+          internalType: 'address payable',
+          name: '',
+          type: 'address',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'gnosisSafeProxyFactory',
+      outputs: [
+        {
+          internalType: 'address',
+          name: '',
+          type: 'address',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
       inputs: [],
       name: 'owner',
+      outputs: [
+        {
+          internalType: 'address',
+          name: '',
+          type: 'address',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'uint256',
+          name: 'serviceId',
+          type: 'uint256',
+        },
+      ],
+      name: 'ownerOf',
       outputs: [
         {
           internalType: 'address',
@@ -500,7 +694,7 @@ export const SERVICE_REGISTRY = {
  * agents ID = 3 5 7
  * operator slots = 1, 10
  * instances = 2 4 1
- * threshuld cannot be less than two 3rd of the instances (not greater than > 7 & less than 5)
+ * threshold cannot be less than two 3rd of the instances (not greater than > 7 & less than 5)
  * => 2/3 must agree on something to do, else rejected.
  *
  * [[serviceUpdate]]

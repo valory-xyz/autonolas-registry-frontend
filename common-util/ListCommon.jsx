@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { Button, Alert } from 'antd';
 import { EmptyMessage } from 'components/styles';
 
-// functions
+// ----------- functions -----------
 /**
  *
  * @param {String}
@@ -11,7 +11,7 @@ import { EmptyMessage } from 'components/styles';
  */
 export const getMappedArrayFromString = (str) => str.split(',').map((e) => e.trim());
 
-// compponents
+// ----------- components -----------
 export const ListEmptyMessage = ({ type }) => {
   const router = useRouter();
 
@@ -118,4 +118,10 @@ AlertError.propTypes = {
 };
 AlertError.defaultProps = {
   error: null,
+};
+
+//
+export const PrintJson = ({ value }) => <pre>{JSON.stringify(value || {}, null, 2)}</pre>;
+PrintJson.propTypes = {
+  value: PropTypes.shape({}).isRequired,
 };

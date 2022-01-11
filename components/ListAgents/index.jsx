@@ -3,10 +3,10 @@ import Web3 from 'web3';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
-  Tabs, Button, Typography, Card,
+  Tabs, Button, Typography, Card, Skeleton,
 } from 'antd';
 import { useRouter } from 'next/router';
-import { ListEmptyMessage } from 'common-util/ListCommon';
+import { ListEmptyMessage, PrintJson } from 'common-util/ListCommon';
 import {
   AGENT_REGISTRY_ADDRESS,
   AGENT_REGISTRY,
@@ -17,16 +17,17 @@ const { TabPane } = Tabs;
 const { Title } = Typography;
 
 const MenuAgent = ({ account }) => {
+  const [isAgentListLoading, setAgentListLoading] = useState(false);
   const [list, setList] = useState([]);
   const router = useRouter();
 
-  const handleTab = (key) => {
-    console.log(key);
-  };
+  const handleTab = () => {};
 
   useEffect(() => {
     if (account) {
       window.ethereum.enable();
+      setAgentListLoading(true);
+      setList([]);
 
       const web3 = new Web3(window.web3.currentProvider);
       const contract = new web3.eth.Contract(
@@ -46,6 +47,7 @@ const MenuAgent = ({ account }) => {
           }
 
           Promise.all(promises).then((results) => {
+            setAgentListLoading(false);
             setList(results);
           });
         })
@@ -54,6 +56,31 @@ const MenuAgent = ({ account }) => {
         });
     }
   }, [account]);
+
+  const getAllTabDetails = () => {
+    if (isAgentListLoading) {
+      return <Skeleton active />;
+    }
+
+    return (
+      <>
+        {list.length === 0 ? (
+          <ListEmptyMessage type="agent" />
+        ) : (
+          list.map((item, index) => (
+            <Card
+              title={`Id: ${index + 1}`}
+              extra={null}
+              key={`eachAgent-${index + 1}`}
+              style={{ marginBottom: 16 }}
+            >
+              <PrintJson value={item} />
+            </Card>
+          ))
+        )}
+      </>
+    );
+  };
 
   return (
     <>
@@ -73,20 +100,7 @@ const MenuAgent = ({ account }) => {
         )}
       >
         <TabPane tab="All" key="all">
-          {list.length === 0 ? (
-            <ListEmptyMessage type="agent" />
-          ) : (
-            list.map((item, index) => (
-              <Card
-                title={`Id: ${index + 1}`}
-                extra={null}
-                key={`eachAgent-${index + 1}`}
-                style={{ marginBottom: 16 }}
-              >
-                <pre>{JSON.stringify(item || {}, null, 2)}</pre>
-              </Card>
-            ))
-          )}
+          {getAllTabDetails()}
         </TabPane>
         <TabPane tab="My Agents" key="my_agents">
           {account ? (
