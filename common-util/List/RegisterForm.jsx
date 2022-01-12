@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import PropTypes from 'prop-types';
-// import { ethers } from 'ethers';
+import Web3 from 'web3';
 import { connect } from 'react-redux';
 import { Button, Form, Input } from 'antd';
 import { RegisterFooter } from './styles';
@@ -34,16 +34,22 @@ const RegisterForm = ({
             label="Owner Address"
             name="owner_address"
             initialValue={account}
+            validateFirst
             rules={[
               {
                 required: true,
                 message: `Please input the address of the ${listType} Owner`,
               },
-              // TODO
-              // {
-              //   required: ethers.utils.isAddress(account),
-              //   message: `Please input the valid address of the ${listType} Owner`,
-              // },
+              () => ({
+                validator(_, value) {
+                  if (Web3.utils.isAddress(value)) return Promise.resolve();
+                  return Promise.reject(
+                    new Error(
+                      `Please input a valid address of the ${listType} Owner`,
+                    ),
+                  );
+                },
+              }),
             ]}
           >
             <Input />
@@ -58,11 +64,16 @@ const RegisterForm = ({
                 required: true,
                 message: `Please input the address to which the ${listType} Developer`,
               },
-              // TODO
-              // {
-              //   required: ethers.utils.isAddress(account),
-              //   message: `Please input the valid address of the ${listType} Owner`,
-              // },
+              () => ({
+                validator(_, value) {
+                  if (Web3.utils.isAddress(value)) return Promise.resolve();
+                  return Promise.reject(
+                    new Error(
+                      `Please input a valid address of the ${listType} Developer`,
+                    ),
+                  );
+                },
+              }),
             ]}
           >
             <Input />
@@ -104,6 +115,29 @@ const RegisterForm = ({
                 required: false,
                 message: `Please input the list of ${listType}s on which this ${listType} depends`,
               },
+              () => ({
+                validator(_, value) {
+                  // even empty value is accepted as it is not required
+                  if (value === '') {
+                    return Promise.resolve();
+                  }
+
+                  /**
+                   * https://regex101.com/r/ip1z51/1
+                   * accepts comma seperated values, examples below
+                   * eg
+                   * 1,2,4,2
+                   * 2,3,4
+                   * 4,   2,4,5
+                   * 2,3     ,4
+                   * 7
+                   */
+                  if (/^\d+(\s*,\s*\d+?)*$/gm.test(value)) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(new Error('Please input a valid list'));
+                },
+              }),
             ]}
           >
             <Input />

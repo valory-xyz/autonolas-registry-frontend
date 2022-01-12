@@ -20,6 +20,19 @@ export const SERVICE_MANAGER = {
       anonymous: false,
       inputs: [
         {
+          indexed: false,
+          internalType: 'address',
+          name: 'multisig',
+          type: 'address',
+        },
+      ],
+      name: 'GnosisSafeCreate',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
           indexed: true,
           internalType: 'address',
           name: 'previousOwner',
@@ -86,6 +99,11 @@ export const SERVICE_MANAGER = {
           type: 'string',
         },
         {
+          internalType: 'string',
+          name: 'configHash',
+          type: 'string',
+        },
+        {
           internalType: 'uint256[]',
           name: 'agentIds',
           type: 'uint256[]',
@@ -96,18 +114,19 @@ export const SERVICE_MANAGER = {
           type: 'uint256[]',
         },
         {
-          internalType: 'uint256[]',
-          name: 'operatorSlots',
-          type: 'uint256[]',
-        },
-        {
           internalType: 'uint256',
           name: 'threshold',
           type: 'uint256',
         },
       ],
       name: 'serviceCreate',
-      outputs: [],
+      outputs: [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256',
+        },
+      ],
       stateMutability: 'nonpayable',
       type: 'function',
     },
@@ -118,9 +137,50 @@ export const SERVICE_MANAGER = {
           name: 'serviceId',
           type: 'uint256',
         },
+        {
+          internalType: 'address',
+          name: 'to',
+          type: 'address',
+        },
+        {
+          internalType: 'bytes',
+          name: 'data',
+          type: 'bytes',
+        },
+        {
+          internalType: 'address',
+          name: 'fallbackHandler',
+          type: 'address',
+        },
+        {
+          internalType: 'address',
+          name: 'paymentToken',
+          type: 'address',
+        },
+        {
+          internalType: 'uint256',
+          name: 'payment',
+          type: 'uint256',
+        },
+        {
+          internalType: 'address payable',
+          name: 'paymentReceiver',
+          type: 'address',
+        },
+        {
+          internalType: 'uint256',
+          name: 'nonce',
+          type: 'uint256',
+        },
       ],
       name: 'serviceCreateSafe',
-      outputs: [],
+      outputs: [
+        {
+          internalType: 'address',
+          name: 'multisig',
+          type: 'address',
+        },
+      ],
       stateMutability: 'nonpayable',
       type: 'function',
     },
@@ -133,6 +193,19 @@ export const SERVICE_MANAGER = {
         },
       ],
       name: 'serviceDeactivate',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'uint256',
+          name: 'serviceId',
+          type: 'uint256',
+        },
+      ],
+      name: 'serviceDestroy',
       outputs: [],
       stateMutability: 'nonpayable',
       type: 'function',
@@ -237,6 +310,11 @@ export const SERVICE_MANAGER = {
           type: 'string',
         },
         {
+          internalType: 'string',
+          name: 'configHash',
+          type: 'string',
+        },
+        {
           internalType: 'uint256[]',
           name: 'agentIds',
           type: 'uint256[]',
@@ -244,11 +322,6 @@ export const SERVICE_MANAGER = {
         {
           internalType: 'uint256[]',
           name: 'agentNumSlots',
-          type: 'uint256[]',
-        },
-        {
-          internalType: 'uint256[]',
-          name: 'operatorSlots',
           type: 'uint256[]',
         },
         {

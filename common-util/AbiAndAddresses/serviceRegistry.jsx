@@ -124,6 +124,25 @@ export const SERVICE_REGISTRY = {
       anonymous: false,
       inputs: [
         {
+          indexed: false,
+          internalType: 'address',
+          name: 'owner',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          internalType: 'uint256',
+          name: 'serviceId',
+          type: 'uint256',
+        },
+      ],
+      name: 'DestroyService',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
           indexed: true,
           internalType: 'address',
           name: 'previousOwner',
@@ -341,6 +360,11 @@ export const SERVICE_REGISTRY = {
           type: 'string',
         },
         {
+          internalType: 'string',
+          name: 'configHash',
+          type: 'string',
+        },
+        {
           internalType: 'uint256[]',
           name: 'agentIds',
           type: 'uint256[]',
@@ -348,11 +372,6 @@ export const SERVICE_REGISTRY = {
         {
           internalType: 'uint256[]',
           name: 'agentNumSlots',
-          type: 'uint256[]',
-        },
-        {
-          internalType: 'uint256[]',
-          name: 'operatorSlots',
           type: 'uint256[]',
         },
         {
@@ -393,6 +412,24 @@ export const SERVICE_REGISTRY = {
     {
       inputs: [
         {
+          internalType: 'address',
+          name: 'owner',
+          type: 'address',
+        },
+        {
+          internalType: 'uint256',
+          name: 'serviceId',
+          type: 'uint256',
+        },
+      ],
+      name: 'destroy',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
           internalType: 'uint256',
           name: 'serviceId',
           type: 'uint256',
@@ -404,6 +441,35 @@ export const SERVICE_REGISTRY = {
           internalType: 'bool',
           name: '',
           type: 'bool',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'uint256',
+          name: 'serviceId',
+          type: 'uint256',
+        },
+        {
+          internalType: 'uint256',
+          name: 'agentId',
+          type: 'uint256',
+        },
+      ],
+      name: 'getInstancesForAgentId',
+      outputs: [
+        {
+          internalType: 'uint256',
+          name: 'numAgentInstances',
+          type: 'uint256',
+        },
+        {
+          internalType: 'address[]',
+          name: 'agentInstances',
+          type: 'address[]',
         },
       ],
       stateMutability: 'view',
@@ -455,6 +521,11 @@ export const SERVICE_REGISTRY = {
         },
         {
           internalType: 'uint256',
+          name: 'threshold',
+          type: 'uint256',
+        },
+        {
+          internalType: 'uint256',
           name: 'numAgentIds',
           type: 'uint256',
         },
@@ -467,6 +538,11 @@ export const SERVICE_REGISTRY = {
           internalType: 'uint256[]',
           name: 'agentNumSlots',
           type: 'uint256[]',
+        },
+        {
+          internalType: 'uint256',
+          name: 'numAgentInstances',
+          type: 'uint256',
         },
         {
           internalType: 'address[]',
@@ -622,6 +698,24 @@ export const SERVICE_REGISTRY = {
       type: 'function',
     },
     {
+      inputs: [],
+      name: 'totalSupply',
+      outputs: [
+        {
+          internalType: 'uint256',
+          name: 'actualNumServices',
+          type: 'uint256',
+        },
+        {
+          internalType: 'uint256',
+          name: 'maxServiceId',
+          type: 'uint256',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
       inputs: [
         {
           internalType: 'address',
@@ -652,6 +746,11 @@ export const SERVICE_REGISTRY = {
           type: 'string',
         },
         {
+          internalType: 'string',
+          name: 'configHash',
+          type: 'string',
+        },
+        {
           internalType: 'uint256[]',
           name: 'agentIds',
           type: 'uint256[]',
@@ -659,11 +758,6 @@ export const SERVICE_REGISTRY = {
         {
           internalType: 'uint256[]',
           name: 'agentNumSlots',
-          type: 'uint256[]',
-        },
-        {
-          internalType: 'uint256[]',
-          name: 'operatorSlots',
           type: 'uint256[]',
         },
         {
@@ -688,6 +782,7 @@ export const SERVICE_REGISTRY = {
   linkReferences: {},
   deployedLinkReferences: {},
 };
+
 
 /**
  * [[serviceCreate]]

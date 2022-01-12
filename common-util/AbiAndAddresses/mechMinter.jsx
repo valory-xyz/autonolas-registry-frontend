@@ -271,7 +271,7 @@ export const MECH_MINTER_CONTRACT = {
         },
         {
           internalType: 'string',
-          name: 'componentHash',
+          name: 'agentHash',
           type: 'string',
         },
         {

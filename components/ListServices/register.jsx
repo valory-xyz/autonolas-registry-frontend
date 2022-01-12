@@ -43,12 +43,11 @@ const RegisterServices = ({ account }) => {
           values.owner_address,
           values.service_name,
           values.service_description,
+          '0x0', // configHash
           getMappedArrayFromString(values.agent_ids),
           getMappedArrayFromString(values.agent_num_slots),
-          getMappedArrayFromString(values.operator_slots),
           values.threshold,
         )
-        // .call()
         .send({ from: account })
         .then((result) => {
           console.log(result);

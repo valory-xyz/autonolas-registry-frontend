@@ -70,6 +70,12 @@ ListEmptyMessage.defaultProps = {
   type: null,
 };
 
+// PrintJson
+export const PrintJson = ({ value }) => <pre>{JSON.stringify(value || {}, null, 2)}</pre>;
+PrintJson.propTypes = {
+  value: PropTypes.shape({}).isRequired,
+};
+
 // AlertInfo
 export const AlertInfo = ({ type, information }) => {
   if (!information) return null;
@@ -78,7 +84,7 @@ export const AlertInfo = ({ type, information }) => {
       message={`${type || 'Registered'} successfully!`}
       description={(
         <div>
-          <pre>{JSON.stringify(information, null, 2)}</pre>
+          <PrintJson value={information} />
         </div>
       )}
       type="info"
@@ -118,10 +124,4 @@ AlertError.propTypes = {
 };
 AlertError.defaultProps = {
   error: null,
-};
-
-//
-export const PrintJson = ({ value }) => <pre>{JSON.stringify(value || {}, null, 2)}</pre>;
-PrintJson.propTypes = {
-  value: PropTypes.shape({}).isRequired,
 };

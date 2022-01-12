@@ -70,33 +70,28 @@ const Service = ({ account }) => {
         SERVICE_MANAGER.abi,
         SERVICE_MANAGER_ADDRESS,
       );
-      console.log(contract);
 
-      // TODO: remove this
-      const isDummy = true;
-      if (!isDummy) {
-        contract.methods
-          .serviceUpdate(
-            values.owner_address,
-            values.service_name,
-            values.service_description,
-            getMappedArrayFromString(values.agent_ids),
-            getMappedArrayFromString(values.agent_num_slots),
-            getMappedArrayFromString(values.operator_slots),
-            values.threshold,
-            values.service_id,
-          )
-          .send({ from: account })
-          .then((result) => {
-            console.log(result);
-            // setInformation(result);
-            notification.success({ message: 'Service Updated' });
-          })
-          .catch((e) => {
-            setError(e);
-            console.error(e);
-          });
-      }
+      contract.methods
+        // TODO: parameter mismatch
+        .serviceUpdate(
+          values.owner_address,
+          values.service_name,
+          values.service_description,
+          getMappedArrayFromString(values.agent_ids),
+          getMappedArrayFromString(values.agent_num_slots),
+          values.threshold,
+          values.service_id,
+        )
+        .send({ from: account })
+        .then((result) => {
+          console.log(result);
+          // setInformation(result);
+          notification.success({ message: 'Service Updated' });
+        })
+        .catch((e) => {
+          setError(e);
+          console.error(e);
+        });
     }
   };
 

@@ -42,11 +42,6 @@ const RegisterForm = ({
           value: formInitialValues.agentNumSlots ? formInitialValues.agentNumSlots.join(', ') : null,
         },
         {
-          name: ['operator_slots'],
-          // TODO: slots from backend?
-          value: formInitialValues.operator_slots ? formInitialValues.operator_slots.join(', ') : null,
-        },
-        {
           name: ['threshold'],
           // TODO: threshold from backend?
           value: formInitialValues.threshold ? formInitialValues.threshold.join(', ') : null,
@@ -156,20 +151,6 @@ const RegisterForm = ({
       </Form.Item>
 
       <Form.Item
-        label="Min Max Operator Slot"
-        name="operator_slots"
-        tooltip="(comma seperated)"
-        rules={[
-          {
-            required: true,
-            message: 'Please input the list of min-max operator slots',
-          },
-        ]}
-      >
-        <Input />
-      </Form.Item>
-
-      <Form.Item
         label="Threshold"
         name="threshold"
         rules={[
@@ -216,7 +197,6 @@ RegisterForm.propTypes = {
     description: PropTypes.string,
     agentIds: PropTypes.arrayOf(PropTypes.string),
     agentNumSlots: PropTypes.arrayOf(PropTypes.string),
-    operator_slots: PropTypes.arrayOf(PropTypes.string),
     threshold: PropTypes.arrayOf(PropTypes.string),
   }),
   handleSubmit: PropTypes.func.isRequired,
