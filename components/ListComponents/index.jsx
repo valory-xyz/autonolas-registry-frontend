@@ -1,9 +1,7 @@
 import { Tabs, Button, Typography } from 'antd';
 import { useRouter } from 'next/router';
 import ListCards from 'common-util/List/ListCards';
-import AllComponents from './List/AllComponents';
-import MyComponents from './List/MyComponents';
-import { getEveryComponents } from './utils';
+import { getEveryComponents, getComponents } from './utils';
 
 const { TabPane } = Tabs;
 const { Title } = Typography;
@@ -31,7 +29,7 @@ const MenuComponents = () => {
           <ListCards type="component" getList={getEveryComponents} />
         </TabPane>
         <TabPane tab="My Components" key="my_components">
-          <MyComponents />
+          <ListCards type="component" getList={getComponents} />
         </TabPane>
       </Tabs>
     </>
