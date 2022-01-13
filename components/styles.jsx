@@ -4,6 +4,9 @@ export const GlobalStyle = createGlobalStyle`
   html {
     scroll-behavior: smooth;
   }
+  .mb-16 {
+    margin-bottom: 16px;
+  }
 `;
 
 export const Container = styled.div``;

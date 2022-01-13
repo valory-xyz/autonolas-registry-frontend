@@ -35,22 +35,23 @@ const RegisterForm = ({
         },
         {
           name: ['agent_ids'],
-          value: formInitialValues.agentIds ? formInitialValues.agentIds.join(', ') : null,
+          value: formInitialValues.agentIds
+            ? formInitialValues.agentIds.join(', ')
+            : null,
         },
         {
           name: ['agent_num_slots'],
-          value: formInitialValues.agentNumSlots ? formInitialValues.agentNumSlots.join(', ') : null,
+          value: formInitialValues.agentNumSlots
+            ? formInitialValues.agentNumSlots.join(', ')
+            : null,
         },
         {
           name: ['threshold'],
-          // TODO: threshold from backend?
-          value: formInitialValues.threshold ? formInitialValues.threshold.join(', ') : null,
+          value: formInitialValues.threshold || null,
         },
         {
           name: ['service_id'],
           value: id,
-          // TODO: service_id from backend?
-          // value: formInitialValues.service_id ? formInitialValues.service_id.join(', ') : null,
         },
       ]);
     }
@@ -126,11 +127,20 @@ const RegisterForm = ({
         label="Canonical agent Ids"
         name="agent_ids"
         tooltip="(comma seperated)"
+        validateFirst
         rules={[
           {
             required: true,
             message: 'Please input the agent Ids',
           },
+          () => ({
+            validator(_, value) {
+              if (/^\d+(\s*,\s*\d+?)*$/gm.test(value)) {
+                return Promise.resolve();
+              }
+              return Promise.reject(new Error('Please input a valid list'));
+            },
+          }),
         ]}
       >
         <Input />
@@ -139,12 +149,21 @@ const RegisterForm = ({
       <Form.Item
         label="No. of slots to canonical agent Ids"
         name="agent_num_slots"
+        validateFirst
         tooltip="(comma seperated)"
         rules={[
           {
             required: true,
             message: 'Please input the slots to canonical agent Ids',
           },
+          () => ({
+            validator(_, value) {
+              if (/^\d+(\s*,\s*\d+?)*$/gm.test(value)) {
+                return Promise.resolve();
+              }
+              return Promise.reject(new Error('Please input a valid list'));
+            },
+          }),
         ]}
       >
         <Input />
@@ -197,7 +216,7 @@ RegisterForm.propTypes = {
     description: PropTypes.string,
     agentIds: PropTypes.arrayOf(PropTypes.string),
     agentNumSlots: PropTypes.arrayOf(PropTypes.string),
-    threshold: PropTypes.arrayOf(PropTypes.string),
+    threshold: PropTypes.string,
   }),
   handleSubmit: PropTypes.func.isRequired,
 };

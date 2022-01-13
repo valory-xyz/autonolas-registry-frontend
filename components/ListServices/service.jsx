@@ -72,11 +72,11 @@ const Service = ({ account }) => {
       );
 
       contract.methods
-        // TODO: parameter mismatch
         .serviceUpdate(
           values.owner_address,
           values.service_name,
           values.service_description,
+          '0x0', // configHash
           getMappedArrayFromString(values.agent_ids),
           getMappedArrayFromString(values.agent_num_slots),
           values.threshold,

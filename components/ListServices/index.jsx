@@ -1,6 +1,4 @@
-/* eslint-disable no-console */
 import { useState, useEffect } from 'react';
-import Web3 from 'web3';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
@@ -8,11 +6,8 @@ import {
 } from 'antd';
 import { useRouter } from 'next/router';
 import { ListEmptyMessage, PrintJson } from 'common-util/ListCommon';
-import {
-  SERVICE_REGISTRY_ADDRESS,
-  SERVICE_REGISTRY,
-} from 'common-util/AbiAndAddresses/serviceRegistry';
-import { EmptyMessage } from '../styles';
+import ListCards from 'common-util/List/ListCards';
+import { getEveryServices, getServices } from './utils';
 
 const { TabPane } = Tabs;
 const { Title } = Typography;
@@ -22,45 +17,24 @@ const MenuServices = ({ account }) => {
   const [list, setList] = useState([]);
   const router = useRouter();
 
-  const handleTab = (key) => {
-    console.log(key);
-  };
-
-  useEffect(() => {
+  useEffect(async () => {
     if (account) {
       window.ethereum.enable();
       setServicesListLoading(true);
       setList([]);
 
-      const web3 = new Web3(window.web3.currentProvider);
-      const contract = new web3.eth.Contract(
-        SERVICE_REGISTRY.abi,
-        SERVICE_REGISTRY_ADDRESS,
-      );
-
-      contract.methods
-        .balanceOf(account)
-        .call()
-        .then(async (length) => {
-          const promises = [];
-          for (let i = 1; i <= length; i += 1) {
-            const componentId = `${i}`;
-            const result = contract.methods.getServiceInfo(componentId).call();
-            promises.push(result);
-          }
-
-          Promise.all(promises).then((results) => {
-            setServicesListLoading(false);
-            setList(results);
-          });
-        })
-        .catch((e) => {
-          console.error(e);
-        });
+      try {
+        const everyService = await getServices(account);
+        setList(everyService);
+      } catch (e) {
+        console.error(e); /* eslint-disable-line no-console */
+      } finally {
+        setServicesListLoading(false);
+      }
     }
   }, [account]);
 
-  const getAllTabDetails = () => {
+  const getMyServices = () => {
     if (isServicesListLoading) {
       return <Skeleton active />;
     }
@@ -102,7 +76,6 @@ const MenuServices = ({ account }) => {
       <Tabs
         type="card"
         defaultActiveKey="all"
-        onChange={handleTab}
         tabBarExtraContent={(
           <Button
             ghost
@@ -114,16 +87,10 @@ const MenuServices = ({ account }) => {
         )}
       >
         <TabPane tab="All" key="all">
-          {getAllTabDetails()}
+          <ListCards type="service" getList={getEveryServices} />
         </TabPane>
         <TabPane tab="My Services" key="my_services">
-          {account ? (
-            <ListEmptyMessage type="service" />
-          ) : (
-            <EmptyMessage width="180px">
-              To see your services, connect a wallet.
-            </EmptyMessage>
-          )}
+          {getMyServices()}
         </TabPane>
       </Tabs>
     </>
@@ -144,14 +111,3 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, {})(MenuServices);
-
-/**
- * totalSupply() & then loop it through
- *
- * then call OwnerOf => create map => can also call balanceOf or getServiceOfOwners
- * => will return set of IDs => loop through
- *
- * {
- *   address: 0
- * }
- */

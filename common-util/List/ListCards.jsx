@@ -4,7 +4,9 @@ import { connect } from 'react-redux';
 import { Card, Skeleton } from 'antd';
 import { ListEmptyMessage, PrintJson } from 'common-util/ListCommon';
 
-const ListCards = ({ account, getList, type }) => {
+const ListCards = ({
+  account, type, getList, extra,
+}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [list, setList] = useState([]);
 
@@ -37,7 +39,7 @@ const ListCards = ({ account, getList, type }) => {
         list.map((item, index) => (
           <Card
             title={`Id: ${index + 1}`}
-            extra={null}
+            extra={extra}
             key={`${type}-${index + 1}`}
             style={{ marginBottom: 16 }}
           >
@@ -51,12 +53,14 @@ const ListCards = ({ account, getList, type }) => {
 
 ListCards.propTypes = {
   account: PropTypes.string,
+  extra: PropTypes.element,
   type: PropTypes.string.isRequired,
   getList: PropTypes.func.isRequired,
 };
 
 ListCards.defaultProps = {
   account: null,
+  extra: null,
 };
 
 const mapStateToProps = (state) => {

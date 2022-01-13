@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Web3 from 'web3';
 import { connect } from 'react-redux';
 import { Button, Form, Input } from 'antd';
+import { isNil } from 'lodash';
 import { RegisterFooter } from './styles';
 
 const RegisterForm = ({
@@ -108,8 +109,9 @@ const RegisterForm = ({
           </Form.Item>
 
           <Form.Item
-            label="Dependencies (comma seperated)"
+            label="Dependencies"
             name="dependencies"
+            tooltip="(comma seperated)"
             rules={[
               {
                 required: false,
@@ -118,7 +120,7 @@ const RegisterForm = ({
               () => ({
                 validator(_, value) {
                   // even empty value is accepted as it is not required
-                  if (value === '') {
+                  if (isNil(value) || value === '') {
                     return Promise.resolve();
                   }
 
