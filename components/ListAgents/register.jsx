@@ -49,8 +49,6 @@ const RegisterAgents = ({ account }) => {
           console.log(result);
           setInformation(result);
           notification.success({ message: 'Agent Minted' });
-
-          // TODO: check the total supply
         })
         .catch((e) => {
           setError(e);

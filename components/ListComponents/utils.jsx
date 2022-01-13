@@ -1,5 +1,4 @@
 import Web3 from 'web3';
-import uniq from 'lodash/uniq';
 import {
   COMPONENT_REGISTRY_ADDRESS,
   COMPONENT_REGISTRY,
@@ -49,30 +48,15 @@ export const getEveryComponents = () => new Promise((resolve, reject) => {
     .totalSupply()
     .call()
     .then((total) => {
-      const ownersListPromises = [];
+      const allComponentsPromises = [];
       for (let i = 1; i <= total; i += 1) {
         const componentId = `${i}`;
-        const result = contract.methods.ownerOf(componentId).call();
-        ownersListPromises.push(result);
+        const result = contract.methods.getComponentInfo(componentId).call();
+        allComponentsPromises.push(result);
       }
 
-      Promise.all(ownersListPromises).then(async (ownersList) => {
-        const uniqueOwners = uniq(ownersList);
-        const allComponentsPromises = [];
-        for (let i = 0; i < uniqueOwners.length; i += 1) {
-          const compInfo = getComponents(uniqueOwners[i]);
-          allComponentsPromises.push(compInfo);
-        }
-
-        /**
-         * filtering out if either one of request is failed
-         */
-        Promise.allSettled(allComponentsPromises).then((results) => {
-          const allComponentsList = results
-            .filter((result) => result.status === 'fulfilled')
-            .map((item) => item.value);
-          resolve(...allComponentsList);
-        });
+      Promise.all(allComponentsPromises).then(async (allComponentsList) => {
+        resolve(allComponentsList);
       });
     })
     .catch((e) => {

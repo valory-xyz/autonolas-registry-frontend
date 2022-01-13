@@ -53,8 +53,6 @@ const RegisterServices = ({ account }) => {
           console.log(result);
           setInformation(result);
           notification.success({ message: 'Service Created' });
-
-          // TODO: check for exists using service-registry
         })
         .catch((e) => {
           setError(e);

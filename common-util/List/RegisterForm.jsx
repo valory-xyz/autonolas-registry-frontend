@@ -34,7 +34,6 @@ const RegisterForm = ({
           <Form.Item
             label="Owner Address"
             name="owner_address"
-            initialValue={account}
             validateFirst
             rules={[
               {
@@ -59,7 +58,6 @@ const RegisterForm = ({
           <Form.Item
             label="Developer Address"
             name="developer_address"
-            initialValue={account}
             rules={[
               {
                 required: true,
@@ -97,7 +95,6 @@ const RegisterForm = ({
           <Form.Item
             label="Description"
             name="description"
-            initialValue="Description"
             rules={[
               {
                 required: true,

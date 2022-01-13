@@ -17,8 +17,8 @@ export const getServices = (account) => new Promise((resolve, reject) => {
     .call()
     .then(async (length) => {
       const promises = [];
-      for (let i = 1; i <= length; i += 1) {
-        const serviceId = `${i}`;
+      for (let i = 0; i < length; i += 1) {
+        const serviceId = `${i + 1}`;
         const result = contract.methods.getServiceInfo(serviceId).call();
         promises.push(result);
       }

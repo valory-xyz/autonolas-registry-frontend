@@ -1,5 +1,4 @@
 import Web3 from 'web3';
-import uniq from 'lodash/uniq';
 import {
   AGENT_REGISTRY_ADDRESS,
   AGENT_REGISTRY,
@@ -47,30 +46,15 @@ export const getEveryAgents = () => new Promise((resolve, reject) => {
     .totalSupply()
     .call()
     .then((total) => {
-      const ownersListPromises = [];
+      const allAgentsPromises = [];
       for (let i = 1; i <= total; i += 1) {
         const agentId = `${i}`;
-        const result = contract.methods.ownerOf(agentId).call();
-        ownersListPromises.push(result);
+        const result = contract.methods.getAgentInfo(agentId).call();
+        allAgentsPromises.push(result);
       }
 
-      Promise.all(ownersListPromises).then(async (ownersList) => {
-        const uniqueOwners = uniq(ownersList);
-        const allAgentsPromises = [];
-        for (let i = 0; i < uniqueOwners.length; i += 1) {
-          const compInfo = getAgents(uniqueOwners[i]);
-          allAgentsPromises.push(compInfo);
-        }
-
-        /**
-           * filtering out if either one of request is failed
-           */
-        Promise.allSettled(allAgentsPromises).then((results) => {
-          const allAgentsList = results
-            .filter((result) => result.status === 'fulfilled')
-            .map((item) => item.value);
-          resolve(...allAgentsList);
-        });
+      Promise.all(allAgentsPromises).then(async (allAgentsList) => {
+        resolve(allAgentsList);
       });
     })
     .catch((e) => {

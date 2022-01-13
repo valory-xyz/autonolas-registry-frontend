@@ -1,5 +1,5 @@
-/* eslint-disable no-console */
 import { useState } from 'react';
+import Web3 from 'web3';
 import { useRouter } from 'next/router';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 import PropTypes from 'prop-types';
@@ -18,7 +18,6 @@ const RegisterForm = ({
   const { id } = router.query;
 
   useDeepCompareEffect(() => {
-    console.log(formInitialValues);
     if (isUpdateForm) {
       setFields([
         {
@@ -67,7 +66,7 @@ const RegisterForm = ({
   };
 
   const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
+    console.log('Failed:', errorInfo); /* eslint-disable-line no-console */
   };
 
   return (
@@ -92,6 +91,16 @@ const RegisterForm = ({
             required: true,
             message: `Please input the address of the ${listType} Owner`,
           },
+          () => ({
+            validator(_, value) {
+              if (Web3.utils.isAddress(value)) return Promise.resolve();
+              return Promise.reject(
+                new Error(
+                  `Please input a valid address of the ${listType} Owner`,
+                ),
+              );
+            },
+          }),
         ]}
       >
         <Input disabled={isUpdateForm} />
