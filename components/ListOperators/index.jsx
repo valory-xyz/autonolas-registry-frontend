@@ -14,7 +14,7 @@ export const Header = styled.div`
   }
 `;
 
-const MenuComponents = () => {
+const ListOperators = () => {
   const router = useRouter();
 
   const handleRegister = () => {
@@ -34,4 +34,4 @@ const MenuComponents = () => {
   );
 };
 
-export default MenuComponents;
+export default ListOperators;

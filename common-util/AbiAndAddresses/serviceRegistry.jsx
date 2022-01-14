@@ -782,29 +782,3 @@ export const SERVICE_REGISTRY = {
   linkReferences: {},
   deployedLinkReferences: {},
 };
-
-
-/**
- * [[serviceCreate]]
- * agents ID = 3 5 7
- * operator slots = 1, 10
- * instances = 2 4 1
- * threshold cannot be less than two 3rd of the instances (not greater than > 7 & less than 5)
- * => 2/3 must agree on something to do, else rejected.
- *
- * [[serviceUpdate]]
- * Same as above with except
- *
- * agents ID = 3 4 5 7
- * operator slots = 1, 10
- * instances = 2 3 0 1 // kick 5 out so add that as 0
- *
- * use `exists` & called from serviceResitry
- * [[]]
- *
- * file serviceRegistryManager line 61
- *
- *
- * file serviceRegistry
- * line 195 in
- */

@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { useState, useEffect } from 'react';
 import Web3 from 'web3';
 import { useRouter } from 'next/router';
@@ -7,11 +6,7 @@ import { connect } from 'react-redux';
 import {
   Typography, Button, notification, Skeleton,
 } from 'antd';
-import {
-  getMappedArrayFromString,
-  // AlertInfo,
-  AlertError,
-} from 'common-util/ListCommon';
+import { getMappedArrayFromString, AlertError } from 'common-util/ListCommon';
 import {
   SERVICE_REGISTRY_ADDRESS,
   SERVICE_REGISTRY,
@@ -59,7 +54,6 @@ const Service = ({ account }) => {
 
   /* helper functions */
   const handleSubmit = (values) => {
-    console.log(account);
     if (account) {
       setError(null);
 
@@ -83,9 +77,7 @@ const Service = ({ account }) => {
           values.service_id,
         )
         .send({ from: account })
-        .then((result) => {
-          console.log(result);
-          // setInformation(result);
+        .then(() => {
           notification.success({ message: 'Service Updated' });
         })
         .catch((e) => {
@@ -122,7 +114,6 @@ const Service = ({ account }) => {
         </RegisterFooter>
       )}
 
-      {/* <AlertInfo type="Updated" information={information} /> */}
       <AlertError error={error} />
     </>
   );

@@ -238,8 +238,8 @@ RegisterForm.defaultProps = {
 };
 
 const mapStateToProps = (state) => {
-  const { account, balance } = state.setup;
-  return { account, balance };
+  const { account } = state.setup;
+  return { account };
 };
 
 export default connect(mapStateToProps, {})(RegisterForm);

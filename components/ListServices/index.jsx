@@ -12,7 +12,7 @@ import { getEveryServices, getServices } from './utils';
 const { TabPane } = Tabs;
 const { Title } = Typography;
 
-const MenuServices = ({ account }) => {
+const ListServices = ({ account }) => {
   const [isServicesListLoading, setServicesListLoading] = useState(false);
   const [list, setList] = useState([]);
   const router = useRouter();
@@ -27,7 +27,7 @@ const MenuServices = ({ account }) => {
         const everyService = await getServices(account);
         setList(everyService);
       } catch (e) {
-        console.error(e); /* eslint-disable-line no-console */
+        console.error(e);
       } finally {
         setServicesListLoading(false);
       }
@@ -97,11 +97,11 @@ const MenuServices = ({ account }) => {
   );
 };
 
-MenuServices.propTypes = {
+ListServices.propTypes = {
   account: PropTypes.string,
 };
 
-MenuServices.defaultProps = {
+ListServices.defaultProps = {
   account: null,
 };
 
@@ -110,4 +110,4 @@ const mapStateToProps = (state) => {
   return { account };
 };
 
-export default connect(mapStateToProps, {})(MenuServices);
+export default connect(mapStateToProps, {})(ListServices);

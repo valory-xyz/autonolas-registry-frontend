@@ -1,15 +1,11 @@
-/* eslint-disable no-console */
 import { useState } from 'react';
 import Web3 from 'web3';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { useRouter } from 'next/router';
-import { Typography, notification, Alert } from 'antd';
+import { Typography, notification } from 'antd';
 import RegisterForm from 'common-util/List/RegisterForm';
-import {
-  COMPONENT_REGISTRY_ADDRESS,
-  COMPONENT_REGISTRY,
-} from 'common-util/AbiAndAddresses/componentRegistry';
+import { AlertInfo, AlertError } from 'common-util/ListCommon';
 import {
   MECH_MINTER_ADDRESS,
   MECH_MINTER_CONTRACT,
@@ -17,7 +13,7 @@ import {
 
 const { Title } = Typography;
 
-const RegisterComponents = ({ account }) => {
+const RegisterComponent = ({ account }) => {
   const [error, setError] = useState(null);
   const [information, setInformation] = useState(null);
   const router = useRouter();
@@ -27,23 +23,15 @@ const RegisterComponents = ({ account }) => {
   };
 
   const handleSubmit = async (values) => {
-    console.log(account);
     if (account) {
+      window.ethereum.enable();
       setError(null);
       setInformation(null);
 
-      window.ethereum.enable();
       const web3 = new Web3(window.web3.currentProvider);
-
-      // contractAddress and abi are setted after contract deploy
       const contract = new web3.eth.Contract(
         MECH_MINTER_CONTRACT.abi,
         MECH_MINTER_ADDRESS,
-      );
-
-      const componentRegistryContract = new web3.eth.Contract(
-        COMPONENT_REGISTRY.abi,
-        COMPONENT_REGISTRY_ADDRESS,
       );
 
       contract.methods
@@ -56,16 +44,8 @@ const RegisterComponents = ({ account }) => {
         )
         .send({ from: account })
         .then((result) => {
-          console.log(result);
           setInformation(result);
           notification.success({ message: 'Component Minted' });
-
-          // checking the total supply after the component has been minted
-          componentRegistryContract.methods
-            .totalSupply()
-            .call()
-            .then((response) => console.log(`Now the total supply is: ${response}`))
-            .catch((e) => console.log(e));
         })
         .catch((e) => {
           setError(e);
@@ -82,39 +62,17 @@ const RegisterComponents = ({ account }) => {
         handleSubmit={handleSubmit}
         handleCancel={handleCancel}
       />
-      {information && (
-        <Alert
-          message="Registered successfully!"
-          description={(
-            <div>
-              <pre>{JSON.stringify(information, null, 2)}</pre>
-            </div>
-          )}
-          type="info"
-          showIcon
-        />
-      )}
-      {error && (
-        <Alert
-          message="Error on Register!"
-          description={(
-            <div>
-              <pre>{error.stack}</pre>
-            </div>
-          )}
-          type="error"
-          showIcon
-        />
-      )}
+      <AlertInfo information={information} />
+      <AlertError error={error} />
     </>
   );
 };
 
-RegisterComponents.propTypes = {
+RegisterComponent.propTypes = {
   account: PropTypes.string,
 };
 
-RegisterComponents.defaultProps = {
+RegisterComponent.defaultProps = {
   account: null,
 };
 
@@ -123,10 +81,4 @@ const mapStateToProps = (state) => {
   return { account, balance };
 };
 
-export default connect(mapStateToProps, {})(RegisterComponents);
-
-/**
- * 1. register component or agent => through mechMinter
- * 2. call balanceOf on componentRegistry
- * 3.
- */
+export default connect(mapStateToProps, {})(RegisterComponent);

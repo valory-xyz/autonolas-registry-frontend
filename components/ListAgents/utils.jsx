@@ -14,7 +14,7 @@ export const getAgents = (account) => new Promise((resolve, reject) => {
   contract.methods
     .balanceOf(account)
     .call()
-    .then(async (length) => {
+    .then((length) => {
       const promises = [];
       for (let i = 1; i <= length; i += 1) {
         const agentId = `${i}`;
@@ -27,7 +27,7 @@ export const getAgents = (account) => new Promise((resolve, reject) => {
       });
     })
     .catch((e) => {
-      console.error(e); /* eslint-disable-line no-console */
+      console.error(e);
       reject(e);
     });
 });
@@ -53,12 +53,12 @@ export const getEveryAgents = () => new Promise((resolve, reject) => {
         allAgentsPromises.push(result);
       }
 
-      Promise.all(allAgentsPromises).then(async (allAgentsList) => {
+      Promise.all(allAgentsPromises).then((allAgentsList) => {
         resolve(allAgentsList);
       });
     })
     .catch((e) => {
-      console.error(e); /* eslint-disable-line no-console */
+      console.error(e);
       reject(e);
     });
 });

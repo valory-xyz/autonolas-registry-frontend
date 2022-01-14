@@ -1,11 +1,11 @@
-/* eslint-disable no-console */
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import Web3 from 'web3';
 import { connect } from 'react-redux';
 import { useRouter } from 'next/router';
-import { Typography, notification, Alert } from 'antd';
+import { Typography, notification } from 'antd';
 import RegisterForm from 'common-util/List/RegisterForm';
+import { AlertInfo, AlertError } from 'common-util/ListCommon';
 import {
   MECH_MINTER_ADDRESS,
   MECH_MINTER_CONTRACT,
@@ -13,7 +13,7 @@ import {
 
 const { Title } = Typography;
 
-const RegisterAgents = ({ account }) => {
+const RegisterAgent = ({ account }) => {
   const [error, setError] = useState(null);
   const [information, setInformation] = useState(null);
   const router = useRouter();
@@ -46,7 +46,6 @@ const RegisterAgents = ({ account }) => {
         )
         .send({ from: account })
         .then((result) => {
-          console.log(result);
           setInformation(result);
           notification.success({ message: 'Agent Minted' });
         })
@@ -65,39 +64,17 @@ const RegisterAgents = ({ account }) => {
         handleSubmit={handleSubmit}
         handleCancel={handleCancel}
       />
-      {information && (
-        <Alert
-          message="Registered successfully!"
-          description={(
-            <div>
-              <pre>{JSON.stringify(information, null, 2)}</pre>
-            </div>
-          )}
-          type="info"
-          showIcon
-        />
-      )}
-      {error && (
-        <Alert
-          message="Error on Register!"
-          description={(
-            <div>
-              <pre>{error.stack}</pre>
-            </div>
-          )}
-          type="error"
-          showIcon
-        />
-      )}
+      <AlertInfo information={information} />
+      <AlertError error={error} />
     </>
   );
 };
 
-RegisterAgents.propTypes = {
+RegisterAgent.propTypes = {
   account: PropTypes.string,
 };
 
-RegisterAgents.defaultProps = {
+RegisterAgent.defaultProps = {
   account: null,
 };
 
@@ -106,4 +83,4 @@ const mapStateToProps = (state) => {
   return { account, balance };
 };
 
-export default connect(mapStateToProps, {})(RegisterAgents);
+export default connect(mapStateToProps, {})(RegisterAgent);

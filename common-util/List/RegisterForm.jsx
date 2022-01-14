@@ -1,9 +1,8 @@
-/* eslint-disable no-console */
 import PropTypes from 'prop-types';
-import Web3 from 'web3';
 import { connect } from 'react-redux';
-import { Button, Form, Input } from 'antd';
+import Web3 from 'web3';
 import { isNil } from 'lodash';
+import { Button, Form, Input } from 'antd';
 import { RegisterFooter } from './styles';
 
 const RegisterForm = ({
@@ -16,7 +15,7 @@ const RegisterForm = ({
   };
 
   const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
+    console.log('Failed:', errorInfo); /* eslint-disable-line no-console */
   };
 
   return (

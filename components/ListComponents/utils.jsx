@@ -4,8 +4,6 @@ import {
   COMPONENT_REGISTRY,
 } from 'common-util/AbiAndAddresses/componentRegistry';
 
-export const AB = null;
-
 export const getComponents = (account) => new Promise((resolve, reject) => {
   const web3 = new Web3(window.web3.currentProvider);
   const contract = new web3.eth.Contract(
@@ -29,7 +27,7 @@ export const getComponents = (account) => new Promise((resolve, reject) => {
       });
     })
     .catch((e) => {
-      console.error(e); /* eslint-disable-line no-console */
+      console.error(e);
       reject(e);
     });
 });
@@ -60,7 +58,7 @@ export const getEveryComponents = () => new Promise((resolve, reject) => {
       });
     })
     .catch((e) => {
-      console.error(e); /* eslint-disable-line no-console */
+      console.error(e);
       reject(e);
     });
 });

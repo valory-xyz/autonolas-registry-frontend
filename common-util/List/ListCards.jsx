@@ -20,7 +20,7 @@ const ListCards = ({
         const everyComps = await getList();
         setList(everyComps);
       } catch (e) {
-        console.error(e); /* eslint-disable-line no-console */
+        console.error(e);
       } finally {
         setIsLoading(false);
       }

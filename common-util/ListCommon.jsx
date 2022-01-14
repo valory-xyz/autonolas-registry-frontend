@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
-import { useRouter } from 'next/router';
-import { Button, Alert } from 'antd';
+import { Alert } from 'antd';
 import { EmptyMessage } from 'components/styles';
 
 // ----------- functions -----------
@@ -13,29 +12,23 @@ export const getMappedArrayFromString = (str) => str.split(',').map((e) => e.tri
 
 // ----------- components -----------
 export const ListEmptyMessage = ({ type }) => {
-  const router = useRouter();
-
   const getValues = () => {
     switch (type) {
       case 'component':
         return {
           text: 'component',
-          route: '/components/1',
         };
       case 'service':
         return {
           text: 'service',
-          route: '/services/1',
         };
       case 'operator':
         return {
           text: 'operator',
-          route: '/operators/1',
         };
       case 'agent':
         return {
           text: 'agent',
-          route: '/agents/1',
         };
       default:
         return null;
@@ -51,13 +44,6 @@ export const ListEmptyMessage = ({ type }) => {
   return (
     <EmptyMessage>
       <p>{`No ${currentType.text}s registered,`}</p>
-      <p>
-        <Button type="link" onClick={() => router.push(currentType.route)}>
-          Click here
-        </Button>
-        &nbsp;
-        {`to see dummy ${currentType.text}.`}
-      </p>
     </EmptyMessage>
   );
 };
@@ -71,7 +57,9 @@ ListEmptyMessage.defaultProps = {
 };
 
 // PrintJson
-export const PrintJson = ({ value }) => <pre>{JSON.stringify(value || {}, null, 2)}</pre>;
+export const PrintJson = ({ value }) => (
+  <pre>{JSON.stringify(value || {}, null, 2)}</pre>
+);
 PrintJson.propTypes = {
   value: PropTypes.shape({}).isRequired,
 };

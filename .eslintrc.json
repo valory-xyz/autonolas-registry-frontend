@@ -32,6 +32,7 @@
       {
         "ignore": ["util", "common-util", "components", "^store"]
       }
-    ]
+    ],
+    "no-console": ["warn", { "allow": ["error"] }]
   }
 }

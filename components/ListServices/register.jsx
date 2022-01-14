@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { useState } from 'react';
 import Web3 from 'web3';
 import { connect } from 'react-redux';
@@ -19,20 +18,18 @@ import { RegisterFooter } from '../styles';
 
 const { Title } = Typography;
 
-const RegisterServices = ({ account }) => {
+const RegisterService = ({ account }) => {
   const [error, setError] = useState(null);
   const [information, setInformation] = useState(null);
   const router = useRouter();
 
   const handleSubmit = (values) => {
-    console.log(account);
     if (account) {
+      window.ethereum.enable();
       setError(null);
       setInformation(null);
 
-      window.ethereum.enable();
       const web3 = new Web3(window.web3.currentProvider);
-
       const contract = new web3.eth.Contract(
         SERVICE_MANAGER.abi,
         SERVICE_MANAGER_ADDRESS,
@@ -50,7 +47,6 @@ const RegisterServices = ({ account }) => {
         )
         .send({ from: account })
         .then((result) => {
-          console.log(result);
           setInformation(result);
           notification.success({ message: 'Service Created' });
         })
@@ -87,17 +83,17 @@ const RegisterServices = ({ account }) => {
   );
 };
 
-RegisterServices.propTypes = {
+RegisterService.propTypes = {
   account: PropTypes.string,
 };
 
-RegisterServices.defaultProps = {
+RegisterService.defaultProps = {
   account: null,
 };
 
 const mapStateToProps = (state) => {
-  const { account, balance } = state.setup;
-  return { account, balance };
+  const { account } = state.setup;
+  return { account };
 };
 
-export default connect(mapStateToProps, {})(RegisterServices);
+export default connect(mapStateToProps, {})(RegisterService);

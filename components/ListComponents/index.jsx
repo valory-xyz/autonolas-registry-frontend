@@ -8,7 +8,7 @@ import { getEveryComponents, getComponents } from './utils';
 const { TabPane } = Tabs;
 const { Title } = Typography;
 
-const MenuComponents = ({ account }) => {
+const ListComponents = ({ account }) => {
   const router = useRouter();
 
   return (
@@ -38,11 +38,11 @@ const MenuComponents = ({ account }) => {
   );
 };
 
-MenuComponents.propTypes = {
+ListComponents.propTypes = {
   account: PropTypes.string,
 };
 
-MenuComponents.defaultProps = {
+ListComponents.defaultProps = {
   account: null,
 };
 
@@ -51,4 +51,4 @@ const mapStateToProps = (state) => {
   return { account };
 };
 
-export default connect(mapStateToProps, {})(MenuComponents);
+export default connect(mapStateToProps, {})(ListComponents);

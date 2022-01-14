@@ -1,3 +1,3 @@
-import RegisterAgents from 'components/ListAgents/register';
+import RegisterAgent from 'components/ListAgents/register';
 
-export default RegisterAgents;
+export default RegisterAgent;

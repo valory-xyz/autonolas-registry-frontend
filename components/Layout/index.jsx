@@ -21,6 +21,7 @@ const NavigationBar = ({ children }) => {
   }, [pathname]);
 
   const handleMenuItemClick = ({ key }) => {
+    // `components` is the homepage hence ''
     const pushTo = key === 'components' ? '' : key;
     router.push(`/${pushTo}`);
     setSelectedMenu(key);
@@ -72,5 +73,3 @@ NavigationBar.defaultProps = {
 };
 
 export default NavigationBar;
-
-// http://18.192.69.5:8545/

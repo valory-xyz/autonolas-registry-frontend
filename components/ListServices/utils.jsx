@@ -1,5 +1,4 @@
 import Web3 from 'web3';
-import uniq from 'lodash/uniq';
 import {
   SERVICE_REGISTRY_ADDRESS,
   SERVICE_REGISTRY,
@@ -15,7 +14,7 @@ export const getServices = (account) => new Promise((resolve, reject) => {
   contract.methods
     .balanceOf(account)
     .call()
-    .then(async (length) => {
+    .then((length) => {
       const promises = [];
       for (let i = 0; i < length; i += 1) {
         const serviceId = `${i + 1}`;
@@ -28,7 +27,7 @@ export const getServices = (account) => new Promise((resolve, reject) => {
       });
     })
     .catch((e) => {
-      console.error(e); /* eslint-disable-line no-console */
+      console.error(e);
       reject(e);
     });
 });
@@ -47,34 +46,38 @@ export const getEveryServices = () => new Promise((resolve, reject) => {
     .totalSupply()
     .call()
     .then((total) => {
-      const ownersListPromises = [];
-      for (let i = 1; i <= total; i += 1) {
-        const serviceId = `${i}`;
-        const result = contract.methods.ownerOf(serviceId).call();
-        ownersListPromises.push(result);
+      const { maxServiceId } = total;
+      const existsPromises = [];
+
+      for (let i = 1; i <= maxServiceId; i += 1) {
+        const result = contract.methods.exists(`${i}`).call();
+        existsPromises.push(result);
       }
 
-      Promise.all(ownersListPromises).then(async (ownersList) => {
-        const uniqueOwners = uniq(ownersList);
-        const allServicePromises = [];
-        for (let i = 0; i < uniqueOwners.length; i += 1) {
-          const serviceInfo = getServices(uniqueOwners[i]);
-          allServicePromises.push(serviceInfo);
-        }
-        // console.log(allServicePromises);
+      Promise.allSettled(existsPromises).then(async (existsResult) => {
+        // filter services which don't exists (deleted or destroyed)
+        const validTokenIds = [];
+        existsResult.forEach((item, index) => {
+          const serviceId = `${index + 1}`;
+          if (item.status === 'fulfilled' && !!item.value) {
+            validTokenIds.push(serviceId);
+          }
+        });
 
-        /* filtering out if either one of request is failed */
-        Promise.allSettled(allServicePromises).then((results) => {
-          const list = results
-            .filter((result) => result.status === 'fulfilled')
-            .map((item) => item.value);
-            // console.log(results);
-          resolve(list.length === 0 ? [] : list);
+        // list of promises of valid service
+        const serviceListPromises = [];
+        validTokenIds.forEach((id) => {
+          const result = contract.methods.getServiceInfo(id).call();
+          serviceListPromises.push(result);
+        });
+
+        Promise.all(serviceListPromises).then((results) => {
+          resolve(results);
         });
       });
     })
     .catch((e) => {
-      console.error(e); /* eslint-disable-line no-console */
+      console.error(e);
       reject(e);
     });
 });
