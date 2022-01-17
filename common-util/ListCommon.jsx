@@ -8,7 +8,7 @@ import { EmptyMessage } from 'components/styles';
  * @param {String}
  * @returns {Array}
  */
-export const getMappedArrayFromString = (str) => str.split(',').map((e) => e.trim());
+export const getMappedArrayFromString = (str) => (str ? str.split(',').map((e) => e.trim()) : str);
 
 // ----------- components -----------
 export const ListEmptyMessage = ({ type }) => {
@@ -43,7 +43,7 @@ export const ListEmptyMessage = ({ type }) => {
 
   return (
     <EmptyMessage>
-      <p>{`No ${currentType.text}s registered,`}</p>
+      <p>{`No ${currentType.text}s registered.`}</p>
     </EmptyMessage>
   );
 };
@@ -71,7 +71,7 @@ export const AlertInfo = ({ type, information }) => {
     <Alert
       message={`${type || 'Registered'} successfully!`}
       description={(
-        <div>
+        <div data-testid="alert-info-container">
           <PrintJson value={information} />
         </div>
       )}
@@ -96,7 +96,7 @@ export const AlertError = ({ error }) => {
     <Alert
       message="Error on Register!"
       description={(
-        <div>
+        <div data-testid="alert-error-container">
           <pre>{error.stack}</pre>
         </div>
       )}
