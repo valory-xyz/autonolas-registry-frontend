@@ -27,6 +27,7 @@ describe('<ListEmptyMessage />', () => {
     { input: 'agent', output: /No agents registered./ },
     { input: 'component', output: /No components registered./ },
     { input: 'service', output: /No services registered./ },
+    { input: 'operator', output: /No operators registered./ },
     { input: null, output: /Please check type!/ },
   ])('example $input', ({ input, output }) => {
     expect.hasAssertions();

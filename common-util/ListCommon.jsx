@@ -42,7 +42,7 @@ export const ListEmptyMessage = ({ type }) => {
   }
 
   return (
-    <EmptyMessage>
+    <EmptyMessage data-testid="not-registered-message">
       <p>{`No ${currentType.text}s registered.`}</p>
     </EmptyMessage>
   );

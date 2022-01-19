@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import get from 'lodash/get';
 import { Card, Skeleton } from 'antd';
 import { ListEmptyMessage, PrintJson } from 'common-util/ListCommon';
 
@@ -12,7 +13,6 @@ const ListCards = ({
 
   useEffect(async () => {
     if (account) {
-      window.ethereum.enable();
       setIsLoading(true);
       setList([]);
 
@@ -64,7 +64,7 @@ ListCards.defaultProps = {
 };
 
 const mapStateToProps = (state) => {
-  const { account } = state.setup;
+  const account = get(state, 'setup.account') || null;
   return { account };
 };
 

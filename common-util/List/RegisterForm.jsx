@@ -1,9 +1,12 @@
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Web3 from 'web3';
-import { isNil } from 'lodash';
+import get from 'lodash/get';
+import isNil from 'lodash/isNil';
 import { Button, Form, Input } from 'antd';
 import { RegisterFooter } from './styles';
+
+export const FORM_NAME = 'register_form';
 
 const RegisterForm = ({
   account, listType, handleSubmit, handleCancel,
@@ -22,7 +25,7 @@ const RegisterForm = ({
     <>
       {account ? (
         <Form
-          name="basic"
+          name={FORM_NAME}
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 16 }}
           initialValues={{ remember: true }}
@@ -170,8 +173,8 @@ RegisterForm.defaultProps = {
 };
 
 const mapStateToProps = (state) => {
-  const { account, balance } = state.setup;
-  return { account, balance };
+  const account = get(state, 'setup.account') || null;
+  return { account };
 };
 
 export default connect(mapStateToProps, {})(RegisterForm);
