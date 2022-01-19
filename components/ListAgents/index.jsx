@@ -2,8 +2,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Tabs, Button, Typography } from 'antd';
 import { useRouter } from 'next/router';
+import { URL } from 'util/constants';
 import ListCards from 'common-util/List/ListCards';
-import { getEveryAgents, getAgents } from './utils';
+import { getAgents, getAgentsByAccount } from './utils';
 
 const { TabPane } = Tabs;
 const { Title } = Typography;
@@ -21,17 +22,17 @@ const MenuAgent = ({ account }) => {
           <Button
             ghost
             type="primary"
-            onClick={() => router.push('/agents/register')}
+            onClick={() => router.push(URL.REGISTER_AGENT)}
           >
             Register
           </Button>
         )}
       >
         <TabPane tab="All" key="all">
-          <ListCards type="agent" getList={getEveryAgents} />
+          <ListCards type="agent" getList={getAgents} />
         </TabPane>
         <TabPane tab="My Agents" key="my_agents">
-          <ListCards type="agent" getList={() => getAgents(account)} />
+          <ListCards type="agent" getList={() => getAgentsByAccount(account)} />
         </TabPane>
       </Tabs>
     </>

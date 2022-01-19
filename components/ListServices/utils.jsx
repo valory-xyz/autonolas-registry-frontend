@@ -4,7 +4,7 @@ import {
   SERVICE_REGISTRY,
 } from 'common-util/AbiAndAddresses/serviceRegistry';
 
-export const getServices = (account) => new Promise((resolve, reject) => {
+export const getServicesByAccount = (account) => new Promise((resolve, reject) => {
   const web3 = new Web3(window.web3.currentProvider);
   const contract = new web3.eth.Contract(
     SERVICE_REGISTRY.abi,
@@ -35,7 +35,7 @@ export const getServices = (account) => new Promise((resolve, reject) => {
 /**
  * Function to return all services
  */
-export const getEveryServices = () => new Promise((resolve, reject) => {
+export const getServices = () => new Promise((resolve, reject) => {
   const web3 = new Web3(window.web3.currentProvider);
   const contract = new web3.eth.Contract(
     SERVICE_REGISTRY.abi,

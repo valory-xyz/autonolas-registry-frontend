@@ -2,8 +2,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Tabs, Button, Typography } from 'antd';
 import { useRouter } from 'next/router';
+import { URL } from 'util/constants';
 import ListCards from 'common-util/List/ListCards';
-import { getEveryComponents, getComponents } from './utils';
+import { getComponents, getComponentsByAccount } from './utils';
 
 const { TabPane } = Tabs;
 const { Title } = Typography;
@@ -21,17 +22,17 @@ const ListComponents = ({ account }) => {
           <Button
             ghost
             type="primary"
-            onClick={() => router.push('/components/register')}
+            onClick={() => router.push(URL.REGISTER_COMPONENT)}
           >
             Register
           </Button>
         )}
       >
         <TabPane tab="All" key="all">
-          <ListCards type="component" getList={getEveryComponents} />
+          <ListCards type="component" getList={getComponents} />
         </TabPane>
         <TabPane tab="My Components" key="my_components">
-          <ListCards type="component" getList={() => getComponents(account)} />
+          <ListCards type="component" getList={() => getComponentsByAccount(account)} />
         </TabPane>
       </Tabs>
     </>
