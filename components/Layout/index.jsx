@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Layout, Menu } from 'antd';
 import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
@@ -8,24 +9,40 @@ const { Header, Content, Footer } = Layout;
 
 const NavigationBar = ({ children }) => {
   const router = useRouter();
+  const [selectedMenu, setSelectedMenu] = useState([]);
+  const { pathname } = router;
+
+  // to set default menu on first render
+  useEffect(() => {
+    if (pathname) {
+      const name = pathname.split('/')[1];
+      setSelectedMenu(name || 'components');
+    }
+  }, [pathname]);
+
+  const handleMenuItemClick = ({ key }) => {
+    // `components` is the homepage hence ''
+    const pushTo = key === 'components' ? '' : key;
+    router.push(`/${pushTo}`);
+    setSelectedMenu(key);
+  };
 
   return (
     <CustomLayout>
       <Header>
         <Logo onClick={() => router.push('/')}>Registry</Logo>
 
-        <Menu
-          theme="light"
-          mode="horizontal"
-          defaultSelectedKeys={['components']}
-        >
-          <Menu.Item key="components" onClick={() => router.push('/')}>
+        <Menu theme="light" mode="horizontal" selectedKeys={[selectedMenu]}>
+          <Menu.Item key="components" onClick={handleMenuItemClick}>
             Components
           </Menu.Item>
-          <Menu.Item key="services" onClick={() => router.push('/services')}>
+          <Menu.Item key="agents" onClick={handleMenuItemClick}>
+            Agents
+          </Menu.Item>
+          <Menu.Item key="services" onClick={handleMenuItemClick}>
             Services
           </Menu.Item>
-          <Menu.Item key="operators" onClick={() => router.push('/operators')}>
+          <Menu.Item key="operators" onClick={handleMenuItemClick}>
             Operators
           </Menu.Item>
         </Menu>

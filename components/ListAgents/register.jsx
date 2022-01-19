@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import Web3 from 'web3';
 import PropTypes from 'prop-types';
+import Web3 from 'web3';
 import { connect } from 'react-redux';
 import { useRouter } from 'next/router';
 import { Typography, notification } from 'antd';
@@ -13,29 +13,31 @@ import {
 
 const { Title } = Typography;
 
-const RegisterComponent = ({ account }) => {
+const RegisterAgent = ({ account }) => {
   const [error, setError] = useState(null);
   const [information, setInformation] = useState(null);
   const router = useRouter();
 
   const handleCancel = () => {
-    router.push('/');
+    router.push('/agents');
   };
 
-  const handleSubmit = async (values) => {
+  const handleSubmit = (values) => {
     if (account) {
-      window.ethereum.enable();
       setError(null);
       setInformation(null);
 
+      window.ethereum.enable();
       const web3 = new Web3(window.web3.currentProvider);
+
+      // contractAddress and abi are setted after contract deploy
       const contract = new web3.eth.Contract(
         MECH_MINTER_CONTRACT.abi,
         MECH_MINTER_ADDRESS,
       );
 
       contract.methods
-        .mintComponent(
+        .mintAgent(
           values.owner_address,
           values.developer_address,
           values.hash,
@@ -45,7 +47,7 @@ const RegisterComponent = ({ account }) => {
         .send({ from: account })
         .then((result) => {
           setInformation(result);
-          notification.success({ message: 'Component registered' });
+          notification.success({ message: 'Agent registered' });
         })
         .catch((e) => {
           setError(e);
@@ -56,9 +58,9 @@ const RegisterComponent = ({ account }) => {
 
   return (
     <>
-      <Title level={2}>Register Component</Title>
+      <Title level={2}>Register Agent</Title>
       <RegisterForm
-        listType="component"
+        listType="agent"
         handleSubmit={handleSubmit}
         handleCancel={handleCancel}
       />
@@ -68,11 +70,11 @@ const RegisterComponent = ({ account }) => {
   );
 };
 
-RegisterComponent.propTypes = {
+RegisterAgent.propTypes = {
   account: PropTypes.string,
 };
 
-RegisterComponent.defaultProps = {
+RegisterAgent.defaultProps = {
   account: null,
 };
 
@@ -81,4 +83,4 @@ const mapStateToProps = (state) => {
   return { account, balance };
 };
 
-export default connect(mapStateToProps, {})(RegisterComponent);
+export default connect(mapStateToProps, {})(RegisterAgent);

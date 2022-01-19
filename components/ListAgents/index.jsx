@@ -4,17 +4,17 @@ import { Tabs, Button, Typography } from 'antd';
 import { useRouter } from 'next/router';
 import { URL } from 'util/constants';
 import ListCards from 'common-util/List/ListCards';
-import { getComponents, getComponentsByAccount } from './utils';
+import { getAgents, getAgentsByAccount } from './utils';
 
 const { TabPane } = Tabs;
 const { Title } = Typography;
 
-const ListComponents = ({ account }) => {
+const MenuAgent = ({ account }) => {
   const router = useRouter();
 
   return (
     <>
-      <Title level={2}>Components</Title>
+      <Title level={2}>Agents</Title>
       <Tabs
         type="card"
         defaultActiveKey="all"
@@ -22,28 +22,28 @@ const ListComponents = ({ account }) => {
           <Button
             ghost
             type="primary"
-            onClick={() => router.push(URL.REGISTER_COMPONENT)}
+            onClick={() => router.push(URL.REGISTER_AGENT)}
           >
             Register
           </Button>
         )}
       >
         <TabPane tab="All" key="all">
-          <ListCards type="component" getList={getComponents} />
+          <ListCards type="agent" getList={getAgents} />
         </TabPane>
-        <TabPane tab="My Components" key="my_components">
-          <ListCards type="component" getList={() => getComponentsByAccount(account)} />
+        <TabPane tab="My Agents" key="my_agents">
+          <ListCards type="agent" getList={() => getAgentsByAccount(account)} />
         </TabPane>
       </Tabs>
     </>
   );
 };
 
-ListComponents.propTypes = {
+MenuAgent.propTypes = {
   account: PropTypes.string,
 };
 
-ListComponents.defaultProps = {
+MenuAgent.defaultProps = {
   account: null,
 };
 
@@ -52,4 +52,4 @@ const mapStateToProps = (state) => {
   return { account };
 };
 
-export default connect(mapStateToProps, {})(ListComponents);
+export default connect(mapStateToProps, {})(MenuAgent);

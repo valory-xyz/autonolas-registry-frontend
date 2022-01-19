@@ -1,3 +1,3 @@
-import RegisterComponents from 'components/ListComponents/register';
+import RegisterComponent from 'components/ListComponents/register';
 
-export default RegisterComponents;
+export default RegisterComponent;

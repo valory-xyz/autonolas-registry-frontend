@@ -25,7 +25,6 @@ class MyApp extends App {
 
   render() {
     const { Component, pageProps } = this.props;
-    // TODO: ask Oak about title, meta, etc
 
     return (
       <>

@@ -1,6 +1,7 @@
 import { Button, Typography } from 'antd';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
+import { URL } from 'util/constants';
 import { ListEmptyMessage } from 'common-util/ListCommon';
 
 const { Title } = Typography;
@@ -14,11 +15,11 @@ export const Header = styled.div`
   }
 `;
 
-const MenuComponents = () => {
+const ListOperators = () => {
   const router = useRouter();
 
   const handleRegister = () => {
-    router.push('/operators/register');
+    router.push(URL.REGISTER_OPERATOR);
   };
 
   return (
@@ -34,4 +35,4 @@ const MenuComponents = () => {
   );
 };
 
-export default MenuComponents;
+export default ListOperators;

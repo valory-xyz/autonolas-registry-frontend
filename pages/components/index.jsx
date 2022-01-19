@@ -1,3 +1,3 @@
-import MenuComponents from 'components/ListComponents';
+import ListComponents from 'components/ListComponents';
 
-export default MenuComponents;
+export default ListComponents;

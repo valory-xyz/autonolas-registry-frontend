@@ -1,18 +1,74 @@
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Tabs, Button, Typography } from 'antd';
+import {
+  Tabs, Button, Typography, Card, Skeleton,
+} from 'antd';
 import { useRouter } from 'next/router';
-import { ListEmptyMessage } from 'common-util/ListCommon';
-import { EmptyMessage } from '../styles';
+import { URL } from 'util/constants';
+import { ListEmptyMessage, PrintJson } from 'common-util/ListCommon';
+import ListCards from 'common-util/List/ListCards';
+import { getServices, getServicesByAccount } from './utils';
 
 const { TabPane } = Tabs;
 const { Title } = Typography;
 
-const MenuServices = ({ account }) => {
+const ListServices = ({ account }) => {
+  const [isServicesListLoading, setServicesListLoading] = useState(false);
+  const [list, setList] = useState([]);
   const router = useRouter();
 
-  const handleTab = (key) => {
-    console.log(key);
+  useEffect(async () => {
+    if (account) {
+      window.ethereum.enable();
+      setServicesListLoading(true);
+      setList([]);
+
+      try {
+        const everyService = await getServicesByAccount(account);
+        setList(everyService);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setServicesListLoading(false);
+      }
+    }
+  }, [account]);
+
+  const getMyServices = () => {
+    if (isServicesListLoading) {
+      return <Skeleton active />;
+    }
+
+    return (
+      <>
+        {list.length === 0 ? (
+          <ListEmptyMessage type="service" />
+        ) : (
+          list.map((item, index) => {
+            const serviceId = index + 1;
+            return (
+              <Card
+                title={`Id: ${serviceId}`}
+                extra={(
+                  <Button
+                    ghost
+                    type="primary"
+                    onClick={() => router.push(`/services/${serviceId}`)}
+                  >
+                    Update
+                  </Button>
+                )}
+                key={`eachService-${index + 1}`}
+                style={{ marginBottom: 16 }}
+              >
+                <PrintJson value={item} />
+              </Card>
+            );
+          })
+        )}
+      </>
+    );
   };
 
   return (
@@ -21,39 +77,32 @@ const MenuServices = ({ account }) => {
       <Tabs
         type="card"
         defaultActiveKey="all"
-        onChange={handleTab}
         tabBarExtraContent={(
           <Button
             ghost
             type="primary"
-            onClick={() => router.push('/services/register')}
+            onClick={() => router.push(URL.REGISTER_SERVICE)}
           >
             Register
           </Button>
         )}
       >
         <TabPane tab="All" key="all">
-          <ListEmptyMessage type="service" />
+          <ListCards type="service" getList={getServices} />
         </TabPane>
         <TabPane tab="My Services" key="my_services">
-          {account ? (
-            <ListEmptyMessage type="service" />
-          ) : (
-            <EmptyMessage width="180px">
-              To see your services, connect a wallet.
-            </EmptyMessage>
-          )}
+          {getMyServices()}
         </TabPane>
       </Tabs>
     </>
   );
 };
 
-MenuServices.propTypes = {
+ListServices.propTypes = {
   account: PropTypes.string,
 };
 
-MenuServices.defaultProps = {
+ListServices.defaultProps = {
   account: null,
 };
 
@@ -62,4 +111,4 @@ const mapStateToProps = (state) => {
   return { account };
 };
 
-export default connect(mapStateToProps, {})(MenuServices);
+export default connect(mapStateToProps, {})(ListServices);

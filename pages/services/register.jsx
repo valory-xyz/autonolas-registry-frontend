@@ -1,3 +1,3 @@
-import RegisterServices from 'components/ListServices/register';
+import RegisterService from 'components/ListServices/register';
 
-export default RegisterServices;
+export default RegisterService;
