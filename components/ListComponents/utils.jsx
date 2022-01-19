@@ -4,7 +4,7 @@ import {
   COMPONENT_REGISTRY,
 } from 'common-util/AbiAndAddresses/componentRegistry';
 
-export const getComponents = (account) => new Promise((resolve, reject) => {
+export const getComponentsByAccount = (account) => new Promise((resolve, reject) => {
   const web3 = new Web3(window.web3.currentProvider);
   const contract = new web3.eth.Contract(
     COMPONENT_REGISTRY.abi,
@@ -35,7 +35,7 @@ export const getComponents = (account) => new Promise((resolve, reject) => {
 /**
  * Function to return all components
  */
-export const getEveryComponents = () => new Promise((resolve, reject) => {
+export const getComponents = () => new Promise((resolve, reject) => {
   const web3 = new Web3(window.web3.currentProvider);
   const contract = new web3.eth.Contract(
     COMPONENT_REGISTRY.abi,

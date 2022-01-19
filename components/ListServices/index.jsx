@@ -5,9 +5,10 @@ import {
   Tabs, Button, Typography, Card, Skeleton,
 } from 'antd';
 import { useRouter } from 'next/router';
+import { URL } from 'util/constants';
 import { ListEmptyMessage, PrintJson } from 'common-util/ListCommon';
 import ListCards from 'common-util/List/ListCards';
-import { getEveryServices, getServices } from './utils';
+import { getServices, getServicesByAccount } from './utils';
 
 const { TabPane } = Tabs;
 const { Title } = Typography;
@@ -24,7 +25,7 @@ const ListServices = ({ account }) => {
       setList([]);
 
       try {
-        const everyService = await getServices(account);
+        const everyService = await getServicesByAccount(account);
         setList(everyService);
       } catch (e) {
         console.error(e);
@@ -80,14 +81,14 @@ const ListServices = ({ account }) => {
           <Button
             ghost
             type="primary"
-            onClick={() => router.push('/services/register')}
+            onClick={() => router.push(URL.REGISTER_SERVICE)}
           >
             Register
           </Button>
         )}
       >
         <TabPane tab="All" key="all">
-          <ListCards type="service" getList={getEveryServices} />
+          <ListCards type="service" getList={getServices} />
         </TabPane>
         <TabPane tab="My Services" key="my_services">
           {getMyServices()}

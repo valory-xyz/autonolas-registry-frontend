@@ -5,4 +5,8 @@ export const CONSTANTS = {
 
 export const URL = {
   root: '/',
+  REGISTER_AGENT: '/agents/register',
+  REGISTER_COMPONENT: '/components/register',
+  REGISTER_OPERATOR: '/operators/register',
+  REGISTER_SERVICE: '/services/register',
 };
