@@ -60,6 +60,7 @@ const RegisterForm = ({
           <Form.Item
             label="Developer Address"
             name="developer_address"
+            validateFirst
             rules={[
               {
                 required: true,
@@ -111,6 +112,7 @@ const RegisterForm = ({
             label="Dependencies"
             name="dependencies"
             tooltip="(comma seperated)"
+            validateFirst
             rules={[
               {
                 required: false,

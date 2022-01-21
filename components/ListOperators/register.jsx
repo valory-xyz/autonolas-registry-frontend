@@ -16,7 +16,9 @@ const RegisterOperators = () => {
       <Title level={2}>Register Operator</Title>
       <RegisterFooter>
         <p>To register, connect to wallet</p>
-        <Button onClick={handleCancel}>Cancel</Button>
+        <Button type="primary" onClick={handleCancel}>
+          Cancel
+        </Button>
       </RegisterFooter>
     </>
   );

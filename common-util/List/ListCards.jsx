@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import get from 'lodash/get';
 import { Card, Skeleton } from 'antd';
-import { ListEmptyMessage, PrintJson } from 'common-util/ListCommon';
+import { ListEmptyMessage, PrintJson } from 'common-util/List/ListCommon';
 
 const ListCards = ({
   account, type, getList, extra,

@@ -1,15 +1,7 @@
-import Web3 from 'web3';
-import {
-  SERVICE_REGISTRY_ADDRESS,
-  SERVICE_REGISTRY,
-} from 'common-util/AbiAndAddresses/serviceRegistry';
+import { getServiceContract } from 'common-util/Contracts';
 
 export const getServicesByAccount = (account) => new Promise((resolve, reject) => {
-  const web3 = new Web3(window.web3.currentProvider);
-  const contract = new web3.eth.Contract(
-    SERVICE_REGISTRY.abi,
-    SERVICE_REGISTRY_ADDRESS,
-  );
+  const contract = getServiceContract();
 
   contract.methods
     .balanceOf(account)
@@ -36,11 +28,7 @@ export const getServicesByAccount = (account) => new Promise((resolve, reject) =
  * Function to return all services
  */
 export const getServices = () => new Promise((resolve, reject) => {
-  const web3 = new Web3(window.web3.currentProvider);
-  const contract = new web3.eth.Contract(
-    SERVICE_REGISTRY.abi,
-    SERVICE_REGISTRY_ADDRESS,
-  );
+  const contract = getServiceContract();
 
   contract.methods
     .totalSupply()

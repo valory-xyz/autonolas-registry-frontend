@@ -1,15 +1,11 @@
 import { useState } from 'react';
-import Web3 from 'web3';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { useRouter } from 'next/router';
 import { Typography, notification } from 'antd';
 import RegisterForm from 'common-util/List/RegisterForm';
-import { AlertInfo, AlertError } from 'common-util/ListCommon';
-import {
-  MECH_MINTER_ADDRESS,
-  MECH_MINTER_CONTRACT,
-} from 'common-util/AbiAndAddresses/mechMinter';
+import { AlertInfo, AlertError } from 'common-util/List/ListCommon';
+import { getMechMinterContract } from 'common-util/Contracts';
 
 const { Title } = Typography;
 
@@ -24,15 +20,9 @@ const RegisterComponent = ({ account }) => {
 
   const handleSubmit = async (values) => {
     if (account) {
-      window.ethereum.enable();
       setError(null);
       setInformation(null);
-
-      const web3 = new Web3(window.web3.currentProvider);
-      const contract = new web3.eth.Contract(
-        MECH_MINTER_CONTRACT.abi,
-        MECH_MINTER_ADDRESS,
-      );
+      const contract = getMechMinterContract();
 
       contract.methods
         .mintComponent(

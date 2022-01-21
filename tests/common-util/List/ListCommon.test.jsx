@@ -7,7 +7,7 @@ import {
   PrintJson,
   AlertInfo,
   AlertError,
-} from 'common-util/ListCommon';
+} from 'common-util/List/ListCommon';
 
 describe('getMappedArrayFromString()', () => {
   it.each([

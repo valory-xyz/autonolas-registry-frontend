@@ -2,7 +2,7 @@ import { Button, Typography } from 'antd';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import { URL } from 'util/constants';
-import { ListEmptyMessage } from 'common-util/ListCommon';
+import { ListEmptyMessage } from 'common-util/List/ListCommon';
 
 const { Title } = Typography;
 
@@ -18,15 +18,15 @@ export const Header = styled.div`
 const ListOperators = () => {
   const router = useRouter();
 
-  const handleRegister = () => {
-    router.push(URL.REGISTER_OPERATOR);
-  };
-
   return (
     <>
       <Header>
         <Title level={2}>Operators</Title>
-        <Button ghost type="primary" onClick={handleRegister}>
+        <Button
+          ghost
+          type="primary"
+          onClick={() => router.push(URL.REGISTER_OPERATOR)}
+        >
           Register
         </Button>
       </Header>

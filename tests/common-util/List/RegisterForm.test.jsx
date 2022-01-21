@@ -1,7 +1,5 @@
 import React from 'react';
-import {
-  render, waitFor, fireEvent, screen,
-} from '@testing-library/react';
+import { render, waitFor, fireEvent } from '@testing-library/react';
 import RegisterForm, { FORM_NAME } from 'common-util/List/RegisterForm';
 import { wrapProvider, dummyAddress } from '../../helpers';
 

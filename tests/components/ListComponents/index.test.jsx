@@ -1,8 +1,8 @@
 import React from 'react';
 import { fireEvent, render, waitFor } from '@testing-library/react';
-import ListAgents from 'components/ListAgents';
-import Agent from 'components/ListAgents/agent';
-import { getAgents, getAgentsByAccount } from 'components/ListAgents/utils';
+import ListComponents from 'components/ListComponents';
+import Component from 'components/ListComponents/component';
+import { getComponents, getComponentsByAccount } from 'components/ListComponents/utils';
 // import { URL } from 'util/constants';
 import { useRouter } from 'next/router';
 import { wrapProvider } from '../../helpers';
@@ -12,20 +12,20 @@ jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
 
-jest.mock('components/ListAgents/utils', () => ({
-  getAgents: jest.fn(),
-  getAgentsByAccount: jest.fn(),
+jest.mock('components/ListComponents/utils', () => ({
+  getComponents: jest.fn(),
+  getComponentsByAccount: jest.fn(),
 }));
 
 useRouter.mockImplementation(() => ({ push: jest.fn() }));
 
-describe('<ListAgents /> index.jsx', () => {
+describe('<ListComponents /> index.jsx', () => {
   it('works as expected', async () => {
     expect.hasAssertions();
-    getAgents.mockImplementation(() => Promise.resolve([{ name: 'ALL TAB CONTENT' }]));
-    getAgentsByAccount.mockImplementation(() => Promise.resolve([{ name: 'MY AGENTS CONTENT' }]));
+    getComponents.mockImplementation(() => Promise.resolve([{ name: 'ALL TAB CONTENT' }]));
+    getComponentsByAccount.mockImplementation(() => Promise.resolve([{ name: 'MY COMPONENTS CONTENT' }]));
 
-    const { container, getByText } = render(wrapProvider(<ListAgents />));
+    const { container, getByText } = render(wrapProvider(<ListComponents />));
 
     // check if the selected tab is `All` & has the correct content
     await waitFor(async () => expect(
@@ -33,14 +33,14 @@ describe('<ListAgents /> index.jsx', () => {
     ).toBe('All'));
     expect(getByText(/ALL TAB CONTENT/i)).toBeInTheDocument();
 
-    // click the `My agents` tab
+    // click the `My components` tab
     fireEvent.click(container.querySelector('.ant-tabs-tab:nth-child(2)'));
 
-    // check if the selected tab is `My agents` & has the correct content
+    // check if the selected tab is `My components` & has the correct content
     await waitFor(async () => expect(
       container.querySelector('.ant-tabs-tab-active > div').textContent,
-    ).toBe('My Agents'));
-    expect(getByText(/MY AGENTS CONTENT/i)).toBeInTheDocument();
+    ).toBe('My Components'));
+    expect(getByText(/MY COMPONENTS CONTENT/i)).toBeInTheDocument();
 
     // const router = useRouter();
     fireEvent.click(getByText(/Register/i));
@@ -54,12 +54,12 @@ describe('<ListAgents /> index.jsx', () => {
   });
 });
 
-describe('<ListAgents /> agent.jsx', () => {
+describe('<ListComponents /> component.jsx', () => {
   it('works as expected', async () => {
     expect.hasAssertions();
-    const { container } = render(wrapProvider(<Agent />));
+    const { container } = render(wrapProvider(<Component />));
     await waitFor(async () => expect(container.querySelector('.ant-typography').textContent).toBe(
-      'Agent',
+      'Component',
     ));
   });
 });

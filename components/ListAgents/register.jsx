@@ -1,15 +1,11 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
-import Web3 from 'web3';
 import { connect } from 'react-redux';
 import { useRouter } from 'next/router';
 import { Typography, notification } from 'antd';
 import RegisterForm from 'common-util/List/RegisterForm';
-import { AlertInfo, AlertError } from 'common-util/ListCommon';
-import {
-  MECH_MINTER_ADDRESS,
-  MECH_MINTER_CONTRACT,
-} from 'common-util/AbiAndAddresses/mechMinter';
+import { AlertInfo, AlertError } from 'common-util/List/ListCommon';
+import { getMechMinterContract } from 'common-util/Contracts';
 
 const { Title } = Typography;
 
@@ -18,24 +14,14 @@ const RegisterAgent = ({ account }) => {
   const [information, setInformation] = useState(null);
   const router = useRouter();
 
-  const handleCancel = () => {
-    router.push('/agents');
-  };
+  const handleCancel = () => router.push('/agents');
 
   const handleSubmit = (values) => {
     if (account) {
       setError(null);
       setInformation(null);
 
-      window.ethereum.enable();
-      const web3 = new Web3(window.web3.currentProvider);
-
-      // contractAddress and abi are setted after contract deploy
-      const contract = new web3.eth.Contract(
-        MECH_MINTER_CONTRACT.abi,
-        MECH_MINTER_ADDRESS,
-      );
-
+      const contract = getMechMinterContract();
       contract.methods
         .mintAgent(
           values.owner_address,
