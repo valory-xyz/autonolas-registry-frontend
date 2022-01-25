@@ -87,7 +87,7 @@ const Login = ({
     <Container>
       <DetailsContainer>
         {errorMessage ? (
-          <Alert message={errorMessage} type="error" showIcon />
+          <Alert message={errorMessage} type="error" showIcon data-testid="login-error" />
         ) : (
           <Alert
             type="success"

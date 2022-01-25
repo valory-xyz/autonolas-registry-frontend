@@ -9,16 +9,6 @@ export const initStore = mockStore({
   setup: { account: dummyAddress },
 });
 
-export const storeToUpdate = mockStore((e) => {
-  console.log(e);
-  // if() {
-
-  // }
-  return {
-    setup: { account: dummyAddress },
-  };
-});
-
 /**
  *
  * @param {Component} component valid react component
@@ -27,6 +17,14 @@ export const storeToUpdate = mockStore((e) => {
  */
 export const wrapProvider = (component, isEmptyStore = false) => (
   <Provider store={isEmptyStore ? emptyStore : initStore}>{component}</Provider>
+);
+
+export const errorStore = mockStore({
+  setup: { account: dummyAddress, errorMessage: 'Error in store' },
+});
+
+export const wrapProviderError = (component) => (
+  <Provider store={errorStore}>{component}</Provider>
 );
 
 export const dummyFunction = jest.fn(() => {});

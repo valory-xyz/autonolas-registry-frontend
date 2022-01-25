@@ -1,11 +1,9 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-import {
-  render, fireEvent, screen, waitFor,
-} from '@testing-library/react';
+import { render, fireEvent, waitFor } from '@testing-library/react';
 import Login from 'components/Login';
 import { CONSTANTS } from 'util/constants';
-import { wrapProvider, dummyAddress, storeToUpdate } from '../../helpers';
+import { wrapProvider, wrapProviderError, dummyAddress } from '../../helpers';
 
 const PATHNAME = 'agents';
 
@@ -19,95 +17,110 @@ const push = jest.fn();
 
 useRouter.mockImplementation(() => ({ push, pathname: PATHNAME }));
 
-// Without making a copy, you will have a circular dependency problem
-// const originalWindow = { ...window };
-// const windowSpy = jest.spyOn(global, 'window', 'get');
-
-// windowSpy.mockImplementation(() => ({
-//   ...originalWindow,
-//   ethereum: 'das',
-// // ethereum: {
-// //   request: jest.fn((e) => {
-// //     // console.log(e);
-// //     // Promise.resolve(1000);
-// //   }),
-// // },
-// }));
-
-// Object.defineProperty(global, 'window', {
-//   ethereum: 'das',
-//   // value: {
-//   //   dataLayer: {
-//   //     push: jest.fn(),
-//   //   },
-//   // },
-// });
-
 describe('<Login /> index.jsx', () => {
-  // const windowCopy = global.window.location;
+  it('before login => no metamask extension', async () => {
+    expect.hasAssertions();
+    delete window.ethereum; // delete previously set window mock.
 
-  // jest.spyOn(window, 'ethereum').mockImplementation().mockImplementation(() => true);
-  const ethereumCopy = {
-    isMetaMask: true,
-    on: jest.fn(),
-    request: jest.fn(({ method }) => {
-      if (method === CONSTANTS.ETH_REQUESTACCOUNTS) {
-        return Promise.resolve([dummyAddress]);
-      }
-      if (method === CONSTANTS.ETH_GETBALANCE) {
-        return Promise.resolve('0x21e19db22a20da47216');
-      }
-      return Promise.resolve([]);
-    }),
+    const ethereumCopy = {
+      isMetaMask: false,
+      on: jest.fn(),
+    };
 
-  };
+    Object.defineProperty(window, 'ethereum', {
+      value: ethereumCopy,
+      configurable: true,
+    });
 
-  Object.defineProperty(window, 'ethereum', {
-    configurable: true,
-    enumerable: true,
-    value: ethereumCopy,
-    writable: true,
+    const { getByTestId } = render(wrapProviderError(<Login />, true));
+    expect(getByTestId('login-error')).toBeInTheDocument();
   });
 
-  // // eslint-disable-next-line jest/no-hooks
-  // beforeEach(() => {
-  //   global.window = { ...global.window, ethereum: { isMetaMask: true } };
-  // });
-
-  // // eslint-disable-next-line jest/no-hooks
-  // afterEach(() => {
-  //   global.window = windowCopy;
-  // });
-
-  it('before login', async () => {
+  it('before login => without error', async () => {
     expect.hasAssertions();
+    delete window.ethereum; // delete previously set window mock.
 
+    const ethereumCopy = {
+      isMetaMask: true,
+      on: jest.fn((_a, b) => b(dummyAddress)),
+      request: jest.fn(({ method }) => {
+        if (method === CONSTANTS.ETH_REQUESTACCOUNTS) {
+          return Promise.resolve([dummyAddress]);
+        }
+        if (method === CONSTANTS.ETH_GETBALANCE) {
+          return Promise.resolve('0x21e19db22a20da47216');
+        }
+        return Promise.resolve([]);
+      }),
+    };
 
-    const { container, getByText } = render(wrapProvider(<Login />, true));
+    Object.defineProperty(window, 'ethereum', {
+      ...window,
+      configurable: true,
+      value: ethereumCopy,
+    });
+
+    const { container } = render(wrapProvider(<Login />, true));
     const connectBtn = container.querySelector('.ant-btn-primary');
     expect(connectBtn).toBeInTheDocument();
-    // screen.debug();
 
-    // click connect button
+    // click connect button & expect mock function to be called
     fireEvent.click(connectBtn);
 
     await waitFor(async () => {
-      // expect(connectBtn).not.toBeInTheDocument();
-      storeToUpdate.dispatch({ type: 'ANY_ACTION' });
-
       // will be called twice (1. accountsChanged & 2. chainChanged)
       expect(ethereumCopy.on).toHaveBeenCalledTimes(2);
 
-      // screen.debug();
+      // will be called twice (1. ETH_REQUESTACCOUNTS & 2. ETH_GETBALANCE)
+      expect(ethereumCopy.request).toHaveBeenCalledTimes(2);
+
+      window.ethereum.on.mockRestore();
     });
   });
 
-  // it('after login', async () => {
-  //   expect.hasAssertions();
-  //   const { getByTestId } = render(wrapProvider(<Login />));
-  //   const address = getByTestId('metamask-address').textContent;
-  //   await waitFor(async () => {
-  //     expect(address).toContain(dummyAddress);
-  //   });
-  // });
+  it('before login => with error', async () => {
+    expect.hasAssertions();
+    delete window.ethereum; // delete previously set window mock.
+
+    const ethereumCopy = {
+      isMetaMask: true,
+      on: jest.fn(),
+      request: jest.fn(({ method }) => {
+        if (method === CONSTANTS.ETH_REQUESTACCOUNTS) {
+          return Promise.reject(new Error('Rejected'));
+        }
+        if (method === CONSTANTS.ETH_GETBALANCE) {
+          return Promise.reject(new Error('Rejected'));
+        }
+        return Promise.resolve([]);
+      }),
+    };
+
+    Object.defineProperty(window, 'ethereum', {
+      value: ethereumCopy,
+      configurable: true,
+    });
+
+    const { container } = render(wrapProvider(<Login />, true));
+    const connectBtn = container.querySelector('.ant-btn-primary');
+
+    // click connect button & expect mock function to be called
+    fireEvent.click(connectBtn);
+
+    await waitFor(async () => {
+      expect(ethereumCopy.on).toHaveBeenCalledTimes(2);
+
+      // will be called only once because getBalance() won't be called if login fails
+      expect(ethereumCopy.request).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  it('after login', async () => {
+    expect.hasAssertions();
+    const { getByTestId } = render(wrapProvider(<Login />));
+    const address = getByTestId('metamask-address').textContent;
+    await waitFor(async () => {
+      expect(address).toContain(dummyAddress);
+    });
+  });
 });
