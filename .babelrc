@@ -9,7 +9,8 @@
           "util": "./util",
           "common-util": "./common-util",
           "components": "./components",
-          "images": "./public/images"
+          "images": "./public/images",
+          "store": "./store"
         }
       }
     ],

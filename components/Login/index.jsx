@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import get from 'lodash/get';
 import { Button, Typography, Alert } from 'antd';
 import { ethers } from 'ethers';
 import { CONSTANTS } from 'util/constants';
@@ -118,7 +119,7 @@ Login.defaultProps = {
 };
 
 const mapStateToProps = (state) => {
-  const { account, balance, errorMessage } = state.setup;
+  const { account, balance, errorMessage } = get(state, 'setup', {});
   return { account, balance, errorMessage };
 };
 

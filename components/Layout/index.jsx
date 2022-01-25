@@ -30,7 +30,9 @@ const NavigationBar = ({ children }) => {
   return (
     <CustomLayout>
       <Header>
-        <Logo onClick={() => router.push('/')}>Registry</Logo>
+        <Logo onClick={() => router.push('/')} data-testid="protocol-logo">
+          Registry
+        </Logo>
 
         <Menu theme="light" mode="horizontal" selectedKeys={[selectedMenu]}>
           <Menu.Item key="components" onClick={handleMenuItemClick}>
