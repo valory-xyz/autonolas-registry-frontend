@@ -93,7 +93,7 @@ const Login = ({
             type="success"
             showIcon
             message={(
-              <Title level={5}>
+              <Title level={5} data-testid="metamask-address">
                 Address:&nbsp;
                 {account ? `${account}` : 'NA'}
               </Title>

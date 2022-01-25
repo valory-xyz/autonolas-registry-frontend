@@ -9,6 +9,16 @@ export const initStore = mockStore({
   setup: { account: dummyAddress },
 });
 
+export const storeToUpdate = mockStore((e) => {
+  console.log(e);
+  // if() {
+
+  // }
+  return {
+    setup: { account: dummyAddress },
+  };
+});
+
 /**
  *
  * @param {Component} component valid react component
