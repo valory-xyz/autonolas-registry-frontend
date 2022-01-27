@@ -1,38 +1,45 @@
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Tabs, Button, Typography } from 'antd';
+import { Tabs } from 'antd';
 import { useRouter } from 'next/router';
-import { URL } from 'util/constants';
-import ListCards from 'common-util/List/ListCards';
+import { URL, NAV_TYPES } from 'util/constants';
+import ListTable from 'common-util/List/ListTable';
+import { useExtraTabContent } from 'common-util/List/ListTable/helpers';
 import { getAgents, getAgentsByAccount } from './utils';
 
 const { TabPane } = Tabs;
-const { Title } = Typography;
 
 const MenuAgent = ({ account }) => {
   const router = useRouter();
+  const { searchValue, extraTabContent, clearSearch } = useExtraTabContent({
+    title: 'Agents',
+    onRegisterClick: () => router.push(URL.REGISTER_AGENT),
+  });
 
   return (
     <>
-      <Title level={2}>Agents</Title>
       <Tabs
+        className="registry-tabs"
         type="card"
         defaultActiveKey="all"
-        tabBarExtraContent={(
-          <Button
-            ghost
-            type="primary"
-            onClick={() => router.push(URL.REGISTER_AGENT)}
-          >
-            Register
-          </Button>
-        )}
+        onChange={clearSearch}
+        tabBarExtraContent={extraTabContent}
       >
         <TabPane tab="All" key="all">
-          <ListCards type="agent" getList={getAgents} />
+          <ListTable
+            type={NAV_TYPES.AGENT}
+            filterValue={searchValue}
+            getList={getAgents}
+            onViewClick={(e) => window.console.log('View Click', e)}
+          />
         </TabPane>
         <TabPane tab="My Agents" key="my_agents">
-          <ListCards type="agent" getList={() => getAgentsByAccount(account)} />
+          <ListTable
+            type={NAV_TYPES.AGENT}
+            filterValue={searchValue}
+            getList={() => getAgentsByAccount(account)}
+            onViewClick={(e) => window.console.log('View Click', e)}
+          />
         </TabPane>
       </Tabs>
     </>

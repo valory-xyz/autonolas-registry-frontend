@@ -8,6 +8,9 @@ const ANTD_COLOR = {
 
 export const CustomLayout = styled(Layout)`
   background: ${ANTD_COLOR.whiteColor} !important;
+  /* common */
+
+  /* layout */
   .ant-layout-header {
     display: flex;
     position: fixed;
@@ -68,12 +71,16 @@ export const CustomLayout = styled(Layout)`
   /* table */
   .ant-table-thead > tr > th {
     border-top: 1px solid ${ANTD_COLOR.borderColor};
-    padding: 12px 16px;
     &:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before {
       background-color: transparent;
     }
   }
   .ant-table-tbody > tr > td {
+    padding: 12px 16px;
+    &.underline span {
+      text-decoration: underline;
+    }
+
     .ant-btn {
       span {
         text-decoration: underline;
