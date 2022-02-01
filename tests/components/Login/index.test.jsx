@@ -1,13 +1,13 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-import { render, fireEvent, waitFor } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import Login from 'components/Login';
 import { CONSTANTS } from 'util/constants';
 import { wrapProvider, wrapProviderError, dummyAddress } from '../../helpers';
 
 const PATHNAME = 'agents';
 
-// mock router
 jest.mock('next/router', () => ({
   __esModule: true,
   useRouter: jest.fn(),
@@ -17,8 +17,8 @@ const push = jest.fn();
 
 useRouter.mockImplementation(() => ({ push, pathname: PATHNAME }));
 
-describe('<Login /> index.jsx', () => {
-  it('before login => no metamask extension', async () => {
+describe('login/index.jsx', () => {
+  it('should render error when no metamask extension is available', async () => {
     expect.hasAssertions();
     delete window.ethereum; // delete previously set window mock.
 
@@ -32,11 +32,11 @@ describe('<Login /> index.jsx', () => {
       configurable: true,
     });
 
-    const { getByTestId } = render(wrapProviderError(<Login />, true));
-    expect(getByTestId('login-error')).toBeInTheDocument();
+    const { getByText } = render(wrapProviderError(<Login />, true));
+    expect(getByText(/Error in store/i)).toBeInTheDocument();
   });
 
-  it('before login => without error', async () => {
+  it('should call ethereum functions `on` & `request` twice on successful login', async () => {
     expect.hasAssertions();
     delete window.ethereum; // delete previously set window mock.
 
@@ -65,7 +65,7 @@ describe('<Login /> index.jsx', () => {
     expect(connectBtn).toBeInTheDocument();
 
     // click connect button & expect mock function to be called
-    fireEvent.click(connectBtn);
+    userEvent.click(connectBtn);
 
     await waitFor(async () => {
       // will be called twice (1. accountsChanged & 2. chainChanged)
@@ -73,12 +73,10 @@ describe('<Login /> index.jsx', () => {
 
       // will be called twice (1. ETH_REQUESTACCOUNTS & 2. ETH_GETBALANCE)
       expect(ethereumCopy.request).toHaveBeenCalledTimes(2);
-
-      window.ethereum.on.mockRestore();
     });
   });
 
-  it('before login => with error', async () => {
+  it('should call ethereum function `on` twice & `request` only once on unsuccessful login', async () => {
     expect.hasAssertions();
     delete window.ethereum; // delete previously set window mock.
 
@@ -105,7 +103,7 @@ describe('<Login /> index.jsx', () => {
     const connectBtn = container.querySelector('.ant-btn-primary');
 
     // click connect button & expect mock function to be called
-    fireEvent.click(connectBtn);
+    userEvent.click(connectBtn);
 
     await waitFor(async () => {
       expect(ethereumCopy.on).toHaveBeenCalledTimes(2);
@@ -115,7 +113,7 @@ describe('<Login /> index.jsx', () => {
     });
   });
 
-  it('after login', async () => {
+  it('should render metamask address once logged in', async () => {
     expect.hasAssertions();
     const { getByTestId } = render(wrapProvider(<Login />));
     const address = getByTestId('metamask-address').textContent;
