@@ -13,7 +13,7 @@ jest.mock('common-util/Contracts', () => ({
 }));
 
 describe('listComponents/register.jsx', () => {
-  it('should submit the form successfully', async () => {
+  it('should submit the form & register the `Component` successfully', async () => {
     expect.hasAssertions();
 
     getMechMinterContract.mockImplementation(() => ({

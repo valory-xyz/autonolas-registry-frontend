@@ -1,7 +1,6 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import { render } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import ListOperators from 'components/ListOperators';
 import Operator from 'components/ListOperators/operator';
 import { wrapProvider } from '../../helpers';
@@ -14,15 +13,11 @@ jest.mock('next/router', () => ({
 useRouter.mockImplementation(() => ({ push: jest.fn() }));
 
 describe('listOperators/index.jsx', () => {
-  it('works as expected', async () => {
+  it('should render `Register` button', async () => {
     expect.hasAssertions();
-    const { container } = render(wrapProvider(<ListOperators />));
-    expect(container.querySelector('.ant-typography').textContent).toBe(
-      'Operators',
-    );
-    expect(container.querySelector('.ant-btn')).toBeInTheDocument();
+    const { getByRole } = render(wrapProvider(<ListOperators />));
 
-    userEvent.click(container.querySelector('.ant-btn'));
+    expect(getByRole('button', { name: 'Register' })).toBeInTheDocument();
   });
 });
 

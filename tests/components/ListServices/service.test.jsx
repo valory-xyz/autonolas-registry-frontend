@@ -56,7 +56,7 @@ getServiceManagerContract.mockImplementation(() => ({
 useRouter.mockImplementation(() => ({ push: jest.fn() }));
 
 describe('listServices/service.jsx', () => {
-  it('updates the service successfully', async () => {
+  it('should update the service successfully', async () => {
     expect.hasAssertions();
     const { container, getByText } = render(wrapProvider(<Service />));
 

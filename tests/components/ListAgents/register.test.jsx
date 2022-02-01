@@ -13,7 +13,7 @@ jest.mock('common-util/Contracts', () => ({
 }));
 
 describe('listAgents/register.jsx', () => {
-  it('works as expected', async () => {
+  it('should submit the form & register the `Agent` successfully', async () => {
     expect.hasAssertions();
 
     getMechMinterContract.mockImplementation(() => ({
