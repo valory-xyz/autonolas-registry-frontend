@@ -1,6 +1,7 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-import { render, fireEvent } from '@testing-library/react';
+import { render } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import ListOperators from 'components/ListOperators';
 import Operator from 'components/ListOperators/operator';
 import { wrapProvider } from '../../helpers';
@@ -21,7 +22,7 @@ describe('<ListOperators /> index.jsx', () => {
     );
     expect(container.querySelector('.ant-btn')).toBeInTheDocument();
 
-    fireEvent.click(container.querySelector('.ant-btn'));
+    userEvent.click(container.querySelector('.ant-btn'));
   });
 });
 

@@ -1,5 +1,6 @@
 import React from 'react';
-import { fireEvent, render, waitFor } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import ListComponents from 'components/ListComponents';
 import Component from 'components/ListComponents/component';
 import { getComponents, getComponentsByAccount } from 'components/ListComponents/utils';
@@ -34,7 +35,7 @@ describe('<ListComponents /> index.jsx', () => {
     expect(getByText(/ALL TAB CONTENT/i)).toBeInTheDocument();
 
     // click the `My components` tab
-    fireEvent.click(container.querySelector('.ant-tabs-tab:nth-child(2)'));
+    userEvent.click(container.querySelector('.ant-tabs-tab:nth-child(2)'));
 
     // check if the selected tab is `My components` & has the correct content
     await waitFor(async () => expect(
@@ -43,7 +44,7 @@ describe('<ListComponents /> index.jsx', () => {
     expect(getByText(/MY COMPONENTS CONTENT/i)).toBeInTheDocument();
 
     // const router = useRouter();
-    fireEvent.click(getByText(/Register/i));
+    userEvent.click(getByText(/Register/i));
 
     // it should be called once
     expect(useRouter).toHaveBeenCalledTimes(1);

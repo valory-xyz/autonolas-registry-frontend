@@ -44,7 +44,7 @@ describe('<ListCards />', () => {
 
     await waitFor(() => {
       const element = queryByTestId('not-registered-message');
-      expect(element).not.toBeInTheDocument();
+      expect(element).toBeInTheDocument();
     });
   });
 

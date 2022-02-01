@@ -1,5 +1,6 @@
 import React from 'react';
-import { fireEvent, render, waitFor } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import ListServices from 'components/ListServices';
 import {
   getServices,
@@ -54,7 +55,7 @@ describe('<ListServices /> index.jsx', () => {
     expect(getByText(/ALL TAB CONTENT/i)).toBeInTheDocument();
 
     // click the `My services` tab
-    fireEvent.click(container.querySelector('.ant-tabs-tab:nth-child(2)'));
+    userEvent.click(container.querySelector('.ant-tabs-tab:nth-child(2)'));
 
     // check if the selected tab is `My services` & has the correct content
     await waitFor(async () => expect(
@@ -67,7 +68,7 @@ describe('<ListServices /> index.jsx', () => {
     );
     expect(registerButton).toBeEnabled();
 
-    fireEvent.click(registerButton);
+    userEvent.click(registerButton);
 
     // TODO: push should be called once as well
     // const router = useRouter();

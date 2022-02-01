@@ -1,5 +1,6 @@
 import React from 'react';
-import { fireEvent, render } from '@testing-library/react';
+import { render } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { getServiceManagerContract } from 'common-util/Contracts';
 import RegisterService from 'components/ListServices/register';
 import { FORM_NAME } from 'components/ListServices/RegisterForm';
@@ -30,34 +31,28 @@ describe('<ListServices /> register.jsx', () => {
       // check if submit button is present
       expect(container.querySelector('.ant-btn[type="submit"]')).toBeTruthy();
 
-      fireEvent.change(container.querySelector(`#${FORM_NAME}_owner_address`), {
-        target: { value: dummyAddress },
-      });
-      fireEvent.change(container.querySelector(`#${FORM_NAME}_service_name`), {
-        target: { value: 'Service Name' },
-      });
-      fireEvent.change(
+      userEvent.type(
+        container.querySelector(`#${FORM_NAME}_owner_address`),
+        dummyAddress,
+      );
+      userEvent.type(
+        container.querySelector(`#${FORM_NAME}_service_name`),
+        'Service Name',
+      );
+      userEvent.type(
         container.querySelector(`#${FORM_NAME}_service_description`),
-        {
-          target: { value: 'Desc' },
-        },
+        'Desc',
       );
-      fireEvent.change(container.querySelector(`#${FORM_NAME}_agent_ids`), {
-        target: { value: '1' },
-      });
-      fireEvent.change(
+      userEvent.type(container.querySelector(`#${FORM_NAME}_agent_ids`), '1');
+      userEvent.type(
         container.querySelector(`#${FORM_NAME}_agent_num_slots`),
-        {
-          target: { value: '1' },
-        },
+        '1',
       );
-      fireEvent.change(container.querySelector(`#${FORM_NAME}_threshold`), {
-        target: { value: '1' },
-      });
+      userEvent.type(container.querySelector(`#${FORM_NAME}_threshold`), '1');
 
       const submitBtn = getByText(/Submit/i);
       expect(submitBtn).toBeInTheDocument();
-      fireEvent.click(submitBtn);
+      userEvent.click(submitBtn);
       // expect(submitBtn).toHaveBeenCalledTimes(1);
     });
   });

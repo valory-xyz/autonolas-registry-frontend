@@ -1,6 +1,7 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-import { render, fireEvent } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { render } from '@testing-library/react';
 import RegisterOperator from 'components/ListOperators/register';
 import { wrapProvider } from '../../helpers';
 
@@ -19,6 +20,6 @@ describe('<ListOperators /> register.jsx', () => {
       'Register Operator',
     );
 
-    fireEvent.click(container.querySelector('.ant-btn'));
+    userEvent.click(container.querySelector('.ant-btn'));
   });
 });

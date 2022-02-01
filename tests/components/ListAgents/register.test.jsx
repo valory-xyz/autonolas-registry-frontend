@@ -1,5 +1,6 @@
 import React from 'react';
-import { fireEvent, render, waitFor } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { getMechMinterContract } from 'common-util/Contracts';
 import RegisterAgent from 'components/ListAgents/register';
 import { FORM_NAME } from 'common-util/List/RegisterForm';
@@ -30,27 +31,25 @@ describe('<ListAgents /> register.jsx', () => {
 
     // check if submit button is present
     expect(container.querySelector('.ant-btn[type="submit"]')).toBeTruthy();
-
-    fireEvent.change(container.querySelector(`#${FORM_NAME}_owner_address`), {
-      target: { value: dummyAddress },
-    });
-    fireEvent.change(
-      container.querySelector(`#${FORM_NAME}_developer_address`),
-      {
-        target: { value: dummyAddress },
-      },
+    userEvent.type(
+      container.querySelector(`#${FORM_NAME}_owner_address`),
+      dummyAddress,
     );
-    fireEvent.change(container.querySelector(`#${FORM_NAME}_hash`), {
-      target: { value: '0x0' },
-    });
-    fireEvent.change(container.querySelector(`#${FORM_NAME}_description`), {
-      target: { value: 'desc' },
-    });
-    fireEvent.change(container.querySelector(`#${FORM_NAME}_dependencies`), {
-      target: { value: '1, 2' },
-    });
+    userEvent.type(
+      container.querySelector(`#${FORM_NAME}_developer_address`),
+      dummyAddress,
+    );
+    userEvent.type(container.querySelector(`#${FORM_NAME}_hash`), '0x0');
+    userEvent.type(
+      container.querySelector(`#${FORM_NAME}_description`),
+      'desc',
+    );
+    userEvent.type(
+      container.querySelector(`#${FORM_NAME}_dependencies`),
+      '1, 2',
+    );
 
-    fireEvent.submit(container.querySelector('.ant-btn[type="submit"]'));
+    userEvent.click(container.querySelector('.ant-btn[type="submit"]'));
 
     await waitFor(async () => {
       // check if `Agent registered` on `Submit` click
