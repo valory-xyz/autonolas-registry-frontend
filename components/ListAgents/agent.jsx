@@ -1,11 +1,12 @@
 import { Typography } from 'antd';
 import { useRouter } from 'next/router';
+import get from 'lodash/get';
 
 const { Title } = Typography;
 
 const Agent = () => {
   const router = useRouter();
-  const { id } = router.query;
+  const id = get(router, 'query.id') || null;
   console.log(`agent_id = ${id}`);
 
   return (

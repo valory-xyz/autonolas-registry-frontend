@@ -6,7 +6,7 @@ import {
 } from 'antd';
 import { useRouter } from 'next/router';
 import { URL } from 'util/constants';
-import { ListEmptyMessage, PrintJson } from 'common-util/ListCommon';
+import { ListEmptyMessage, PrintJson } from 'common-util/List/ListCommon';
 import ListCards from 'common-util/List/ListCards';
 import { getServices, getServicesByAccount } from './utils';
 
@@ -20,7 +20,6 @@ const ListServices = ({ account }) => {
 
   useEffect(async () => {
     if (account) {
-      window.ethereum.enable();
       setServicesListLoading(true);
       setList([]);
 

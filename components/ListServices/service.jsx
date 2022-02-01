@@ -1,20 +1,19 @@
 import { useState, useEffect } from 'react';
-import Web3 from 'web3';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
   Typography, Button, notification, Skeleton,
 } from 'antd';
-import { getMappedArrayFromString, AlertError } from 'common-util/ListCommon';
+import get from 'lodash/get';
 import {
-  SERVICE_REGISTRY_ADDRESS,
-  SERVICE_REGISTRY,
-} from 'common-util/AbiAndAddresses/serviceRegistry';
+  convertStringToArray,
+  AlertError,
+} from 'common-util/List/ListCommon';
 import {
-  SERVICE_MANAGER_ADDRESS,
-  SERVICE_MANAGER,
-} from 'common-util/AbiAndAddresses/serviceManager';
+  getServiceContract,
+  getServiceManagerContract,
+} from 'common-util/Contracts';
 import RegisterForm from './RegisterForm';
 import { RegisterFooter } from '../styles';
 
@@ -25,20 +24,14 @@ const Service = ({ account }) => {
   const [serviceInfo, setServiceInfo] = useState({});
   const [error, setError] = useState(null);
   const router = useRouter();
-  const { id } = router.query;
+  const id = get(router, 'query.id') || null;
 
   useEffect(() => {
     if (account) {
-      window.ethereum.enable();
       setAllLoading(true);
       setServiceInfo({});
 
-      const web3 = new Web3(window.web3.currentProvider);
-      const contract = new web3.eth.Contract(
-        SERVICE_REGISTRY.abi,
-        SERVICE_REGISTRY_ADDRESS,
-      );
-
+      const contract = getServiceContract();
       contract.methods
         .getServiceInfo(id)
         .call()
@@ -57,22 +50,15 @@ const Service = ({ account }) => {
     if (account) {
       setError(null);
 
-      window.ethereum.enable();
-      const web3 = new Web3(window.web3.currentProvider);
-
-      const contract = new web3.eth.Contract(
-        SERVICE_MANAGER.abi,
-        SERVICE_MANAGER_ADDRESS,
-      );
-
+      const contract = getServiceManagerContract();
       contract.methods
         .serviceUpdate(
           values.owner_address,
           values.service_name,
           values.service_description,
           '0x0', // configHash
-          getMappedArrayFromString(values.agent_ids),
-          getMappedArrayFromString(values.agent_num_slots),
+          convertStringToArray(values.agent_ids),
+          convertStringToArray(values.agent_num_slots),
           values.threshold,
           values.service_id,
         )
@@ -87,9 +73,7 @@ const Service = ({ account }) => {
     }
   };
 
-  const handleCancel = () => {
-    router.push('/services');
-  };
+  const handleCancel = () => router.push('/services');
 
   return (
     <>

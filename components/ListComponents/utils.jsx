@@ -1,16 +1,7 @@
-import Web3 from 'web3';
-import {
-  COMPONENT_REGISTRY_ADDRESS,
-  COMPONENT_REGISTRY,
-} from 'common-util/AbiAndAddresses/componentRegistry';
+import { getComponentContract } from 'common-util/Contracts';
 
 export const getComponentsByAccount = (account) => new Promise((resolve, reject) => {
-  const web3 = new Web3(window.web3.currentProvider);
-  const contract = new web3.eth.Contract(
-    COMPONENT_REGISTRY.abi,
-    COMPONENT_REGISTRY_ADDRESS,
-  );
-
+  const contract = getComponentContract();
   contract.methods
     .balanceOf(account)
     .call()
@@ -36,11 +27,7 @@ export const getComponentsByAccount = (account) => new Promise((resolve, reject)
  * Function to return all components
  */
 export const getComponents = () => new Promise((resolve, reject) => {
-  const web3 = new Web3(window.web3.currentProvider);
-  const contract = new web3.eth.Contract(
-    COMPONENT_REGISTRY.abi,
-    COMPONENT_REGISTRY_ADDRESS,
-  );
+  const contract = getComponentContract();
 
   contract.methods
     .totalSupply()
