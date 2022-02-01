@@ -8,7 +8,7 @@ import { EmptyMessage } from 'components/styles';
  * @param {String}
  * @returns {Array}
  */
-export const getMappedArrayFromString = (str) => (str ? str.split(',').map((e) => e.trim()) : str);
+export const convertStringToArray = (str) => (str ? str.split(',').map((e) => e.trim()) : str);
 
 // ----------- components -----------
 export const ListEmptyMessage = ({ type }) => {

@@ -10,7 +10,7 @@ jest.mock('common-util/Contracts', () => ({
   getServiceContract: jest.fn(),
 }));
 
-describe('<ListServices /> utils.jsx', () => {
+describe('listServices/utils.jsx', () => {
   it('getServicesByAccount: Promise resolved', async () => {
     expect.hasAssertions();
 

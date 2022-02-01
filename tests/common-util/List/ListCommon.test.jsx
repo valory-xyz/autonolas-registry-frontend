@@ -1,15 +1,14 @@
 import React from 'react';
-// import { render } from '@testing-library/react';
 import { render, screen } from '@testing-library/react';
 import {
-  getMappedArrayFromString,
+  convertStringToArray,
   ListEmptyMessage,
   PrintJson,
   AlertInfo,
   AlertError,
 } from 'common-util/List/ListCommon';
 
-describe('getMappedArrayFromString()', () => {
+describe('convertStringToArray()', () => {
   it.each([
     { input: 'A, B, C', output: ['A', 'B', 'C'] },
     { input: '1, 2', output: ['1', '2'] },
@@ -17,7 +16,7 @@ describe('getMappedArrayFromString()', () => {
     { input: null, output: null },
     { input: undefined, output: undefined },
   ])('example $input', ({ input, output }) => {
-    const result = getMappedArrayFromString(input);
+    const result = convertStringToArray(input);
     expect(result).toStrictEqual(output);
   });
 });

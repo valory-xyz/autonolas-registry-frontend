@@ -12,8 +12,8 @@ jest.mock('next/router', () => ({
 
 useRouter.mockImplementation(() => ({ push: jest.fn() }));
 
-describe('<ListOperators /> register.jsx', () => {
-  it('works as expected', async () => {
+describe('listOperators/register.jsx', () => {
+  it('works as expected (dummy)', async () => {
     expect.hasAssertions();
     const { container } = render(wrapProvider(<RegisterOperator />));
     expect(container.querySelector('.ant-typography').textContent).toBe(

@@ -12,8 +12,8 @@ jest.mock('common-util/Contracts', () => ({
   getMechMinterContract: jest.fn(),
 }));
 
-describe('<ListComponents /> register.jsx', () => {
-  it('works as expected', async () => {
+describe('listComponents/register.jsx', () => {
+  it('should submit the form successfully', async () => {
     expect.hasAssertions();
 
     getMechMinterContract.mockImplementation(() => ({

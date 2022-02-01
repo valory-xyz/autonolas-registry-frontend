@@ -4,7 +4,6 @@ import userEvent from '@testing-library/user-event';
 import ListAgents from 'components/ListAgents';
 import Agent from 'components/ListAgents/agent';
 import { getAgents, getAgentsByAccount } from 'components/ListAgents/utils';
-// import { URL } from 'util/constants';
 import { useRouter } from 'next/router';
 import { wrapProvider } from '../../helpers';
 
@@ -20,7 +19,7 @@ jest.mock('components/ListAgents/utils', () => ({
 
 useRouter.mockImplementation(() => ({ push: jest.fn() }));
 
-describe('<ListAgents /> index.jsx', () => {
+describe('listAgents/index.jsx', () => {
   it('works as expected', async () => {
     expect.hasAssertions();
     getAgents.mockImplementation(() => Promise.resolve([{ name: 'ALL TAB CONTENT' }]));
@@ -55,8 +54,8 @@ describe('<ListAgents /> index.jsx', () => {
   });
 });
 
-describe('<ListAgents /> agent.jsx', () => {
-  it('works as expected', async () => {
+describe('listAgents/agent.jsx', () => {
+  it('should render header as `Agent`', async () => {
     expect.hasAssertions();
     const { container } = render(wrapProvider(<Agent />));
     await waitFor(async () => expect(container.querySelector('.ant-typography').textContent).toBe(

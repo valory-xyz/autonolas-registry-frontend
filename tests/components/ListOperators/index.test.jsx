@@ -13,7 +13,7 @@ jest.mock('next/router', () => ({
 
 useRouter.mockImplementation(() => ({ push: jest.fn() }));
 
-describe('<ListOperators /> index.jsx', () => {
+describe('listOperators/index.jsx', () => {
   it('works as expected', async () => {
     expect.hasAssertions();
     const { container } = render(wrapProvider(<ListOperators />));
@@ -26,8 +26,8 @@ describe('<ListOperators /> index.jsx', () => {
   });
 });
 
-describe('<ListOperators /> operator.jsx', () => {
-  it('works as expected', async () => {
+describe('listOperators/operator.jsx', () => {
+  it('should render header as `Operator`', async () => {
     expect.hasAssertions();
     const { container } = render(wrapProvider(<Operator />));
     expect(container.querySelector('.ant-typography').textContent).toBe(

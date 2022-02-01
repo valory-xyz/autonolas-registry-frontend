@@ -8,7 +8,7 @@ const handleSubmit = jest.fn(() => {});
 const handleCancel = jest.fn(() => {});
 
 describe('<RegisterForm />', () => {
-  it('valid inputs & submitted successfully', async () => {
+  it('should submit the form successfully', async () => {
     expect.hasAssertions();
     const { container } = render(
       wrapProvider(

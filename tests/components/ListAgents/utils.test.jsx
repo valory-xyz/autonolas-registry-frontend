@@ -7,7 +7,7 @@ jest.mock('common-util/Contracts', () => ({
   getAgentContract: jest.fn(),
 }));
 
-describe('<ListAgents /> utils.jsx', () => {
+describe('listAgents/utils.jsx', () => {
   it('getAgentsByAccount: Promise resolved', async () => {
     expect.hasAssertions();
 

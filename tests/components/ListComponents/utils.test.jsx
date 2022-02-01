@@ -7,7 +7,7 @@ jest.mock('common-util/Contracts', () => ({
   getComponentContract: jest.fn(),
 }));
 
-describe('<ListComponents /> utils.jsx', () => {
+describe('listComponents/utils.jsx', () => {
   it('getComponentsByAccount: Promise resolved', async () => {
     expect.hasAssertions();
 

@@ -4,7 +4,6 @@ import userEvent from '@testing-library/user-event';
 import ListComponents from 'components/ListComponents';
 import Component from 'components/ListComponents/component';
 import { getComponents, getComponentsByAccount } from 'components/ListComponents/utils';
-// import { URL } from 'util/constants';
 import { useRouter } from 'next/router';
 import { wrapProvider } from '../../helpers';
 
@@ -20,7 +19,7 @@ jest.mock('components/ListComponents/utils', () => ({
 
 useRouter.mockImplementation(() => ({ push: jest.fn() }));
 
-describe('<ListComponents /> index.jsx', () => {
+describe('listComponents/index.jsx', () => {
   it('works as expected', async () => {
     expect.hasAssertions();
     getComponents.mockImplementation(() => Promise.resolve([{ name: 'ALL TAB CONTENT' }]));
@@ -55,8 +54,8 @@ describe('<ListComponents /> index.jsx', () => {
   });
 });
 
-describe('<ListComponents /> component.jsx', () => {
-  it('works as expected', async () => {
+describe('listComponents/component.jsx', () => {
+  it('should render header as `Component`', async () => {
     expect.hasAssertions();
     const { container } = render(wrapProvider(<Component />));
     await waitFor(async () => expect(container.querySelector('.ant-typography').textContent).toBe(

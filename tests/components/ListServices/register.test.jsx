@@ -19,8 +19,8 @@ getServiceManagerContract.mockImplementation(() => ({
   },
 }));
 
-describe('<ListServices /> register.jsx', () => {
-  it('works as expected', async () => {
+describe('listServices/register.jsx', () => {
+  it('should submit the form successfully', async () => {
     expect.hasAssertions();
 
     const { container, getByText } = render(wrapProvider(<RegisterService />));

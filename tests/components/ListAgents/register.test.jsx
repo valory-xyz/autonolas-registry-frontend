@@ -12,7 +12,7 @@ jest.mock('common-util/Contracts', () => ({
   getMechMinterContract: jest.fn(),
 }));
 
-describe('<ListAgents /> register.jsx', () => {
+describe('listAgents/register.jsx', () => {
   it('works as expected', async () => {
     expect.hasAssertions();
 

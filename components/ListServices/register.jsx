@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import { Button, Typography, notification } from 'antd';
 import {
-  getMappedArrayFromString,
+  convertStringToArray,
   AlertInfo,
   AlertError,
 } from 'common-util/List/ListCommon';
@@ -31,8 +31,8 @@ const RegisterService = ({ account }) => {
           values.service_name,
           values.service_description,
           '0x0', // configHash
-          getMappedArrayFromString(values.agent_ids),
-          getMappedArrayFromString(values.agent_num_slots),
+          convertStringToArray(values.agent_ids),
+          convertStringToArray(values.agent_num_slots),
           values.threshold,
         )
         .send({ from: account })

@@ -39,7 +39,7 @@ getServiceContract.mockImplementation(() => ({
 
 useRouter.mockImplementation(() => ({ push: jest.fn() }));
 
-describe('<ListServices /> index.jsx', () => {
+describe('listServices/index.jsx', () => {
   it('works as expected', async () => {
     expect.hasAssertions();
     getServices.mockImplementation(() => Promise.resolve([{ name: 'ALL TAB CONTENT' }]));
