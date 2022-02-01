@@ -1,5 +1,6 @@
 import React from 'react';
-import { render, waitFor, fireEvent } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import RegisterForm, { FORM_NAME } from 'common-util/List/RegisterForm';
 import { wrapProvider, dummyAddress } from '../../helpers';
 
@@ -7,7 +8,7 @@ const handleSubmit = jest.fn(() => {});
 const handleCancel = jest.fn(() => {});
 
 describe('<RegisterForm />', () => {
-  it('valid inputs & submitted successfully', async () => {
+  it('should submit the form successfully', async () => {
     expect.hasAssertions();
     const { container } = render(
       wrapProvider(
@@ -20,27 +21,26 @@ describe('<RegisterForm />', () => {
     );
 
     // adding input
-    fireEvent.change(container.querySelector(`#${FORM_NAME}_owner_address`), {
-      target: { value: dummyAddress },
-    });
-    fireEvent.change(
-      container.querySelector(`#${FORM_NAME}_developer_address`),
-      {
-        target: { value: dummyAddress },
-      },
+    userEvent.type(
+      container.querySelector(`#${FORM_NAME}_owner_address`),
+      dummyAddress,
     );
-    fireEvent.change(container.querySelector(`#${FORM_NAME}_hash`), {
-      target: { value: '0x0' },
-    });
-    fireEvent.change(container.querySelector(`#${FORM_NAME}_description`), {
-      target: { value: 'desc' },
-    });
-    fireEvent.change(container.querySelector(`#${FORM_NAME}_dependencies`), {
-      target: { value: '1, 2' },
-    });
+    userEvent.type(
+      container.querySelector(`#${FORM_NAME}_developer_address`),
+      dummyAddress,
+    );
+    userEvent.type(container.querySelector(`#${FORM_NAME}_hash`), '0x0');
+    userEvent.type(
+      container.querySelector(`#${FORM_NAME}_description`),
+      'desc',
+    );
+    userEvent.type(
+      container.querySelector(`#${FORM_NAME}_dependencies`),
+      '1, 2',
+    );
 
     // submit
-    fireEvent.submit(container.querySelector('.ant-btn[type="submit"]'));
+    userEvent.click(container.querySelector('.ant-btn[type="submit"]'));
 
     await waitFor(async () => {
       // screen.debug();

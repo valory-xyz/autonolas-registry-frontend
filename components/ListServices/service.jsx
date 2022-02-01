@@ -7,7 +7,7 @@ import {
 } from 'antd';
 import get from 'lodash/get';
 import {
-  getMappedArrayFromString,
+  convertStringToArray,
   AlertError,
 } from 'common-util/List/ListCommon';
 import {
@@ -57,8 +57,8 @@ const Service = ({ account }) => {
           values.service_name,
           values.service_description,
           '0x0', // configHash
-          getMappedArrayFromString(values.agent_ids),
-          getMappedArrayFromString(values.agent_num_slots),
+          convertStringToArray(values.agent_ids),
+          convertStringToArray(values.agent_num_slots),
           values.threshold,
           values.service_id,
         )

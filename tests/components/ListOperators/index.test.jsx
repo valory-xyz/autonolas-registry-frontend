@@ -1,6 +1,6 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-import { render, fireEvent } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import ListOperators from 'components/ListOperators';
 import Operator from 'components/ListOperators/operator';
 import { wrapProvider } from '../../helpers';
@@ -12,21 +12,17 @@ jest.mock('next/router', () => ({
 
 useRouter.mockImplementation(() => ({ push: jest.fn() }));
 
-describe('<ListOperators /> index.jsx', () => {
-  it('works as expected', async () => {
+describe('listOperators/index.jsx', () => {
+  it('should render `Register` button', async () => {
     expect.hasAssertions();
-    const { container } = render(wrapProvider(<ListOperators />));
-    expect(container.querySelector('.ant-typography').textContent).toBe(
-      'Operators',
-    );
-    expect(container.querySelector('.ant-btn')).toBeInTheDocument();
+    const { getByRole } = render(wrapProvider(<ListOperators />));
 
-    fireEvent.click(container.querySelector('.ant-btn'));
+    expect(getByRole('button', { name: 'Register' })).toBeInTheDocument();
   });
 });
 
-describe('<ListOperators /> operator.jsx', () => {
-  it('works as expected', async () => {
+describe('listOperators/operator.jsx', () => {
+  it('should render header as `Operator`', async () => {
     expect.hasAssertions();
     const { container } = render(wrapProvider(<Operator />));
     expect(container.querySelector('.ant-typography').textContent).toBe(

@@ -8,7 +8,7 @@ const getRejectedList = () => Promise.reject(new Error('Some error occured'));
 const getList = () => Promise.resolve([{ number: 'One' }, { number: 'Two' }]);
 
 describe('<ListCards />', () => {
-  it('no account is passed', async () => {
+  it('should render a not-registered message if no account is passed', async () => {
     expect.hasAssertions();
     const { getByTestId } = render(
       wrapProvider(<ListCards type="agent" getList={getEmptyList} />, true),
@@ -20,7 +20,7 @@ describe('<ListCards />', () => {
     });
   });
 
-  it('account is passed with error list', async () => {
+  it('should render a not-registered message if list has an error', async () => {
     expect.hasAssertions();
     const { getByTestId } = render(
       wrapProvider(<ListCards type="agent" getList={getRejectedList} />),
@@ -36,7 +36,7 @@ describe('<ListCards />', () => {
     });
   });
 
-  it('account is passed with empty list', async () => {
+  it('should render a not-registered message if list is empty', async () => {
     expect.hasAssertions();
     const { queryByTestId } = render(
       wrapProvider(<ListCards type="agent" getList={getEmptyList} />),
@@ -44,11 +44,11 @@ describe('<ListCards />', () => {
 
     await waitFor(() => {
       const element = queryByTestId('not-registered-message');
-      expect(element).not.toBeInTheDocument();
+      expect(element).toBeInTheDocument();
     });
   });
 
-  it('account is passed with list', async () => {
+  it('should render the list', async () => {
     expect.hasAssertions();
     const { queryByTestId, queryByText } = render(
       wrapProvider(<ListCards type="agent" getList={getList} />),

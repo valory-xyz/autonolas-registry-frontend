@@ -2,7 +2,6 @@ import React from 'react';
 import { render, waitFor } from '@testing-library/react';
 import Service from 'components/ListServices/service';
 import { FORM_NAME } from 'components/ListServices/RegisterForm';
-// import { URL } from 'util/constants';
 import { useRouter } from 'next/router';
 import {
   getServiceContract,
@@ -56,8 +55,8 @@ getServiceManagerContract.mockImplementation(() => ({
 
 useRouter.mockImplementation(() => ({ push: jest.fn() }));
 
-describe('<ListServices /> service.jsx', () => {
-  it('works as expected', async () => {
+describe('listServices/service.jsx', () => {
+  it('should update the service successfully', async () => {
     expect.hasAssertions();
     const { container, getByText } = render(wrapProvider(<Service />));
 
