@@ -4,7 +4,10 @@ import { useRouter } from 'next/router';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import get from 'lodash/get';
 import { Button, Form, Input } from 'antd';
+
+export const FORM_NAME = 'serviceRegisterForm';
 
 const RegisterForm = ({
   account,
@@ -15,7 +18,7 @@ const RegisterForm = ({
 }) => {
   const [fields, setFields] = useState([]);
   const router = useRouter();
-  const { id } = router.query;
+  const id = get(router, 'query.id') || null;
 
   useDeepCompareEffect(() => {
     if (isUpdateForm) {
@@ -71,7 +74,7 @@ const RegisterForm = ({
 
   return (
     <Form
-      name="serviceRegisterForm"
+      name={FORM_NAME}
       labelCol={{ span: 8 }}
       wrapperCol={{ span: 12 }}
       initialValues={{ remember: true }}

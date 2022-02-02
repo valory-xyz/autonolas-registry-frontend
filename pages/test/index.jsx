@@ -1,3 +1,3 @@
-import MenuTest from 'components/MenuTest';
+import ListTest from 'components/ListTest';
 
-export default MenuTest;
+export default ListTest;

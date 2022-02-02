@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Table, Skeleton } from 'antd';
-import { ListEmptyMessage } from 'common-util/ListCommon';
+import { ListEmptyMessage } from 'common-util/List/ListCommon';
 import { getData, getTableColumns } from './helpers';
 
 const ListTable = ({

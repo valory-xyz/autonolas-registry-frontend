@@ -1,15 +1,7 @@
-import Web3 from 'web3';
-import {
-  AGENT_REGISTRY_ADDRESS,
-  AGENT_REGISTRY,
-} from 'common-util/AbiAndAddresses/agentRegistry';
+import { getAgentContract } from 'common-util/Contracts';
 
 export const getAgentsByAccount = (account) => new Promise((resolve, reject) => {
-  const web3 = new Web3(window.web3.currentProvider);
-  const contract = new web3.eth.Contract(
-    AGENT_REGISTRY.abi,
-    AGENT_REGISTRY_ADDRESS,
-  );
+  const contract = getAgentContract();
 
   contract.methods
     .balanceOf(account)
@@ -36,11 +28,7 @@ export const getAgentsByAccount = (account) => new Promise((resolve, reject) => 
  * Function to return all agents
  */
 export const getAgents = () => new Promise((resolve, reject) => {
-  const web3 = new Web3(window.web3.currentProvider);
-  const contract = new web3.eth.Contract(
-    AGENT_REGISTRY.abi,
-    AGENT_REGISTRY_ADDRESS,
-  );
+  const contract = getAgentContract();
 
   contract.methods
     .totalSupply()

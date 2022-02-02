@@ -1,18 +1,14 @@
 import { useState } from 'react';
-import Web3 from 'web3';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import { Button, Typography, notification } from 'antd';
 import {
-  getMappedArrayFromString,
+  convertStringToArray,
   AlertInfo,
   AlertError,
-} from 'common-util/ListCommon';
-import {
-  SERVICE_MANAGER_ADDRESS,
-  SERVICE_MANAGER,
-} from 'common-util/AbiAndAddresses/serviceManager';
+} from 'common-util/List/ListCommon';
+import { getServiceManagerContract } from 'common-util/Contracts';
 import RegisterForm from './RegisterForm';
 import { RegisterFooter } from '../styles';
 
@@ -25,24 +21,18 @@ const RegisterService = ({ account }) => {
 
   const handleSubmit = (values) => {
     if (account) {
-      window.ethereum.enable();
       setError(null);
       setInformation(null);
 
-      const web3 = new Web3(window.web3.currentProvider);
-      const contract = new web3.eth.Contract(
-        SERVICE_MANAGER.abi,
-        SERVICE_MANAGER_ADDRESS,
-      );
-
+      const contract = getServiceManagerContract();
       contract.methods
         .serviceCreate(
           values.owner_address,
           values.service_name,
           values.service_description,
           '0x0', // configHash
-          getMappedArrayFromString(values.agent_ids),
-          getMappedArrayFromString(values.agent_num_slots),
+          convertStringToArray(values.agent_ids),
+          convertStringToArray(values.agent_num_slots),
           values.threshold,
         )
         .send({ from: account })

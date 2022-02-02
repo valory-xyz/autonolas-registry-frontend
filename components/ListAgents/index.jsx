@@ -9,7 +9,7 @@ import { getAgents, getAgentsByAccount } from './utils';
 
 const { TabPane } = Tabs;
 
-const MenuAgent = ({ account }) => {
+const ListAgents = ({ account }) => {
   const router = useRouter();
   const { searchValue, extraTabContent, clearSearch } = useExtraTabContent({
     title: 'Agents',
@@ -46,11 +46,11 @@ const MenuAgent = ({ account }) => {
   );
 };
 
-MenuAgent.propTypes = {
+ListAgents.propTypes = {
   account: PropTypes.string,
 };
 
-MenuAgent.defaultProps = {
+ListAgents.defaultProps = {
   account: null,
 };
 
@@ -59,4 +59,4 @@ const mapStateToProps = (state) => {
   return { account };
 };
 
-export default connect(mapStateToProps, {})(MenuAgent);
+export default connect(mapStateToProps, {})(ListAgents);
