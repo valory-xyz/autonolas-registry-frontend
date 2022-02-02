@@ -54,6 +54,8 @@ describe('login/index.jsx', () => {
       }),
     };
 
+    // TODO fix `Not implemented: navigation (except hash changes)` error
+    // caused by window object mock
     Object.defineProperty(window, 'ethereum', {
       ...window,
       configurable: true,

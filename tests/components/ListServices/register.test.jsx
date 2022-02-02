@@ -24,36 +24,35 @@ describe('listServices/register.jsx', () => {
     expect.hasAssertions();
 
     const { container, getByText } = render(wrapProvider(<RegisterService />));
+    // title
+    expect(getByText(/Register Service/i)).toBeInTheDocument();
+
+    // check if submit button is present
+    expect(container.querySelector('.ant-btn[type="submit"]')).toBeTruthy();
+
+    userEvent.type(
+      container.querySelector(`#${FORM_NAME}_owner_address`),
+      dummyAddress,
+    );
+    userEvent.type(
+      container.querySelector(`#${FORM_NAME}_service_name`),
+      'Service Name',
+    );
+    userEvent.type(
+      container.querySelector(`#${FORM_NAME}_service_description`),
+      'Desc',
+    );
+    userEvent.type(container.querySelector(`#${FORM_NAME}_agent_ids`), '1');
+    userEvent.type(
+      container.querySelector(`#${FORM_NAME}_agent_num_slots`),
+      '1',
+    );
+    userEvent.type(container.querySelector(`#${FORM_NAME}_threshold`), '1');
+
     await act(async () => {
-      // title
-      expect(getByText(/Register Service/i)).toBeInTheDocument();
-
-      // check if submit button is present
-      expect(container.querySelector('.ant-btn[type="submit"]')).toBeTruthy();
-
-      userEvent.type(
-        container.querySelector(`#${FORM_NAME}_owner_address`),
-        dummyAddress,
-      );
-      userEvent.type(
-        container.querySelector(`#${FORM_NAME}_service_name`),
-        'Service Name',
-      );
-      userEvent.type(
-        container.querySelector(`#${FORM_NAME}_service_description`),
-        'Desc',
-      );
-      userEvent.type(container.querySelector(`#${FORM_NAME}_agent_ids`), '1');
-      userEvent.type(
-        container.querySelector(`#${FORM_NAME}_agent_num_slots`),
-        '1',
-      );
-      userEvent.type(container.querySelector(`#${FORM_NAME}_threshold`), '1');
-
       const submitBtn = getByText(/Submit/i);
       expect(submitBtn).toBeInTheDocument();
       userEvent.click(submitBtn);
-      // expect(submitBtn).toHaveBeenCalledTimes(1);
     });
   });
 });

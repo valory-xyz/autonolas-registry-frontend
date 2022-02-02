@@ -20,6 +20,7 @@ describe('layout/index.jsx', () => {
   it('should render logo & navbar', async () => {
     expect.hasAssertions();
     const { container, getByTestId } = render(wrapProvider(<Layout />));
+    // TODO change it `getByRole` as `img` tag
     const logo = getByTestId('protocol-logo');
     const menuItems = container.querySelectorAll(
       '.ant-menu-item .ant-menu-title-content',
