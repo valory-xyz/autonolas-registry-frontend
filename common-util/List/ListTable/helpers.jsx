@@ -14,9 +14,20 @@ const textStyle = { maxWidth: '100%' };
 /**
  * helper components
  */
+
+// TODO: need to update: https://trello.com/c/ChbJiG5b/354-protocol-frontend-redesign-after-camelia-design-is-ready
 export const EllipsisMiddle = ({ suffixCount, children }) => {
-  const start = children.slice(0, children.length - suffixCount).trim();
-  const suffix = children.slice(-suffixCount).trim();
+  let start = null;
+  let suffix = 0;
+
+  if (children.length > 10) {
+    start = children.slice(0, children.length - suffixCount).trim();
+    suffix = children.slice(-suffixCount).trim();
+  } else {
+    start = children;
+    suffix = null;
+  }
+
   return (
     <Text style={textStyle} ellipsis={{ suffix }}>
       {start}
