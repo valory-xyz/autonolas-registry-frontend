@@ -23,6 +23,14 @@ export const wrapProvider = (component, isEmptyStore = false) => (
   <Provider store={isEmptyStore ? emptyStore : initStore}>{component}</Provider>
 );
 
+export const errorStore = mockStore({
+  setup: { account: dummyAddress, errorMessage: 'Error in store' },
+});
+
+export const wrapProviderError = (component) => (
+  <Provider store={errorStore}>{component}</Provider>
+);
+
 export const dummyFunction = jest.fn(() => {});
 
 export const getTableTd = (i) => `.ant-table-tbody > tr.ant-table-row.ant-table-row-level-0 > td:nth-child(${i})`;
