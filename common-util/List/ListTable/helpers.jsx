@@ -2,6 +2,7 @@ import { useState } from 'react';
 import {
   Input, Space, Button, Typography,
 } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
 import PropTypes from 'prop-types';
 import some from 'lodash/some';
 import includes from 'lodash/includes';
@@ -9,7 +10,6 @@ import { NAV_TYPES } from 'util/constants';
 
 const { Text, Title } = Typography;
 const textStyle = { maxWidth: '100%' };
-const { Search } = Input;
 
 /**
  * helper components
@@ -53,7 +53,7 @@ export const getTableColumns = (
         title: 'Description',
         dataIndex: 'description',
         key: 'description',
-        width: 220,
+        width: 140,
         className: 'underline',
         render: (text) => (
           <EllipsisMiddle suffixCount={5}>{text}</EllipsisMiddle>
@@ -72,7 +72,7 @@ export const getTableColumns = (
         title: 'Owner',
         dataIndex: 'owner',
         key: 'owner',
-        width: 200,
+        width: 160,
         render: (text) => (
           <EllipsisMiddle suffixCount={5}>{text}</EllipsisMiddle>
         ),
@@ -87,8 +87,9 @@ export const getTableColumns = (
         ),
       },
       {
-        title: 'Dependency',
+        title: 'Dependency #',
         dataIndex: 'dependency',
+        width: 180,
         key: 'dependency',
         render: (text) => (text ? text.join(', ') : '-'),
       },
@@ -280,7 +281,8 @@ export const useExtraTabContent = ({ title, onRegisterClick = () => {} }) => {
     left: <Title level={2}>{title}</Title>,
     right: (
       <>
-        <Search
+        <Input
+          prefix={<SearchOutlined className="site-form-item-icon" />}
           placeholder="Search"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
