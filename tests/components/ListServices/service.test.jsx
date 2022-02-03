@@ -82,7 +82,6 @@ describe('listServices/service.jsx', () => {
 
       const submitBtn = getByText(/Submit/i);
       expect(submitBtn).toBeInTheDocument();
-      // fireEvent.click(submitBtn);
     });
   });
 });

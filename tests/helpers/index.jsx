@@ -23,4 +23,12 @@ export const wrapProvider = (component, isEmptyStore = false) => (
   <Provider store={isEmptyStore ? emptyStore : initStore}>{component}</Provider>
 );
 
+export const errorStore = mockStore({
+  setup: { account: dummyAddress, errorMessage: 'Error in store' },
+});
+
+export const wrapProviderError = (component) => (
+  <Provider store={errorStore}>{component}</Provider>
+);
+
 export const dummyFunction = jest.fn(() => {});
