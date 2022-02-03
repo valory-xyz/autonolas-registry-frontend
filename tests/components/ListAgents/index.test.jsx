@@ -5,8 +5,9 @@ import ListAgents from 'components/ListAgents';
 import Agent from 'components/ListAgents/agent';
 import { getAgents, getAgentsByAccount } from 'components/ListAgents/utils';
 import { useRouter } from 'next/router';
-import { wrapProvider, ACTIVE_TAB } from '../../helpers';
+import { wrapProvider, ACTIVE_TAB, getTableTd } from '../../helpers';
 
+// mocks for router & smart-contract functions
 jest.mock('next/router', () => ({
   __esModule: true,
   useRouter: jest.fn(),
@@ -19,19 +20,27 @@ jest.mock('components/ListAgents/utils', () => ({
 
 useRouter.mockImplementation(() => ({ push: jest.fn() }));
 
+// dummy responses mock
+const allAgentsResponse = { id: 'all-agent-1', dependencies: ['4'] };
+const myAgentsResponse = { id: 'my-agent-1', dependencies: ['5'] };
+
+// test cases
 describe('listAgents/index.jsx', () => {
-  getAgents.mockImplementation(() => Promise.resolve([{ name: 'ALL TAB CONTENT' }]));
-  getAgentsByAccount.mockImplementation(() => Promise.resolve([{ name: 'MY AGENTS CONTENT' }]));
+  getAgents.mockImplementation(() => Promise.resolve([allAgentsResponse]));
+  getAgentsByAccount.mockImplementation(() => Promise.resolve([myAgentsResponse]));
 
   it('should render tabs with `All Tab` as active tab & Register button', async () => {
     expect.hasAssertions();
-    const { container, getByText, getByRole } = render(
-      wrapProvider(<ListAgents />),
-    );
+    const { container, getByRole } = render(wrapProvider(<ListAgents />));
 
     // check if the selected tab is `All` & has the correct content
     await waitFor(async () => expect(container.querySelector(ACTIVE_TAB).textContent).toBe('All'));
-    expect(getByText(/ALL TAB CONTENT/i)).toBeInTheDocument();
+
+    // ckecking Id, description column
+    expect(container.querySelector(getTableTd(1)).textContent).toBe('1');
+    expect(container.querySelector(getTableTd(5)).textContent).toBe(
+      allAgentsResponse.dependencies.length.toString(),
+    );
 
     // it should be called once
     expect(useRouter).toHaveBeenCalledTimes(1);
@@ -42,7 +51,7 @@ describe('listAgents/index.jsx', () => {
 
   it('should render tabs with `My Agents` as active tab & Register button', async () => {
     expect.hasAssertions();
-    const { container, getByText, getByRole } = render(
+    const { container, getByRole } = render(
       wrapProvider(<ListAgents />),
     );
 
@@ -53,7 +62,6 @@ describe('listAgents/index.jsx', () => {
     await waitFor(async () => {
       expect(container.querySelector(ACTIVE_TAB).textContent).toBe('My Agents');
     });
-    expect(getByText(/MY AGENTS CONTENT/i)).toBeInTheDocument();
 
     // Register button
     expect(getByRole('button', { name: 'Register' })).toBeInTheDocument();

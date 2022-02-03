@@ -99,9 +99,26 @@ export const SERVICE_MANAGER = {
           type: 'string',
         },
         {
-          internalType: 'string',
+          components: [
+            {
+              internalType: 'bytes32',
+              name: 'hash',
+              type: 'bytes32',
+            },
+            {
+              internalType: 'uint8',
+              name: 'hashFunction',
+              type: 'uint8',
+            },
+            {
+              internalType: 'uint8',
+              name: 'size',
+              type: 'uint8',
+            },
+          ],
+          internalType: 'struct IMultihash.Multihash',
           name: 'configHash',
-          type: 'string',
+          type: 'tuple',
         },
         {
           internalType: 'uint256[]',
@@ -249,11 +266,6 @@ export const SERVICE_MANAGER = {
     {
       inputs: [
         {
-          internalType: 'address',
-          name: 'owner',
-          type: 'address',
-        },
-        {
           internalType: 'uint256',
           name: 'serviceId',
           type: 'uint256',
@@ -271,11 +283,6 @@ export const SERVICE_MANAGER = {
     },
     {
       inputs: [
-        {
-          internalType: 'address',
-          name: 'owner',
-          type: 'address',
-        },
         {
           internalType: 'uint256',
           name: 'serviceId',
@@ -295,11 +302,6 @@ export const SERVICE_MANAGER = {
     {
       inputs: [
         {
-          internalType: 'address',
-          name: 'owner',
-          type: 'address',
-        },
-        {
           internalType: 'string',
           name: 'name',
           type: 'string',
@@ -310,9 +312,26 @@ export const SERVICE_MANAGER = {
           type: 'string',
         },
         {
-          internalType: 'string',
+          components: [
+            {
+              internalType: 'bytes32',
+              name: 'hash',
+              type: 'bytes32',
+            },
+            {
+              internalType: 'uint8',
+              name: 'hashFunction',
+              type: 'uint8',
+            },
+            {
+              internalType: 'uint8',
+              name: 'size',
+              type: 'uint8',
+            },
+          ],
+          internalType: 'struct IMultihash.Multihash',
           name: 'configHash',
-          type: 'string',
+          type: 'tuple',
         },
         {
           internalType: 'uint256[]',

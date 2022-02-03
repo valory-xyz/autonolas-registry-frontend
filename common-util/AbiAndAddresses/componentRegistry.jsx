@@ -174,11 +174,11 @@ export const COMPONENT_REGISTRY = {
       inputs: [
         {
           internalType: 'address',
-          name: 'newMinter',
+          name: 'newManager',
           type: 'address',
         },
       ],
-      name: 'changeMinter',
+      name: 'changeManager',
       outputs: [],
       stateMutability: 'nonpayable',
       type: 'function',
@@ -196,9 +196,26 @@ export const COMPONENT_REGISTRY = {
           type: 'address',
         },
         {
-          internalType: 'string',
+          components: [
+            {
+              internalType: 'bytes32',
+              name: 'hash',
+              type: 'bytes32',
+            },
+            {
+              internalType: 'uint8',
+              name: 'hashFunction',
+              type: 'uint8',
+            },
+            {
+              internalType: 'uint8',
+              name: 'size',
+              type: 'uint8',
+            },
+          ],
+          internalType: 'struct IMultihash.Multihash',
           name: 'componentHash',
-          type: 'string',
+          type: 'tuple',
         },
         {
           internalType: 'string',
@@ -211,7 +228,7 @@ export const COMPONENT_REGISTRY = {
           type: 'uint256[]',
         },
       ],
-      name: 'createComponent',
+      name: 'create',
       outputs: [
         {
           internalType: 'uint256',
@@ -226,7 +243,7 @@ export const COMPONENT_REGISTRY = {
       inputs: [
         {
           internalType: 'uint256',
-          name: '_tokenId',
+          name: 'tokenId',
           type: 'uint256',
         },
       ],
@@ -261,14 +278,27 @@ export const COMPONENT_REGISTRY = {
       type: 'function',
     },
     {
+      inputs: [],
+      name: 'getBaseURI',
+      outputs: [
+        {
+          internalType: 'string',
+          name: '',
+          type: 'string',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
       inputs: [
         {
           internalType: 'uint256',
-          name: '_tokenId',
+          name: 'tokenId',
           type: 'uint256',
         },
       ],
-      name: 'getComponentInfo',
+      name: 'getInfo',
       outputs: [
         {
           internalType: 'address',
@@ -276,14 +306,36 @@ export const COMPONENT_REGISTRY = {
           type: 'address',
         },
         {
-          internalType: 'string',
+          components: [
+            {
+              internalType: 'bytes32',
+              name: 'hash',
+              type: 'bytes32',
+            },
+            {
+              internalType: 'uint8',
+              name: 'hashFunction',
+              type: 'uint8',
+            },
+            {
+              internalType: 'uint8',
+              name: 'size',
+              type: 'uint8',
+            },
+          ],
+          internalType: 'struct IMultihash.Multihash',
           name: 'componentHash',
-          type: 'string',
+          type: 'tuple',
         },
         {
           internalType: 'string',
           name: 'description',
           type: 'string',
+        },
+        {
+          internalType: 'uint256',
+          name: 'numDependencies',
+          type: 'uint256',
         },
         {
           internalType: 'uint256[]',
@@ -435,6 +487,19 @@ export const COMPONENT_REGISTRY = {
         },
       ],
       name: 'setApprovalForAll',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'string',
+          name: 'bURI',
+          type: 'string',
+        },
+      ],
+      name: 'setBaseURI',
       outputs: [],
       stateMutability: 'nonpayable',
       type: 'function',

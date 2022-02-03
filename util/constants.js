@@ -10,3 +10,10 @@ export const URL = {
   REGISTER_OPERATOR: '/operators/register',
   REGISTER_SERVICE: '/services/register',
 };
+
+export const NAV_TYPES = {
+  COMPONENT: 'component',
+  AGENT: 'agent',
+  OPERATOR: 'operator',
+  SERVICE: 'service',
+};

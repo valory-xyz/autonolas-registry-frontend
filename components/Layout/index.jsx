@@ -31,6 +31,7 @@ const NavigationBar = ({ children }) => {
     <CustomLayout>
       <Header>
         <Logo onClick={() => router.push('/')} data-testid="protocol-logo">
+          <div className="title-logo" />
           Registry
         </Logo>
 
@@ -59,7 +60,7 @@ const NavigationBar = ({ children }) => {
       </Content>
 
       <Footer>
-        Valory ©
+        © Valory
         {new Date().getFullYear()}
       </Footer>
     </CustomLayout>

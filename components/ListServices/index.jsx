@@ -1,96 +1,50 @@
-import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import {
-  Tabs, Button, Typography, Card, Skeleton,
-} from 'antd';
+import { Tabs } from 'antd';
 import { useRouter } from 'next/router';
-import { URL } from 'util/constants';
-import { ListEmptyMessage, PrintJson } from 'common-util/List/ListCommon';
-import ListCards from 'common-util/List/ListCards';
+import { URL, NAV_TYPES } from 'util/constants';
+import ListTable from 'common-util/List/ListTable';
+import { useExtraTabContent } from 'common-util/List/ListTable/helpers';
 import { getServices, getServicesByAccount } from './utils';
 
 const { TabPane } = Tabs;
-const { Title } = Typography;
 
 const ListServices = ({ account }) => {
-  const [isServicesListLoading, setServicesListLoading] = useState(false);
-  const [list, setList] = useState([]);
   const router = useRouter();
+  const { searchValue, extraTabContent, clearSearch } = useExtraTabContent({
+    title: 'Services',
+    onRegisterClick: () => router.push(URL.REGISTER_SERVICE),
+  });
 
-  useEffect(async () => {
-    if (account) {
-      setServicesListLoading(true);
-      setList([]);
-
-      try {
-        const everyService = await getServicesByAccount(account);
-        setList(everyService);
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setServicesListLoading(false);
-      }
-    }
-  }, [account]);
-
-  const getMyServices = () => {
-    if (isServicesListLoading) {
-      return <Skeleton active />;
-    }
-
-    return (
-      <>
-        {list.length === 0 ? (
-          <ListEmptyMessage type="service" />
-        ) : (
-          list.map((item, index) => {
-            const serviceId = index + 1;
-            return (
-              <Card
-                title={`Id: ${serviceId}`}
-                extra={(
-                  <Button
-                    ghost
-                    type="primary"
-                    onClick={() => router.push(`/services/${serviceId}`)}
-                  >
-                    Update
-                  </Button>
-                )}
-                key={`eachService-${index + 1}`}
-                style={{ marginBottom: 16 }}
-              >
-                <PrintJson value={item} />
-              </Card>
-            );
-          })
-        )}
-      </>
-    );
+  const commonProps = {
+    type: NAV_TYPES.SERVICE,
+    filterValue: searchValue,
+    onViewClick: (e) => window.console.log('View Click', e),
   };
 
   return (
     <>
-      <Title level={2}>Services</Title>
       <Tabs
+        className="registry-tabs"
         type="card"
         defaultActiveKey="all"
-        tabBarExtraContent={(
-          <Button
-            ghost
-            type="primary"
-            onClick={() => router.push(URL.REGISTER_SERVICE)}
-          >
-            Register
-          </Button>
-        )}
+        onChange={clearSearch}
+        tabBarExtraContent={extraTabContent}
       >
         <TabPane tab="All" key="all">
-          <ListCards type="service" getList={getServices} />
+          <ListTable
+            {...commonProps}
+            getList={getServices}
+            onDeleteClick={(e) => window.console.log('Delete Click', e)}
+          />
         </TabPane>
         <TabPane tab="My Services" key="my_services">
-          {getMyServices()}
+          <ListTable
+            {...commonProps}
+            getList={() => getServicesByAccount(account)}
+            onUpdateClick={(serviceId) => router.push(`/services/${serviceId}`)}
+            onDeleteClick={(e) => window.console.log('Delete Click', e)}
+          />
         </TabPane>
       </Tabs>
     </>

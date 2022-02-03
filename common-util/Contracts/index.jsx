@@ -10,7 +10,7 @@ import {
   SERVICE_REGISTRY_ADDRESS,
   SERVICE_MANAGER,
   SERVICE_MANAGER_ADDRESS,
-} from 'common-util/AbiAndAddresses/agentRegistry';
+} from 'common-util/AbiAndAddresses';
 
 export const getMechMinterContract = () => {
   window.ethereum.enable();

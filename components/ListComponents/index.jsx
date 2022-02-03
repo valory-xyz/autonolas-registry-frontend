@@ -1,38 +1,46 @@
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Tabs, Button, Typography } from 'antd';
+import { Tabs } from 'antd';
 import { useRouter } from 'next/router';
-import { URL } from 'util/constants';
-import ListCards from 'common-util/List/ListCards';
+import { URL, NAV_TYPES } from 'util/constants';
+import ListTable from 'common-util/List/ListTable';
+import { useExtraTabContent } from 'common-util/List/ListTable/helpers';
 import { getComponents, getComponentsByAccount } from './utils';
 
 const { TabPane } = Tabs;
-const { Title } = Typography;
 
 const ListComponents = ({ account }) => {
   const router = useRouter();
+  const { searchValue, extraTabContent, clearSearch } = useExtraTabContent({
+    title: 'Components',
+    onRegisterClick: () => router.push(URL.REGISTER_COMPONENT),
+  });
 
   return (
     <>
-      <Title level={2}>Components</Title>
       <Tabs
+        className="registry-tabs"
         type="card"
         defaultActiveKey="all"
-        tabBarExtraContent={(
-          <Button
-            ghost
-            type="primary"
-            onClick={() => router.push(URL.REGISTER_COMPONENT)}
-          >
-            Register
-          </Button>
-        )}
+        onChange={clearSearch}
+        tabBarExtraContent={extraTabContent}
       >
         <TabPane tab="All" key="all">
-          <ListCards type="component" getList={getComponents} />
+          <ListTable
+            type={NAV_TYPES.COMPONENT}
+            getList={getComponents}
+            filterValue={searchValue}
+            onViewClick={(e) => window.console.log('View Click', e)}
+          />
         </TabPane>
+
         <TabPane tab="My Components" key="my_components">
-          <ListCards type="component" getList={() => getComponentsByAccount(account)} />
+          <ListTable
+            type={NAV_TYPES.COMPONENT}
+            getList={() => getComponentsByAccount(account)}
+            filterValue={searchValue}
+            onViewClick={(e) => window.console.log('View Click', e)}
+          />
         </TabPane>
       </Tabs>
     </>
