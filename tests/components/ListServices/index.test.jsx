@@ -8,8 +8,9 @@ import {
 } from 'components/ListServices/utils';
 import { useRouter } from 'next/router';
 import { getServiceContract } from 'common-util/Contracts';
-import { wrapProvider, ACTIVE_TAB } from '../../helpers';
+import { wrapProvider, ACTIVE_TAB, getTableTd } from '../../helpers';
 
+// mocks for router & smart-contract functions
 jest.mock('next/router', () => ({
   __esModule: true,
   useRouter: jest.fn(() => ({ push: jest.fn() })),
@@ -35,23 +36,39 @@ getServiceContract.mockImplementation(() => ({
   },
 }));
 
+// dummy responses mock
+const allServiceResponse = {
+  id: 'all-service-1',
+  description: 'ALL TAB CONTENT',
+};
+
+const myServiceResponse = {
+  id: 'my-service-1',
+  description: 'Comp',
+};
+
 useRouter.mockImplementation(() => ({ push: jest.fn() }));
 
 describe('listServices/index.jsx', () => {
-  getServices.mockImplementation(() => Promise.resolve([{ name: 'ALL TAB CONTENT' }]));
-  getServicesByAccount.mockImplementation(() => Promise.resolve([{ name: 'MY SERVICES CONTENT' }]));
+  getServices.mockImplementation(() => Promise.resolve([allServiceResponse]));
+  getServicesByAccount.mockImplementation(() => Promise.resolve([myServiceResponse]));
 
   it('should render tabs with `All Tab` as active tab & Register button', async () => {
     expect.hasAssertions();
 
-    const { container, getByText, getByRole } = render(
+    const { container, getByRole } = render(
       wrapProvider(<ListServices />),
     );
     // check if the selected tab is `All` & has the correct content
     await waitFor(async () => {
       expect(container.querySelector(ACTIVE_TAB).textContent).toBe('All');
     });
-    expect(getByText(/ALL TAB CONTENT/i)).toBeInTheDocument();
+
+    // ckecking Id, description column
+    expect(container.querySelector(getTableTd(1)).textContent).toBe('1');
+    expect(container.querySelector(getTableTd(2)).textContent).toBe(
+      allServiceResponse.description,
+    );
 
     // Register button
     expect(getByRole('button', { name: 'Register' })).toBeInTheDocument();
@@ -59,9 +76,7 @@ describe('listServices/index.jsx', () => {
 
   it('should render tabs with `All Services` as active tab & Register button', async () => {
     expect.hasAssertions();
-    const { container, getByText, getByRole } = render(
-      wrapProvider(<ListServices />),
-    );
+    const { container, getByRole } = render(wrapProvider(<ListServices />));
 
     // click the `My services` tab
     userEvent.click(container.querySelector('.ant-tabs-tab:nth-child(2)'));
@@ -70,7 +85,6 @@ describe('listServices/index.jsx', () => {
     await waitFor(async () => expect(container.querySelector(ACTIVE_TAB).textContent).toBe(
       'My Services',
     ));
-    expect(getByText(/MY SERVICES CONTENT/i)).toBeInTheDocument();
 
     // Register button
     expect(getByRole('button', { name: 'Register' })).toBeInTheDocument();

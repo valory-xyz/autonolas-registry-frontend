@@ -31,7 +31,7 @@ EllipsisMiddle.propTypes = {
 
 EllipsisMiddle.defaultProps = {
   suffixCount: 0,
-  children: null,
+  children: '',
 };
 
 /**

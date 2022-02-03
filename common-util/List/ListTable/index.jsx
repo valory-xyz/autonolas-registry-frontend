@@ -21,7 +21,6 @@ const ListTable = ({
 
   useEffect(async () => {
     if (account) {
-      window.ethereum.enable();
       setIsLoading(true);
       setList([]);
 

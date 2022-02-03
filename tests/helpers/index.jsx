@@ -24,3 +24,5 @@ export const wrapProvider = (component, isEmptyStore = false) => (
 );
 
 export const dummyFunction = jest.fn(() => {});
+
+export const getTableTd = (i) => `.ant-table-tbody > tr.ant-table-row.ant-table-row-level-0 > td:nth-child(${i})`;
