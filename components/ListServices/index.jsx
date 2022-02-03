@@ -19,7 +19,6 @@ const ListServices = ({ account }) => {
   const commonProps = {
     type: NAV_TYPES.SERVICE,
     filterValue: searchValue,
-    extra: { scrollX: 1500 },
     onViewClick: (e) => window.console.log('View Click', e),
   };
 
@@ -37,7 +36,6 @@ const ListServices = ({ account }) => {
             {...commonProps}
             getList={getServices}
             onDeleteClick={(e) => window.console.log('Delete Click', e)}
-            extra={{ scrollX: 1500 }}
           />
         </TabPane>
         <TabPane tab="My Services" key="my_services">

@@ -21,17 +21,13 @@ jest.mock('components/ListAgents/utils', () => ({
 useRouter.mockImplementation(() => ({ push: jest.fn() }));
 
 // dummy responses mock
-const AllAgentsResponse = { id: 'all-agent-1', description: 'ALL TAB CONTENT' };
-
-const MyAgentsResponse = {
-  id: 'my-agent-1',
-  description: 'ABC',
-};
+const allAgentsResponse = { id: 'all-agent-1', dependencies: ['4'] };
+const myAgentsResponse = { id: 'my-agent-1', dependencies: ['5'] };
 
 // test cases
 describe('listAgents/index.jsx', () => {
-  getAgents.mockImplementation(() => Promise.resolve([AllAgentsResponse]));
-  getAgentsByAccount.mockImplementation(() => Promise.resolve([MyAgentsResponse]));
+  getAgents.mockImplementation(() => Promise.resolve([allAgentsResponse]));
+  getAgentsByAccount.mockImplementation(() => Promise.resolve([myAgentsResponse]));
 
   it('should render tabs with `All Tab` as active tab & Register button', async () => {
     expect.hasAssertions();
@@ -42,8 +38,8 @@ describe('listAgents/index.jsx', () => {
 
     // ckecking Id, description column
     expect(container.querySelector(getTableTd(1)).textContent).toBe('1');
-    expect(container.querySelector(getTableTd(2)).textContent).toBe(
-      AllAgentsResponse.description,
+    expect(container.querySelector(getTableTd(5)).textContent).toBe(
+      allAgentsResponse.dependencies.length.toString(),
     );
 
     // it should be called once

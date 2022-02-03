@@ -50,16 +50,6 @@ export const getTableColumns = (
         width: 50,
       },
       {
-        title: 'Description',
-        dataIndex: 'description',
-        key: 'description',
-        width: 140,
-        className: 'underline',
-        render: (text) => (
-          <EllipsisMiddle suffixCount={5}>{text}</EllipsisMiddle>
-        ),
-      },
-      {
         title: 'Developer',
         dataIndex: 'developer',
         key: 'developer',
@@ -91,7 +81,6 @@ export const getTableColumns = (
         dataIndex: 'dependency',
         width: 180,
         key: 'dependency',
-        render: (text) => (text ? text.join(', ') : '-'),
       },
       {
         width: 200,
@@ -119,16 +108,6 @@ export const getTableColumns = (
         fixed: 'left',
       },
       {
-        title: 'Description',
-        dataIndex: 'description',
-        key: 'description',
-        width: 200,
-        className: 'underline',
-        render: (text) => (
-          <EllipsisMiddle suffixCount={5}>{text}</EllipsisMiddle>
-        ),
-      },
-      {
         title: 'Name',
         dataIndex: 'name',
         key: 'name',
@@ -154,29 +133,6 @@ export const getTableColumns = (
         render: (text) => (
           <EllipsisMiddle suffixCount={5}>{text}</EllipsisMiddle>
         ),
-      },
-      {
-        title: 'Threshold',
-        dataIndex: 'threshold',
-        key: 'threshold',
-        width: 120,
-        render: (text) => (
-          <EllipsisMiddle suffixCount={5}>{text}</EllipsisMiddle>
-        ),
-      },
-      {
-        title: 'Agent IDs',
-        dataIndex: 'agentIds',
-        key: 'agentIds',
-        render: (text) => (text ? text.join(', ') : '-'),
-        width: 140,
-      },
-      {
-        title: 'Agent Slots',
-        dataIndex: 'agentNumSlots',
-        key: 'agentNumSlots',
-        render: (text) => (text ? text.join(', ') : '-'),
-        width: 140,
       },
       {
         title: 'Active',
@@ -222,35 +178,29 @@ export const getData = (type, rawData, { filterValue }) => {
   if (type === NAV_TYPES.COMPONENT) {
     data = rawData.map((item, index) => ({
       id: `${index + 1}`,
-      description: item.description || '-',
       developer: item.developer || '-',
       owner: item.owner || '-',
       hash: item.componentHash || '-',
-      dependency: item.dependencies,
+      dependency: item.dependencies.length,
     }));
   }
 
   if (type === NAV_TYPES.AGENT) {
     data = rawData.map((item, index) => ({
       id: `${index + 1}`,
-      description: item.description || '-',
       developer: item.developer || '-',
       owner: item.owner || '-',
       hash: item.agentHash || '-',
-      dependency: item.dependencies,
+      dependency: item.dependencies.length,
     }));
   }
 
   if (type === NAV_TYPES.SERVICE) {
     data = rawData.map((item, index) => ({
       id: `${index + 1}`,
-      description: item.description || '-',
       name: item.name || '-',
       developer: item.developer || '-',
       owner: item.owner || '-',
-      threshold: item.threshold || '-',
-      agentIds: item.agentIds,
-      agentNumSlots: item.agentNumSlots,
       active: `${item.active}`,
     }));
   }

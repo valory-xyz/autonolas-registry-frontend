@@ -24,12 +24,8 @@ jest.mock('components/ListComponents/utils', () => ({
 useRouter.mockImplementation(() => ({ push: jest.fn() }));
 
 // dummy responses mock
-const allComponentResponse = { id: 'all-component-1', description: 'ALL TAB CONTENT' };
-
-const myComponentResponse = {
-  id: 'my-component-1',
-  description: 'Comp',
-};
+const allComponentResponse = { id: 'all-component-1', dependencies: ['1'] };
+const myComponentResponse = { id: 'my-component-1', dependencies: ['2'] };
 
 describe('listComponents/index.jsx', () => {
   getComponents.mockImplementation(() => Promise.resolve([allComponentResponse]));
@@ -45,8 +41,8 @@ describe('listComponents/index.jsx', () => {
 
     // ckecking Id, description column
     expect(container.querySelector(getTableTd(1)).textContent).toBe('1');
-    expect(container.querySelector(getTableTd(2)).textContent).toBe(
-      allComponentResponse.description,
+    expect(container.querySelector(getTableTd(5)).textContent).toBe(
+      allComponentResponse.dependencies.length.toString(),
     );
 
     // it should be called once
@@ -58,9 +54,7 @@ describe('listComponents/index.jsx', () => {
   it('should render tabs with `My Components` as active tab & Register button', async () => {
     expect.hasAssertions();
 
-    const { container, getByRole } = render(
-      wrapProvider(<ListComponents />),
-    );
+    const { container, getByRole } = render(wrapProvider(<ListComponents />));
 
     // click the `My components` tab
     userEvent.click(container.querySelector('.ant-tabs-tab:nth-child(2)'));

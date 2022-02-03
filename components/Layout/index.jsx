@@ -60,7 +60,7 @@ const NavigationBar = ({ children }) => {
       </Content>
 
       <Footer>
-        Valory ©
+        © Valory
         {new Date().getFullYear()}
       </Footer>
     </CustomLayout>
