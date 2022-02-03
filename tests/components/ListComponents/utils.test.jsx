@@ -16,7 +16,7 @@ describe('listComponents/utils.jsx', () => {
         balanceOf: jest.fn(() => ({
           call: jest.fn(() => Promise.resolve(1)),
         })),
-        getComponentInfo: jest.fn(() => ({
+        getInfo: jest.fn(() => ({
           call: jest.fn(() => Promise.resolve(COMPONENT_1)),
         })),
       },
@@ -34,7 +34,7 @@ describe('listComponents/utils.jsx', () => {
         balanceOf: jest.fn(() => ({
           call: jest.fn(() => Promise.resolve(1)),
         })),
-        getComponentInfo: jest.fn(() => ({
+        getInfo: jest.fn(() => ({
           call: jest.fn(() => new Error('Bad Request')),
         })),
       },
@@ -52,7 +52,7 @@ describe('listComponents/utils.jsx', () => {
         totalSupply: jest.fn(() => ({
           call: jest.fn(() => Promise.resolve(1)),
         })),
-        getComponentInfo: jest.fn(() => ({
+        getInfo: jest.fn(() => ({
           call: jest.fn(() => Promise.resolve(COMPONENT_1)),
         })),
       },
@@ -70,7 +70,7 @@ describe('listComponents/utils.jsx', () => {
         totalSupply: jest.fn(() => ({
           call: jest.fn(() => Promise.resolve(1)),
         })),
-        getComponentInfo: jest.fn(() => ({
+        getInfo: jest.fn(() => ({
           call: jest.fn(() => new Error('Bad Request')),
         })),
       },

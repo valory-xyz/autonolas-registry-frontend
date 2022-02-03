@@ -83,7 +83,7 @@ export const getTableColumns = (
         key: 'hash',
         width: 200,
         render: (text) => (
-          <EllipsisMiddle suffixCount={5}>{text}</EllipsisMiddle>
+          <EllipsisMiddle suffixCount={5}>{text.hash}</EllipsisMiddle>
         ),
       },
       {

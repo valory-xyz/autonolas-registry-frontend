@@ -10,7 +10,7 @@ export const getAgentsByAccount = (account) => new Promise((resolve, reject) => 
       const promises = [];
       for (let i = 1; i <= length; i += 1) {
         const agentId = `${i}`;
-        const result = contract.methods.getAgentInfo(agentId).call();
+        const result = contract.methods.getInfo(agentId).call();
         promises.push(result);
       }
 
@@ -37,7 +37,7 @@ export const getAgents = () => new Promise((resolve, reject) => {
       const allAgentsPromises = [];
       for (let i = 1; i <= total; i += 1) {
         const agentId = `${i}`;
-        const result = contract.methods.getAgentInfo(agentId).call();
+        const result = contract.methods.getInfo(agentId).call();
         allAgentsPromises.push(result);
       }
 

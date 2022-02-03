@@ -9,7 +9,7 @@ export const getComponentsByAccount = (account) => new Promise((resolve, reject)
       const promises = [];
       for (let i = 1; i <= length; i += 1) {
         const componentId = `${i}`;
-        const result = contract.methods.getComponentInfo(componentId).call();
+        const result = contract.methods.getInfo(componentId).call();
         promises.push(result);
       }
 
@@ -36,7 +36,7 @@ export const getComponents = () => new Promise((resolve, reject) => {
       const allComponentsPromises = [];
       for (let i = 1; i <= total; i += 1) {
         const componentId = `${i}`;
-        const result = contract.methods.getComponentInfo(componentId).call();
+        const result = contract.methods.getInfo(componentId).call();
         allComponentsPromises.push(result);
       }
 
