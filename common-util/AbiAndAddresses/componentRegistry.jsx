@@ -298,8 +298,54 @@ export const COMPONENT_REGISTRY = {
           type: 'uint256',
         },
       ],
+      name: 'getHashes',
+      outputs: [
+        {
+          internalType: 'uint256',
+          name: 'numHashes',
+          type: 'uint256',
+        },
+        {
+          components: [
+            {
+              internalType: 'bytes32',
+              name: 'hash',
+              type: 'bytes32',
+            },
+            {
+              internalType: 'uint8',
+              name: 'hashFunction',
+              type: 'uint8',
+            },
+            {
+              internalType: 'uint8',
+              name: 'size',
+              type: 'uint8',
+            },
+          ],
+          internalType: 'struct IMultihash.Multihash[]',
+          name: 'componentHashes',
+          type: 'tuple[]',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'uint256',
+          name: 'tokenId',
+          type: 'uint256',
+        },
+      ],
       name: 'getInfo',
       outputs: [
+        {
+          internalType: 'address',
+          name: 'owner',
+          type: 'address',
+        },
         {
           internalType: 'address',
           name: 'developer',
@@ -643,6 +689,46 @@ export const COMPONENT_REGISTRY = {
         },
       ],
       name: 'transferOwnership',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: 'owner',
+          type: 'address',
+        },
+        {
+          internalType: 'uint256',
+          name: 'tokenId',
+          type: 'uint256',
+        },
+        {
+          components: [
+            {
+              internalType: 'bytes32',
+              name: 'hash',
+              type: 'bytes32',
+            },
+            {
+              internalType: 'uint8',
+              name: 'hashFunction',
+              type: 'uint8',
+            },
+            {
+              internalType: 'uint8',
+              name: 'size',
+              type: 'uint8',
+            },
+          ],
+          internalType: 'struct IMultihash.Multihash',
+          name: 'componentHash',
+          type: 'tuple',
+        },
+      ],
+      name: 'updateHash',
       outputs: [],
       stateMutability: 'nonpayable',
       type: 'function',

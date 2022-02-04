@@ -23,6 +23,11 @@ const RegisterService = ({ account }) => {
     if (account) {
       setError(null);
       setInformation(null);
+      const hashObject = {
+        hash: `0x${values.hash || '0'.repeat(64)}`,
+        hashFunction: '0x12',
+        size: '0x20',
+      };
 
       const contract = getServiceManagerContract();
       contract.methods
@@ -30,7 +35,7 @@ const RegisterService = ({ account }) => {
           values.owner_address,
           values.service_name,
           values.service_description,
-          '0x0', // configHash
+          hashObject, // configHash
           convertStringToArray(values.agent_ids),
           convertStringToArray(values.agent_num_slots),
           values.threshold,
