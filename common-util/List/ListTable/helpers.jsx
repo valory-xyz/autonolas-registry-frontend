@@ -185,7 +185,6 @@ export const getTableColumns = (
 };
 
 export const getData = (type, rawData, { filterValue }) => {
-  // console.log(rawData);
   let data = [];
   if (type === NAV_TYPES.COMPONENT) {
     data = rawData.map((item, index) => ({

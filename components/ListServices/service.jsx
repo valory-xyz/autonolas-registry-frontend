@@ -15,6 +15,7 @@ import {
   getServiceManagerContract,
 } from 'common-util/Contracts';
 import RegisterForm from './RegisterForm';
+import { getServiceHash } from './utils';
 import { RegisterFooter } from '../styles';
 
 const { Title } = Typography;
@@ -49,18 +50,13 @@ const Service = ({ account }) => {
   const handleSubmit = (values) => {
     if (account) {
       setError(null);
-      const hashObject = {
-        hash: `0x${values.hash || '0'.repeat(64)}`,
-        hashFunction: '0x12',
-        size: '0x20',
-      };
 
       const contract = getServiceManagerContract();
       contract.methods
         .serviceUpdate(
           values.service_name,
           values.service_description,
-          hashObject, // configHash
+          getServiceHash(values), // configHash
           convertStringToArray(values.agent_ids),
           convertStringToArray(values.agent_num_slots),
           values.threshold,

@@ -10,7 +10,6 @@ import { getComponents, getComponentsByAccount } from './utils';
 const { TabPane } = Tabs;
 
 const ListComponents = ({ account }) => {
-  console.log(account);
   const router = useRouter();
   const { searchValue, extraTabContent, clearSearch } = useExtraTabContent({
     title: 'Components',

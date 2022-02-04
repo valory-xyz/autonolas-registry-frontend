@@ -2,7 +2,6 @@ import { syncTypes } from './_types';
 
 export const setUserAccount = (account) => ({
   type: syncTypes.SET_ACCOUNT,
-  // data: { account: Array.isArray(account) ? account[0] : account },
   data: { account },
 });
 
