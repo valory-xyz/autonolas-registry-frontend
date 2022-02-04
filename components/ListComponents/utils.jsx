@@ -28,11 +28,14 @@ export const getComponentsByAccount = (account) => new Promise((resolve, reject)
  */
 export const getComponents = () => new Promise((resolve, reject) => {
   const contract = getComponentContract();
+  console.log();
 
   contract.methods
     .totalSupply()
     .call()
     .then((total) => {
+      console.log({ total });
+
       const allComponentsPromises = [];
       for (let i = 1; i <= total; i += 1) {
         const componentId = `${i}`;
@@ -40,7 +43,10 @@ export const getComponents = () => new Promise((resolve, reject) => {
         allComponentsPromises.push(result);
       }
 
+      console.log(allComponentsPromises);
+
       Promise.all(allComponentsPromises).then(async (allComponentsList) => {
+        console.log(allComponentsList);
         resolve(allComponentsList);
       });
     })

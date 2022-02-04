@@ -23,12 +23,17 @@ const RegisterComponent = ({ account }) => {
       setError(null);
       setInformation(null);
       const contract = getMechMinterContract();
+      const hashObject = {
+        hash: `0x${values.hash}`,
+        hashFunction: '0x12',
+        size: '0x20',
+      };
 
       contract.methods
         .mintComponent(
           values.owner_address,
           values.developer_address,
-          values.hash,
+          hashObject,
           values.description,
           values.dependencies ? values.dependencies.split(', ') : [],
         )

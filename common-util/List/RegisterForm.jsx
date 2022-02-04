@@ -5,6 +5,7 @@ import get from 'lodash/get';
 import isNil from 'lodash/isNil';
 import { Button, Form, Input } from 'antd';
 import { RegisterFooter } from './styles';
+import { DEPENDENCY_IN_ASC } from './ListCommon';
 
 export const FORM_NAME = 'register_form';
 
@@ -84,7 +85,6 @@ const RegisterForm = ({
           <Form.Item
             label="Hash"
             name="hash"
-            initialValue="0x0"
             rules={[
               {
                 required: true,
@@ -113,6 +113,7 @@ const RegisterForm = ({
             name="dependencies"
             tooltip="(comma seperated)"
             validateFirst
+            extra={DEPENDENCY_IN_ASC}
             rules={[
               {
                 required: false,
