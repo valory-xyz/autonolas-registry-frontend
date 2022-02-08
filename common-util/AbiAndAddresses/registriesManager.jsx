@@ -1,6 +1,6 @@
-export const MECH_MINTER_ADDRESS = '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0';
+export const REGISTRIES_MANAGER_ADDRESS = '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0';
 
-export const MECH_MINTER_CONTRACT = {
+export const REGISTRIES_MANAGER_CONTRACT = {
   _format: 'hh-sol-artifact-1',
   contractName: 'RegistriesManager',
   sourceName: 'contracts/RegistriesManager.sol',

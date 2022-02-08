@@ -15,6 +15,7 @@ import {
   getServiceManagerContract,
 } from 'common-util/Contracts';
 import RegisterForm from './RegisterForm';
+import { getServiceHash } from './utils';
 import { RegisterFooter } from '../styles';
 
 const { Title } = Typography;
@@ -53,10 +54,9 @@ const Service = ({ account }) => {
       const contract = getServiceManagerContract();
       contract.methods
         .serviceUpdate(
-          values.owner_address,
           values.service_name,
           values.service_description,
-          '0x0', // configHash
+          getServiceHash(values), // configHash
           convertStringToArray(values.agent_ids),
           convertStringToArray(values.agent_num_slots),
           values.threshold,

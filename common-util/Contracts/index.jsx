@@ -1,7 +1,7 @@
 import Web3 from 'web3';
 import {
-  MECH_MINTER_CONTRACT,
-  MECH_MINTER_ADDRESS,
+  REGISTRIES_MANAGER_CONTRACT,
+  REGISTRIES_MANAGER_ADDRESS,
   AGENT_REGISTRY_ADDRESS,
   AGENT_REGISTRY,
   COMPONENT_REGISTRY,
@@ -16,8 +16,8 @@ export const getMechMinterContract = () => {
   window.ethereum.enable();
   const web3 = new Web3(window.web3.currentProvider);
   const contract = new web3.eth.Contract(
-    MECH_MINTER_CONTRACT.abi,
-    MECH_MINTER_ADDRESS,
+    REGISTRIES_MANAGER_CONTRACT.abi,
+    REGISTRIES_MANAGER_ADDRESS,
   );
   return contract;
 };

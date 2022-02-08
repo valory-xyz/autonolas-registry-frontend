@@ -69,3 +69,10 @@ export const getServices = () => new Promise((resolve, reject) => {
       reject(e);
     });
 });
+
+// for services, hash is hardcoded in frontend
+export const getServiceHash = (values) => ({
+  hash: `0x${values.hash || '0'.repeat(64)}`,
+  hashFunction: '0x12',
+  size: '0x20',
+});

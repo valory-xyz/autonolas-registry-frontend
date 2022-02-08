@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import get from 'lodash/get';
 import { Button, Form, Input } from 'antd';
+import { DEPENDENCY_IN_ASC } from 'common-util/List/ListCommon';
 
 export const FORM_NAME = 'serviceRegisterForm';
 
@@ -140,6 +141,7 @@ const RegisterForm = ({
         name="agent_ids"
         tooltip="(comma seperated)"
         validateFirst
+        extra={DEPENDENCY_IN_ASC}
         rules={[
           {
             required: true,

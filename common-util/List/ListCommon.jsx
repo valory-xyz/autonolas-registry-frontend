@@ -2,6 +2,9 @@ import PropTypes from 'prop-types';
 import { Alert } from 'antd';
 import { EmptyMessage } from 'components/styles';
 
+// constants
+export const DEPENDENCY_IN_ASC = 'Agent IDs must be input in the order they were created (oldest first & newest last)';
+
 // ----------- functions -----------
 /**
  *
