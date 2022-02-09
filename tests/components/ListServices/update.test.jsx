@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, waitFor } from '@testing-library/react';
-import Service from 'components/ListServices/Update';
+import Service from 'components/ListServices/service';
 import { FORM_NAME } from 'components/ListServices/RegisterForm';
 import { useRouter } from 'next/router';
 import {

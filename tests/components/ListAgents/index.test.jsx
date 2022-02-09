@@ -38,7 +38,7 @@ describe('listAgents/index.jsx', () => {
 
     // ckecking Id, description column
     expect(container.querySelector(getTableTd(1)).textContent).toBe('1');
-    expect(container.querySelector(getTableTd(5)).textContent).toBe(
+    expect(container.querySelector(getTableTd(6)).textContent).toBe(
       allAgentsResponse.dependencies.length.toString(),
     );
 
