@@ -1,21 +1,5 @@
 import { getAgentContract } from 'common-util/Contracts';
 
-export const getAgentInfo = (agentId) => new Promise((resolve, reject) => {
-  const contract = getAgentContract();
-
-  // TODO: check if agent exists
-  contract.methods
-    .getInfo(agentId)
-    .call()
-    .then((information) => {
-      resolve(information);
-    })
-    .catch((e) => {
-      console.error(e);
-      reject(e);
-    });
-});
-
 export const getAgentsByAccount = (account) => new Promise((resolve, reject) => {
   const contract = getAgentContract();
 

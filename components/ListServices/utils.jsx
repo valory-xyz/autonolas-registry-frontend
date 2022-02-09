@@ -1,21 +1,5 @@
 import { getServiceContract } from 'common-util/Contracts';
 
-export const getServiceDetails = (id) => new Promise((resolve, reject) => {
-  const contract = getServiceContract();
-
-  // TODO: check if service exists
-  contract.methods
-    .getServiceInfo(id)
-    .call()
-    .then((information) => {
-      resolve(information);
-    })
-    .catch((e) => {
-      console.error(e);
-      reject(e);
-    });
-});
-
 export const getServicesByAccount = (account) => new Promise((resolve, reject) => {
   const contract = getServiceContract();
 
