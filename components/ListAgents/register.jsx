@@ -50,16 +50,18 @@ const RegisterAgent = ({ account }) => {
   };
 
   return (
-    <FormContainer>
-      <Title level={2}>Register Agent</Title>
-      <RegisterForm
-        listType="agent"
-        handleSubmit={handleSubmit}
-        handleCancel={handleCancel}
-      />
+    <>
+      <FormContainer>
+        <Title level={2}>Register Agent</Title>
+        <RegisterForm
+          listType="agent"
+          handleSubmit={handleSubmit}
+          handleCancel={handleCancel}
+        />
+      </FormContainer>
       <AlertInfo information={information} />
       <AlertError error={error} />
-    </FormContainer>
+    </>
   );
 };
 

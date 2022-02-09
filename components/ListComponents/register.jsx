@@ -6,6 +6,7 @@ import { Typography, notification } from 'antd';
 import RegisterForm from 'common-util/List/RegisterForm';
 import { AlertInfo, AlertError } from 'common-util/List/ListCommon';
 import { getMechMinterContract } from 'common-util/Contracts';
+import { FormContainer } from 'components/styles';
 
 const { Title } = Typography;
 
@@ -51,12 +52,14 @@ const RegisterComponent = ({ account }) => {
 
   return (
     <>
-      <Title level={2}>Register Component</Title>
-      <RegisterForm
-        listType="component"
-        handleSubmit={handleSubmit}
-        handleCancel={handleCancel}
-      />
+      <FormContainer>
+        <Title level={2}>Register Component</Title>
+        <RegisterForm
+          listType="component"
+          handleSubmit={handleSubmit}
+          handleCancel={handleCancel}
+        />
+      </FormContainer>
       <AlertInfo information={information} />
       <AlertError error={error} />
     </>

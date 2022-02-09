@@ -4,16 +4,16 @@ import get from 'lodash/get';
 
 const { Title } = Typography;
 
-const Agent = () => {
+const Service = () => {
   const router = useRouter();
   const id = get(router, 'query.id') || null;
-  console.log(`agent_id = ${id}`);
+  console.log(`service_id = ${id}`);
 
   return (
     <>
-      <Title level={2}>Agent</Title>
+      <Title level={2}>Service</Title>
     </>
   );
 };
 
-export default Agent;
+export default Service;
