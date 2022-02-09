@@ -6,7 +6,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import get from 'lodash/get';
 import { Button, Form, Input } from 'antd';
-import { DEPENDENCY_IN_ASC } from 'common-util/List/ListCommon';
+import { DependencyLabel } from 'common-util/List/ListCommon';
+import { ComplexLabel } from 'common-util/List/styles';
 
 export const FORM_NAME = 'serviceRegisterForm';
 
@@ -76,9 +77,8 @@ const RegisterForm = ({
   return (
     <Form
       name={FORM_NAME}
-      labelCol={{ span: 8 }}
-      wrapperCol={{ span: 12 }}
       initialValues={{ remember: true }}
+      layout="vertical"
       fields={fields}
       onFieldsChange={(_, allFields) => {
         setFields(allFields);
@@ -107,7 +107,7 @@ const RegisterForm = ({
           }),
         ]}
       >
-        <Input disabled={isUpdateForm} />
+        <Input placeholder="0x862..." disabled={isUpdateForm} />
       </Form.Item>
 
       <Form.Item
@@ -137,11 +137,14 @@ const RegisterForm = ({
       </Form.Item>
 
       <Form.Item
-        label="Canonical agent Ids"
         name="agent_ids"
-        tooltip="(comma seperated)"
         validateFirst
-        extra={DEPENDENCY_IN_ASC}
+        label={(
+          <ComplexLabel>
+            Canonical agent Ids
+            <DependencyLabel type="agent" />
+          </ComplexLabel>
+        )}
         rules={[
           {
             required: true,
@@ -157,7 +160,7 @@ const RegisterForm = ({
           }),
         ]}
       >
-        <Input />
+        <Input placeholder="2, 10, 15, 26" />
       </Form.Item>
 
       <Form.Item
@@ -180,7 +183,7 @@ const RegisterForm = ({
           }),
         ]}
       >
-        <Input />
+        <Input placeholder="1, 2, 1, 2" />
       </Form.Item>
 
       <Form.Item
@@ -211,7 +214,7 @@ const RegisterForm = ({
         </Form.Item>
       )}
 
-      <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+      <Form.Item>
         <Button type="primary" htmlType="submit">
           Submit
         </Button>

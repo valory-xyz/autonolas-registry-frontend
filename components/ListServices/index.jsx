@@ -19,7 +19,7 @@ const ListServices = ({ account }) => {
   const commonProps = {
     type: NAV_TYPES.SERVICE,
     filterValue: searchValue,
-    onViewClick: (e) => window.console.log('View Click', e),
+    onViewClick: (id) => router.push(`${URL.SERVICES}/${id}`),
   };
 
   return (
@@ -42,7 +42,7 @@ const ListServices = ({ account }) => {
           <ListTable
             {...commonProps}
             getList={() => getServicesByAccount(account)}
-            onUpdateClick={(serviceId) => router.push(`/services/${serviceId}`)}
+            onUpdateClick={(serviceId) => router.push(`${URL.UPDATE_SERVICE}/${serviceId}`)}
             onDeleteClick={(e) => window.console.log('Delete Click', e)}
           />
         </TabPane>

@@ -28,6 +28,13 @@ export const EmptyMessage = styled.div`
   }
 `;
 
+export const FormContainer = styled.div`
+  max-width: 440px;
+  textarea {
+    resize: none;
+  }
+`;
+
 export const RegisterFooter = styled.div`
   display: flex;
   align-items: center;
