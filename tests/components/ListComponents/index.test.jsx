@@ -2,7 +2,6 @@ import React from 'react';
 import { render, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import ListComponents from 'components/ListComponents';
-import Component from 'components/ListComponents/component';
 import {
   getComponents,
   getComponentsByAccount,
@@ -66,15 +65,5 @@ describe('listComponents/index.jsx', () => {
 
     // Register button
     expect(getByRole('button', { name: 'Register' })).toBeInTheDocument();
-  });
-});
-
-describe('listComponents/component.jsx', () => {
-  it('should render header as `Component`', async () => {
-    expect.hasAssertions();
-    const { container } = render(wrapProvider(<Component />));
-    await waitFor(async () => expect(container.querySelector('.ant-typography').textContent).toBe(
-      'Component',
-    ));
   });
 });

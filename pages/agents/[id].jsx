@@ -1,3 +1,3 @@
-import Agent from 'components/ListAgents/agent';
+import Agent from 'components/ListAgents/details';
 
 export default Agent;

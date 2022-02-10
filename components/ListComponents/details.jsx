@@ -1,17 +1,19 @@
-import { Typography } from 'antd';
 import { useRouter } from 'next/router';
 import get from 'lodash/get';
-
-const { Title } = Typography;
+import Details from 'common-util/Details';
+import { getComponentDetails } from './utils';
 
 const Component = () => {
   const router = useRouter();
   const id = get(router, 'query.id') || null;
-  console.log(`component_id = ${id}`);
 
   return (
     <>
-      <Title level={2}>Component</Title>
+      <Details
+        type="component"
+        id={id}
+        getDetails={() => getComponentDetails(id)}
+      />
     </>
   );
 };

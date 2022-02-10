@@ -1,5 +1,9 @@
 import { getComponentContract } from 'common-util/Contracts';
-import { getComponents, getComponentsByAccount } from 'components/ListComponents/utils';
+import {
+  getComponentDetails,
+  getComponents,
+  getComponentsByAccount,
+} from 'components/ListComponents/utils';
 
 const COMPONENT_1 = { name: 'Component One' };
 
@@ -8,6 +12,21 @@ jest.mock('common-util/Contracts', () => ({
 }));
 
 describe('listComponents/utils.jsx', () => {
+  it('getComponentDetails: Promise resolved', async () => {
+    expect.hasAssertions();
+
+    getComponentContract.mockImplementation(() => ({
+      methods: {
+        getInfo: jest.fn(() => ({
+          call: jest.fn(() => Promise.resolve(COMPONENT_1)),
+        })),
+      },
+    }));
+
+    const result = await getComponentDetails();
+    expect(result).toMatchObject(COMPONENT_1);
+  });
+
   it('getComponentsByAccount: Promise resolved', async () => {
     expect.hasAssertions();
 
