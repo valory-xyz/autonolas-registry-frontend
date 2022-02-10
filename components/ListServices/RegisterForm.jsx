@@ -5,7 +5,7 @@ import useDeepCompareEffect from 'use-deep-compare-effect';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import get from 'lodash/get';
-import { Button, Form, Input } from 'antd';
+import { Button, Form, Input } from 'antd/dist/antd';
 import { DependencyLabel } from 'common-util/List/ListCommon';
 import { ComplexLabel } from 'common-util/List/styles';
 

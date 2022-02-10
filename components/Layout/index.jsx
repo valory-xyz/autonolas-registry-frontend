@@ -45,7 +45,7 @@ const NavigationBar = ({ children }) => {
           <Menu.Item key="services" onClick={handleMenuItemClick}>
             Services
           </Menu.Item>
-          <Menu.Item key="operators" onClick={handleMenuItemClick}>
+          <Menu.Item key="operators" onClick={handleMenuItemClick} disabled>
             Operators
           </Menu.Item>
         </Menu>

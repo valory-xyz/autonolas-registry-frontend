@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Table, Skeleton } from 'antd';
+import { Table, Skeleton } from 'antd/dist/antd';
 import { ListEmptyMessage } from 'common-util/List/ListCommon';
 import { getData, getTableColumns } from './helpers';
 

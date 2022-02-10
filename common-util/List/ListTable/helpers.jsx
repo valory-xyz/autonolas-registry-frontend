@@ -98,7 +98,7 @@ export const getTableColumns = (
         ),
       },
       {
-        title: 'Dependency #',
+        title: 'No. of agent Dependency #',
         dataIndex: 'dependency',
         width: 180,
         key: 'dependency',
