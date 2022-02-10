@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Layout } from 'antd/dist/antd';
+import { Layout } from 'antd';
 import { COLOR } from 'util/theme';
 
 const ANTD_COLOR = {
