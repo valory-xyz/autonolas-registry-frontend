@@ -2,6 +2,7 @@ export const COLOR = {
   PRIMARY: '#00FC82',
   SECONDARY: '#00F422',
   GREY_1: '#C4C4C4',
+  GREY_TEXT: '#9a9a9a',
   WHITE: '#FFFFFF',
   BLACK: '#000000',
 };

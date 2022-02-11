@@ -23,10 +23,10 @@ describe('convertStringToArray()', () => {
 
 describe('<ListEmptyMessage />', () => {
   it.each([
-    { input: 'agent', output: /No agents registered./ },
-    { input: 'component', output: /No components registered./ },
-    { input: 'service', output: /No services registered./ },
-    { input: 'operator', output: /No operators registered./ },
+    { input: 'agent', output: /No agents registered/ },
+    { input: 'component', output: /No components registered/ },
+    { input: 'service', output: /No services registered/ },
+    { input: 'operator', output: /No operators registered/ },
     { input: null, output: /Please check type!/ },
   ])('expects valid type (input=$input)', ({ input, output }) => {
     expect.hasAssertions();

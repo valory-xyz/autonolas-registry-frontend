@@ -4,8 +4,8 @@ import Web3 from 'web3';
 import get from 'lodash/get';
 import isNil from 'lodash/isNil';
 import { Button, Form, Input } from 'antd';
-import { RegisterFooter } from './styles';
-import { DEPENDENCY_IN_ASC } from './ListCommon';
+import { DependencyLabel } from './ListCommon';
+import { RegisterFooter, ComplexLabel } from './styles';
 
 export const FORM_NAME = 'register_form';
 
@@ -27,9 +27,8 @@ const RegisterForm = ({
       {account ? (
         <Form
           name={FORM_NAME}
-          labelCol={{ span: 8 }}
-          wrapperCol={{ span: 16 }}
           initialValues={{ remember: true }}
+          layout="vertical"
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
           autoComplete="off"
@@ -55,7 +54,7 @@ const RegisterForm = ({
               }),
             ]}
           >
-            <Input />
+            <Input placeholder="0x862..." />
           </Form.Item>
 
           <Form.Item
@@ -79,7 +78,7 @@ const RegisterForm = ({
               }),
             ]}
           >
-            <Input />
+            <Input placeholder="0x862..." />
           </Form.Item>
 
           <Form.Item
@@ -92,7 +91,7 @@ const RegisterForm = ({
               },
             ]}
           >
-            <Input />
+            <Input placeholder="0x019..." />
           </Form.Item>
 
           <Form.Item
@@ -105,15 +104,18 @@ const RegisterForm = ({
               },
             ]}
           >
-            <Input />
+            <Input.TextArea rows={4} />
           </Form.Item>
 
           <Form.Item
-            label="Dependencies"
+            label={(
+              <ComplexLabel>
+                Dependencies
+                <DependencyLabel />
+              </ComplexLabel>
+            )}
             name="dependencies"
-            tooltip="(comma seperated)"
             validateFirst
-            extra={DEPENDENCY_IN_ASC}
             rules={[
               {
                 required: false,
@@ -144,10 +146,10 @@ const RegisterForm = ({
               }),
             ]}
           >
-            <Input />
+            <Input placeholder="2, 10, 15, 26" />
           </Form.Item>
 
-          <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+          <Form.Item>
             <Button type="primary" htmlType="submit">
               Submit
             </Button>

@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types';
+import Link from 'next/link';
 import { Alert } from 'antd';
+import { ExternalLink } from 'react-feather';
 import { EmptyMessage } from 'components/styles';
-
 // constants
 export const DEPENDENCY_IN_ASC = 'Agent IDs must be input in the order they were created (oldest first & newest last)';
 
@@ -14,6 +15,43 @@ export const DEPENDENCY_IN_ASC = 'Agent IDs must be input in the order they were
 export const convertStringToArray = (str) => (str ? str.split(',').map((e) => e.trim()) : str);
 
 // ----------- components -----------
+const MyLink = ({ children, ...linkProps }) => (
+  <Link {...linkProps} passHref>
+    <a href="passRef">{children}</a>
+  </Link>
+);
+MyLink.propTypes = { children: PropTypes.element.isRequired };
+
+export const DependencyLabel = ({ type }) => (
+  <div className="label-helper-text">
+    {type === 'agent' ? (
+      <>
+        Comma-separated list of agent IDs which this agent requires.
+        Find IDs on&nbsp;
+        <MyLink href="/agents">
+          Agents
+          <ExternalLink size={12} />
+        </MyLink>
+        &nbsp;page. Must be in descending order – newest agents first, oldest
+        last.
+      </>
+    ) : (
+      <>
+        Comma-separated list of component IDs which this component requires.
+        Find IDs on&nbsp;
+        <MyLink href="/">
+          Components
+          <ExternalLink size={12} />
+        </MyLink>
+        &nbsp;page. Must be in descending order – newest agents first, oldest
+        last.
+      </>
+    )}
+  </div>
+);
+DependencyLabel.propTypes = { type: PropTypes.string };
+DependencyLabel.defaultProps = { type: 'component' };
+
 export const ListEmptyMessage = ({ type }) => {
   const getValues = () => {
     switch (type) {
@@ -46,7 +84,7 @@ export const ListEmptyMessage = ({ type }) => {
 
   return (
     <EmptyMessage data-testid="not-registered-message">
-      <p>{`No ${currentType.text}s registered.`}</p>
+      <p>{`No ${currentType.text}s registered`}</p>
     </EmptyMessage>
   );
 };

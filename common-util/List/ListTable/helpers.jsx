@@ -61,6 +61,16 @@ export const getTableColumns = (
         width: 50,
       },
       {
+        title: 'Description',
+        dataIndex: 'description',
+        key: 'description',
+        width: 200,
+        className: 'underline',
+        render: (text) => (
+          <EllipsisMiddle suffixCount={5}>{text}</EllipsisMiddle>
+        ),
+      },
+      {
         title: 'Developer',
         dataIndex: 'developer',
         key: 'developer',
@@ -189,6 +199,7 @@ export const getData = (type, rawData, { filterValue }) => {
   if (type === NAV_TYPES.COMPONENT) {
     data = rawData.map((item, index) => ({
       id: `${index + 1}`,
+      description: item.description || '-',
       developer: item.developer || '-',
       owner: item.owner || '-',
       hash: item.componentHash || '-',
@@ -199,6 +210,7 @@ export const getData = (type, rawData, { filterValue }) => {
   if (type === NAV_TYPES.AGENT) {
     data = rawData.map((item, index) => ({
       id: `${index + 1}`,
+      description: item.description || '-',
       developer: item.developer || '-',
       owner: item.owner || '-',
       hash: item.agentHash || '-',

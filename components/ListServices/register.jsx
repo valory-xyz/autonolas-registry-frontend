@@ -9,9 +9,9 @@ import {
   AlertError,
 } from 'common-util/List/ListCommon';
 import { getServiceManagerContract } from 'common-util/Contracts';
+import { FormContainer, RegisterFooter } from 'components/styles';
 import RegisterForm from './RegisterForm';
 import { getServiceHash } from './utils';
-import { RegisterFooter } from '../styles';
 
 const { Title } = Typography;
 
@@ -57,11 +57,13 @@ const RegisterService = ({ account }) => {
     <>
       <Title level={2}>Register Service</Title>
       {account ? (
-        <RegisterForm
-          account={account}
-          formInitialValues={{}}
-          handleSubmit={handleSubmit}
-        />
+        <FormContainer>
+          <RegisterForm
+            account={account}
+            formInitialValues={{}}
+            handleSubmit={handleSubmit}
+          />
+        </FormContainer>
       ) : (
         <RegisterFooter>
           <p>To register, connect to wallet</p>

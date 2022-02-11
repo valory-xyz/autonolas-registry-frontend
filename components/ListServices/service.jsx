@@ -6,17 +6,14 @@ import {
   Typography, Button, notification, Skeleton,
 } from 'antd';
 import get from 'lodash/get';
-import {
-  convertStringToArray,
-  AlertError,
-} from 'common-util/List/ListCommon';
+import { convertStringToArray, AlertError } from 'common-util/List/ListCommon';
 import {
   getServiceContract,
   getServiceManagerContract,
 } from 'common-util/Contracts';
+import { FormContainer, RegisterFooter } from 'components/styles';
 import RegisterForm from './RegisterForm';
 import { getServiceHash } from './utils';
-import { RegisterFooter } from '../styles';
 
 const { Title } = Typography;
 
@@ -83,12 +80,14 @@ const Service = ({ account }) => {
           {isAllLoading ? (
             <Skeleton active />
           ) : (
-            <RegisterForm
-              isUpdateForm
-              account={account}
-              formInitialValues={serviceInfo}
-              handleSubmit={handleSubmit}
-            />
+            <FormContainer>
+              <RegisterForm
+                isUpdateForm
+                account={account}
+                formInitialValues={serviceInfo}
+                handleSubmit={handleSubmit}
+              />
+            </FormContainer>
           )}
         </>
       ) : (

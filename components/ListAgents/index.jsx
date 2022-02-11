@@ -16,6 +16,8 @@ const ListAgents = ({ account }) => {
     onRegisterClick: () => router.push(URL.REGISTER_AGENT),
   });
 
+  const onViewClick = (id) => router.push(`${URL.AGENTS}/${id}`);
+
   return (
     <>
       <Tabs
@@ -30,7 +32,7 @@ const ListAgents = ({ account }) => {
             type={NAV_TYPES.AGENT}
             filterValue={searchValue}
             getList={getAgents}
-            onViewClick={(e) => window.console.log('View Click', e)}
+            onViewClick={onViewClick}
           />
         </TabPane>
         <TabPane tab="My Agents" key="my_agents">
@@ -38,7 +40,7 @@ const ListAgents = ({ account }) => {
             type={NAV_TYPES.AGENT}
             filterValue={searchValue}
             getList={() => getAgentsByAccount(account)}
-            onViewClick={(e) => window.console.log('View Click', e)}
+            onViewClick={onViewClick}
           />
         </TabPane>
       </Tabs>
