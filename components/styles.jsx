@@ -29,7 +29,7 @@ export const EmptyMessage = styled.div`
 `;
 
 export const FormContainer = styled.div`
-  max-width: 440px;
+  max-width: 520px;
   textarea {
     resize: none;
   }

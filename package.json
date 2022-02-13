@@ -17,6 +17,7 @@
     "antd": "^4.12.3",
     "babel-plugin-import": "^1.13.3",
     "ethers": "^5.5.2",
+    "ipfs-only-hash": "^4.0.0",
     "less": "^4.1.1",
     "lodash": "^4.17.21",
     "next": "12",
