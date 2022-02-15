@@ -24,6 +24,9 @@ const GlobalStyle = createGlobalStyle`
     /* uncomment for dark mode */
     /* filter: invert(1) hue-rotate(180deg); */
   }
+  .mb-12 {
+    margin-bottom: 12px;
+  }
 `;
 
 export default GlobalStyle;

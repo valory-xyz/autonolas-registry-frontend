@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 import { Alert, Button } from 'antd';
+import bs58 from 'bs58';
 import { ExternalLink } from 'react-feather';
 import { EmptyMessage, RegisterFooter } from 'components/styles';
 
@@ -14,6 +15,11 @@ export const DEPENDENCY_IN_ASC = 'Agent IDs must be input in the order they were
  * @returns {Array}
  */
 export const convertStringToArray = (str) => (str ? str.split(',').map((e) => e.trim()) : str);
+
+// https://ethereum.stackexchange.com/a/39961
+// eg. "QmNSUYVKDSvPUnRLKmuxk9diJ6yS96r1TrAXzjTiBcCLAL"
+// "0x017dfd85d4f6cb4dcd715a88101f7b1f06cd1e009b2327a0809d01eb9c91f231"
+export const getBytes32FromIpfsHash = (ipfs) => `0x${bs58.decode(ipfs).slice(2).toString('hex')}`;
 
 // ----------- components -----------
 const MyLink = ({ children, ...linkProps }) => (

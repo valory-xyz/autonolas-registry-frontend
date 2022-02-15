@@ -25,7 +25,6 @@ const RegisterService = ({ account }) => {
       setError(null);
       setInformation(null);
 
-
       const contract = getServiceManagerContract();
       contract.methods
         .serviceCreate(

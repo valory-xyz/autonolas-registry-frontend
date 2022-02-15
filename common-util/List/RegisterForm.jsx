@@ -101,7 +101,7 @@ const RegisterForm = ({
             type="primary"
             ghost
             onClick={() => setIsModelVisible(true)}
-            style={{ margin: '0 12px 12px 0' }}
+            className="mb-12"
           >
             Create IPFS hash
           </Button>
