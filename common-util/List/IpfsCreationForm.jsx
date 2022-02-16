@@ -5,7 +5,6 @@ import get from 'lodash/get';
 import {
   Form, Input, Typography, Alert,
 } from 'antd/lib';
-// import { DependencyLabel } from './ListCommon';
 import Hash from 'ipfs-only-hash';
 import { CustomModal, ComplexLabel } from './styles';
 
@@ -21,7 +20,6 @@ const IpfsModal = ({
 
   const onFinish = async (values) => {
     if (account) {
-      console.log(values); /* eslint-disable-line no-console */
       const hash = await Hash.of(JSON.stringify(values));
       setIpfsValue(hash);
     }
@@ -32,8 +30,8 @@ const IpfsModal = ({
   };
 
   const onCancel = () => {
-    handleCancel();
     setIpfsValue(null);
+    handleCancel();
   };
 
   return (
@@ -59,10 +57,7 @@ const IpfsModal = ({
           label="Name"
           name="name"
           rules={[
-            {
-              required: true,
-              message: `Please input the name of the ${type}`,
-            },
+            { required: true, message: `Please input the name of the ${type}` },
           ]}
         >
           <Input placeholder="abc..." />
@@ -84,12 +79,7 @@ const IpfsModal = ({
         <Form.Item
           label="Version"
           name="version"
-          rules={[
-            {
-              required: true,
-              message: 'Please input the version',
-            },
-          ]}
+          rules={[{ required: true, message: 'Please input the version' }]}
         >
           <Input placeholder="1" />
         </Form.Item>
@@ -105,12 +95,7 @@ const IpfsModal = ({
               </div>
             </ComplexLabel>
           )}
-          rules={[
-            {
-              required: true,
-              message: 'Please input the URI',
-            },
-          ]}
+          rules={[{ required: true, message: 'Please input the URI' }]}
         >
           <Input placeholder="code..." />
         </Form.Item>
