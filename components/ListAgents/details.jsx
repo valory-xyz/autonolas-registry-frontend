@@ -1,17 +1,15 @@
-import { Typography } from 'antd';
 import { useRouter } from 'next/router';
 import get from 'lodash/get';
-
-const { Title } = Typography;
+import Details from 'common-util/Details';
+import { getAgentDetails } from './utils';
 
 const Agent = () => {
   const router = useRouter();
   const id = get(router, 'query.id') || null;
-  console.log(`agent_id = ${id}`);
 
   return (
     <>
-      <Title level={2}>Agent</Title>
+      <Details type="agent" id={id} getDetails={() => getAgentDetails(id)} />
     </>
   );
 };

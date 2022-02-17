@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import Web3 from 'web3';
 import get from 'lodash/get';
 import isNil from 'lodash/isNil';
-import { Button, Form, Input } from 'antd';
+import { Button, Form, Input } from 'antd/lib';
 import { DependencyLabel } from './ListCommon';
 import { RegisterFooter, ComplexLabel } from './styles';
 

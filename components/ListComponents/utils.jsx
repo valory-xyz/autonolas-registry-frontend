@@ -1,5 +1,20 @@
 import { getComponentContract } from 'common-util/Contracts';
 
+export const getComponentDetails = (id) => new Promise((resolve, reject) => {
+  const contract = getComponentContract();
+
+  contract.methods
+    .getInfo(id)
+    .call()
+    .then((information) => {
+      resolve(information);
+    })
+    .catch((e) => {
+      console.error(e);
+      reject(e);
+    });
+});
+
 export const getComponentsByAccount = (account) => new Promise((resolve, reject) => {
   const contract = getComponentContract();
   contract.methods

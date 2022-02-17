@@ -1,17 +1,21 @@
-import { Typography } from 'antd';
 import { useRouter } from 'next/router';
 import get from 'lodash/get';
-
-const { Title } = Typography;
+import { URL } from 'util/constants';
+import Details from 'common-util/Details';
+import { getServiceDetails } from './utils';
 
 const Service = () => {
   const router = useRouter();
   const id = get(router, 'query.id') || null;
-  console.log(`service_id = ${id}`);
 
   return (
     <>
-      <Title level={2}>Service</Title>
+      <Details
+        type="service"
+        id={id}
+        getDetails={() => getServiceDetails(id)}
+        handleUpdate={() => router.push(`${URL.UPDATE_SERVICE}/${id}`)}
+      />
     </>
   );
 };

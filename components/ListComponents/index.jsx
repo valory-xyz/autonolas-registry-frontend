@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Tabs } from 'antd';
+import { Tabs } from 'antd/lib';
 import { useRouter } from 'next/router';
 import { URL, NAV_TYPES } from 'util/constants';
 import ListTable from 'common-util/List/ListTable';
@@ -16,6 +16,8 @@ const ListComponents = ({ account }) => {
     onRegisterClick: () => router.push(URL.REGISTER_COMPONENT),
   });
 
+  const onViewClick = (id) => router.push(`${URL.COMPONENTS}/${id}`);
+
   return (
     <>
       <Tabs
@@ -30,7 +32,7 @@ const ListComponents = ({ account }) => {
             type={NAV_TYPES.COMPONENT}
             getList={getComponents}
             filterValue={searchValue}
-            onViewClick={(e) => window.console.log('View Click', e)}
+            onViewClick={onViewClick}
           />
         </TabPane>
 
@@ -39,7 +41,7 @@ const ListComponents = ({ account }) => {
             type={NAV_TYPES.COMPONENT}
             getList={() => getComponentsByAccount(account)}
             filterValue={searchValue}
-            onViewClick={(e) => window.console.log('View Click', e)}
+            onViewClick={onViewClick}
           />
         </TabPane>
       </Tabs>

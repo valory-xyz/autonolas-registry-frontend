@@ -2,7 +2,6 @@ import React from 'react';
 import { render, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import ListAgents from 'components/ListAgents';
-import Agent from 'components/ListAgents/agent';
 import { getAgents, getAgentsByAccount } from 'components/ListAgents/utils';
 import { useRouter } from 'next/router';
 import { wrapProvider, ACTIVE_TAB, getTableTd } from '../../helpers';
@@ -65,15 +64,5 @@ describe('listAgents/index.jsx', () => {
 
     // Register button
     expect(getByRole('button', { name: 'Register' })).toBeInTheDocument();
-  });
-});
-
-describe('listAgents/agent.jsx', () => {
-  it('should render header as `Agent`', async () => {
-    expect.hasAssertions();
-    const { container } = render(wrapProvider(<Agent />));
-    await waitFor(async () => expect(container.querySelector('.ant-typography').textContent).toBe(
-      'Agent',
-    ));
   });
 });

@@ -1,8 +1,9 @@
 import PropTypes from 'prop-types';
 import Link from 'next/link';
-import { Alert } from 'antd';
+import { Alert, Button } from 'antd';
 import { ExternalLink } from 'react-feather';
-import { EmptyMessage } from 'components/styles';
+import { EmptyMessage, RegisterFooter } from 'components/styles';
+
 // constants
 export const DEPENDENCY_IN_ASC = 'Agent IDs must be input in the order they were created (oldest first & newest last)';
 
@@ -20,14 +21,14 @@ const MyLink = ({ children, ...linkProps }) => (
     <a href="passRef">{children}</a>
   </Link>
 );
-MyLink.propTypes = { children: PropTypes.element.isRequired };
+MyLink.propTypes = { children: PropTypes.node.isRequired };
 
 export const DependencyLabel = ({ type }) => (
   <div className="label-helper-text">
     {type === 'agent' ? (
       <>
-        Comma-separated list of agent IDs which this agent requires.
-        Find IDs on&nbsp;
+        Comma-separated list of agent IDs which this agent requires. Find IDs
+        on&nbsp;
         <MyLink href="/agents">
           Agents
           <ExternalLink size={12} />
@@ -51,6 +52,15 @@ export const DependencyLabel = ({ type }) => (
 );
 DependencyLabel.propTypes = { type: PropTypes.string };
 DependencyLabel.defaultProps = { type: 'component' };
+
+export const RegisterMessage = ({ handleCancel }) => (
+  <RegisterFooter>
+    <p>To register, connect to wallet</p>
+    {handleCancel && <Button onClick={handleCancel}>Cancel</Button>}
+  </RegisterFooter>
+);
+RegisterMessage.propTypes = { handleCancel: PropTypes.func };
+RegisterMessage.defaultProps = { handleCancel: null };
 
 export const ListEmptyMessage = ({ type }) => {
   const getValues = () => {
@@ -88,22 +98,14 @@ export const ListEmptyMessage = ({ type }) => {
     </EmptyMessage>
   );
 };
-
-ListEmptyMessage.propTypes = {
-  type: PropTypes.string,
-};
-
-ListEmptyMessage.defaultProps = {
-  type: null,
-};
+ListEmptyMessage.propTypes = { type: PropTypes.string };
+ListEmptyMessage.defaultProps = { type: null };
 
 // PrintJson
 export const PrintJson = ({ value }) => (
   <pre>{JSON.stringify(value || {}, null, 2)}</pre>
 );
-PrintJson.propTypes = {
-  value: PropTypes.shape({}).isRequired,
-};
+PrintJson.propTypes = { value: PropTypes.shape({}).isRequired };
 
 // AlertInfo
 export const AlertInfo = ({ type, information }) => {
@@ -147,10 +149,6 @@ export const AlertError = ({ error }) => {
   );
 };
 AlertError.propTypes = {
-  error: PropTypes.shape({
-    stack: PropTypes.string,
-  }),
+  error: PropTypes.shape({ stack: PropTypes.string }),
 };
-AlertError.defaultProps = {
-  error: null,
-};
+AlertError.defaultProps = { error: null };

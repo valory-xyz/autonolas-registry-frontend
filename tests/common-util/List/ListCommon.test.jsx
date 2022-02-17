@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import {
   convertStringToArray,
   ListEmptyMessage,
@@ -75,7 +75,6 @@ describe('<AlertError />', () => {
     { input: { stack: 'Exception occured' }, output: /Exception occured/ },
   ])('expects valid error object (input=$input)', ({ input, output }) => {
     const { getByText, getByTestId } = render(<AlertError error={input} />);
-    screen.debug();
     expect(getByText(output)).toBeInTheDocument();
     expect(getByTestId('alert-error-container')).toBeInTheDocument();
   });

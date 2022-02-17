@@ -43,7 +43,6 @@ describe('<RegisterForm />', () => {
     userEvent.click(container.querySelector('.ant-btn[type="submit"]'));
 
     await waitFor(async () => {
-      // screen.debug();
       expect(handleSubmit.mock.calls).toHaveLength(1);
     });
   });
