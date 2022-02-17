@@ -10,7 +10,8 @@ import { Web3ReactProvider } from '@web3-react/core';
 import GlobalStyle from 'components/GlobalStyles';
 import Layout from 'components/Layout';
 import initStore from '../store';
-import './styles.less';
+
+require('../styles/antd.less');
 
 const getLibrary = (provider) => new Web3(provider);
 

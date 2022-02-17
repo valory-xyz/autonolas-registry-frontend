@@ -23,6 +23,9 @@
       }
     ],
     ["inline-react-svg"],
-    ["import", { "libraryName": "antd", "style": true }]
+    [
+      "import",
+      { "libraryName": "antd", "libraryDirectory": "lib", "style": true }
+    ]
   ]
 }

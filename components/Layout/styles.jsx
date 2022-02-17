@@ -20,7 +20,6 @@ export const CustomLayout = styled(Layout)`
     background: ${ANTD_COLOR.whiteColor};
     .ant-menu {
       flex: 1;
-      text-align: center;
       &.ant-menu-horizontal {
         border: none;
       }
@@ -139,6 +138,7 @@ export const Logo = styled.div`
   display: flex;
   align-items: center;
   justify-content: left;
+  margin-right: 1.5rem;
   .title-logo {
     width: 32px;
     height: 32px;
