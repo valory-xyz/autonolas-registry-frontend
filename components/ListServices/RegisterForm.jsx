@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import get from 'lodash/get';
 import { Button, Form, Input } from 'antd/lib';
 import { DependencyLabel } from 'common-util/List/ListCommon';
-import IpfsCreationModal from 'common-util/List/IpfsCreationForm';
+import IpfsHashGenerationModal from 'common-util/List/IpfsHashGenerationModal';
 import { ComplexLabel } from 'common-util/List/styles';
 
 export const FORM_NAME = 'serviceRegisterForm';
@@ -19,7 +19,7 @@ const RegisterForm = ({
   isUpdateForm,
   formInitialValues,
 }) => {
-  const [isModelVisible, setIsModelVisible] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [fields, setFields] = useState([]);
   const router = useRouter();
   const id = get(router, 'query.id') || null;
@@ -160,7 +160,7 @@ const RegisterForm = ({
         <Button
           type="primary"
           ghost
-          onClick={() => setIsModelVisible(true)}
+          onClick={() => setIsModalVisible(true)}
           className="mb-12"
         >
           Create IPFS hash
@@ -251,10 +251,10 @@ const RegisterForm = ({
         </Form.Item>
       </Form>
 
-      <IpfsCreationModal
-        visible={isModelVisible}
+      <IpfsHashGenerationModal
+        visible={isModalVisible}
         type={listType}
-        handleCancel={() => setIsModelVisible(false)}
+        handleCancel={() => setIsModalVisible(false)}
       />
     </>
   );
