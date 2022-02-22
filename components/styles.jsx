@@ -1,4 +1,5 @@
 import styled, { createGlobalStyle } from 'styled-components';
+import { COLOR } from 'util/theme';
 
 export const GlobalStyle = createGlobalStyle`
   html {
@@ -32,6 +33,9 @@ export const FormContainer = styled.div`
   max-width: 520px;
   textarea {
     resize: none;
+  }
+  .ant-typography {
+    color: ${COLOR.PRIMARY};
   }
 `;
 

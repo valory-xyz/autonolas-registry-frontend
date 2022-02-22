@@ -2,10 +2,11 @@ import { useState, useEffect } from 'react';
 import { Layout, Menu } from 'antd';
 import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
+import Footer from './Footer';
 import Login from '../Login';
 import { CustomLayout, Logo, RightMenu } from './styles';
 
-const { Header, Content, Footer } = Layout;
+const { Header, Content } = Layout;
 
 const NavigationBar = ({ children }) => {
   const router = useRouter();
@@ -45,9 +46,6 @@ const NavigationBar = ({ children }) => {
           <Menu.Item key="services" onClick={handleMenuItemClick}>
             Services
           </Menu.Item>
-          <Menu.Item key="operators" onClick={handleMenuItemClick} disabled>
-            Operators
-          </Menu.Item>
         </Menu>
 
         <RightMenu>
@@ -59,10 +57,7 @@ const NavigationBar = ({ children }) => {
         <div className="site-layout-background">{children}</div>
       </Content>
 
-      <Footer>
-        ©&nbsp;Valory&nbsp;
-        {new Date().getFullYear()}
-      </Footer>
+      <Footer />
     </CustomLayout>
   );
 };
