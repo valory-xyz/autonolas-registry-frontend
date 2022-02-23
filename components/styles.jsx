@@ -13,7 +13,7 @@ export const GlobalStyle = createGlobalStyle`
 export const Container = styled.div``;
 
 export const EmptyMessage = styled.div`
-  min-height: 200px;
+  min-height: 60vh;
   width: ${({ width }) => width || 'auto'};
   display: flex;
   align-items: center;
@@ -21,6 +21,15 @@ export const EmptyMessage = styled.div`
   text-align: center;
   flex-direction: column;
   justify-content: center;
+  .empty-message-logo {
+    width: 96px;
+    height: 96px;
+    margin-bottom: 2rem;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url(/images/agent.png);
+  }
   p {
     margin: 0;
   }

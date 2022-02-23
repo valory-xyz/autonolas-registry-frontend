@@ -49,7 +49,7 @@ export const CustomLayout = styled(Layout)`
   /* tabs */
   .ant-tabs-card.ant-tabs-top {
     > .ant-tabs-nav .ant-tabs-tab {
-      border-radius: 8px;
+      border-radius: 18px;
       background-color: transparent;
       border-color: transparent !important;
     }
@@ -112,13 +112,11 @@ export const CustomLayout = styled(Layout)`
   .ant-table-tbody > tr {
     > td {
       padding: 12px 16px;
+      background: ${COLOR.TABLE_BLACK};
       &.underline span {
         text-decoration: underline;
       }
       .ant-btn {
-        span {
-          text-decoration: underline;
-        }
         &:first-child {
           padding-left: 0;
         }
@@ -138,13 +136,13 @@ export const CustomLayout = styled(Layout)`
 `;
 
 export const Logo = styled.div`
-  width: 96px;
+  width: 110px;
   font-weight: bold;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: left;
-  margin-right: 1.5rem;
+  margin-right: 3.5rem;
   .title-logo {
     width: 32px;
     height: 32px;
