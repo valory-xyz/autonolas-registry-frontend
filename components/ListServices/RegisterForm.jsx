@@ -9,15 +9,17 @@ import { Button, Form, Input } from 'antd/lib';
 import { DependencyLabel } from 'common-util/List/ListCommon';
 import IpfsCreationModal from 'common-util/List/IpfsCreationForm';
 import { ComplexLabel } from 'common-util/List/styles';
+import { RegisterFooter } from 'components/styles';
 
 export const FORM_NAME = 'serviceRegisterForm';
 
 const RegisterForm = ({
   account,
   listType,
-  handleSubmit,
   isUpdateForm,
   formInitialValues,
+  handleSubmit,
+  handleCancel,
 }) => {
   const [isModelVisible, setIsModelVisible] = useState(false);
   const [fields, setFields] = useState([]);
@@ -245,11 +247,18 @@ const RegisterForm = ({
           </Form.Item>
         )}
 
-        <Form.Item>
-          <Button type="primary" htmlType="submit">
-            Submit
-          </Button>
-        </Form.Item>
+        {account ? (
+          <Form.Item>
+            <Button type="primary" htmlType="submit">
+              Submit
+            </Button>
+          </Form.Item>
+        ) : (
+          <RegisterFooter>
+            <p>To register, connect to wallet</p>
+            <Button onClick={handleCancel}>Cancel</Button>
+          </RegisterFooter>
+        )}
       </Form>
 
       <IpfsCreationModal
@@ -275,6 +284,7 @@ RegisterForm.propTypes = {
     threshold: PropTypes.string,
   }),
   handleSubmit: PropTypes.func.isRequired,
+  handleCancel: PropTypes.func.isRequired,
 };
 
 RegisterForm.defaultProps = {

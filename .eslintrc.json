@@ -26,6 +26,7 @@
   "rules": {
     "react/react-in-jsx-scope": "off",
     "react/jsx-props-no-spreading": "off",
+    "react/no-array-index-key": "off",
     "arrow-parens": ["error"],
     "import/no-unresolved": [
       2,

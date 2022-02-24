@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Web3 from 'web3';
 import { Button, Form, Input } from 'antd/lib';
+import { WhiteButton } from 'common-util/components/Button';
 import get from 'lodash/get';
 import isNil from 'lodash/isNil';
 import IpfsCreationModal from './IpfsCreationForm';
@@ -27,152 +28,152 @@ const RegisterForm = ({
 
   return (
     <>
-      {account ? (
-        <Form
-          name={FORM_NAME}
-          initialValues={{ remember: true }}
-          layout="vertical"
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
-          autoComplete="off"
+      <Form
+        name={FORM_NAME}
+        initialValues={{ remember: true }}
+        layout="vertical"
+        onFinish={onFinish}
+        onFinishFailed={onFinishFailed}
+        autoComplete="off"
+      >
+        <Form.Item
+          label="Owner Address"
+          name="owner_address"
+          validateFirst
+          rules={[
+            {
+              required: true,
+              message: `Please input the address of the ${listType} Owner`,
+            },
+            () => ({
+              validator(_, value) {
+                if (Web3.utils.isAddress(value)) return Promise.resolve();
+                return Promise.reject(
+                  new Error(
+                    `Please input a valid address of the ${listType} Owner`,
+                  ),
+                );
+              },
+            }),
+          ]}
         >
-          <Form.Item
-            label="Owner Address"
-            name="owner_address"
-            validateFirst
-            rules={[
-              {
-                required: true,
-                message: `Please input the address of the ${listType} Owner`,
+          <Input placeholder="0x862..." />
+        </Form.Item>
+
+        <Form.Item
+          label="Developer Address"
+          name="developer_address"
+          validateFirst
+          rules={[
+            {
+              required: true,
+              message: `Please input the address to which the ${listType} Developer`,
+            },
+            () => ({
+              validator(_, value) {
+                if (Web3.utils.isAddress(value)) return Promise.resolve();
+                return Promise.reject(
+                  new Error(
+                    `Please input a valid address of the ${listType} Developer`,
+                  ),
+                );
               },
-              () => ({
-                validator(_, value) {
-                  if (Web3.utils.isAddress(value)) return Promise.resolve();
-                  return Promise.reject(
-                    new Error(
-                      `Please input a valid address of the ${listType} Owner`,
-                    ),
-                  );
-                },
-              }),
-            ]}
-          >
-            <Input placeholder="0x862..." />
-          </Form.Item>
+            }),
+          ]}
+        >
+          <Input placeholder="0x862..." />
+        </Form.Item>
 
-          <Form.Item
-            label="Developer Address"
-            name="developer_address"
-            validateFirst
-            rules={[
-              {
-                required: true,
-                message: `Please input the address to which the ${listType} Developer`,
+        <Form.Item
+          label="Hash"
+          name="hash"
+          rules={[
+            {
+              required: true,
+              message: `Please input the IPFS hash of the ${listType}`,
+            },
+          ]}
+        >
+          <Input placeholder="0x019..." />
+        </Form.Item>
+
+        <Button
+          type="primary"
+          ghost
+          onClick={() => setIsModelVisible(true)}
+          className="mb-12"
+        >
+          Create IPFS hash
+        </Button>
+
+        <Form.Item
+          label="Description"
+          name="description"
+          rules={[
+            {
+              required: true,
+              message: `Please input the ${listType} Description`,
+            },
+          ]}
+        >
+          <Input.TextArea rows={4} />
+        </Form.Item>
+
+        <Form.Item
+          label={(
+            <ComplexLabel>
+              Dependencies
+              <DependencyLabel />
+            </ComplexLabel>
+          )}
+          name="dependencies"
+          validateFirst
+          rules={[
+            {
+              required: false,
+              message: `Please input the list of ${listType}s on which this ${listType} depends`,
+            },
+            () => ({
+              validator(_, value) {
+                // even empty value is accepted as it is not required
+                if (isNil(value) || value === '') {
+                  return Promise.resolve();
+                }
+
+                /**
+                 * https://regex101.com/r/ip1z51/1
+                 * accepts comma seperated values, examples below
+                 * eg
+                 * 1,2,4,2
+                 * 2,3,4
+                 * 4,   2,4,5
+                 * 2,3     ,4
+                 * 7
+                 */
+                if (/^\d+(\s*,\s*\d+?)*$/gm.test(value)) {
+                  return Promise.resolve();
+                }
+                return Promise.reject(new Error('Please input a valid list'));
               },
-              () => ({
-                validator(_, value) {
-                  if (Web3.utils.isAddress(value)) return Promise.resolve();
-                  return Promise.reject(
-                    new Error(
-                      `Please input a valid address of the ${listType} Developer`,
-                    ),
-                  );
-                },
-              }),
-            ]}
-          >
-            <Input placeholder="0x862..." />
-          </Form.Item>
+            }),
+          ]}
+        >
+          <Input placeholder="2, 10, 15, 26" />
+        </Form.Item>
 
-          <Form.Item
-            label="Hash"
-            name="hash"
-            rules={[
-              {
-                required: true,
-                message: `Please input the IPFS hash of the ${listType}`,
-              },
-            ]}
-          >
-            <Input placeholder="0x019..." />
-          </Form.Item>
-
-          <Button
-            type="primary"
-            ghost
-            onClick={() => setIsModelVisible(true)}
-            className="mb-12"
-          >
-            Create IPFS hash
-          </Button>
-
-          <Form.Item
-            label="Description"
-            name="description"
-            rules={[
-              {
-                required: true,
-                message: `Please input the ${listType} Description`,
-              },
-            ]}
-          >
-            <Input.TextArea rows={4} />
-          </Form.Item>
-
-          <Form.Item
-            label={(
-              <ComplexLabel>
-                Dependencies
-                <DependencyLabel />
-              </ComplexLabel>
-            )}
-            name="dependencies"
-            validateFirst
-            rules={[
-              {
-                required: false,
-                message: `Please input the list of ${listType}s on which this ${listType} depends`,
-              },
-              () => ({
-                validator(_, value) {
-                  // even empty value is accepted as it is not required
-                  if (isNil(value) || value === '') {
-                    return Promise.resolve();
-                  }
-
-                  /**
-                   * https://regex101.com/r/ip1z51/1
-                   * accepts comma seperated values, examples below
-                   * eg
-                   * 1,2,4,2
-                   * 2,3,4
-                   * 4,   2,4,5
-                   * 2,3     ,4
-                   * 7
-                   */
-                  if (/^\d+(\s*,\s*\d+?)*$/gm.test(value)) {
-                    return Promise.resolve();
-                  }
-                  return Promise.reject(new Error('Please input a valid list'));
-                },
-              }),
-            ]}
-          >
-            <Input placeholder="2, 10, 15, 26" />
-          </Form.Item>
-
+        {account ? (
           <Form.Item>
             <Button type="primary" htmlType="submit">
               Submit
             </Button>
           </Form.Item>
-        </Form>
-      ) : (
-        <RegisterFooter>
-          <p>To register, connect to wallet</p>
-          <Button onClick={handleCancel}>Cancel</Button>
-        </RegisterFooter>
-      )}
+        ) : (
+          <RegisterFooter>
+            <p>To register, connect to wallet</p>
+            <WhiteButton onClick={handleCancel}>Cancel me</WhiteButton>
+          </RegisterFooter>
+        )}
+      </Form>
 
       <IpfsCreationModal
         visible={isModelVisible}
