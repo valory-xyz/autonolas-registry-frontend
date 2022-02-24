@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import get from 'lodash/get';
 import { Button, Form, Input } from 'antd/lib';
+import { WhiteButton } from 'common-util/components/Button';
 import { DependencyLabel } from 'common-util/List/ListCommon';
 import IpfsCreationModal from 'common-util/List/IpfsCreationForm';
 import { ComplexLabel } from 'common-util/List/styles';
@@ -256,7 +257,7 @@ const RegisterForm = ({
         ) : (
           <RegisterFooter>
             <p>To register, connect to wallet</p>
-            <Button onClick={handleCancel}>Cancel</Button>
+            <WhiteButton onClick={handleCancel}>Cancel</WhiteButton>
           </RegisterFooter>
         )}
       </Form>

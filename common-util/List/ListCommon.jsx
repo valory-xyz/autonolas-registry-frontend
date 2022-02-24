@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types';
 import Link from 'next/link';
-import { Alert, Button } from 'antd';
+import { Alert } from 'antd';
 import bs58 from 'bs58';
 import { ExternalLink } from 'react-feather';
 import { EmptyMessage, RegisterFooter } from 'components/styles';
+import { WhiteButton } from '../components/Button';
 
 // constants
 export const DEPENDENCY_IN_ASC = 'Agent IDs must be input in the order they were created (oldest first & newest last)';
@@ -62,7 +63,7 @@ DependencyLabel.defaultProps = { type: 'component' };
 export const RegisterMessage = ({ handleCancel }) => (
   <RegisterFooter>
     <p>To register, connect to wallet</p>
-    {handleCancel && <Button onClick={handleCancel}>Cancel</Button>}
+    {handleCancel && <WhiteButton onClick={handleCancel}>Cancel</WhiteButton>}
   </RegisterFooter>
 );
 RegisterMessage.propTypes = { handleCancel: PropTypes.func };

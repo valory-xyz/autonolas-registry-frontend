@@ -2,16 +2,14 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import {
-  Typography, Button, notification, Skeleton,
-} from 'antd';
+import { Typography, notification, Skeleton } from 'antd';
 import get from 'lodash/get';
 import { convertStringToArray, AlertError } from 'common-util/List/ListCommon';
 import {
   getServiceContract,
   getServiceManagerContract,
 } from 'common-util/Contracts';
-import { FormContainer, RegisterFooter } from 'components/styles';
+import { FormContainer } from 'components/styles';
 import RegisterForm from './RegisterForm';
 import { getServiceHash } from './utils';
 
@@ -75,28 +73,19 @@ const Service = ({ account }) => {
   return (
     <>
       <Title level={2}>Service</Title>
-      {account ? (
-        <>
-          {isAllLoading ? (
-            <Skeleton active />
-          ) : (
-            <FormContainer>
-              <RegisterForm
-                isUpdateForm
-                account={account}
-                formInitialValues={serviceInfo}
-                handleSubmit={handleSubmit}
-              />
-            </FormContainer>
-          )}
-        </>
+      {isAllLoading ? (
+        <Skeleton active />
       ) : (
-        <RegisterFooter>
-          <p>To register, connect to wallet</p>
-          <Button onClick={handleCancel}>Cancel</Button>
-        </RegisterFooter>
+        <FormContainer>
+          <RegisterForm
+            isUpdateForm
+            account={account}
+            formInitialValues={serviceInfo}
+            handleSubmit={handleSubmit}
+            handleCancel={handleCancel}
+          />
+        </FormContainer>
       )}
-
       <AlertError error={error} />
     </>
   );
