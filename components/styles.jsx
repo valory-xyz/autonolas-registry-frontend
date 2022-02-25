@@ -1,16 +1,5 @@
-import styled, { createGlobalStyle } from 'styled-components';
+import styled from 'styled-components';
 import { COLOR } from 'util/theme';
-
-export const GlobalStyle = createGlobalStyle`
-  html {
-    scroll-behavior: smooth;
-  }
-  .mb-16 {
-    margin-bottom: 16px;
-  }
-`;
-
-export const Container = styled.div``;
 
 export const EmptyMessage = styled.div`
   min-height: 60vh;
