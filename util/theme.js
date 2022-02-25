@@ -2,9 +2,11 @@ export const COLOR = {
   PRIMARY: '#00FC82',
   SECONDARY: '#00F422',
   GREY_1: '#C4C4C4',
-  GREY_TEXT: '#9a9a9a',
+  GREY_2: '#9A9A9A',
   WHITE: '#FFFFFF',
   BLACK: '#000000',
+  BORDER_GREY: '#323232',
+  TABLE_BLACK: '#1B1B1B',
 };
 
 export const BOX_SHADOW = {};
@@ -32,6 +34,10 @@ export const BREAK_POINT = {
 
 export const TRANSITION = {
   all: 'all 0.3s',
+};
+
+export const OTHERS = {
+  borderRadius: '5px',
 };
 
 export const MEDIA_QUERY = {

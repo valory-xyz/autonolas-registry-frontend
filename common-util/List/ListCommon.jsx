@@ -100,6 +100,7 @@ export const ListEmptyMessage = ({ type }) => {
 
   return (
     <EmptyMessage data-testid="not-registered-message">
+      <div className="empty-message-logo" />
       <p>{`No ${currentType.text}s registered`}</p>
     </EmptyMessage>
   );

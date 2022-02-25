@@ -15,7 +15,7 @@ export const ComplexLabel = styled.div`
   display: flex;
   flex-direction: column;
   .label-helper-text {
-    color: ${COLOR.GREY_TEXT};
+    color: ${COLOR.GREY_2};
     a {
       display: inline-flex;
       align-items: center;

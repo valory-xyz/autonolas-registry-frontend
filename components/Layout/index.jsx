@@ -3,12 +3,13 @@ import { Layout, Menu, Result } from 'antd';
 import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import useCheckMobileScreen from 'common-util/hooks/useCheckMobileScreen';
+import Footer from './Footer';
 import Login from '../Login';
 import {
   CustomLayout, Logo, RightMenu, SupportOnlyDesktop,
 } from './styles';
 
-const { Header, Content, Footer } = Layout;
+const { Header, Content } = Layout;
 
 const NavigationBar = ({ children }) => {
   const isMobile = useCheckMobileScreen();
@@ -68,9 +69,6 @@ const NavigationBar = ({ children }) => {
           <Menu.Item key="services" onClick={handleMenuItemClick}>
             Services
           </Menu.Item>
-          <Menu.Item key="operators" onClick={handleMenuItemClick} disabled>
-            Operators
-          </Menu.Item>
         </Menu>
 
         <RightMenu>
@@ -82,10 +80,7 @@ const NavigationBar = ({ children }) => {
         <div className="site-layout-background">{children}</div>
       </Content>
 
-      <Footer>
-        ©&nbsp;Valory&nbsp;
-        {new Date().getFullYear()}
-      </Footer>
+      <Footer />
     </CustomLayout>
   );
 };
