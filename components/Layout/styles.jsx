@@ -169,3 +169,7 @@ export const FooterContainer = styled.div`
     column-gap: 28px;
   }
 `;
+
+export const SupportOnlyDesktop = styled.div`
+  margin: 4rem 0;
+`;

@@ -6,7 +6,7 @@ import { Button, Form, Input } from 'antd/lib';
 import { WhiteButton } from 'common-util/components/Button';
 import get from 'lodash/get';
 import isNil from 'lodash/isNil';
-import IpfsCreationModal from './IpfsCreationForm';
+import IpfsHashGenerationModal from './IpfsHashGenerationModal';
 import { DependencyLabel } from './ListCommon';
 import { RegisterFooter, ComplexLabel } from './styles';
 
@@ -15,7 +15,7 @@ export const FORM_NAME = 'register_form';
 const RegisterForm = ({
   account, listType, handleSubmit, handleCancel,
 }) => {
-  const [isModelVisible, setIsModelVisible] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const onFinish = (values) => {
     if (account) {
       handleSubmit(values);
@@ -100,7 +100,7 @@ const RegisterForm = ({
         <Button
           type="primary"
           ghost
-          onClick={() => setIsModelVisible(true)}
+          onClick={() => setIsModalVisible(true)}
           className="mb-12"
         >
           Create IPFS hash
@@ -175,10 +175,10 @@ const RegisterForm = ({
         )}
       </Form>
 
-      <IpfsCreationModal
-        visible={isModelVisible}
+      <IpfsHashGenerationModal
+        visible={isModalVisible}
         type={listType}
-        handleCancel={() => setIsModelVisible(false)}
+        handleCancel={() => setIsModalVisible(false)}
       />
     </>
   );
