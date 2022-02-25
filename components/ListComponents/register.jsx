@@ -4,7 +4,11 @@ import { connect } from 'react-redux';
 import { useRouter } from 'next/router';
 import { Typography, notification } from 'antd';
 import RegisterForm from 'common-util/List/RegisterForm';
-import { AlertInfo, AlertError } from 'common-util/List/ListCommon';
+import {
+  getBytes32FromIpfsHash,
+  AlertInfo,
+  AlertError,
+} from 'common-util/List/ListCommon';
 import { getMechMinterContract } from 'common-util/Contracts';
 import { FormContainer } from 'components/styles';
 
@@ -25,7 +29,7 @@ const RegisterComponent = ({ account }) => {
       setInformation(null);
       const contract = getMechMinterContract();
       const hashObject = {
-        hash: `0x${values.hash}`,
+        hash: getBytes32FromIpfsHash(values.hash),
         hashFunction: '0x12',
         size: '0x20',
       };

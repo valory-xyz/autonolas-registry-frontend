@@ -1,13 +1,17 @@
 import { useState, useEffect } from 'react';
-import { Layout, Menu } from 'antd';
+import { Layout, Menu, Result } from 'antd';
 import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
+import useCheckMobileScreen from 'common-util/hooks/useCheckMobileScreen';
 import Login from '../Login';
-import { CustomLayout, Logo, RightMenu } from './styles';
+import {
+  CustomLayout, Logo, RightMenu, SupportOnlyDesktop,
+} from './styles';
 
 const { Header, Content, Footer } = Layout;
 
 const NavigationBar = ({ children }) => {
+  const isMobile = useCheckMobileScreen();
   const router = useRouter();
   const [selectedMenu, setSelectedMenu] = useState([]);
   const { pathname } = router;
@@ -27,13 +31,32 @@ const NavigationBar = ({ children }) => {
     setSelectedMenu(key);
   };
 
+  const logo = (
+    <Logo onClick={() => router.push('/')} data-testid="protocol-logo">
+      <div className="title-logo" />
+      Registry
+    </Logo>
+  );
+
+  // TODO: fix mobile responsiveness and remove the below component
+  if (isMobile) {
+    return (
+      <CustomLayout>
+        <Header>{logo}</Header>
+        <SupportOnlyDesktop>
+          <Result
+            status="warning"
+            title="Oops, Mobile & Tablet devices are not supported."
+          />
+        </SupportOnlyDesktop>
+      </CustomLayout>
+    );
+  }
+
   return (
     <CustomLayout>
       <Header>
-        <Logo onClick={() => router.push('/')} data-testid="protocol-logo">
-          <div className="title-logo" />
-          Registry
-        </Logo>
+        {logo}
 
         <Menu theme="light" mode="horizontal" selectedKeys={[selectedMenu]}>
           <Menu.Item key="components" onClick={handleMenuItemClick}>

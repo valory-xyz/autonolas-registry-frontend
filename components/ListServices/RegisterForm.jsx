@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import get from 'lodash/get';
 import { Button, Form, Input } from 'antd/lib';
 import { DependencyLabel } from 'common-util/List/ListCommon';
+import IpfsHashGenerationModal from 'common-util/List/IpfsHashGenerationModal';
 import { ComplexLabel } from 'common-util/List/styles';
 
 export const FORM_NAME = 'serviceRegisterForm';
@@ -18,6 +19,7 @@ const RegisterForm = ({
   isUpdateForm,
   formInitialValues,
 }) => {
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [fields, setFields] = useState([]);
   const router = useRouter();
   const id = get(router, 'query.id') || null;
@@ -36,6 +38,10 @@ const RegisterForm = ({
         {
           name: ['service_description'],
           value: formInitialValues.description || null,
+        },
+        {
+          name: ['hash'],
+          value: formInitialValues.hash || null,
         },
         {
           name: ['agent_ids'],
@@ -75,151 +81,183 @@ const RegisterForm = ({
   };
 
   return (
-    <Form
-      name={FORM_NAME}
-      initialValues={{ remember: true }}
-      layout="vertical"
-      fields={fields}
-      onFieldsChange={(_, allFields) => {
-        setFields(allFields);
-      }}
-      onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
-      autoComplete="off"
-    >
-      <Form.Item
-        label="Owner Address"
-        name="owner_address"
-        rules={[
-          {
-            required: true,
-            message: `Please input the address of the ${listType} Owner`,
-          },
-          () => ({
-            validator(_, value) {
-              if (Web3.utils.isAddress(value)) return Promise.resolve();
-              return Promise.reject(
-                new Error(
-                  `Please input a valid address of the ${listType} Owner`,
-                ),
-              );
-            },
-          }),
-        ]}
+    <>
+      <Form
+        name={FORM_NAME}
+        initialValues={{ remember: true }}
+        layout="vertical"
+        fields={fields}
+        onFieldsChange={(_, allFields) => {
+          setFields(allFields);
+        }}
+        onFinish={onFinish}
+        onFinishFailed={onFinishFailed}
+        autoComplete="off"
       >
-        <Input placeholder="0x862..." disabled={isUpdateForm} />
-      </Form.Item>
-
-      <Form.Item
-        label="Service Name"
-        name="service_name"
-        rules={[
-          {
-            required: true,
-            message: `Please input the ${listType} name`,
-          },
-        ]}
-      >
-        <Input />
-      </Form.Item>
-
-      <Form.Item
-        label="Service Description"
-        name="service_description"
-        rules={[
-          {
-            required: true,
-            message: `Please input the ${listType} Description`,
-          },
-        ]}
-      >
-        <Input />
-      </Form.Item>
-
-      <Form.Item
-        name="agent_ids"
-        validateFirst
-        label={(
-          <ComplexLabel>
-            Canonical agent Ids
-            <DependencyLabel type="agent" />
-          </ComplexLabel>
-        )}
-        rules={[
-          {
-            required: true,
-            message: 'Please input the agent Ids',
-          },
-          () => ({
-            validator(_, value) {
-              if (/^\d+(\s*,\s*\d+?)*$/gm.test(value)) {
-                return Promise.resolve();
-              }
-              return Promise.reject(new Error('Please input a valid list'));
-            },
-          }),
-        ]}
-      >
-        <Input placeholder="2, 10, 15, 26" />
-      </Form.Item>
-
-      <Form.Item
-        label="No. of slots to canonical agent Ids"
-        name="agent_num_slots"
-        validateFirst
-        tooltip="(comma seperated)"
-        rules={[
-          {
-            required: true,
-            message: 'Please input the slots to canonical agent Ids',
-          },
-          () => ({
-            validator(_, value) {
-              if (/^\d+(\s*,\s*\d+?)*$/gm.test(value)) {
-                return Promise.resolve();
-              }
-              return Promise.reject(new Error('Please input a valid list'));
-            },
-          }),
-        ]}
-      >
-        <Input placeholder="1, 2, 1, 2" />
-      </Form.Item>
-
-      <Form.Item
-        label="Threshold"
-        name="threshold"
-        rules={[
-          {
-            required: true,
-            message: 'Please input the threshold',
-          },
-        ]}
-      >
-        <Input />
-      </Form.Item>
-
-      {isUpdateForm && (
         <Form.Item
-          label="Service Id"
-          name="service_id"
+          label="Owner Address"
+          name="owner_address"
+          validateFirst
           rules={[
             {
               required: true,
-              message: 'Please input the Service ID',
+              message: `Please input the address of the ${listType} Owner`,
+            },
+            () => ({
+              validator(_, value) {
+                if (Web3.utils.isAddress(value)) return Promise.resolve();
+                return Promise.reject(
+                  new Error(
+                    `Please input a valid address of the ${listType} Owner`,
+                  ),
+                );
+              },
+            }),
+          ]}
+        >
+          <Input placeholder="0x862..." disabled={isUpdateForm} />
+        </Form.Item>
+
+        <Form.Item
+          label="Service Name"
+          name="service_name"
+          rules={[
+            {
+              required: true,
+              message: `Please input the ${listType} name`,
             },
           ]}
         >
-          <Input disabled={isUpdateForm} />
+          <Input />
         </Form.Item>
-      )}
 
-      <Form.Item>
-        <Button type="primary" htmlType="submit">
-          Submit
+        <Form.Item
+          label="Service Description"
+          name="service_description"
+          rules={[
+            {
+              required: true,
+              message: `Please input the ${listType} Description`,
+            },
+          ]}
+        >
+          <Input.TextArea rows={4} />
+        </Form.Item>
+
+        <Form.Item
+          label="Hash"
+          name="hash"
+          rules={[
+            {
+              required: true,
+              message: `Please input the IPFS hash of the ${listType}`,
+            },
+          ]}
+        >
+          <Input placeholder="0x019..." />
+        </Form.Item>
+
+        <Button
+          type="primary"
+          ghost
+          onClick={() => setIsModalVisible(true)}
+          className="mb-12"
+        >
+          Create IPFS hash
         </Button>
-      </Form.Item>
-    </Form>
+
+        <Form.Item
+          name="agent_ids"
+          validateFirst
+          label={(
+            <ComplexLabel>
+              Canonical agent Ids
+              <DependencyLabel type="agent" />
+            </ComplexLabel>
+          )}
+          rules={[
+            {
+              required: true,
+              message: 'Please input the agent Ids',
+            },
+            () => ({
+              validator(_, value) {
+                if (/^\d+(\s*,\s*\d+?)*$/gm.test(value)) {
+                  return Promise.resolve();
+                }
+                return Promise.reject(new Error('Please input a valid list'));
+              },
+            }),
+          ]}
+        >
+          <Input placeholder="2, 10, 15, 26" />
+        </Form.Item>
+
+        <Form.Item
+          label="No. of slots to canonical agent Ids"
+          name="agent_num_slots"
+          validateFirst
+          tooltip="(comma seperated)"
+          rules={[
+            {
+              required: true,
+              message: 'Please input the slots to canonical agent Ids',
+            },
+            () => ({
+              validator(_, value) {
+                if (/^\d+(\s*,\s*\d+?)*$/gm.test(value)) {
+                  return Promise.resolve();
+                }
+                return Promise.reject(new Error('Please input a valid list'));
+              },
+            }),
+          ]}
+        >
+          <Input placeholder="1, 2, 1, 2" />
+        </Form.Item>
+
+        <Form.Item
+          label="Threshold"
+          name="threshold"
+          tooltip="min should equal <= 2/3 No. of slots"
+          rules={[
+            {
+              required: true,
+              message: 'Please input the threshold',
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+
+        {isUpdateForm && (
+          <Form.Item
+            label="Service Id"
+            name="service_id"
+            rules={[
+              {
+                required: true,
+                message: 'Please input the Service ID',
+              },
+            ]}
+          >
+            <Input disabled={isUpdateForm} />
+          </Form.Item>
+        )}
+
+        <Form.Item>
+          <Button type="primary" htmlType="submit">
+            Submit
+          </Button>
+        </Form.Item>
+      </Form>
+
+      <IpfsHashGenerationModal
+        visible={isModalVisible}
+        type={listType}
+        handleCancel={() => setIsModalVisible(false)}
+      />
+    </>
   );
 };
 
@@ -231,6 +269,7 @@ RegisterForm.propTypes = {
     owner: PropTypes.string,
     name: PropTypes.string,
     description: PropTypes.string,
+    hash: PropTypes.string,
     agentIds: PropTypes.arrayOf(PropTypes.string),
     agentNumSlots: PropTypes.arrayOf(PropTypes.string),
     threshold: PropTypes.string,

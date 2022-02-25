@@ -154,3 +154,7 @@ export const RightMenu = styled.div`
   display: flex;
   align-items: center;
 `;
+
+export const SupportOnlyDesktop = styled.div`
+  margin: 4rem 0;
+`;

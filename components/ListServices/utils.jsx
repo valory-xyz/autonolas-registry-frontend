@@ -1,4 +1,5 @@
 import { getServiceContract } from 'common-util/Contracts';
+import { getBytes32FromIpfsHash } from 'common-util/List/ListCommon';
 
 export const getServiceDetails = (id) => new Promise((resolve, reject) => {
   const contract = getServiceContract();
@@ -88,7 +89,7 @@ export const getServices = () => new Promise((resolve, reject) => {
 
 // for services, hash is hardcoded in frontend
 export const getServiceHash = (values) => ({
-  hash: `0x${values.hash || '0'.repeat(64)}`,
+  hash: getBytes32FromIpfsHash(values.hash),
   hashFunction: '0x12',
   size: '0x20',
 });

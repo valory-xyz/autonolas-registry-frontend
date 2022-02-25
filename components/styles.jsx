@@ -1,15 +1,4 @@
-import styled, { createGlobalStyle } from 'styled-components';
-
-export const GlobalStyle = createGlobalStyle`
-  html {
-    scroll-behavior: smooth;
-  }
-  .mb-16 {
-    margin-bottom: 16px;
-  }
-`;
-
-export const Container = styled.div``;
+import styled from 'styled-components';
 
 export const EmptyMessage = styled.div`
   min-height: 200px;
@@ -29,7 +18,7 @@ export const EmptyMessage = styled.div`
 `;
 
 export const FormContainer = styled.div`
-  max-width: 440px;
+  max-width: 520px;
   textarea {
     resize: none;
   }

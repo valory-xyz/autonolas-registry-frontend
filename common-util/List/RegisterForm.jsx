@@ -1,9 +1,11 @@
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Web3 from 'web3';
+import { Button, Form, Input } from 'antd/lib';
 import get from 'lodash/get';
 import isNil from 'lodash/isNil';
-import { Button, Form, Input } from 'antd/lib';
+import IpfsHashGenerationModal from './IpfsHashGenerationModal';
 import { DependencyLabel } from './ListCommon';
 import { RegisterFooter, ComplexLabel } from './styles';
 
@@ -12,6 +14,7 @@ export const FORM_NAME = 'register_form';
 const RegisterForm = ({
   account, listType, handleSubmit, handleCancel,
 }) => {
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const onFinish = (values) => {
     if (account) {
       handleSubmit(values);
@@ -94,6 +97,15 @@ const RegisterForm = ({
             <Input placeholder="0x019..." />
           </Form.Item>
 
+          <Button
+            type="primary"
+            ghost
+            onClick={() => setIsModalVisible(true)}
+            className="mb-12"
+          >
+            Create IPFS hash
+          </Button>
+
           <Form.Item
             label="Description"
             name="description"
@@ -161,6 +173,12 @@ const RegisterForm = ({
           <Button onClick={handleCancel}>Cancel</Button>
         </RegisterFooter>
       )}
+
+      <IpfsHashGenerationModal
+        visible={isModalVisible}
+        type={listType}
+        handleCancel={() => setIsModalVisible(false)}
+      />
     </>
   );
 };
