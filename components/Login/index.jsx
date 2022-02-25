@@ -77,7 +77,7 @@ const Login = ({
     return (
       <Container>
         <Button type="primary" onClick={handleLogin}>
-          Connect Metamask
+          Connect MetaMask
         </Button>
       </Container>
     );
