@@ -6,18 +6,21 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import get from 'lodash/get';
 import { Button, Form, Input } from 'antd/lib';
+import { WhiteButton } from 'common-util/components/Button';
 import { DependencyLabel } from 'common-util/List/ListCommon';
 import IpfsHashGenerationModal from 'common-util/List/IpfsHashGenerationModal';
 import { ComplexLabel } from 'common-util/List/styles';
+import { RegisterFooter } from 'components/styles';
 
 export const FORM_NAME = 'serviceRegisterForm';
 
 const RegisterForm = ({
   account,
   listType,
-  handleSubmit,
   isUpdateForm,
   formInitialValues,
+  handleSubmit,
+  handleCancel,
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [fields, setFields] = useState([]);
@@ -245,11 +248,18 @@ const RegisterForm = ({
           </Form.Item>
         )}
 
-        <Form.Item>
-          <Button type="primary" htmlType="submit">
-            Submit
-          </Button>
-        </Form.Item>
+        {account ? (
+          <Form.Item>
+            <Button type="primary" htmlType="submit">
+              Submit
+            </Button>
+          </Form.Item>
+        ) : (
+          <RegisterFooter>
+            <p>To register, connect to wallet</p>
+            <WhiteButton onClick={handleCancel}>Cancel</WhiteButton>
+          </RegisterFooter>
+        )}
       </Form>
 
       <IpfsHashGenerationModal
@@ -275,6 +285,7 @@ RegisterForm.propTypes = {
     threshold: PropTypes.string,
   }),
   handleSubmit: PropTypes.func.isRequired,
+  handleCancel: PropTypes.func.isRequired,
 };
 
 RegisterForm.defaultProps = {

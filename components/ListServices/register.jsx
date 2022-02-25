@@ -2,14 +2,14 @@ import { useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
-import { Button, Typography, notification } from 'antd';
+import { Typography, notification } from 'antd';
 import {
   convertStringToArray,
   AlertInfo,
   AlertError,
 } from 'common-util/List/ListCommon';
 import { getServiceManagerContract } from 'common-util/Contracts';
-import { FormContainer, RegisterFooter } from 'components/styles';
+import { FormContainer } from 'components/styles';
 import RegisterForm from './RegisterForm';
 import { getServiceHash } from './utils';
 
@@ -55,20 +55,14 @@ const RegisterService = ({ account }) => {
   return (
     <>
       <Title level={2}>Register Service</Title>
-      {account ? (
-        <FormContainer>
-          <RegisterForm
-            account={account}
-            formInitialValues={{}}
-            handleSubmit={handleSubmit}
-          />
-        </FormContainer>
-      ) : (
-        <RegisterFooter>
-          <p>To register, connect to wallet</p>
-          <Button onClick={handleCancel}>Cancel</Button>
-        </RegisterFooter>
-      )}
+      <FormContainer>
+        <RegisterForm
+          account={account}
+          formInitialValues={{}}
+          handleSubmit={handleSubmit}
+          handleCancel={handleCancel}
+        />
+      </FormContainer>
 
       <AlertInfo information={information} />
       <AlertError error={error} />
