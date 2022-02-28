@@ -33,3 +33,9 @@ export const CustomModal = styled(Modal)`
     margin: 0;
   }
 `;
+
+export const YourHashContainer = styled.div`
+  p {
+    margin: 0 0 0.5rem 0;
+  }
+`;
