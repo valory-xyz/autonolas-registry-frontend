@@ -85,6 +85,7 @@ const Details = ({
         },
         {
           title: 'No. of slots to canonical agent Ids',
+          dataTestId: 'agentNumSlots-dependency',
           value: (get(info, 'agentNumSlots') || []).map((e) => (
             <li key={`${type}-agentNumSlots-${e}`}>{e}</li>
           )),
