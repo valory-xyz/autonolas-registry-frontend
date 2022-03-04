@@ -100,7 +100,7 @@ const Details = ({
         { title: 'Hash', value: get(info, 'agentHash', null) || NA },
         {
           title: 'Component Dependencies',
-          dataTestId: 'details - dependency',
+          dataTestId: 'details-dependency',
           value: (get(info, 'dependencies') || []).map((e) => (
             <li key={`${type}-dependency-${e}`}>{e}</li>
           )),

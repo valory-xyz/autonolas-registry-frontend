@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { getMechMinterContract } from 'common-util/Contracts';
 import RegisterAgent from 'components/ListAgents/register';
 import { FORM_NAME } from 'common-util/List/RegisterForm';
-import { wrapProvider, dummyAddress } from '../../helpers';
+import { wrapProvider, dummyAddress, dummyHash } from '../../helpers';
 
 const NEW_AGENT = { name: 'New Agent One' };
 
@@ -39,7 +39,7 @@ describe('listAgents/register.jsx', () => {
       container.querySelector(`#${FORM_NAME}_developer_address`),
       dummyAddress,
     );
-    userEvent.type(container.querySelector(`#${FORM_NAME}_hash`), '0x0');
+    userEvent.type(container.querySelector(`#${FORM_NAME}_hash`), dummyHash);
     userEvent.type(
       container.querySelector(`#${FORM_NAME}_description`),
       'desc',

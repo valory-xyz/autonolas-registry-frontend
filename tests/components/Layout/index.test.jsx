@@ -34,7 +34,6 @@ describe('layout/index.jsx', () => {
       expect(menuItems[0].textContent).toBe('Components');
       expect(menuItems[1].textContent).toBe('Agents');
       expect(menuItems[2].textContent).toBe('Services');
-      expect(menuItems[3].textContent).toBe('Operators');
     });
   });
 
@@ -59,7 +58,7 @@ describe('layout/index.jsx', () => {
   it('should render footer', async () => {
     expect.hasAssertions();
     const { container } = render(wrapProvider(<Layout />));
-    const footer = container.querySelector('.ant-layout-footer');
+    const footer = container.querySelector('.footer');
     await waitFor(async () => {
       expect(footer.textContent).toContain('Valory');
     });

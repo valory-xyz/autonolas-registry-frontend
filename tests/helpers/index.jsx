@@ -7,6 +7,7 @@ export const HEADER = '.ant-typography';
 
 const mockStore = configureMockStore();
 export const dummyAddress = '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199';
+export const dummyHash = 'QmYuLhvusXYh2Pw5BqntNi9ZGg4Chcf1dhiuzxZesJCnK1';
 export const emptyStore = mockStore({});
 
 export const initStore = mockStore({
