@@ -7,8 +7,8 @@ describe('components/index.jsx', () => {
   it('should render metamask address', async () => {
     expect.hasAssertions();
     const { getByTestId } = render(wrapProvider(<Components />));
+    const address = getByTestId('metamask-address').textContent;
     await waitFor(async () => {
-      const address = getByTestId('metamask-address').textContent;
       expect(address).toContain(dummyAddress);
     });
   });
