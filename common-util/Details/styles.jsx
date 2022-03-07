@@ -23,8 +23,13 @@ export const InfoSubHeader = styled.div`
 export const Info = styled.div`
   word-break: break-word;
   li {
-    text-decoration: underline;
-    text-underline-position: under;
+    .ant-btn-link {
+      padding: 0;
+      span {
+        text-decoration: underline;
+        text-underline-position: under;
+      }
+    }
   }
 `;
 

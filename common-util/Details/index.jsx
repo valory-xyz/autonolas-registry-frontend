@@ -26,7 +26,12 @@ const gt = {
 };
 
 const Details = ({
-  account, id, type, getDetails, handleUpdate,
+  account,
+  id,
+  type,
+  getDetails,
+  handleUpdate,
+  onDependencyClick,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [info, setInfo] = useState({});
@@ -43,7 +48,7 @@ const Details = ({
     } finally {
       setIsLoading(false);
     }
-  }, [account]);
+  }, [account, id]);
 
   if (isLoading) {
     return <Skeleton active />;
@@ -65,34 +70,10 @@ const Details = ({
   };
 
   const generateDetails = () => {
-    const details = type === NAV_TYPES.SERVICE
-      ? [
-        { title: 'Name', value: get(info, 'name', null) || NA },
-        { title: 'Owner Address', value: get(info, 'owner', null) || NA },
-        {
-          title: 'Developer Address',
-          value: get(info, 'developer', null) || NA,
-        },
-        {
-          title: 'Active',
-          value: get(info, 'active', null) ? 'TRUE' : 'FALSE',
-        },
-        {
-          title: 'Agent IDs',
-          value: (get(info, 'agentIds') || []).map((e) => (
-            <li key={`${type}-agentId-${e}`}>{e}</li>
-          )),
-        },
-        {
-          title: 'No. of slots to canonical agent Ids',
-          dataTestId: 'agentNumSlots-dependency',
-          value: (get(info, 'agentNumSlots') || []).map((e) => (
-            <li key={`${type}-agentNumSlots-${e}`}>{e}</li>
-          )),
-        },
-        { title: 'Threshold', value: get(info, 'threshold', null) || NA },
-      ]
-      : [
+    const getComponentAndAgentValues = () => {
+      const dependencies = get(info, 'dependencies') || [];
+
+      return [
         { title: 'Owner Address', value: get(info, 'owner', null) || NA },
         {
           title: 'Developer Address',
@@ -102,11 +83,52 @@ const Details = ({
         {
           title: 'Component Dependencies',
           dataTestId: 'details-dependency',
-          value: (get(info, 'dependencies') || []).map((e) => (
-            <li key={`${type}-dependency-${e}`}>{e}</li>
-          )),
+          value:
+            dependencies.length === 0 ? (
+              <>NA</>
+            ) : (
+              dependencies.map((e) => (
+                <li key={`${type}-dependency-${e}`}>
+                  <Button type="link" onClick={() => onDependencyClick(e)}>
+                    {e}
+                  </Button>
+                </li>
+              ))
+            ),
         },
       ];
+    };
+
+    const getServiceValues = () => [
+      { title: 'Name', value: get(info, 'name', null) || NA },
+      { title: 'Owner Address', value: get(info, 'owner', null) || NA },
+      {
+        title: 'Developer Address',
+        value: get(info, 'developer', null) || NA,
+      },
+      {
+        title: 'Active',
+        value: get(info, 'active', null) ? 'TRUE' : 'FALSE',
+      },
+      {
+        title: 'Agent IDs',
+        value: (get(info, 'agentIds') || []).map((e) => (
+          <li key={`${type}-agentId-${e}`}>{e}</li>
+        )),
+      },
+      {
+        title: 'No. of slots to canonical agent Ids',
+        dataTestId: 'agentNumSlots-dependency',
+        value: (get(info, 'agentNumSlots') || []).map((e) => (
+          <li key={`${type}-agentNumSlots-${e}`}>{e}</li>
+        )),
+      },
+      { title: 'Threshold', value: get(info, 'threshold', null) || NA },
+    ];
+
+    const details = type === NAV_TYPES.SERVICE
+      ? getServiceValues()
+      : getComponentAndAgentValues();
 
     return (
       <SectionContainer>
@@ -152,11 +174,13 @@ Details.propTypes = {
   type: PropTypes.string.isRequired,
   getDetails: PropTypes.func.isRequired,
   handleUpdate: PropTypes.func,
+  onDependencyClick: PropTypes.func,
 };
 
 Details.defaultProps = {
   account: null,
   handleUpdate: null,
+  onDependencyClick: () => {},
 };
 
 const mapStateToProps = (state) => {
