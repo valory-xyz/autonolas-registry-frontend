@@ -25,6 +25,7 @@ export const Info = styled.div`
   li {
     .ant-btn-link {
       padding: 0;
+      height: auto;
       span {
         text-decoration: underline;
         text-underline-position: under;

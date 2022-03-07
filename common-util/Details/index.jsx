@@ -72,7 +72,6 @@ const Details = ({
   const generateDetails = () => {
     const getComponentAndAgentValues = () => {
       const dependencies = get(info, 'dependencies') || [];
-
       return [
         { title: 'Owner Address', value: get(info, 'owner', null) || NA },
         {
@@ -99,32 +98,44 @@ const Details = ({
       ];
     };
 
-    const getServiceValues = () => [
-      { title: 'Name', value: get(info, 'name', null) || NA },
-      { title: 'Owner Address', value: get(info, 'owner', null) || NA },
-      {
-        title: 'Developer Address',
-        value: get(info, 'developer', null) || NA,
-      },
-      {
-        title: 'Active',
-        value: get(info, 'active', null) ? 'TRUE' : 'FALSE',
-      },
-      {
-        title: 'Agent IDs',
-        value: (get(info, 'agentIds') || []).map((e) => (
-          <li key={`${type}-agentId-${e}`}>{e}</li>
-        )),
-      },
-      {
-        title: 'No. of slots to canonical agent Ids',
-        dataTestId: 'agentNumSlots-dependency',
-        value: (get(info, 'agentNumSlots') || []).map((e) => (
-          <li key={`${type}-agentNumSlots-${e}`}>{e}</li>
-        )),
-      },
-      { title: 'Threshold', value: get(info, 'threshold', null) || NA },
-    ];
+    const getServiceValues = () => {
+      const dependencies = get(info, 'agentIds') || [];
+      return [
+        { title: 'Name', value: get(info, 'name', null) || NA },
+        { title: 'Owner Address', value: get(info, 'owner', null) || NA },
+        {
+          title: 'Developer Address',
+          value: get(info, 'developer', null) || NA,
+        },
+        {
+          title: 'Active',
+          value: get(info, 'active', null) ? 'TRUE' : 'FALSE',
+        },
+        {
+          title: 'Agent IDs',
+          value:
+            dependencies.length === 0 ? (
+              <>NA</>
+            ) : (
+              dependencies.map((e) => (
+                <li key={`${type}-agentId-${e}`}>
+                  <Button type="link" onClick={() => onDependencyClick(e)}>
+                    {e}
+                  </Button>
+                </li>
+              ))
+            ),
+        },
+        {
+          title: 'No. of slots to canonical agent Ids',
+          dataTestId: 'agentNumSlots-dependency',
+          value: (get(info, 'agentNumSlots') || []).map((e) => (
+            <li key={`${type}-agentNumSlots-${e}`}>{e}</li>
+          )),
+        },
+        { title: 'Threshold', value: get(info, 'threshold', null) || NA },
+      ];
+    };
 
     const details = type === NAV_TYPES.SERVICE
       ? getServiceValues()
