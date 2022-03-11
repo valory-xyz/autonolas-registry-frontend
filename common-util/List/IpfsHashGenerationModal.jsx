@@ -40,7 +40,7 @@ const IpfsModal = ({ visible, type, handleCancel }) => {
       visible={visible}
       centered
       title="Generate IPFS Hash to Code"
-      okText="Copy hash & close"
+      okText="Copy Hash & Close"
       cancelText="Cancel"
       width={620}
       onOk={() => copyHashAndClose()}
@@ -97,7 +97,7 @@ const IpfsModal = ({ visible, type, handleCancel }) => {
         </Form.Item>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" htmlType="submit" ghost>
             Generate Hash
           </Button>
         </Form.Item>
