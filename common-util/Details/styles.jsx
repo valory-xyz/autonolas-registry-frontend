@@ -26,10 +26,6 @@ export const Info = styled.div`
     .ant-btn-link {
       padding: 0;
       height: auto;
-      span {
-        text-decoration: underline;
-        text-underline-position: under;
-      }
     }
   }
 `;
