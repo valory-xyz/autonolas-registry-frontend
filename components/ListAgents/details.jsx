@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import get from 'lodash/get';
+import { URL } from 'util/constants';
 import Details from 'common-util/Details';
 import { getAgentDetails } from './utils';
 
@@ -9,7 +10,12 @@ const Agent = () => {
 
   return (
     <>
-      <Details type="agent" id={id} getDetails={() => getAgentDetails(id)} />
+      <Details
+        type="agent"
+        id={id}
+        getDetails={() => getAgentDetails(id)}
+        onDependencyClick={(e) => router.push(`${URL.AGENTS}/${e}`)}
+      />
     </>
   );
 };

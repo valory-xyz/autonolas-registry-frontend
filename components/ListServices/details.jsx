@@ -15,6 +15,7 @@ const Service = () => {
         id={id}
         getDetails={() => getServiceDetails(id)}
         handleUpdate={() => router.push(`${URL.UPDATE_SERVICE}/${id}`)}
+        onDependencyClick={(e) => router.push(`${URL.AGENTS}/${e}`)}
       />
     </>
   );

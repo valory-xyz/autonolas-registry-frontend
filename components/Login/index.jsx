@@ -76,7 +76,7 @@ const Login = ({
   if (!account) {
     return (
       <Container>
-        <Button type="primary" onClick={handleLogin}>
+        <Button type="primary" onClick={handleLogin} data-testid="connect-metamask">
           Connect MetaMask
         </Button>
       </Container>
