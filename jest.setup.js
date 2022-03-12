@@ -14,3 +14,7 @@ Object.defineProperty(window, 'matchMedia', {
     dispatchEvent: jest.fn(),
   })),
 });
+
+jest.mock('ipfs-only-hash', () => ({
+  of: jest.fn(),
+}));

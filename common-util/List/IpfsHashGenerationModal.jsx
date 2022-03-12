@@ -3,26 +3,22 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import get from 'lodash/get';
 import {
-  Form, Input, Typography, Alert,
+  Form, Input, Typography, Alert, Button,
 } from 'antd/lib';
 import Hash from 'ipfs-only-hash';
-import { CustomModal, ComplexLabel } from './styles';
+import { CustomModal, YourHashContainer } from './styles';
 
 const { Paragraph } = Typography;
 
 export const FORM_NAME = 'ipfs_creation_form';
 
-const IpfsModal = ({
-  visible, account, type, handleCancel,
-}) => {
+const IpfsModal = ({ visible, type, handleCancel }) => {
   const [ipfsValue, setIpfsValue] = useState(null);
   const [form] = Form.useForm();
 
   const onFinish = async (values) => {
-    if (account) {
-      const hash = await Hash.of(JSON.stringify(values));
-      setIpfsValue(hash);
-    }
+    const hash = await Hash.of(JSON.stringify(values));
+    setIpfsValue(hash);
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -34,15 +30,20 @@ const IpfsModal = ({
     handleCancel();
   };
 
+  const copyHashAndClose = () => {
+    navigator.clipboard.writeText(ipfsValue);
+    handleCancel();
+  };
+
   return (
     <CustomModal
       visible={visible}
       centered
-      title="Create IPFS Hash"
-      okText="Create"
+      title="Generate IPFS Hash to Code"
+      okText="Copy Hash & Close"
       cancelText="Cancel"
-      width={580}
-      onOk={() => form.validateFields().then(onFinish).catch(onFinishFailed)}
+      width={620}
+      onOk={() => copyHashAndClose()}
       onCancel={onCancel}
       destroyOnClose
     >
@@ -52,6 +53,8 @@ const IpfsModal = ({
         layout="vertical"
         autoComplete="off"
         preserve={false}
+        onFinish={onFinish}
+        onFinishFailed={onFinishFailed}
       >
         <Form.Item
           label="Name"
@@ -60,7 +63,7 @@ const IpfsModal = ({
             { required: true, message: `Please input the name of the ${type}` },
           ]}
         >
-          <Input placeholder="abc..." />
+          <Input />
         </Form.Item>
 
         <Form.Item
@@ -73,7 +76,7 @@ const IpfsModal = ({
             },
           ]}
         >
-          <Input placeholder="abc..." />
+          <Input.TextArea rows={4} />
         </Form.Item>
 
         <Form.Item
@@ -81,45 +84,43 @@ const IpfsModal = ({
           name="version"
           rules={[{ required: true, message: 'Please input the version' }]}
         >
-          <Input placeholder="1" />
+          <Input placeholder="1" style={{ width: 100 }} />
         </Form.Item>
 
         <Form.Item
           name="uri"
-          label={(
-            <ComplexLabel>
-              URI
-              <div className="label-helper-text">
-                A URI pointing to a resource with mime type image/* representing
-                the asset to which this NFT represents
-              </div>
-            </ComplexLabel>
-          )}
+          label="URI to Code"
           rules={[{ required: true, message: 'Please input the URI' }]}
+          extra="Should point to resource with MIME type image/*."
         >
-          <Input placeholder="code..." />
+          <Input />
+        </Form.Item>
+
+        <Form.Item>
+          <Button type="primary" htmlType="submit" ghost>
+            Generate Hash
+          </Button>
         </Form.Item>
       </Form>
 
-      {ipfsValue && (
+      <YourHashContainer>
+        <p>YOUR HASH:</p>
         <Alert
-          message={<Paragraph copyable>{ipfsValue}</Paragraph>}
+          message={<Paragraph>{ipfsValue || '--'}</Paragraph>}
           type="info"
         />
-      )}
+      </YourHashContainer>
     </CustomModal>
   );
 };
 
 IpfsModal.propTypes = {
   visible: PropTypes.bool.isRequired,
-  account: PropTypes.string,
   type: PropTypes.string,
   handleCancel: PropTypes.func.isRequired,
 };
 
 IpfsModal.defaultProps = {
-  account: null,
   type: '',
 };
 

@@ -103,7 +103,7 @@ const RegisterForm = ({
           onClick={() => setIsModalVisible(true)}
           className="mb-12"
         >
-          Create IPFS hash
+          Generate Hash
         </Button>
 
         <Form.Item
