@@ -1,5 +1,8 @@
 import { getServiceContract } from 'common-util/Contracts';
-import { getBytes32FromIpfsHash } from 'common-util/List/ListCommon';
+import {
+  getBytes32FromIpfsHash,
+  convertStringToArray,
+} from 'common-util/List/ListCommon';
 
 export const getServiceDetails = (id) => new Promise((resolve, reject) => {
   const contract = getServiceContract();
@@ -93,3 +96,17 @@ export const getServiceHash = (values) => ({
   hashFunction: '0x12',
   size: '0x20',
 });
+
+/**
+ *
+ * 2D array of agent params
+ * eg.
+ * agent_num_slots = 1, 2
+ * bonds = 100, 200
+ * @returns [[1, 100], [2, 200]]
+ */
+export const getAgentParams = (values) => {
+  const agentNumSlots = convertStringToArray(values.agent_num_slots);
+  const bonds = convertStringToArray(values.bonds);
+  return bonds.map((bond, index) => [agentNumSlots[index], bond]);
+};
