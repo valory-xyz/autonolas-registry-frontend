@@ -7,8 +7,8 @@ import {
   Row, Col, Skeleton, Button,
 } from 'antd';
 import { NAV_TYPES } from 'util/constants';
+import { getAgentSlots, getBonds } from 'components/ListServices/RegisterForm';
 import { RegisterMessage } from '../List/ListCommon';
-import IpfsHashGenerationModal from '../List/IpfsHashGenerationModal';
 import {
   Header,
   DetailsTitle,
@@ -34,7 +34,6 @@ const Details = ({
   handleUpdate,
   onDependencyClick,
 }) => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [info, setInfo] = useState({});
 
@@ -86,14 +85,6 @@ const Details = ({
           value: (
             <div>
               {get(info, `${isAgent ? 'agent' : 'component'}Hash`) || NA}
-              <Button
-                type="primary"
-                ghost
-                onClick={() => setIsModalVisible(true)}
-                className="mb-12"
-              >
-                Generate Hash
-              </Button>
             </div>
           ),
         },
@@ -147,8 +138,15 @@ const Details = ({
         {
           title: 'No. of slots to canonical agent Ids',
           dataTestId: 'agentNumSlots-dependency',
-          value: (get(info, 'agentNumSlots') || []).map((e) => (
+          value: getAgentSlots(info).map((e) => (
             <li key={`${type}-agentNumSlots-${e}`}>{e}</li>
+          )),
+        },
+        {
+          title: 'Cost of agent instance bond',
+          dataTestId: 'costOfAgentInstance',
+          value: getBonds(info).map((e, index) => (
+            <li key={`${type}-costOfAgentInstance-${index}`}>{e}</li>
           )),
         },
         { title: 'Threshold', value: get(info, 'threshold', null) || NA },
@@ -193,12 +191,6 @@ const Details = ({
           {generateDetails()}
         </Col>
       </Row>
-
-      <IpfsHashGenerationModal
-        visible={isModalVisible}
-        type={type}
-        handleCancel={() => setIsModalVisible(false)}
-      />
     </>
   );
 };

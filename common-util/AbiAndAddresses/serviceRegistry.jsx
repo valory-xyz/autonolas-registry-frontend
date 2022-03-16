@@ -131,6 +131,27 @@ export const SERVICE_REGISTRY = {
         },
         {
           internalType: 'uint256',
+          name: 'serviceId',
+          type: 'uint256',
+        },
+      ],
+      name: 'IncorrectRegistrationDepositValue',
+      type: 'error',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'uint256',
+          name: 'sent',
+          type: 'uint256',
+        },
+        {
+          internalType: 'uint256',
+          name: 'expected',
+          type: 'uint256',
+        },
+        {
+          internalType: 'uint256',
           name: 'agentId',
           type: 'uint256',
         },
@@ -691,25 +712,6 @@ export const SERVICE_REGISTRY = {
         {
           indexed: false,
           internalType: 'address',
-          name: 'owner',
-          type: 'address',
-        },
-        {
-          indexed: false,
-          internalType: 'uint256',
-          name: 'serviceId',
-          type: 'uint256',
-        },
-      ],
-      name: 'DeactivateRegistration',
-      type: 'event',
-    },
-    {
-      anonymous: false,
-      inputs: [
-        {
-          indexed: false,
-          internalType: 'address',
           name: 'sender',
           type: 'address',
         },
@@ -803,6 +805,25 @@ export const SERVICE_REGISTRY = {
         },
         {
           indexed: false,
+          internalType: 'uint256',
+          name: 'serviceId',
+          type: 'uint256',
+        },
+      ],
+      name: 'TerminateService',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          internalType: 'address',
+          name: 'owner',
+          type: 'address',
+        },
+        {
+          indexed: false,
           internalType: 'string',
           name: 'name',
           type: 'string',
@@ -847,7 +868,7 @@ export const SERVICE_REGISTRY = {
       ],
       name: 'activateRegistration',
       outputs: [],
-      stateMutability: 'nonpayable',
+      stateMutability: 'payable',
       type: 'function',
     },
     {
@@ -1029,24 +1050,6 @@ export const SERVICE_REGISTRY = {
           type: 'uint256',
         },
       ],
-      stateMutability: 'nonpayable',
-      type: 'function',
-    },
-    {
-      inputs: [
-        {
-          internalType: 'address',
-          name: 'owner',
-          type: 'address',
-        },
-        {
-          internalType: 'uint256',
-          name: 'serviceId',
-          type: 'uint256',
-        },
-      ],
-      name: 'deactivateRegistration',
-      outputs: [],
       stateMutability: 'nonpayable',
       type: 'function',
     },

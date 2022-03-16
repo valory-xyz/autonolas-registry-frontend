@@ -121,6 +121,27 @@ export const SERVICE_MANAGER = {
         },
         {
           internalType: 'uint256',
+          name: 'serviceId',
+          type: 'uint256',
+        },
+      ],
+      name: 'IncorrectRegistrationDepositValue',
+      type: 'error',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'uint256',
+          name: 'sent',
+          type: 'uint256',
+        },
+        {
+          internalType: 'uint256',
+          name: 'expected',
+          type: 'uint256',
+        },
+        {
+          internalType: 'uint256',
           name: 'agentId',
           type: 'uint256',
         },
@@ -665,7 +686,7 @@ export const SERVICE_MANAGER = {
       ],
       name: 'serviceActivateRegistration',
       outputs: [],
-      stateMutability: 'nonpayable',
+      stateMutability: 'payable',
       type: 'function',
     },
     {
@@ -797,19 +818,6 @@ export const SERVICE_MANAGER = {
           type: 'address',
         },
       ],
-      stateMutability: 'nonpayable',
-      type: 'function',
-    },
-    {
-      inputs: [
-        {
-          internalType: 'uint256',
-          name: 'serviceId',
-          type: 'uint256',
-        },
-      ],
-      name: 'serviceDeactivateRegistration',
-      outputs: [],
       stateMutability: 'nonpayable',
       type: 'function',
     },
