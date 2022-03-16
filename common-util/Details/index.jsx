@@ -42,7 +42,8 @@ const Details = ({
   const [info, setInfo] = useState({});
   const [hashes, setHashes] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [hasAccess, setHasAccess] = useState(false);
+  const [detailsOwner, setDetailsOwner] = useState(false);
+  const ownerOfCurrentDetails = get(info, 'owner', null);
 
   const getUpdatedHashes = async () => {
     try {
@@ -64,7 +65,7 @@ const Details = ({
       setInfo(temp);
 
       const ownerAccount = await getOwner();
-      setHasAccess(ownerAccount === get(info, 'owner', null));
+      setDetailsOwner(ownerAccount);
 
       await getUpdatedHashes();
     } catch (e) {
@@ -105,7 +106,7 @@ const Details = ({
       const hash = get(hashes, `${isAgent ? 'agent' : 'component'}Hashes`) || [];
 
       return [
-        { title: 'Owner Address', value: get(info, 'owner', null) || NA },
+        { title: 'Owner Address', value: ownerOfCurrentDetails || NA },
         {
           title: 'Developer Address',
           value: get(info, 'developer', null) || NA,
@@ -145,7 +146,7 @@ const Details = ({
 
       return [
         { title: 'Name', value: get(info, 'name', null) || NA },
-        { title: 'Owner Address', value: get(info, 'owner', null) || NA },
+        { title: 'Owner Address', value: ownerOfCurrentDetails || NA },
         {
           title: 'Developer Address',
           value: get(info, 'developer', null) || NA,
@@ -229,7 +230,7 @@ const Details = ({
 
           {/* This button will be shown only if the agent belongs
           to the owner and has `onUpdateHash` function */}
-          {onUpdateHash && hasAccess && (
+          {onUpdateHash && (detailsOwner === ownerOfCurrentDetails) && (
             <Button
               type="primary"
               ghost
