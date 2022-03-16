@@ -65,3 +65,18 @@ export const getAgents = () => new Promise((resolve, reject) => {
       reject(e);
     });
 });
+
+export const getAgentHashes = (agentId) => new Promise((resolve, reject) => {
+  const contract = getAgentContract();
+
+  contract.methods
+    .getHashes(agentId)
+    .call()
+    .then((response) => {
+      resolve(response);
+    })
+    .catch((e) => {
+      console.error(e);
+      reject(e);
+    });
+});

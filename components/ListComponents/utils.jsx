@@ -64,3 +64,18 @@ export const getComponents = () => new Promise((resolve, reject) => {
       reject(e);
     });
 });
+
+export const getComponentHashes = (id) => new Promise((resolve, reject) => {
+  const contract = getComponentContract();
+
+  contract.methods
+    .getHashes(id)
+    .call()
+    .then((response) => {
+      resolve(response);
+    })
+    .catch((e) => {
+      console.error(e);
+      reject(e);
+    });
+});

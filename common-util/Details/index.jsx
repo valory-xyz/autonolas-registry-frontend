@@ -31,11 +31,13 @@ const Details = ({
   id,
   type,
   getDetails,
+  getHashes,
   handleUpdate,
   onDependencyClick,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [info, setInfo] = useState({});
+  const [hashes, setHashes] = useState({});
 
   useEffect(async () => {
     setIsLoading(true);
@@ -44,6 +46,9 @@ const Details = ({
     try {
       const temp = await getDetails();
       setInfo(temp);
+
+      const hashesResponse = await getHashes();
+      setHashes(hashesResponse);
     } catch (e) {
       console.error(e);
     } finally {
@@ -74,6 +79,8 @@ const Details = ({
     const getComponentAndAgentValues = () => {
       const dependencies = get(info, 'dependencies') || [];
       const isAgent = type === NAV_TYPES.AGENT;
+      const hash = get(hashes, `${isAgent ? 'agent' : 'component'}Hashes`) || [];
+
       return [
         { title: 'Owner Address', value: get(info, 'owner', null) || NA },
         {
@@ -83,9 +90,13 @@ const Details = ({
         {
           title: 'Hash',
           value: (
-            <div>
-              {get(info, `${isAgent ? 'agent' : 'component'}Hash`) || NA}
-            </div>
+            <Info>
+              {hash.map((e, index) => (
+                <li key={`${type}-hashes-${index}`}>
+                  {e.hash}
+                </li>
+              ))}
+            </Info>
           ),
         },
         {
@@ -109,12 +120,26 @@ const Details = ({
 
     const getServiceValues = () => {
       const dependencies = get(info, 'agentIds') || [];
+      const hash = get(hashes, 'configHashes') || [];
+
       return [
         { title: 'Name', value: get(info, 'name', null) || NA },
         { title: 'Owner Address', value: get(info, 'owner', null) || NA },
         {
           title: 'Developer Address',
           value: get(info, 'developer', null) || NA,
+        },
+        {
+          title: 'Hash',
+          value: (
+            <Info>
+              {hash.map((e, index) => (
+                <li key={`${type}-hashes-${index}`}>
+                  {e.hash}
+                </li>
+              ))}
+            </Info>
+          ),
         },
         {
           title: 'Active',
@@ -200,6 +225,7 @@ Details.propTypes = {
   id: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   getDetails: PropTypes.func.isRequired,
+  getHashes: PropTypes.func,
   handleUpdate: PropTypes.func,
   onDependencyClick: PropTypes.func,
 };
@@ -207,6 +233,7 @@ Details.propTypes = {
 Details.defaultProps = {
   account: null,
   handleUpdate: null,
+  getHashes: () => {},
   onDependencyClick: () => {},
 };
 

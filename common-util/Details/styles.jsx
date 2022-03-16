@@ -21,7 +21,7 @@ export const InfoSubHeader = styled.div`
 `;
 
 export const Info = styled.div`
-  word-break: break-word;
+  word-break: break-all;
   li {
     .ant-btn-link {
       padding: 0;
