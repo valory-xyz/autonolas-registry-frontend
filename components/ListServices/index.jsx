@@ -65,3 +65,8 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, {})(ListServices);
+
+/**
+ * service-registry is used for readonly
+ * otherwise use service-manager
+ */

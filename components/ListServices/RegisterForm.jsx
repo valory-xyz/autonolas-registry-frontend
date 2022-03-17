@@ -7,12 +7,17 @@ import { connect } from 'react-redux';
 import get from 'lodash/get';
 import { Button, Form, Input } from 'antd/lib';
 import { WhiteButton } from 'common-util/components/Button';
-import { getIpfsHashFromBytes32, DependencyLabel } from 'common-util/List/ListCommon';
+import {
+  getIpfsHashFromBytes32,
+  DependencyLabel,
+} from 'common-util/List/ListCommon';
 import IpfsHashGenerationModal from 'common-util/List/IpfsHashGenerationModal';
 import { ComplexLabel } from 'common-util/List/styles';
 import { RegisterFooter } from 'components/styles';
 
 export const FORM_NAME = 'serviceRegisterForm';
+export const getAgentSlots = (info) => (info.agentParams || []).map((param) => param[0]);
+export const getBonds = (info) => (info.agentParams || []).map((param) => param[1]);
 
 const RegisterForm = ({
   account,
@@ -26,6 +31,9 @@ const RegisterForm = ({
   const [fields, setFields] = useState([]);
   const router = useRouter();
   const id = get(router, 'query.id') || null;
+  const hash = getIpfsHashFromBytes32(
+    get(formInitialValues, 'configHash.hash'),
+  );
 
   useDeepCompareEffect(() => {
     if (isUpdateForm) {
@@ -291,6 +299,7 @@ const RegisterForm = ({
       <IpfsHashGenerationModal
         visible={isModalVisible}
         type={listType}
+        hash={hash}
         handleCancel={() => setIsModalVisible(false)}
       />
     </>

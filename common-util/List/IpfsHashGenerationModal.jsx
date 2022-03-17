@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import get from 'lodash/get';
@@ -12,12 +12,19 @@ const { Paragraph } = Typography;
 
 export const FORM_NAME = 'ipfs_creation_form';
 
-const IpfsModal = ({ visible, type, handleCancel }) => {
+const getHash = async (info) => {
+  const hash = await Hash.of(JSON.stringify(info));
+  return hash;
+};
+
+const IpfsModal = ({
+  visible, type, onUpdateHash, handleCancel,
+}) => {
   const [ipfsValue, setIpfsValue] = useState(null);
   const [form] = Form.useForm();
 
   const onFinish = async (values) => {
-    const hash = await Hash.of(JSON.stringify(values));
+    const hash = await getHash(values);
     setIpfsValue(hash);
   };
 
@@ -35,6 +42,14 @@ const IpfsModal = ({ visible, type, handleCancel }) => {
     handleCancel();
   };
 
+  const handleUpdate = () => {
+    form.validateFields().then(async (values) => {
+      const hash = await getHash(values);
+      setIpfsValue(hash);
+      onUpdateHash(hash);
+    });
+  };
+
   return (
     <CustomModal
       visible={visible}
@@ -42,10 +57,26 @@ const IpfsModal = ({ visible, type, handleCancel }) => {
       title="Generate IPFS Hash to Code"
       okText="Copy Hash & Close"
       cancelText="Cancel"
-      width={620}
-      onOk={() => copyHashAndClose()}
-      onCancel={onCancel}
       destroyOnClose
+      width={620}
+      onCancel={handleCancel}
+      footer={[
+        <Fragment key="footer-1">
+          <Button type="default" htmlType="submit" onClick={onCancel}>
+            Cancel
+          </Button>
+
+          {onUpdateHash ? (
+            <Button type="primary" onClick={handleUpdate}>
+              Update Hash
+            </Button>
+          ) : (
+            <Button type="primary" onClick={copyHashAndClose}>
+              Copy Hash & Close
+            </Button>
+          )}
+        </Fragment>,
+      ]}
     >
       <Form
         form={form}
@@ -117,11 +148,13 @@ const IpfsModal = ({ visible, type, handleCancel }) => {
 IpfsModal.propTypes = {
   visible: PropTypes.bool.isRequired,
   type: PropTypes.string,
+  onUpdateHash: PropTypes.func,
   handleCancel: PropTypes.func.isRequired,
 };
 
 IpfsModal.defaultProps = {
   type: '',
+  onUpdateHash: null,
 };
 
 const mapStateToProps = (state) => {
