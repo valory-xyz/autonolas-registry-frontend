@@ -1,4 +1,6 @@
-import { getComponentContract } from 'common-util/Contracts';
+import { notification } from 'antd';
+import { getMechMinterContract, getComponentContract } from 'common-util/Contracts';
+import { getBytes32FromIpfsHash } from 'common-util/List/ListCommon';
 
 export const getComponentDetails = (id) => new Promise((resolve, reject) => {
   const contract = getComponentContract();
@@ -58,6 +60,57 @@ export const getComponents = () => new Promise((resolve, reject) => {
       Promise.all(allComponentsPromises).then(async (allComponentsList) => {
         resolve(allComponentsList);
       });
+    })
+    .catch((e) => {
+      console.error(e);
+      reject(e);
+    });
+});
+
+export const getComponentHashes = (id) => new Promise((resolve, reject) => {
+  const contract = getComponentContract();
+
+  contract.methods
+    .getHashes(id)
+    .call()
+    .then((response) => {
+      resolve(response);
+    })
+    .catch((e) => {
+      console.error(e);
+      reject(e);
+    });
+});
+
+export const updateComponentHashes = (account, id, newHash) => {
+  const contract = getMechMinterContract();
+
+  const hashObject = {
+    hash: getBytes32FromIpfsHash(newHash),
+    hashFunction: '0x12',
+    size: '0x20',
+  };
+
+  contract.methods
+    .updateComponentHash(account, id, hashObject)
+    .send({ from: account })
+    .then(() => {
+      notification.success({ message: 'Hash Updated' });
+    })
+    .catch((e) => {
+      notification.error({ message: 'Some error occured' });
+      console.error(e);
+    });
+};
+
+export const getComponentOwner = (agentId) => new Promise((resolve, reject) => {
+  const contract = getComponentContract();
+
+  contract.methods
+    .ownerOf(agentId)
+    .call()
+    .then((response) => {
+      resolve(response);
     })
     .catch((e) => {
       console.error(e);

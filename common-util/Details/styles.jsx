@@ -12,6 +12,11 @@ export const Header = styled.div`
   align-items: center;
   justify-content: space-between;
   margin-bottom: 2rem;
+  .right-content {
+    .ant-btn {
+      margin-left: 1rem;
+    }
+  }
 `;
 
 export const InfoSubHeader = styled.div`
@@ -21,7 +26,7 @@ export const InfoSubHeader = styled.div`
 `;
 
 export const Info = styled.div`
-  word-break: break-word;
+  word-break: break-all;
   li {
     .ant-btn-link {
       padding: 0;
