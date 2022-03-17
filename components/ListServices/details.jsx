@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import get from 'lodash/get';
 import { URL } from 'util/constants';
 import Details from 'common-util/Details';
-import { getServiceDetails, getServiceStatus } from './utils';
+import { getServiceDetails, getServiceHashes, getServiceStatus } from './utils';
 
 const Service = () => {
   const router = useRouter();
@@ -15,6 +15,7 @@ const Service = () => {
         id={id}
         getDetails={() => getServiceDetails(id)}
         getStatus={() => getServiceStatus(id)}
+        getHashes={() => getServiceHashes(id)}
         handleUpdate={() => router.push(`${URL.UPDATE_SERVICE}/${id}`)}
         onDependencyClick={(e) => router.push(`${URL.AGENTS}/${e}`)}
       />

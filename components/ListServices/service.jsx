@@ -5,10 +5,7 @@ import { connect } from 'react-redux';
 import { Typography, notification, Skeleton } from 'antd';
 import get from 'lodash/get';
 import { convertStringToArray, AlertError } from 'common-util/List/ListCommon';
-import {
-  getServiceContract,
-  getServiceManagerContract,
-} from 'common-util/Contracts';
+import { getServiceContract, getServiceManagerContract } from 'common-util/Contracts';
 import { FormContainer } from 'components/styles';
 import RegisterForm from './RegisterForm';
 import { getServiceHash, getAgentParams } from './utils';

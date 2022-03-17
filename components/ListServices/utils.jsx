@@ -125,3 +125,18 @@ export const getAgentParams = (values) => {
   const bonds = convertStringToArray(values.bonds);
   return bonds.map((bond, index) => [agentNumSlots[index], bond]);
 };
+
+export const getServiceHashes = (id) => new Promise((resolve, reject) => {
+  const contract = getServiceContract();
+
+  contract.methods
+    .getConfigHashes(id)
+    .call()
+    .then((information) => {
+      resolve(information);
+    })
+    .catch((e) => {
+      console.error(e);
+      reject(e);
+    });
+});
