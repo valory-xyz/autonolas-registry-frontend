@@ -274,6 +274,27 @@ export const SERVICE_REGISTRY = {
       inputs: [
         {
           internalType: 'address',
+          name: 'provided',
+          type: 'address',
+        },
+        {
+          internalType: 'address',
+          name: 'expected',
+          type: 'address',
+        },
+        {
+          internalType: 'uint256',
+          name: 'serviceId',
+          type: 'uint256',
+        },
+      ],
+      name: 'OnlyOwnServiceMultisig',
+      type: 'error',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
           name: 'operator',
           type: 'address',
         },
@@ -417,27 +438,6 @@ export const SERVICE_REGISTRY = {
     {
       inputs: [
         {
-          internalType: 'uint256',
-          name: 'terminationBlock',
-          type: 'uint256',
-        },
-        {
-          internalType: 'uint256',
-          name: 'curBlock',
-          type: 'uint256',
-        },
-        {
-          internalType: 'uint256',
-          name: 'serviceId',
-          type: 'uint256',
-        },
-      ],
-      name: 'TerminationBlockIncorrect',
-      type: 'error',
-    },
-    {
-      inputs: [
-        {
           internalType: 'address',
           name: 'token',
           type: 'address',
@@ -506,7 +506,7 @@ export const SERVICE_REGISTRY = {
           type: 'uint256',
         },
       ],
-      name: 'WrongAgentIdsData',
+      name: 'WrongAgentsData',
       type: 'error',
     },
     {
@@ -748,6 +748,31 @@ export const SERVICE_REGISTRY = {
       anonymous: false,
       inputs: [
         {
+          indexed: false,
+          internalType: 'uint256',
+          name: 'amount',
+          type: 'uint256',
+        },
+        {
+          indexed: false,
+          internalType: 'address',
+          name: 'operator',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          internalType: 'uint256',
+          name: 'serviceId',
+          type: 'uint256',
+        },
+      ],
+      name: 'OperatorSlashed',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
           indexed: true,
           internalType: 'address',
           name: 'previousOwner',
@@ -792,6 +817,25 @@ export const SERVICE_REGISTRY = {
         },
       ],
       name: 'RegisterInstance',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          internalType: 'uint256',
+          name: 'serviceId',
+          type: 'uint256',
+        },
+        {
+          indexed: false,
+          internalType: 'uint256',
+          name: 'amount',
+          type: 'uint256',
+        },
+      ],
+      name: 'RewardService',
       type: 'event',
     },
     {
@@ -1348,6 +1392,11 @@ export const SERVICE_REGISTRY = {
           name: 'agentInstances',
           type: 'address[]',
         },
+        {
+          internalType: 'address',
+          name: 'multisig',
+          type: 'address',
+        },
       ],
       stateMutability: 'view',
       type: 'function',
@@ -1486,6 +1535,25 @@ export const SERVICE_REGISTRY = {
     {
       inputs: [
         {
+          internalType: 'uint256',
+          name: 'serviceId',
+          type: 'uint256',
+        },
+      ],
+      name: 'reward',
+      outputs: [
+        {
+          internalType: 'uint256',
+          name: 'rewardBalance',
+          type: 'uint256',
+        },
+      ],
+      stateMutability: 'payable',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
           internalType: 'address',
           name: 'owner',
           type: 'address',
@@ -1502,6 +1570,29 @@ export const SERVICE_REGISTRY = {
         },
       ],
       name: 'setRegistrationDeadline',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address[]',
+          name: 'agentInstances',
+          type: 'address[]',
+        },
+        {
+          internalType: 'uint256[]',
+          name: 'amounts',
+          type: 'uint256[]',
+        },
+        {
+          internalType: 'uint256',
+          name: 'serviceId',
+          type: 'uint256',
+        },
+      ],
+      name: 'slash',
       outputs: [],
       stateMutability: 'nonpayable',
       type: 'function',

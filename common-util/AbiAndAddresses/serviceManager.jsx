@@ -264,6 +264,27 @@ export const SERVICE_MANAGER = {
       inputs: [
         {
           internalType: 'address',
+          name: 'provided',
+          type: 'address',
+        },
+        {
+          internalType: 'address',
+          name: 'expected',
+          type: 'address',
+        },
+        {
+          internalType: 'uint256',
+          name: 'serviceId',
+          type: 'uint256',
+        },
+      ],
+      name: 'OnlyOwnServiceMultisig',
+      type: 'error',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
           name: 'operator',
           type: 'address',
         },
@@ -407,27 +428,6 @@ export const SERVICE_MANAGER = {
     {
       inputs: [
         {
-          internalType: 'uint256',
-          name: 'terminationBlock',
-          type: 'uint256',
-        },
-        {
-          internalType: 'uint256',
-          name: 'curBlock',
-          type: 'uint256',
-        },
-        {
-          internalType: 'uint256',
-          name: 'serviceId',
-          type: 'uint256',
-        },
-      ],
-      name: 'TerminationBlockIncorrect',
-      type: 'error',
-    },
-    {
-      inputs: [
-        {
           internalType: 'address',
           name: 'token',
           type: 'address',
@@ -496,7 +496,7 @@ export const SERVICE_MANAGER = {
           type: 'uint256',
         },
       ],
-      name: 'WrongAgentIdsData',
+      name: 'WrongAgentsData',
       type: 'error',
     },
     {

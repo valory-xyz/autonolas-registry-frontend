@@ -9,6 +9,7 @@ import {
 import { NAV_TYPES } from 'util/constants';
 import { getAgentSlots, getBonds } from 'components/ListServices/RegisterForm';
 import { RegisterMessage } from '../List/ListCommon';
+import IpfsHashGenerationModal from '../List/IpfsHashGenerationModal';
 import {
   Header,
   DetailsTitle,
@@ -34,6 +35,7 @@ const Details = ({
   handleUpdate,
   onDependencyClick,
 }) => {
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [info, setInfo] = useState({});
 
@@ -191,6 +193,12 @@ const Details = ({
           {generateDetails()}
         </Col>
       </Row>
+
+      <IpfsHashGenerationModal
+        visible={isModalVisible}
+        type={type}
+        handleCancel={() => setIsModalVisible(false)}
+      />
     </>
   );
 };

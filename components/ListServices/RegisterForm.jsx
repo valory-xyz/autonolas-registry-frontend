@@ -37,6 +37,16 @@ const RegisterForm = ({
 
   useDeepCompareEffect(() => {
     if (isUpdateForm) {
+      const agentNumSlots = (formInitialValues.agentParams || [])
+        .map((param) => param[0])
+        .join(', ');
+      const bonds = (formInitialValues.agentParams || [])
+        .map((param) => param[1])
+        .join(', ');
+
+      console.log({
+        formInitialValues,
+      });
       setFields([
         {
           name: ['owner_address'],
@@ -52,7 +62,7 @@ const RegisterForm = ({
         },
         {
           name: ['hash'],
-          value: hash,
+          value: getIpfsHashFromBytes32(get(formInitialValues, 'configHash.hash')),
         },
         {
           name: ['agent_ids'],
@@ -62,11 +72,11 @@ const RegisterForm = ({
         },
         {
           name: ['agent_num_slots'],
-          value: getAgentSlots(formInitialValues).join(', '),
+          value: agentNumSlots,
         },
         {
           name: ['bonds'],
-          value: getBonds(formInitialValues).join(', '),
+          value: bonds,
         },
         {
           name: ['threshold'],
@@ -176,7 +186,8 @@ const RegisterForm = ({
           onClick={() => setIsModalVisible(true)}
           className="mb-12"
         >
-          Generate Hash
+          {isUpdateForm ? 'Update' : 'Generate'}
+          &nbsp; Hash
         </Button>
 
         <Form.Item
