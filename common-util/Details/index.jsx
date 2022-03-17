@@ -8,6 +8,7 @@ import {
 } from 'antd';
 import { NAV_TYPES } from 'util/constants';
 import { RegisterMessage } from '../List/ListCommon';
+import IpfsHashGenerationModal from '../List/IpfsHashGenerationModal';
 import {
   Header,
   DetailsTitle,
@@ -33,6 +34,7 @@ const Details = ({
   handleUpdate,
   onDependencyClick,
 }) => {
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [info, setInfo] = useState({});
 
@@ -72,13 +74,29 @@ const Details = ({
   const generateDetails = () => {
     const getComponentAndAgentValues = () => {
       const dependencies = get(info, 'dependencies') || [];
+      const isAgent = type === NAV_TYPES.AGENT;
       return [
         { title: 'Owner Address', value: get(info, 'owner', null) || NA },
         {
           title: 'Developer Address',
           value: get(info, 'developer', null) || NA,
         },
-        { title: 'Hash', value: get(info, 'agentHash', null) || NA },
+        {
+          title: 'Hash',
+          value: (
+            <div>
+              {get(info, `${isAgent ? 'agent' : 'component'}Hash`) || NA}
+              <Button
+                type="primary"
+                ghost
+                onClick={() => setIsModalVisible(true)}
+                className="mb-12"
+              >
+                Generate Hash
+              </Button>
+            </div>
+          ),
+        },
         {
           title: 'Component Dependencies',
           dataTestId: 'details-dependency',
@@ -175,6 +193,12 @@ const Details = ({
           {generateDetails()}
         </Col>
       </Row>
+
+      <IpfsHashGenerationModal
+        visible={isModalVisible}
+        type={type}
+        handleCancel={() => setIsModalVisible(false)}
+      />
     </>
   );
 };

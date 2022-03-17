@@ -11,7 +11,7 @@ import {
 import { getServiceManagerContract } from 'common-util/Contracts';
 import { FormContainer } from 'components/styles';
 import RegisterForm from './RegisterForm';
-import { getServiceHash } from './utils';
+import { getAgentParams, getServiceHash } from './utils';
 
 const { Title } = Typography;
 
@@ -33,7 +33,7 @@ const RegisterService = ({ account }) => {
           values.service_description,
           getServiceHash(values), // configHash
           convertStringToArray(values.agent_ids),
-          convertStringToArray(values.agent_num_slots),
+          getAgentParams(values),
           values.threshold,
         )
         .send({ from: account })

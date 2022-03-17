@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import get from 'lodash/get';
 import { Button, Form, Input } from 'antd/lib';
 import { WhiteButton } from 'common-util/components/Button';
-import { DependencyLabel } from 'common-util/List/ListCommon';
+import { getIpfsHashFromBytes32, DependencyLabel } from 'common-util/List/ListCommon';
 import IpfsHashGenerationModal from 'common-util/List/IpfsHashGenerationModal';
 import { ComplexLabel } from 'common-util/List/styles';
 import { RegisterFooter } from 'components/styles';
@@ -29,6 +29,16 @@ const RegisterForm = ({
 
   useDeepCompareEffect(() => {
     if (isUpdateForm) {
+      const agentNumSlots = (formInitialValues.agentParams || [])
+        .map((param) => param[0])
+        .join(', ');
+      const bonds = (formInitialValues.agentParams || [])
+        .map((param) => param[1])
+        .join(', ');
+
+      console.log({
+        formInitialValues,
+      });
       setFields([
         {
           name: ['owner_address'],
@@ -44,7 +54,7 @@ const RegisterForm = ({
         },
         {
           name: ['hash'],
-          value: formInitialValues.hash || null,
+          value: getIpfsHashFromBytes32(get(formInitialValues, 'configHash.hash')),
         },
         {
           name: ['agent_ids'],
@@ -54,9 +64,11 @@ const RegisterForm = ({
         },
         {
           name: ['agent_num_slots'],
-          value: formInitialValues.agentNumSlots
-            ? formInitialValues.agentNumSlots.join(', ')
-            : null,
+          value: agentNumSlots,
+        },
+        {
+          name: ['bonds'],
+          value: bonds,
         },
         {
           name: ['threshold'],
@@ -166,7 +178,8 @@ const RegisterForm = ({
           onClick={() => setIsModalVisible(true)}
           className="mb-12"
         >
-          Generate Hash
+          {isUpdateForm ? 'Update' : 'Generate'}
+          &nbsp; Hash
         </Button>
 
         <Form.Item
@@ -217,6 +230,19 @@ const RegisterForm = ({
           ]}
         >
           <Input placeholder="1, 2, 1, 2" />
+        </Form.Item>
+
+        <Form.Item
+          label="Cost of agent instance bond"
+          name="bonds"
+          rules={[
+            {
+              required: true,
+              message: 'Please input the cost of agent instance bond',
+            },
+          ]}
+        >
+          <Input />
         </Form.Item>
 
         <Form.Item
@@ -279,9 +305,10 @@ RegisterForm.propTypes = {
     owner: PropTypes.string,
     name: PropTypes.string,
     description: PropTypes.string,
-    hash: PropTypes.string,
+    configHash: PropTypes.array,
     agentIds: PropTypes.arrayOf(PropTypes.string),
     agentNumSlots: PropTypes.arrayOf(PropTypes.string),
+    agentParams: PropTypes.arrayOf(PropTypes.array),
     threshold: PropTypes.string,
   }),
   handleSubmit: PropTypes.func.isRequired,
