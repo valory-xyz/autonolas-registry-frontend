@@ -6,7 +6,7 @@ import { SearchOutlined } from '@ant-design/icons';
 import PropTypes from 'prop-types';
 import some from 'lodash/some';
 import includes from 'lodash/includes';
-import { NAV_TYPES } from 'util/constants';
+import { NAV_TYPES, SERVICE_STATE } from 'util/constants';
 
 const { Text, Title } = Typography;
 const textStyle = { maxWidth: '100%' };
@@ -156,10 +156,11 @@ export const getTableColumns = (
         ),
       },
       {
-        title: 'Active',
-        dataIndex: 'active',
-        key: 'active',
+        title: 'State',
+        dataIndex: 'state',
+        key: 'state',
         width: 100,
+        render: (e) => <>{SERVICE_STATE[e]}</>,
       },
       {
         width: 220,
@@ -225,6 +226,7 @@ export const getData = (type, rawData, { filterValue }) => {
       developer: item.developer || '-',
       owner: item.owner || '-',
       active: `${item.active}`,
+      state: item.state,
     }));
   }
 
