@@ -20,6 +20,21 @@ export const getServiceDetails = (id) => new Promise((resolve, reject) => {
     });
 });
 
+export const getServiceStatus = (id) => new Promise((resolve, reject) => {
+  const contract = getServiceContract();
+
+  contract.methods
+    .getServiceState(id)
+    .call()
+    .then((response) => {
+      resolve(response);
+    })
+    .catch((e) => {
+      console.error(e);
+      reject(e);
+    });
+});
+
 export const getServicesByAccount = (account) => new Promise((resolve, reject) => {
   const contract = getServiceContract();
 

@@ -4,9 +4,9 @@ import { connect } from 'react-redux';
 import get from 'lodash/get';
 import capitalize from 'lodash/capitalize';
 import {
-  Row, Col, Skeleton, Button,
+  Row, Col, Skeleton, Button, Alert,
 } from 'antd';
-import { NAV_TYPES } from 'util/constants';
+import { NAV_TYPES, SERVICE_STATE, SERVICE_STATE_INFO } from 'util/constants';
 import { RegisterMessage } from '../List/ListCommon';
 import IpfsHashGenerationModal from '../List/IpfsHashGenerationModal';
 import {
@@ -31,12 +31,14 @@ const Details = ({
   id,
   type,
   getDetails,
+  getStatus,
   handleUpdate,
   onDependencyClick,
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [info, setInfo] = useState({});
+  const [status, setStatus] = useState(null);
 
   useEffect(async () => {
     setIsLoading(true);
@@ -45,6 +47,11 @@ const Details = ({
     try {
       const temp = await getDetails();
       setInfo(temp);
+
+      if (getStatus) {
+        const statusInfo = await getStatus();
+        setStatus(statusInfo);
+      }
     } catch (e) {
       console.error(e);
     } finally {
@@ -188,6 +195,15 @@ const Details = ({
         <Col className="gutter-row" span={12}>
           <InfoSubHeader>Description</InfoSubHeader>
           <div>{get(info, 'description', null) || NA}</div>
+
+          {status && (
+            <>
+              <br />
+              <InfoSubHeader>Status</InfoSubHeader>
+              <div className="mb-12">{SERVICE_STATE[status]}</div>
+              <Alert message={SERVICE_STATE_INFO[status]} type="info" showIcon />
+            </>
+          )}
         </Col>
         <Col className="gutter-row" span={12}>
           {generateDetails()}
@@ -208,6 +224,7 @@ Details.propTypes = {
   id: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   getDetails: PropTypes.func.isRequired,
+  getStatus: PropTypes.func,
   handleUpdate: PropTypes.func,
   onDependencyClick: PropTypes.func,
 };
@@ -215,6 +232,7 @@ Details.propTypes = {
 Details.defaultProps = {
   account: null,
   handleUpdate: null,
+  getStatus: null,
   onDependencyClick: () => {},
 };
 
