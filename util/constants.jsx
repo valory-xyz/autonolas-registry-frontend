@@ -23,7 +23,7 @@ export const NAV_TYPES = {
   SERVICE: 'service',
 };
 
-export const ServiceState = {
+export const SERVICE_STATE = {
   0: 'Non Existent',
   1: 'Pre Registration',
   2: 'Active Registration',
@@ -32,4 +32,15 @@ export const ServiceState = {
   5: 'Deployed',
   6: 'Terminated Bonded',
   7: 'Terminated Unbonded',
+};
+
+export const SERVICE_STATE_INFO = {
+  0: 'No service has been registered with a specified Id yet or the service is non-recoverable.',
+  1: 'Agent instance registration is not active yet.',
+  2: 'Agent instance registration is ongoing.',
+  3: 'Deadline for agent instance registration has passed.',
+  4: 'All the agent instances slots are registered.',
+  5: 'Service is deployed and operates via created safe contract.',
+  6: 'Some agents are bonded with stake.',
+  7: 'All agents have left the service and recovered their stake.',
 };
