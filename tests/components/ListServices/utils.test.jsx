@@ -22,29 +22,14 @@ describe('listServices/utils.jsx', () => {
         getServiceInfo: jest.fn(() => ({
           call: jest.fn(() => Promise.resolve(SERVICE_1)),
         })),
+        getServiceState: jest.fn(() => ({
+          call: jest.fn(() => Promise.resolve('0')),
+        })),
       },
     }));
 
     const result = await getServicesByAccount();
     expect(result).toMatchObject([SERVICE_1]);
-  });
-
-  it('getServicesByAccount: Promise rejected', async () => {
-    expect.hasAssertions();
-
-    getServiceContract.mockImplementation(() => ({
-      methods: {
-        balanceOf: jest.fn(() => ({
-          call: jest.fn(() => Promise.resolve(1)),
-        })),
-        getServiceInfo: jest.fn(() => ({
-          call: jest.fn(() => new Error('Bad Request')),
-        })),
-      },
-    }));
-
-    const result = await getServicesByAccount();
-    expect(result).toMatchObject([Error('Bad Request')]);
   });
 
   it('getServices: Promise resolved', async () => {
@@ -60,6 +45,9 @@ describe('listServices/utils.jsx', () => {
         })),
         getServiceInfo: jest.fn(() => ({
           call: jest.fn(() => Promise.resolve(SERVICE_1)),
+        })),
+        getServiceState: jest.fn(() => ({
+          call: jest.fn(() => Promise.resolve('0')),
         })),
       },
     }));
