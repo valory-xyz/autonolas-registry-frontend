@@ -44,9 +44,6 @@ const RegisterForm = ({
         .map((param) => param[1])
         .join(', ');
 
-      console.log({
-        formInitialValues,
-      });
       setFields([
         {
           name: ['owner_address'],
