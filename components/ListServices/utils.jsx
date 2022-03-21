@@ -41,17 +41,20 @@ export const getServicesByAccount = (account) => new Promise((resolve, reject) =
   contract.methods
     .balanceOf(account)
     .call()
-    .then((length) => {
-      const promises = [];
-      for (let i = 0; i < length; i += 1) {
-        const serviceId = `${i + 1}`;
-        const result = contract.methods.getServiceInfo(serviceId).call();
-        promises.push(result);
-      }
+    .then(async (length) => {
+      const results = await Promise.all(
+        [...Array(length).keys()].map(async (_e, index) => {
+          const id = `${index + 1}`;
+          const info = await getServiceDetails(id);
+          const status = await getServiceStatus(id);
 
-      Promise.all(promises).then((results) => {
-        resolve(results);
-      });
+          const result = info;
+          result.state = status; // appending a service state in result
+          return result;
+        }),
+      );
+
+      resolve(results);
     })
     .catch((e) => {
       console.error(e);
@@ -88,15 +91,18 @@ export const getServices = () => new Promise((resolve, reject) => {
         });
 
         // list of promises of valid service
-        const serviceListPromises = [];
-        validTokenIds.forEach((id) => {
-          const result = contract.methods.getServiceInfo(id).call();
-          serviceListPromises.push(result);
-        });
+        const results = await Promise.all(
+          validTokenIds.map(async (id) => {
+            const info = await getServiceDetails(id);
+            const status = await getServiceStatus(id);
 
-        Promise.all(serviceListPromises).then((results) => {
-          resolve(results);
-        });
+            const result = info;
+            result.state = status; // appending a service state in result
+            return result;
+          }),
+        );
+
+        resolve(results);
       });
     })
     .catch((e) => {
