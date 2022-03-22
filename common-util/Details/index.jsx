@@ -7,9 +7,9 @@ import {
   Row, Col, Skeleton, Button, Alert,
 } from 'antd';
 import { NAV_TYPES, SERVICE_STATE, SERVICE_STATE_INFO } from 'util/constants';
-import { getAgentSlots, getBonds } from 'components/ListServices/RegisterForm';
 import { RegisterMessage, getIpfsHashFromBytes32 } from '../List/ListCommon';
 import IpfsHashGenerationModal from '../List/IpfsHashGenerationModal';
+import { getTable } from './helpers';
 import {
   Header,
   DetailsTitle,
@@ -149,7 +149,6 @@ const Details = ({
     };
 
     const getServiceValues = () => {
-      const dependencies = get(info, 'agentIds') || [];
       const hash = get(hashes, 'configHashes') || [];
 
       return [
@@ -175,33 +174,9 @@ const Details = ({
           value: get(info, 'active', null) ? 'TRUE' : 'FALSE',
         },
         {
-          title: 'Agent IDs',
-          value:
-            dependencies.length === 0 ? (
-              <>NA</>
-            ) : (
-              dependencies.map((e) => (
-                <li key={`${type}-agentId-${e}`}>
-                  <Button type="link" onClick={() => onDependencyClick(e)}>
-                    {e}
-                  </Button>
-                </li>
-              ))
-            ),
-        },
-        {
-          title: 'No. of slots to canonical agent Ids',
-          dataTestId: 'agentNumSlots-dependency',
-          value: getAgentSlots(info).map((e) => (
-            <li key={`${type}-agentNumSlots-${e}`}>{e}</li>
-          )),
-        },
-        {
-          title: 'Cost of agent instance bond',
-          dataTestId: 'costOfAgentInstance',
-          value: getBonds(info).map((e, index) => (
-            <li key={`${type}-costOfAgentInstance-${index}`}>{e}</li>
-          )),
+          type: 'table',
+          dataTestId: 'agent-id-table',
+          value: getTable(info, { onDependencyClick }),
         },
         { title: 'Threshold', value: get(info, 'threshold', null) || NA },
       ];
