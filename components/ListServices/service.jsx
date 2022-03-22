@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Typography, notification, Skeleton } from 'antd';
+import { Typography, notification } from 'antd';
 import get from 'lodash/get';
+import Loader from 'common-util/components/Loader';
 import { convertStringToArray, AlertError } from 'common-util/List/ListCommon';
 import { getServiceContract, getServiceManagerContract } from 'common-util/Contracts';
 import { FormContainer } from 'components/styles';
@@ -71,7 +72,7 @@ const Service = ({ account }) => {
     <>
       <Title level={2}>Service</Title>
       {isAllLoading ? (
-        <Skeleton active />
+        <Loader />
       ) : (
         <FormContainer>
           <RegisterForm
