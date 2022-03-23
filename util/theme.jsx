@@ -7,6 +7,7 @@ export const COLOR = {
   BLACK: '#000000',
   BORDER_GREY: '#323232',
   TABLE_BLACK: '#1B1B1B',
+  RED_1: '#EA3324',
 };
 
 export const BOX_SHADOW = {};
