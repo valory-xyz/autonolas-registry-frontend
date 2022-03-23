@@ -9,6 +9,7 @@ import {
   setUserAccount as setUserAccountFn,
   setUserBalance as setUserBalanceFn,
   setErrorMessage as setErrorMessageFn,
+  setLoaded as setLoadedFn,
 } from 'store/setup/actions';
 import { EllipsisMiddle } from 'common-util/List/ListTable/helpers';
 import { Container, DetailsContainer, MetamaskContainer } from './styles';
@@ -21,6 +22,7 @@ const Login = ({
   setUserAccount,
   setUserBalance,
   setErrorMessage,
+  setLoaded,
 }) => {
   const getBalance = (accoundPassed) => {
     window.ethereum
@@ -38,6 +40,9 @@ const Login = ({
 
   const handleLogin = () => {
     if (window.ethereum && window.ethereum.isMetaMask) {
+      // remove `disconnect` from localStorage
+      localStorage.removeItem(CONSTANTS.DISCONNECT);
+
       window.ethereum
         .request({ method: CONSTANTS.ETH_REQUESTACCOUNTS })
         .then((result) => {
@@ -51,6 +56,14 @@ const Login = ({
     } else {
       setErrorMessage('Please install MetaMask browser extension');
     }
+  };
+
+  // set `disconenct` to localStorage for reference
+  const handleDisconnect = () => {
+    localStorage.setItem(CONSTANTS.DISCONNECT, true);
+    setLoaded(false);
+    setUserAccount(null);
+    setUserBalance(null);
   };
 
   /**
@@ -109,6 +122,9 @@ const Login = ({
             <div>{balance ? `${balance} ETH` : 'NA'}</div>
             <div className="dash" />
             <EllipsisMiddle>{account ? `${account}` : 'NA'}</EllipsisMiddle>
+            <Button type="primary" ghost onClick={handleDisconnect}>
+              Disconnect
+            </Button>
           </MetamaskContainer>
         )}
       </DetailsContainer>
@@ -124,6 +140,7 @@ Login.propTypes = {
   setUserAccount: PropTypes.func.isRequired,
   setUserBalance: PropTypes.func.isRequired,
   setErrorMessage: PropTypes.func.isRequired,
+  setLoaded: PropTypes.func.isRequired,
 };
 
 Login.defaultProps = {
@@ -137,7 +154,10 @@ const mapStateToProps = (state) => {
     isLoaded, account, balance, errorMessage,
   } = get(state, 'setup', {});
   return {
-    isLoaded, account, balance, errorMessage,
+    isLoaded,
+    account,
+    balance,
+    errorMessage,
   };
 };
 
@@ -145,6 +165,7 @@ const mapDispatchToProps = {
   setUserAccount: setUserAccountFn,
   setUserBalance: setUserBalanceFn,
   setErrorMessage: setErrorMessageFn,
+  setLoaded: setLoadedFn,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

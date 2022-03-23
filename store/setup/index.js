@@ -2,6 +2,7 @@ import { apiTypes, syncTypes } from './_types';
 
 const initialState = {
   account: null,
+  balance: null,
   errorMessage: null,
 
   /**

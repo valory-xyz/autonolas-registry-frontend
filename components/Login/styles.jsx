@@ -25,4 +25,7 @@ export const MetamaskContainer = styled.div`
     height: 2.25rem;
     background-color: ${COLOR.PRIMARY};
   }
+  .ant-btn {
+    margin-left: 0.75rem;
+  }
 `;
