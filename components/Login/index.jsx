@@ -14,6 +14,7 @@ import { Container, DetailsContainer, MetamaskContainer } from './styles';
 
 const Login = ({
   account,
+  balance,
   errorMessage,
   setUserAccount,
   setUserBalance,
@@ -75,7 +76,11 @@ const Login = ({
   if (!account) {
     return (
       <Container>
-        <Button type="primary" onClick={handleLogin} data-testid="connect-metamask">
+        <Button
+          type="primary"
+          onClick={handleLogin}
+          data-testid="connect-metamask"
+        >
           Connect MetaMask
         </Button>
       </Container>
@@ -86,12 +91,17 @@ const Login = ({
     <Container>
       <DetailsContainer>
         {errorMessage ? (
-          <Alert message={errorMessage} type="error" showIcon data-testid="login-error" />
+          <Alert
+            message={errorMessage}
+            type="error"
+            showIcon
+            data-testid="login-error"
+          />
         ) : (
           <MetamaskContainer>
-            <EllipsisMiddle>
-              {account ? `${account}` : 'NA'}
-            </EllipsisMiddle>
+            <div>{balance ? `${balance} ETH` : 'NA'}</div>
+            <div className="dash" />
+            <EllipsisMiddle>{account ? `${account}` : 'NA'}</EllipsisMiddle>
           </MetamaskContainer>
         )}
       </DetailsContainer>
@@ -101,6 +111,7 @@ const Login = ({
 
 Login.propTypes = {
   account: PropTypes.string,
+  balance: PropTypes.string,
   errorMessage: PropTypes.string,
   setUserAccount: PropTypes.func.isRequired,
   setUserBalance: PropTypes.func.isRequired,
@@ -109,6 +120,7 @@ Login.propTypes = {
 
 Login.defaultProps = {
   account: null,
+  balance: null,
   errorMessage: null,
 };
 

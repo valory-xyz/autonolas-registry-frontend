@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { COLOR } from 'util/theme';
 
 export const Container = styled.div``;
 
@@ -15,4 +16,13 @@ export const DetailsContainer = styled.div`
   }
 `;
 
-export const MetamaskContainer = styled.div``;
+export const MetamaskContainer = styled.div`
+  display: flex;
+  align-items: center;
+  .dash {
+    margin: 0 0.75rem;
+    width: 1px;
+    height: 2.25rem;
+    background-color: ${COLOR.PRIMARY};
+  }
+`;
