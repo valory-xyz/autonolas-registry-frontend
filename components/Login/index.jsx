@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import get from 'lodash/get';
-import { Button, Typography, Alert } from 'antd';
+import { Button, Alert } from 'antd';
 import { ethers } from 'ethers';
 import { CONSTANTS } from 'util/constants';
 import {
@@ -9,9 +9,8 @@ import {
   setUserBalance as setUserBalanceFn,
   setErrorMessage as setErrorMessageFn,
 } from 'store/setup/actions';
-import { Container, DetailsContainer } from './styles';
-
-const { Title } = Typography;
+import { EllipsisMiddle } from 'common-util/List/ListTable/helpers';
+import { Container, DetailsContainer, MetamaskContainer } from './styles';
 
 const Login = ({
   account,
@@ -89,16 +88,11 @@ const Login = ({
         {errorMessage ? (
           <Alert message={errorMessage} type="error" showIcon data-testid="login-error" />
         ) : (
-          <Alert
-            type="success"
-            showIcon
-            message={(
-              <Title level={5} data-testid="metamask-address">
-                Address:&nbsp;
-                {account ? `${account}` : 'NA'}
-              </Title>
-            )}
-          />
+          <MetamaskContainer>
+            <EllipsisMiddle>
+              {account ? `${account}` : 'NA'}
+            </EllipsisMiddle>
+          </MetamaskContainer>
         )}
       </DetailsContainer>
     </Container>

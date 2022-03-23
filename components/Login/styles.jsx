@@ -14,3 +14,5 @@ export const DetailsContainer = styled.div`
     overflow: hidden;
   }
 `;
+
+export const MetamaskContainer = styled.div``;
