@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import get from 'lodash/get';
@@ -13,6 +14,7 @@ import { EllipsisMiddle } from 'common-util/List/ListTable/helpers';
 import { Container, DetailsContainer, MetamaskContainer } from './styles';
 
 const Login = ({
+  isLoaded,
   account,
   balance,
   errorMessage,
@@ -20,10 +22,6 @@ const Login = ({
   setUserBalance,
   setErrorMessage,
 }) => {
-  /**
-   * TODO: helpers to check if metamask is present
-   */
-
   const getBalance = (accoundPassed) => {
     window.ethereum
       .request({
@@ -54,6 +52,15 @@ const Login = ({
       setErrorMessage('Please install MetaMask browser extension');
     }
   };
+
+  /**
+   * if already loaded, set account and balance of the user.
+   */
+  useEffect(() => {
+    if (isLoaded && !account) {
+      handleLogin();
+    }
+  }, [isLoaded]);
 
   /**
    * listener for account, chain changes
@@ -110,6 +117,7 @@ const Login = ({
 };
 
 Login.propTypes = {
+  isLoaded: PropTypes.bool.isRequired,
   account: PropTypes.string,
   balance: PropTypes.string,
   errorMessage: PropTypes.string,
@@ -125,8 +133,12 @@ Login.defaultProps = {
 };
 
 const mapStateToProps = (state) => {
-  const { account, balance, errorMessage } = get(state, 'setup', {});
-  return { account, balance, errorMessage };
+  const {
+    isLoaded, account, balance, errorMessage,
+  } = get(state, 'setup', {});
+  return {
+    isLoaded, account, balance, errorMessage,
+  };
 };
 
 const mapDispatchToProps = {

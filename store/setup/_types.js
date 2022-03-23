@@ -5,6 +5,7 @@ export const apiTypes = {
 };
 
 export const syncTypes = {
+  SET_LOADED: `${reducerName}/Set loaded`,
   SET_ACCOUNT: `${reducerName}/Set account`,
   SET_BALANCE: `${reducerName}/Set balance`,
   SET_LOGIN_ERROR: `${reducerName}/Set error`,

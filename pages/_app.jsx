@@ -9,6 +9,7 @@ import { Web3ReactProvider } from '@web3-react/core';
 
 import GlobalStyle from 'components/GlobalStyles';
 import Layout from 'components/Layout';
+import MetamaskProvider from 'components/Login/Helpers/MetamaskProvider';
 import initStore from '../store';
 
 require('../styles/antd.less');
@@ -34,9 +35,11 @@ class MyApp extends App {
           <meta name="description" content="Protocol" />
         </Head>
         <Web3ReactProvider getLibrary={getLibrary}>
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
+          <MetamaskProvider>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </MetamaskProvider>
         </Web3ReactProvider>
         <GlobalStyle />
       </>
