@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import get from 'lodash/get';
-import { Card, Skeleton } from 'antd';
+import { Card } from 'antd';
 import { ListEmptyMessage, PrintJson } from 'common-util/List/ListCommon';
+import Loader from 'common-util/components/Loader';
 
 const ListCards = ({
   account, type, getList, extra,
@@ -28,7 +29,7 @@ const ListCards = ({
   }, [account]);
 
   if (isLoading) {
-    return <Skeleton active />;
+    return <Loader />;
   }
 
   return (

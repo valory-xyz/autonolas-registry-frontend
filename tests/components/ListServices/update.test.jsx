@@ -32,7 +32,7 @@ const SERVICE_1 = {
   name: 'Service One',
   description: 'Service Description',
   agentIds: ['1'],
-  agentNumSlots: ['1'],
+  agentParams: [['1', '1000']],
   threshold: '5',
   id: 1,
 };
@@ -76,6 +76,9 @@ describe('listServices/service.jsx', () => {
       expect(
         container.querySelector(`#${FORM_NAME}_agent_num_slots`).value,
       ).toBe('1');
+      expect(
+        container.querySelector(`#${FORM_NAME}_bonds`).value,
+      ).toBe('1000');
       expect(container.querySelector(`#${FORM_NAME}_threshold`).value).toBe(
         '5',
       );

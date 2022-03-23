@@ -4,12 +4,13 @@ import { connect } from 'react-redux';
 import get from 'lodash/get';
 import capitalize from 'lodash/capitalize';
 import {
-  Row, Col, Skeleton, Button, Alert,
+  Row, Col, Button, Alert,
 } from 'antd';
 import { NAV_TYPES, SERVICE_STATE, SERVICE_STATE_INFO } from 'util/constants';
-import { getAgentSlots, getBonds } from 'components/ListServices/RegisterForm';
+import Loader from 'common-util/components/Loader';
 import { RegisterMessage, getIpfsHashFromBytes32 } from '../List/ListCommon';
 import IpfsHashGenerationModal from '../List/IpfsHashGenerationModal';
+import { getTable } from './helpers';
 import {
   Header,
   DetailsTitle,
@@ -83,7 +84,7 @@ const Details = ({
   }, [account, id]);
 
   if (isLoading) {
-    return <Skeleton active />;
+    return <Loader />;
   }
 
   if (!account) {
@@ -120,12 +121,15 @@ const Details = ({
         },
         {
           title: 'Hash',
+          dataTestId: 'hashes-list',
           value: (
-            <Info>
+            <>
               {hash.map((e, index) => (
-                <li key={`${type}-hashes-${index}`}>{getIpfsHashFromBytes32(e.hash)}</li>
+                <li key={`${type}-hashes-${index}`}>
+                  {getIpfsHashFromBytes32(e.hash)}
+                </li>
               ))}
-            </Info>
+            </>
           ),
         },
         {
@@ -148,7 +152,6 @@ const Details = ({
     };
 
     const getServiceValues = () => {
-      const dependencies = get(info, 'agentIds') || [];
       const hash = get(hashes, 'configHashes') || [];
 
       return [
@@ -160,12 +163,15 @@ const Details = ({
         },
         {
           title: 'Hash',
+          dataTestId: 'hashes-list',
           value: (
-            <Info>
+            <>
               {hash.map((e, index) => (
-                <li key={`${type}-hashes-${index}`}>{getIpfsHashFromBytes32(e.hash)}</li>
+                <li key={`${type}-hashes-${index}`}>
+                  {getIpfsHashFromBytes32(e.hash)}
+                </li>
               ))}
-            </Info>
+            </>
           ),
         },
         {
@@ -173,33 +179,9 @@ const Details = ({
           value: get(info, 'active', null) ? 'TRUE' : 'FALSE',
         },
         {
-          title: 'Agent IDs',
-          value:
-            dependencies.length === 0 ? (
-              <>NA</>
-            ) : (
-              dependencies.map((e) => (
-                <li key={`${type}-agentId-${e}`}>
-                  <Button type="link" onClick={() => onDependencyClick(e)}>
-                    {e}
-                  </Button>
-                </li>
-              ))
-            ),
-        },
-        {
-          title: 'No. of slots to canonical agent Ids',
-          dataTestId: 'agentNumSlots-dependency',
-          value: getAgentSlots(info).map((e) => (
-            <li key={`${type}-agentNumSlots-${e}`}>{e}</li>
-          )),
-        },
-        {
-          title: 'Cost of agent instance bond',
-          dataTestId: 'costOfAgentInstance',
-          value: getBonds(info).map((e, index) => (
-            <li key={`${type}-costOfAgentInstance-${index}`}>{e}</li>
-          )),
+          type: 'table',
+          dataTestId: 'agent-id-table',
+          value: getTable(info, { onDependencyClick }),
         },
         { title: 'Threshold', value: get(info, 'threshold', null) || NA },
       ];
@@ -237,7 +219,7 @@ const Details = ({
 
           {/* This button will be shown only if the agent belongs
           to the owner and has `onUpdateHash` function */}
-          {onUpdateHash && (detailsOwner === ownerOfCurrentDetails) && (
+          {onUpdateHash && detailsOwner === ownerOfCurrentDetails && (
             <Button
               type="primary"
               ghost
@@ -259,7 +241,11 @@ const Details = ({
               <br />
               <InfoSubHeader>Status</InfoSubHeader>
               <div className="mb-12">{SERVICE_STATE[status]}</div>
-              <Alert message={SERVICE_STATE_INFO[status]} type="info" showIcon />
+              <Alert
+                message={SERVICE_STATE_INFO[status]}
+                type="info"
+                showIcon
+              />
             </>
           )}
         </Col>

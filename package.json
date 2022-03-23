@@ -5,7 +5,7 @@
     "start": "next start",
     "lint": "eslint ./",
     "test": "jest",
-    "test:watch": "jest --watch",
+    "testw": "jest --watch",
     "testc": "jest --coverage --verbose"
   },
   "dependencies": {
