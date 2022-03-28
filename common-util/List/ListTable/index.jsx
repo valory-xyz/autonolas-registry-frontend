@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Table, Skeleton } from 'antd/lib';
+import { Table } from 'antd/lib';
 import { ListEmptyMessage } from 'common-util/List/ListCommon';
+import Loader from 'common-util/components/Loader';
 import { getData, getTableColumns } from './helpers';
 
 const ListTable = ({
@@ -36,7 +37,7 @@ const ListTable = ({
   }, [account]);
 
   if (isLoading) {
-    return <Skeleton active />;
+    return <Loader />;
   }
 
   return (
@@ -45,7 +46,11 @@ const ListTable = ({
         <ListEmptyMessage type={type} />
       ) : (
         <Table
-          columns={getTableColumns(type, { onViewClick, onUpdateClick, onDeleteClick })}
+          columns={getTableColumns(type, {
+            onViewClick,
+            onUpdateClick,
+            onDeleteClick,
+          })}
           dataSource={getData(type, list, {
             filterValue: (filterValue || '').toLowerCase(),
           })}
