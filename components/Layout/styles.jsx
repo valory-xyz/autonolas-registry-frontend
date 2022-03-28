@@ -143,14 +143,8 @@ export const Logo = styled.div`
   align-items: center;
   justify-content: left;
   margin-right: 3.5rem;
-  .title-logo {
-    width: 32px;
-    height: 32px;
-    margin-right: 8px;
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-image: url("/images/autonolas-logo.png");
+  span {
+    margin-left: 0.5rem;
   }
 `;
 

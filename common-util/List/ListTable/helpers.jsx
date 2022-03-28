@@ -15,24 +15,19 @@ const textStyle = { maxWidth: '100%' };
  * helper components
  */
 
-// TODO: need to update: https://trello.com/c/ChbJiG5b/354-protocol-frontend-redesign-after-camelia-design-is-ready
 export const EllipsisMiddle = ({ suffixCount, children }) => {
-  let start = null;
-  let suffix = 0;
+  if (typeof children !== 'string') return <>{children}</>;
 
-  if (children.length > 10) {
-    start = children.slice(0, children.length - suffixCount).trim();
-    suffix = children.slice(-suffixCount).trim();
-  } else {
-    start = children;
-    suffix = null;
-  }
+  if (children.length <= 12) return <Text>{children}</Text>;
 
-  return (
-    <Text style={textStyle} ellipsis={{ suffix }}>
-      {start}
-    </Text>
-  );
+  /**
+   * truncate only if the character exceeds more than 12
+   */
+  const text = children.trim();
+  const frontText = text.slice(0, suffixCount);
+  const backText = text.slice(text.length - suffixCount, text.length);
+
+  return <Text style={textStyle}>{`${frontText}...${backText}`}</Text>;
 };
 
 EllipsisMiddle.propTypes = {
@@ -41,13 +36,14 @@ EllipsisMiddle.propTypes = {
 };
 
 EllipsisMiddle.defaultProps = {
-  suffixCount: 0,
+  suffixCount: 6,
   children: '',
 };
 
 /**
  * helper functions
  */
+
 export const getTableColumns = (
   type,
   { onViewClick, onUpdateClick, onDeleteClick },
@@ -67,7 +63,7 @@ export const getTableColumns = (
         width: 200,
         className: 'underline',
         render: (text) => (
-          <EllipsisMiddle suffixCount={5}>{text}</EllipsisMiddle>
+          <EllipsisMiddle>{text}</EllipsisMiddle>
         ),
       },
       {
@@ -76,7 +72,7 @@ export const getTableColumns = (
         key: 'developer',
         width: 200,
         render: (text) => (
-          <EllipsisMiddle suffixCount={5}>{text}</EllipsisMiddle>
+          <EllipsisMiddle>{text}</EllipsisMiddle>
         ),
       },
       {
@@ -85,7 +81,7 @@ export const getTableColumns = (
         key: 'owner',
         width: 160,
         render: (text) => (
-          <EllipsisMiddle suffixCount={5}>{text}</EllipsisMiddle>
+          <EllipsisMiddle>{text}</EllipsisMiddle>
         ),
       },
       {
@@ -94,7 +90,7 @@ export const getTableColumns = (
         key: 'hash',
         width: 200,
         render: (text) => (
-          <EllipsisMiddle suffixCount={5}>{text.hash}</EllipsisMiddle>
+          <EllipsisMiddle>{text.hash}</EllipsisMiddle>
         ),
       },
       {
@@ -134,7 +130,7 @@ export const getTableColumns = (
         key: 'name',
         width: 160,
         render: (text) => (
-          <EllipsisMiddle suffixCount={5}>{text}</EllipsisMiddle>
+          <EllipsisMiddle>{text}</EllipsisMiddle>
         ),
       },
       {
@@ -143,7 +139,7 @@ export const getTableColumns = (
         key: 'developer',
         width: 200,
         render: (text) => (
-          <EllipsisMiddle suffixCount={5}>{text}</EllipsisMiddle>
+          <EllipsisMiddle>{text}</EllipsisMiddle>
         ),
       },
       {
@@ -152,7 +148,7 @@ export const getTableColumns = (
         key: 'owner',
         width: 200,
         render: (text) => (
-          <EllipsisMiddle suffixCount={5}>{text}</EllipsisMiddle>
+          <EllipsisMiddle>{text}</EllipsisMiddle>
         ),
       },
       {

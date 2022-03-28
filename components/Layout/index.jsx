@@ -3,6 +3,7 @@ import { Layout, Menu, Result } from 'antd';
 import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import useCheckMobileScreen from 'common-util/hooks/useCheckMobileScreen';
+import { Logo as LogoSvg } from 'common-util/svg';
 import Footer from './Footer';
 import Login from '../Login';
 import {
@@ -34,8 +35,8 @@ const NavigationBar = ({ children }) => {
 
   const logo = (
     <Logo onClick={() => router.push('/')} data-testid="protocol-logo">
-      <div className="title-logo" />
-      Registry
+      <LogoSvg />
+      <span>Registry</span>
     </Logo>
   );
 
