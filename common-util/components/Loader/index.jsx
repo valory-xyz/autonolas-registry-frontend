@@ -29,7 +29,7 @@ const Loader = () => {
   if (seconds === 0) {
     return (
       <Container>
-        <p>Items couldn’t be loaded – please refresh</p>
+        <p>Items couldn’t be loaded</p>
         <Button ghost type="primary" onClick={() => window.location.reload()}>
           Reload
         </Button>
