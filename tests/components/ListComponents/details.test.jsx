@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, waitFor } from '@testing-library/react';
 import Component from 'components/ListComponents/details';
-import { getComponentDetails } from 'components/ListComponents/utils';
+import { getComponentDetails, getComponentHashes, getComponentOwner } from 'components/ListComponents/utils';
 import { dummyAddress, wrapProvider } from '../../helpers';
 
 jest.mock('next/router', () => ({
@@ -13,17 +13,24 @@ jest.mock('next/router', () => ({
 
 jest.mock('components/ListComponents/utils', () => ({
   getComponentDetails: jest.fn(),
+  getComponentHashes: jest.fn(),
+  getComponentOwner: jest.fn(),
 }));
 
 const dummyDetails = {
   owner: dummyAddress,
   developer: dummyAddress,
-  agentHash: '0x3333333',
   dependencies: [1, 2],
+};
+
+const dummyHashes = {
+  componentHashes: ['Component Hash1', 'Component Hash2'],
 };
 
 describe('listComponents/details.jsx', () => {
   getComponentDetails.mockImplementation(() => Promise.resolve(dummyDetails));
+  getComponentHashes.mockImplementation(() => Promise.resolve(dummyHashes));
+  getComponentOwner.mockImplementation(() => Promise.resolve(dummyDetails.owner));
 
   it('should render component details', async () => {
     expect.hasAssertions();
@@ -35,7 +42,7 @@ describe('listComponents/details.jsx', () => {
         'Component ID 1',
       );
       expect(getAllByText(dummyDetails.developer)).toHaveLength(2);
-      expect(getAllByText(dummyDetails.agentHash)).toHaveLength(1);
+      expect(getByTestId('hashes-list').childElementCount).toBe(2);
       expect(getByTestId('details-dependency')).toBeInTheDocument();
     });
   });

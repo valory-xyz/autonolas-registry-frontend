@@ -120,12 +120,13 @@ const Details = ({
         },
         {
           title: 'Hash',
+          dataTestId: 'hashes-list',
           value: (
-            <Info>
+            <>
               {hash.map((e, index) => (
                 <li key={`${type}-hashes-${index}`}>{getIpfsHashFromBytes32(e.hash)}</li>
               ))}
-            </Info>
+            </>
           ),
         },
         {
@@ -160,12 +161,13 @@ const Details = ({
         },
         {
           title: 'Hash',
+          dataTestId: 'hashes-list',
           value: (
-            <Info>
+            <>
               {hash.map((e, index) => (
                 <li key={`${type}-hashes-${index}`}>{getIpfsHashFromBytes32(e.hash)}</li>
               ))}
-            </Info>
+            </>
           ),
         },
         {
