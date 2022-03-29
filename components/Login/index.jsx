@@ -2,9 +2,10 @@ import { useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import get from 'lodash/get';
-import { Button, Alert } from 'antd';
+import { Button } from 'antd';
+import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
-import { CONSTANTS } from 'util/constants';
+import { CHAIN_ID, CONSTANTS } from 'util/constants';
 import {
   setUserAccount as setUserAccountFn,
   setUserBalance as setUserBalanceFn,
@@ -24,6 +25,8 @@ const Login = ({
   setErrorMessage,
   setLoaded,
 }) => {
+  const { library } = useWeb3React();
+
   const getBalance = (accoundPassed) => {
     window.ethereum
       .request({
@@ -38,21 +41,40 @@ const Login = ({
       });
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (window.ethereum && window.ethereum.isMetaMask) {
       // remove `disconnect` from localStorage
       localStorage.removeItem(CONSTANTS.DISCONNECT);
 
-      window.ethereum
-        .request({ method: CONSTANTS.ETH_REQUESTACCOUNTS })
-        .then((result) => {
-          // setting only the 1st account
-          setUserAccount(result[0]);
-          getBalance(result[0]);
-        })
-        .catch((e) => {
-          setErrorMessage(e.message);
-        });
+      // check if connected to the correct chain-id
+      let isValidChainId = false;
+      const getChainId = get(library, 'eth.net.getId');
+      if (getChainId) {
+        const network = await getChainId();
+        if (network === CHAIN_ID) {
+          isValidChainId = true;
+          setErrorMessage(null);
+        } else {
+          isValidChainId = false;
+          setUserAccount(null);
+          setUserBalance(null);
+          setErrorMessage('Wrong network connection detected');
+        }
+      }
+
+      // set user account & balance if chain-id is valid
+      if (isValidChainId) {
+        window.ethereum
+          .request({ method: CONSTANTS.ETH_REQUESTACCOUNTS })
+          .then((result) => {
+            // setting only the 1st account
+            setUserAccount(result[0]);
+            getBalance(result[0]);
+          })
+          .catch((e) => {
+            setErrorMessage(e.message);
+          });
+      }
     } else {
       setErrorMessage('Please install MetaMask browser extension');
     }
@@ -83,14 +105,19 @@ const Login = ({
     getBalance(newAccount.toString());
   };
 
-  // reload the page to on chain change to avoid errors
-  const handleChainChange = () => {
-    window.location.reload();
-  };
-
   if (typeof window !== 'undefined' && window.ethereum) {
     window.ethereum.on('accountsChanged', handleAccountChange);
-    window.ethereum.on('chainChanged', handleChainChange);
+    window.ethereum.on('chainChanged', handleLogin);
+  }
+
+  if (errorMessage) {
+    return (
+      <Container>
+        <MetamaskContainer data-testid="login-error">
+          {errorMessage}
+        </MetamaskContainer>
+      </Container>
+    );
   }
 
   if (!account) {
@@ -110,30 +137,21 @@ const Login = ({
   return (
     <Container>
       <DetailsContainer>
-        {errorMessage ? (
-          <Alert
-            message={errorMessage}
-            type="error"
-            showIcon
-            data-testid="login-error"
-          />
-        ) : (
-          <MetamaskContainer>
-            <div>{balance ? `${balance} ETH` : 'NA'}</div>
-            <div className="dash" />
-            <EllipsisMiddle>{account ? `${account}` : 'NA'}</EllipsisMiddle>
-            <Button type="primary" ghost onClick={handleDisconnect}>
-              Disconnect
-            </Button>
-          </MetamaskContainer>
-        )}
+        <MetamaskContainer>
+          <div>{balance ? `${balance} ETH` : 'NA'}</div>
+          <div className="dash" />
+          <EllipsisMiddle data-testid="metamask-address">{account ? `${account}` : 'NA'}</EllipsisMiddle>
+          <Button type="primary" ghost onClick={handleDisconnect}>
+            Disconnect
+          </Button>
+        </MetamaskContainer>
       </DetailsContainer>
     </Container>
   );
 };
 
 Login.propTypes = {
-  isLoaded: PropTypes.bool.isRequired,
+  isLoaded: PropTypes.bool,
   account: PropTypes.string,
   balance: PropTypes.string,
   errorMessage: PropTypes.string,
@@ -144,6 +162,7 @@ Login.propTypes = {
 };
 
 Login.defaultProps = {
+  isLoaded: false,
   account: null,
   balance: null,
   errorMessage: null,
