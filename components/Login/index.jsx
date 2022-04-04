@@ -80,7 +80,7 @@ const Login = ({
     }
   };
 
-  // set `disconenct` to localStorage for reference
+  // set `disconnect` to localStorage for reference
   const handleDisconnect = () => {
     localStorage.setItem(CONSTANTS.DISCONNECT, true);
     setLoaded(false);
