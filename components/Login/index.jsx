@@ -1,29 +1,29 @@
+import { useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import get from 'lodash/get';
-import { Button, Typography, Alert } from 'antd';
+import { Button, Alert } from 'antd';
 import { ethers } from 'ethers';
 import { CONSTANTS } from 'util/constants';
 import {
   setUserAccount as setUserAccountFn,
   setUserBalance as setUserBalanceFn,
   setErrorMessage as setErrorMessageFn,
+  setLoaded as setLoadedFn,
 } from 'store/setup/actions';
-import { Container, DetailsContainer } from './styles';
-
-const { Title } = Typography;
+import { EllipsisMiddle } from 'common-util/List/ListTable/helpers';
+import { Container, DetailsContainer, MetamaskContainer } from './styles';
 
 const Login = ({
+  isLoaded,
   account,
+  balance,
   errorMessage,
   setUserAccount,
   setUserBalance,
   setErrorMessage,
+  setLoaded,
 }) => {
-  /**
-   * TODO: helpers to check if metamask is present
-   */
-
   const getBalance = (accoundPassed) => {
     window.ethereum
       .request({
@@ -40,6 +40,9 @@ const Login = ({
 
   const handleLogin = () => {
     if (window.ethereum && window.ethereum.isMetaMask) {
+      // remove `disconnect` from localStorage
+      localStorage.removeItem(CONSTANTS.DISCONNECT);
+
       window.ethereum
         .request({ method: CONSTANTS.ETH_REQUESTACCOUNTS })
         .then((result) => {
@@ -54,6 +57,23 @@ const Login = ({
       setErrorMessage('Please install MetaMask browser extension');
     }
   };
+
+  // set `disconnect` to localStorage for reference
+  const handleDisconnect = () => {
+    localStorage.setItem(CONSTANTS.DISCONNECT, true);
+    setLoaded(false);
+    setUserAccount(null);
+    setUserBalance(null);
+  };
+
+  /**
+   * if already loaded, set account and balance of the user.
+   */
+  useEffect(() => {
+    if (isLoaded && !account) {
+      handleLogin();
+    }
+  }, [isLoaded]);
 
   /**
    * listener for account, chain changes
@@ -76,7 +96,11 @@ const Login = ({
   if (!account) {
     return (
       <Container>
-        <Button type="primary" onClick={handleLogin} data-testid="connect-metamask">
+        <Button
+          type="primary"
+          onClick={handleLogin}
+          data-testid="connect-metamask"
+        >
           Connect MetaMask
         </Button>
       </Container>
@@ -87,18 +111,21 @@ const Login = ({
     <Container>
       <DetailsContainer>
         {errorMessage ? (
-          <Alert message={errorMessage} type="error" showIcon data-testid="login-error" />
-        ) : (
           <Alert
-            type="success"
+            message={errorMessage}
+            type="error"
             showIcon
-            message={(
-              <Title level={5} data-testid="metamask-address">
-                Address:&nbsp;
-                {account ? `${account}` : 'NA'}
-              </Title>
-            )}
+            data-testid="login-error"
           />
+        ) : (
+          <MetamaskContainer>
+            <div>{balance ? `${balance} ETH` : 'NA'}</div>
+            <div className="dash" />
+            <EllipsisMiddle>{account ? `${account}` : 'NA'}</EllipsisMiddle>
+            <Button type="primary" ghost onClick={handleDisconnect}>
+              Disconnect
+            </Button>
+          </MetamaskContainer>
         )}
       </DetailsContainer>
     </Container>
@@ -106,27 +133,39 @@ const Login = ({
 };
 
 Login.propTypes = {
+  isLoaded: PropTypes.bool.isRequired,
   account: PropTypes.string,
+  balance: PropTypes.string,
   errorMessage: PropTypes.string,
   setUserAccount: PropTypes.func.isRequired,
   setUserBalance: PropTypes.func.isRequired,
   setErrorMessage: PropTypes.func.isRequired,
+  setLoaded: PropTypes.func.isRequired,
 };
 
 Login.defaultProps = {
   account: null,
+  balance: null,
   errorMessage: null,
 };
 
 const mapStateToProps = (state) => {
-  const { account, balance, errorMessage } = get(state, 'setup', {});
-  return { account, balance, errorMessage };
+  const {
+    isLoaded, account, balance, errorMessage,
+  } = get(state, 'setup', {});
+  return {
+    isLoaded,
+    account,
+    balance,
+    errorMessage,
+  };
 };
 
 const mapDispatchToProps = {
   setUserAccount: setUserAccountFn,
   setUserBalance: setUserBalanceFn,
   setErrorMessage: setErrorMessageFn,
+  setLoaded: setLoadedFn,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);
