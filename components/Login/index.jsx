@@ -58,7 +58,7 @@ const Login = ({
           isValidChainId = false;
           setUserAccount(null);
           setUserBalance(null);
-          setErrorMessage('Wrong network connection detected');
+          setErrorMessage(`Wrong network. Switch to chain ID: ${CHAIN_ID}`);
         }
       }
 
@@ -140,7 +140,9 @@ const Login = ({
         <MetamaskContainer>
           <div>{balance ? `${balance} ETH` : 'NA'}</div>
           <div className="dash" />
-          <EllipsisMiddle data-testid="metamask-address">{account ? `${account}` : 'NA'}</EllipsisMiddle>
+          <EllipsisMiddle data-testid="metamask-address">
+            {account ? `${account}` : 'NA'}
+          </EllipsisMiddle>
           <Button type="primary" ghost onClick={handleDisconnect}>
             Disconnect
           </Button>
