@@ -13,8 +13,16 @@ jest.mock('next/router', () => ({
   __esModule: true,
   useRouter: jest.fn(),
 }));
-
 const push = jest.fn();
+
+jest.mock('@web3-react/core', () => ({
+  __esModule: true,
+  useWeb3React: jest.fn(() => ({
+    library: {
+      eth: { net: { getId: jest.fn(() => Promise.resolve(31337)) } },
+    },
+  })),
+}));
 
 useRouter.mockImplementation(() => ({ push, pathname: PATHNAME }));
 
