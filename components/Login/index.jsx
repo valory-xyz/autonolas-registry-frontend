@@ -46,35 +46,17 @@ const Login = ({
       // remove `disconnect` from localStorage
       localStorage.removeItem(CONSTANTS.DISCONNECT);
 
-      // check if connected to the correct chain-id
-      let isValidChainId = false;
-      const getChainId = get(library, 'eth.net.getId');
-      if (getChainId) {
-        const network = await getChainId();
-        if (network === CHAIN_ID) {
-          isValidChainId = true;
-          setErrorMessage(null);
-        } else {
-          isValidChainId = false;
-          setUserAccount(null);
-          setUserBalance(null);
-          setErrorMessage(`Wrong network. Switch to chain ID: ${CHAIN_ID}`);
-        }
-      }
-
       // set user account & balance if chain-id is valid
-      if (isValidChainId) {
-        window.ethereum
-          .request({ method: CONSTANTS.ETH_REQUESTACCOUNTS })
-          .then((result) => {
-            // setting only the 1st account
-            setUserAccount(result[0]);
-            getBalance(result[0]);
-          })
-          .catch((e) => {
-            setErrorMessage(e.message);
-          });
-      }
+      window.ethereum
+        .request({ method: CONSTANTS.ETH_REQUESTACCOUNTS })
+        .then((result) => {
+          // setting only the 1st account
+          setUserAccount(result[0]);
+          getBalance(result[0]);
+        })
+        .catch((e) => {
+          setErrorMessage(e.message);
+        });
     } else {
       setErrorMessage('Please install MetaMask browser extension');
     }
@@ -86,6 +68,28 @@ const Login = ({
     setLoaded(false);
     setUserAccount(null);
     setUserBalance(null);
+  };
+
+  const handleChainChange = async () => {
+    // check if connected to the correct chain-id
+    let isValidChainId = false;
+    const getChainId = get(library, 'eth.net.getId');
+    if (getChainId) {
+      const network = await getChainId();
+      if (network === CHAIN_ID) {
+        isValidChainId = true;
+        setErrorMessage(null);
+      } else {
+        isValidChainId = false;
+        setUserAccount(null);
+        setUserBalance(null);
+        setErrorMessage(`Wrong network. Switch to chain ID: ${CHAIN_ID}`);
+      }
+    }
+
+    if (isValidChainId) {
+      await handleLogin();
+    }
   };
 
   /**
@@ -107,7 +111,7 @@ const Login = ({
 
   if (typeof window !== 'undefined' && window.ethereum) {
     window.ethereum.on('accountsChanged', handleAccountChange);
-    window.ethereum.on('chainChanged', handleLogin);
+    window.ethereum.on('chainChanged', handleChainChange);
   }
 
   if (errorMessage) {
