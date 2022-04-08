@@ -4,6 +4,7 @@ import { render, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Login from 'components/Login';
 import { CONSTANTS } from 'util/constants';
+import { getTrimmedText } from 'common-util/List/ListTable/helpers';
 import { wrapProvider, wrapProviderError, dummyAddress } from '../../helpers';
 
 const PATHNAME = 'agents';
@@ -120,7 +121,7 @@ describe('login/index.jsx', () => {
     const { getByTestId } = render(wrapProvider(<Login />));
     const address = getByTestId('metamask-address').textContent;
     await waitFor(async () => {
-      expect(address).toContain(dummyAddress);
+      expect(address).toBe(getTrimmedText(dummyAddress, 6));
     });
   });
 });
