@@ -55,9 +55,8 @@ describe('listServices/details.jsx', () => {
       expect(getByText(dummyDetails.owner)).toBeInTheDocument();
       expect(getByText(dummyDetails.description)).toBeInTheDocument();
       expect(getByTestId('hashes-list').childElementCount).toBe(2);
+      expect(getByTestId('agent-id-table')).toBeInTheDocument();
       expect(getByText('Threshold')).toBeInTheDocument();
-      expect(getByTestId('agentNumSlots-dependency').childElementCount).toBe(3);
-      expect(getByTestId('costOfAgentInstance').childElementCount).toBe(3);
     });
   });
 });
