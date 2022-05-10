@@ -1,5 +1,3 @@
-import dynamic from 'next/dynamic';
-
-const ListComponents = dynamic(() => import('components/ListComponents'), { ssr: false });
+import ListComponents from 'components/ListComponents';
 
 export default ListComponents;
