@@ -49,10 +49,6 @@ const GlobalStyle = createGlobalStyle`
       .ant-menu-horizontal > .ant-menu-submenu::after {
         border-bottom: none !important;
       }
-      .ant-menu-item {
-        &:hover {
-        }
-      }
       .ant-menu-item-selected {
         font-weight: bold;
       }
@@ -61,6 +57,16 @@ const GlobalStyle = createGlobalStyle`
 
   .ant-layout-footer {
     text-align: center;
+  }
+
+  /* layout */
+  .site-layout {
+    padding: 0 50px;
+    margin-top: 64px;
+  }
+  .site-layout-background {
+    padding: 24px 0;
+    min-height: calc(100vh - 134px);
   }
 
   /* tabs */

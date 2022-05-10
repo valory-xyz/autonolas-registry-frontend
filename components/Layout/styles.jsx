@@ -3,16 +3,6 @@ import { Layout } from 'antd';
 import { COLOR } from 'util/theme';
 
 export const CustomLayout = styled(Layout)`
-  /* layout */
-  .site-layout {
-    padding: 0 50px;
-    margin-top: 64px;
-  }
-  .site-layout-background {
-    padding: 24px 0;
-    min-height: calc(100vh - 134px);
-  }
-
   .registry-tabs {
     .ant-tabs-extra-content {
       &:not(:last-child) {

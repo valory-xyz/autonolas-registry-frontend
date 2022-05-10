@@ -46,7 +46,7 @@ const NavigationBar = ({ children }) => {
   // TODO: fix mobile responsiveness and remove the below component
   if (isMobile) {
     return (
-      <CustomLayout>
+      <CustomLayout hasSider>
         <Header>{logo}</Header>
         <SupportOnlyDesktop>
           <Result
