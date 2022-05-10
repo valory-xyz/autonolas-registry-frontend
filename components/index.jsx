@@ -1,4 +1,6 @@
-import Login from './Login';
+import dynamic from 'next/dynamic';
+
+const Login = dynamic(() => import('./Login'));
 
 const Home = () => (
   <>
