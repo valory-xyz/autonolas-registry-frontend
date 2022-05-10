@@ -25,10 +25,6 @@ class MyApp extends App {
     return { pageProps };
   }
 
-  componentDidMount = () => {
-      document.getElementById('preventFlashOfUnstyledContent')?.remove();
-  }
-
   render() {
     const { Component, pageProps } = this.props;
 
@@ -38,13 +34,6 @@ class MyApp extends App {
         <Head>
           <title>Protocol</title>
           <meta name="description" content="Protocol" />
-          <style
-            id="preventFlashOfUnstyledContent"
-            /* eslint-disable-next-line react/no-danger */
-            dangerouslySetInnerHTML={{
-              __html: '*, *::before, *::after { transition: none !important; }',
-            }}
-          />
         </Head>
         <Web3ReactProvider getLibrary={getLibrary}>
           <MetamaskProvider>
