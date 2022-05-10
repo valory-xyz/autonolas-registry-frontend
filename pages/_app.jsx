@@ -1,6 +1,5 @@
 import App from 'next/app';
 import Head from 'next/head';
-import dynamic from 'next/dynamic';
 import { createWrapper } from 'next-redux-wrapper';
 import PropTypes from 'prop-types';
 
@@ -9,10 +8,9 @@ import Web3 from 'web3';
 import { Web3ReactProvider } from '@web3-react/core';
 
 import GlobalStyle from 'components/GlobalStyles';
+import Layout from 'components/Layout';
 import MetamaskProvider from 'components/Login/Helpers/MetamaskProvider';
 import initStore from '../store';
-
-const Layout = dynamic(() => import('components/Layout'), { ssr: false });
 
 require('../styles/antd.less');
 
@@ -27,6 +25,10 @@ class MyApp extends App {
     return { pageProps };
   }
 
+  componentDidMount = () => {
+      document.getElementById('preventFlashOfUnstyledContent')?.remove();
+  }
+
   render() {
     const { Component, pageProps } = this.props;
 
@@ -36,6 +38,13 @@ class MyApp extends App {
         <Head>
           <title>Protocol</title>
           <meta name="description" content="Protocol" />
+          <style
+            id="preventFlashOfUnstyledContent"
+            /* eslint-disable-next-line react/no-danger */
+            dangerouslySetInnerHTML={{
+              __html: '*, *::before, *::after { transition: none !important; }',
+            }}
+          />
         </Head>
         <Web3ReactProvider getLibrary={getLibrary}>
           <MetamaskProvider>
