@@ -136,6 +136,12 @@ const GlobalStyle = createGlobalStyle`
       }
     }
   }
+
+  /* alert */
+  .ant-alert-info {
+    background-color: inherit;
+    border-color: ${COLOR.PRIMARY};
+  }
 `;
 
 export default GlobalStyle;

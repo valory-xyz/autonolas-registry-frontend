@@ -40,12 +40,17 @@ export const getIpfsHashFromBytes32 = (bytes32Hex) => {
 };
 
 // ----------- components -----------
-const MyLink = ({ children, ...linkProps }) => (
-  <Link {...linkProps} passHref>
-    <a href="passRef">{children}</a>
+const MyLink = ({ children, href, ...linkProps }) => (
+  <Link {...linkProps} href={href}>
+    <a href={href} target="_blank" rel="noopener noreferrer">
+      {children}
+    </a>
   </Link>
 );
-MyLink.propTypes = { children: PropTypes.node.isRequired };
+MyLink.propTypes = {
+  children: PropTypes.node.isRequired,
+  href: PropTypes.string.isRequired,
+};
 
 export const DependencyLabel = ({ type }) => (
   <div className="label-helper-text">

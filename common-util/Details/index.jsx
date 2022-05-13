@@ -208,14 +208,18 @@ const Details = ({
       <Header>
         <DetailsTitle level={2}>{`${capitalize(type)} ID ${id}`}</DetailsTitle>
         <div className="right-content">
-          <Button
-            disabled={!handleUpdate}
-            type="primary"
-            ghost
-            onClick={onUpdate}
-          >
-            Update
-          </Button>
+          {/* Update button to be show only if the
+          connected account is the owner */}
+          {account === ownerOfCurrentDetails && (
+            <Button
+              disabled={!handleUpdate}
+              type="primary"
+              ghost
+              onClick={onUpdate}
+            >
+              Update
+            </Button>
+          )}
 
           {/* This button will be shown only if the agent belongs
           to the owner and has `onUpdateHash` function */}

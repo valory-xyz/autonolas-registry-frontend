@@ -59,7 +59,9 @@ const RegisterForm = ({
         },
         {
           name: ['hash'],
-          value: getIpfsHashFromBytes32(get(formInitialValues, 'configHash.hash')),
+          value: getIpfsHashFromBytes32(
+            get(formInitialValues, 'configHash.hash'),
+          ),
         },
         {
           name: ['agent_ids'],
@@ -137,6 +139,21 @@ const RegisterForm = ({
         >
           <Input placeholder="0x862..." disabled={isUpdateForm} />
         </Form.Item>
+
+        {isUpdateForm && (
+          <Form.Item
+            label="Service Id"
+            name="service_id"
+            rules={[
+              {
+                required: true,
+                message: 'Please input the Service ID',
+              },
+            ]}
+          >
+            <Input disabled={isUpdateForm} />
+          </Form.Item>
+        )}
 
         <Form.Item
           label="Service Name"
@@ -263,21 +280,6 @@ const RegisterForm = ({
         >
           <Input />
         </Form.Item>
-
-        {isUpdateForm && (
-          <Form.Item
-            label="Service Id"
-            name="service_id"
-            rules={[
-              {
-                required: true,
-                message: 'Please input the Service ID',
-              },
-            ]}
-          >
-            <Input disabled={isUpdateForm} />
-          </Form.Item>
-        )}
 
         {account ? (
           <Form.Item>
