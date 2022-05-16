@@ -27,6 +27,7 @@ const RegisterForm = ({
   handleSubmit,
   handleCancel,
 }) => {
+  const [form] = Form.useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [fields, setFields] = useState([]);
   const router = useRouter();
@@ -102,10 +103,15 @@ const RegisterForm = ({
     console.log('Failed:', errorInfo); /* eslint-disable-line no-console */
   };
 
+  const prefillOwnerAddress = () => {
+    form.setFieldsValue({ owner_address: account });
+  };
+
   return (
     <>
       <Form
         name={FORM_NAME}
+        form={form}
         initialValues={{ remember: true }}
         layout="vertical"
         fields={fields}
@@ -136,8 +142,20 @@ const RegisterForm = ({
               },
             }),
           ]}
+          className="mb-0"
         >
           <Input placeholder="0x862..." disabled={isUpdateForm} />
+        </Form.Item>
+
+        <Form.Item className="mb-0">
+          <Button
+            htmlType="button"
+            type="link"
+            onClick={prefillOwnerAddress}
+            className="pl-0"
+          >
+            Prefill Address
+          </Button>
         </Form.Item>
 
         {isUpdateForm && (
