@@ -139,6 +139,7 @@ const IpfsModal = ({
         <Alert
           message={<Paragraph>{ipfsValue || '--'}</Paragraph>}
           type="info"
+          className="inherit-alert-info"
         />
       </YourHashContainer>
     </CustomModal>

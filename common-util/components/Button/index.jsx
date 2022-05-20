@@ -25,3 +25,26 @@ WhiteButton.propTypes = {
 WhiteButton.defaultProps = {
   children: null,
 };
+
+/**
+ * @returns WhiteButton component
+ */
+const greyBtnStyle = {
+  color: COLOR.GREY_1,
+  borderColor: COLOR.GREY_1,
+  backgroundColor: COLOR.BLACK,
+};
+
+export const GreyButton = ({ children, ...rest }) => (
+  <Button {...rest} style={greyBtnStyle}>
+    {children}
+  </Button>
+);
+
+GreyButton.propTypes = {
+  children: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
+};
+
+GreyButton.defaultProps = {
+  children: null,
+};

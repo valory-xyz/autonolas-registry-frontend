@@ -28,10 +28,16 @@ const GlobalStyle = createGlobalStyle`
     /* uncomment for dark mode */
     /* filter: invert(1) hue-rotate(180deg); */
   }
-  /* common */
 
+  /* common */
   .mb-12 {
     margin-bottom: 12px;
+  }
+  .mb-0 {
+    margin-bottom: 0px;
+  }
+  .pl-0 {
+    padding-left: 0px !important;
   }
 
   /* layout */
@@ -135,6 +141,12 @@ const GlobalStyle = createGlobalStyle`
         }
       }
     }
+  }
+
+  /* alert */
+  .inherit-alert-info {
+    background-color: inherit;
+    border-color: ${COLOR.PRIMARY};
   }
 `;
 
