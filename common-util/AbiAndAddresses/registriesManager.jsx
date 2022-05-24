@@ -3,7 +3,7 @@ export const REGISTRIES_MANAGER_ADDRESS = '0x9fE46736679d2D9a65F0992F2272dE9f3c7
 export const REGISTRIES_MANAGER_CONTRACT = {
   _format: 'hh-sol-artifact-1',
   contractName: 'RegistriesManager',
-  sourceName: 'contracts/RegistriesManager.sol',
+  sourceName: 'contracts/registries/RegistriesManager.sol',
   abi: [
     {
       inputs: [
@@ -219,6 +219,13 @@ export const REGISTRIES_MANAGER_CONTRACT = {
     },
     {
       inputs: [],
+      name: 'pause',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [],
       name: 'paused',
       outputs: [
         {
@@ -246,6 +253,13 @@ export const REGISTRIES_MANAGER_CONTRACT = {
         },
       ],
       name: 'transferOwnership',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'unpause',
       outputs: [],
       stateMutability: 'nonpayable',
       type: 'function',

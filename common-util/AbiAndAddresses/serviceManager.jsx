@@ -1,15 +1,20 @@
-export const SERVICE_MANAGER_ADDRESS = '0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82';
+export const SERVICE_MANAGER_ADDRESS = '0x9A676e781A523b5d0C0e43731313A708CB607508';
 
 export const SERVICE_MANAGER = {
   _format: 'hh-sol-artifact-1',
   contractName: 'ServiceManager',
-  sourceName: 'contracts/ServiceManager.sol',
+  sourceName: 'contracts/registries/ServiceManager.sol',
   abi: [
     {
       inputs: [
         {
           internalType: 'address',
           name: '_serviceRegistry',
+          type: 'address',
+        },
+        {
+          internalType: 'address',
+          name: '_treasury',
           type: 'address',
         },
       ],
@@ -19,9 +24,9 @@ export const SERVICE_MANAGER = {
     {
       inputs: [
         {
-          internalType: 'uint256',
-          name: 'serviceId',
-          type: 'uint256',
+          internalType: 'address',
+          name: 'operator',
+          type: 'address',
         },
       ],
       name: 'AgentInstanceRegistered',
@@ -90,6 +95,22 @@ export const SERVICE_MANAGER = {
       inputs: [
         {
           internalType: 'uint256',
+          name: 'provided',
+          type: 'uint256',
+        },
+        {
+          internalType: 'uint256',
+          name: 'expected',
+          type: 'uint256',
+        },
+      ],
+      name: 'AmountLowerThan',
+      type: 'error',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'uint256',
           name: 'componentId',
           type: 'uint256',
         },
@@ -125,7 +146,7 @@ export const SERVICE_MANAGER = {
           type: 'uint256',
         },
       ],
-      name: 'IncorrectRegistrationDepositValue',
+      name: 'IncorrectAgentBondingValue',
       type: 'error',
     },
     {
@@ -142,23 +163,34 @@ export const SERVICE_MANAGER = {
         },
         {
           internalType: 'uint256',
-          name: 'agentId',
-          type: 'uint256',
-        },
-        {
-          internalType: 'uint256',
           name: 'serviceId',
           type: 'uint256',
         },
       ],
-      name: 'InsufficientAgentBondingValue',
+      name: 'IncorrectRegistrationDepositValue',
+      type: 'error',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'uint256',
+          name: 'provided',
+          type: 'uint256',
+        },
+        {
+          internalType: 'uint256',
+          name: 'expected',
+          type: 'uint256',
+        },
+      ],
+      name: 'InsufficientAllowance',
       type: 'error',
     },
     {
       inputs: [
         {
           internalType: 'address',
-          name: 'addr',
+          name: 'account',
           type: 'address',
         },
         {
@@ -179,7 +211,7 @@ export const SERVICE_MANAGER = {
       inputs: [
         {
           internalType: 'address',
-          name: 'addr',
+          name: 'account',
           type: 'address',
         },
         {
@@ -200,7 +232,7 @@ export const SERVICE_MANAGER = {
       inputs: [
         {
           internalType: 'address',
-          name: 'addr',
+          name: 'account',
           type: 'address',
         },
         {
@@ -232,7 +264,7 @@ export const SERVICE_MANAGER = {
       inputs: [
         {
           internalType: 'address',
-          name: 'addr',
+          name: 'account',
           type: 'address',
         },
         {
@@ -252,12 +284,39 @@ export const SERVICE_MANAGER = {
     {
       inputs: [
         {
+          internalType: 'uint256',
+          name: 'amount',
+          type: 'uint256',
+        },
+      ],
+      name: 'MintRejectedByInflationPolicy',
+      type: 'error',
+    },
+    {
+      inputs: [
+        {
           internalType: 'address',
-          name: 'addr',
+          name: 'account',
           type: 'address',
         },
       ],
       name: 'NoValueLocked',
+      type: 'error',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: 'account',
+          type: 'address',
+        },
+      ],
+      name: 'NonTransferrable',
+      type: 'error',
+    },
+    {
+      inputs: [],
+      name: 'NonZeroValue',
       type: 'error',
     },
     {
@@ -301,63 +360,68 @@ export const SERVICE_MANAGER = {
       inputs: [
         {
           internalType: 'uint256',
-          name: 'deadline',
+          name: 'provided',
           type: 'uint256',
         },
         {
           internalType: 'uint256',
-          name: 'prevDeadline',
-          type: 'uint256',
-        },
-        {
-          internalType: 'uint256',
-          name: 'serviceId',
+          name: 'max',
           type: 'uint256',
         },
       ],
-      name: 'RegistrationDeadlineChangeRedundant',
+      name: 'Overflow',
       type: 'error',
     },
     {
       inputs: [
         {
+          internalType: 'address',
+          name: 'tokenAddress',
+          type: 'address',
+        },
+        {
+          internalType: 'uint256',
+          name: 'productId',
+          type: 'uint256',
+        },
+        {
           internalType: 'uint256',
           name: 'deadline',
           type: 'uint256',
         },
         {
           internalType: 'uint256',
-          name: 'minBlock',
-          type: 'uint256',
-        },
-        {
-          internalType: 'uint256',
-          name: 'serviceId',
+          name: 'curTime',
           type: 'uint256',
         },
       ],
-      name: 'RegistrationDeadlineIncorrect',
+      name: 'ProductExpired',
       type: 'error',
     },
     {
       inputs: [
         {
+          internalType: 'address',
+          name: 'tokenAddress',
+          type: 'address',
+        },
+        {
           internalType: 'uint256',
-          name: 'deadline',
+          name: 'productId',
           type: 'uint256',
         },
         {
           internalType: 'uint256',
-          name: 'curBlock',
+          name: 'requested',
           type: 'uint256',
         },
         {
           internalType: 'uint256',
-          name: 'serviceId',
+          name: 'actual',
           type: 'uint256',
         },
       ],
-      name: 'RegistrationTimeout',
+      name: 'ProductSupplyLow',
       type: 'error',
     },
     {
@@ -455,7 +519,40 @@ export const SERVICE_MANAGER = {
       inputs: [
         {
           internalType: 'address',
-          name: 'addr',
+          name: 'account',
+          type: 'address',
+        },
+      ],
+      name: 'UnauthorizedAccount',
+      type: 'error',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: 'multisig',
+          type: 'address',
+        },
+      ],
+      name: 'UnauthorizedMultisig',
+      type: 'error',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: 'tokenAddress',
+          type: 'address',
+        },
+      ],
+      name: 'UnauthorizedToken',
+      type: 'error',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: 'account',
           type: 'address',
         },
         {
@@ -487,16 +584,32 @@ export const SERVICE_MANAGER = {
       inputs: [
         {
           internalType: 'uint256',
-          name: 'numAgentIds',
+          name: 'provided',
           type: 'uint256',
         },
         {
           internalType: 'uint256',
-          name: 'numAgentSlots',
+          name: 'expected',
           type: 'uint256',
         },
       ],
-      name: 'WrongAgentsData',
+      name: 'WrongAmount',
+      type: 'error',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'uint256',
+          name: 'numValues1',
+          type: 'uint256',
+        },
+        {
+          internalType: 'uint256',
+          name: 'numValues2',
+          type: 'uint256',
+        },
+      ],
+      name: 'WrongArrayLength',
       type: 'error',
     },
     {
@@ -606,6 +719,22 @@ export const SERVICE_MANAGER = {
       type: 'error',
     },
     {
+      inputs: [
+        {
+          internalType: 'address',
+          name: 'provided',
+          type: 'address',
+        },
+        {
+          internalType: 'address',
+          name: 'expected',
+          type: 'address',
+        },
+      ],
+      name: 'WrongTokenAddress',
+      type: 'error',
+    },
+    {
       inputs: [],
       name: 'ZeroAddress',
       type: 'error',
@@ -625,7 +754,7 @@ export const SERVICE_MANAGER = {
           type: 'address',
         },
       ],
-      name: 'GnosisSafeCreate',
+      name: 'MultisigCreate',
       type: 'event',
     },
     {
@@ -648,8 +777,79 @@ export const SERVICE_MANAGER = {
       type: 'event',
     },
     {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          internalType: 'address',
+          name: 'account',
+          type: 'address',
+        },
+      ],
+      name: 'Paused',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          internalType: 'uint256',
+          name: 'serviceId',
+          type: 'uint256',
+        },
+        {
+          indexed: false,
+          internalType: 'uint256',
+          name: 'amount',
+          type: 'uint256',
+        },
+      ],
+      name: 'RewardService',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          internalType: 'address',
+          name: 'treasury',
+          type: 'address',
+        },
+      ],
+      name: 'TreasuryUpdated',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          internalType: 'address',
+          name: 'account',
+          type: 'address',
+        },
+      ],
+      name: 'Unpaused',
+      type: 'event',
+    },
+    {
       stateMutability: 'payable',
       type: 'fallback',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: '_treasury',
+          type: 'address',
+        },
+      ],
+      name: 'changeTreasury',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
     },
     {
       inputs: [],
@@ -659,6 +859,26 @@ export const SERVICE_MANAGER = {
           internalType: 'address',
           name: '',
           type: 'address',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'pause',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'paused',
+      outputs: [
+        {
+          internalType: 'bool',
+          name: '',
+          type: 'bool',
         },
       ],
       stateMutability: 'view',
@@ -678,14 +898,15 @@ export const SERVICE_MANAGER = {
           name: 'serviceId',
           type: 'uint256',
         },
-        {
-          internalType: 'uint256',
-          name: 'deadline',
-          type: 'uint256',
-        },
       ],
       name: 'serviceActivateRegistration',
-      outputs: [],
+      outputs: [
+        {
+          internalType: 'bool',
+          name: 'success',
+          type: 'bool',
+        },
+      ],
       stateMutability: 'payable',
       type: 'function',
     },
@@ -776,7 +997,7 @@ export const SERVICE_MANAGER = {
         },
         {
           internalType: 'address',
-          name: 'to',
+          name: 'multisigImplementation',
           type: 'address',
         },
         {
@@ -784,33 +1005,8 @@ export const SERVICE_MANAGER = {
           name: 'data',
           type: 'bytes',
         },
-        {
-          internalType: 'address',
-          name: 'fallbackHandler',
-          type: 'address',
-        },
-        {
-          internalType: 'address',
-          name: 'paymentToken',
-          type: 'address',
-        },
-        {
-          internalType: 'uint256',
-          name: 'payment',
-          type: 'uint256',
-        },
-        {
-          internalType: 'address payable',
-          name: 'paymentReceiver',
-          type: 'address',
-        },
-        {
-          internalType: 'uint256',
-          name: 'nonce',
-          type: 'uint256',
-        },
       ],
-      name: 'serviceCreateSafe',
+      name: 'serviceDeploy',
       outputs: [
         {
           internalType: 'address',
@@ -830,7 +1026,13 @@ export const SERVICE_MANAGER = {
         },
       ],
       name: 'serviceDestroy',
-      outputs: [],
+      outputs: [
+        {
+          internalType: 'bool',
+          name: 'success',
+          type: 'bool',
+        },
+      ],
       stateMutability: 'nonpayable',
       type: 'function',
     },
@@ -842,18 +1044,24 @@ export const SERVICE_MANAGER = {
           type: 'uint256',
         },
         {
-          internalType: 'address',
-          name: 'agent',
-          type: 'address',
+          internalType: 'address[]',
+          name: 'agentInstances',
+          type: 'address[]',
         },
         {
-          internalType: 'uint256',
-          name: 'agentId',
-          type: 'uint256',
+          internalType: 'uint256[]',
+          name: 'agentIds',
+          type: 'uint256[]',
         },
       ],
-      name: 'serviceRegisterAgent',
-      outputs: [],
+      name: 'serviceRegisterAgents',
+      outputs: [
+        {
+          internalType: 'bool',
+          name: 'success',
+          type: 'bool',
+        },
+      ],
       stateMutability: 'payable',
       type: 'function',
     },
@@ -877,15 +1085,10 @@ export const SERVICE_MANAGER = {
           name: 'serviceId',
           type: 'uint256',
         },
-        {
-          internalType: 'uint256',
-          name: 'deadline',
-          type: 'uint256',
-        },
       ],
-      name: 'serviceSetRegistrationDeadline',
+      name: 'serviceReward',
       outputs: [],
-      stateMutability: 'nonpayable',
+      stateMutability: 'payable',
       type: 'function',
     },
     {
@@ -897,7 +1100,18 @@ export const SERVICE_MANAGER = {
         },
       ],
       name: 'serviceTerminate',
-      outputs: [],
+      outputs: [
+        {
+          internalType: 'bool',
+          name: 'success',
+          type: 'bool',
+        },
+        {
+          internalType: 'uint256',
+          name: 'refund',
+          type: 'uint256',
+        },
+      ],
       stateMutability: 'nonpayable',
       type: 'function',
     },
@@ -910,7 +1124,18 @@ export const SERVICE_MANAGER = {
         },
       ],
       name: 'serviceUnbond',
-      outputs: [],
+      outputs: [
+        {
+          internalType: 'bool',
+          name: 'success',
+          type: 'bool',
+        },
+        {
+          internalType: 'uint256',
+          name: 'refund',
+          type: 'uint256',
+        },
+      ],
       stateMutability: 'nonpayable',
       type: 'function',
     },
@@ -995,6 +1220,26 @@ export const SERVICE_MANAGER = {
         },
       ],
       name: 'transferOwnership',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'treasury',
+      outputs: [
+        {
+          internalType: 'address',
+          name: '',
+          type: 'address',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'unpause',
       outputs: [],
       stateMutability: 'nonpayable',
       type: 'function',
