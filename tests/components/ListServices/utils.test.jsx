@@ -19,7 +19,7 @@ describe('listServices/utils.jsx', () => {
         balanceOf: jest.fn(() => ({
           call: jest.fn(() => Promise.resolve(1)),
         })),
-        getServiceInfo: jest.fn(() => ({
+        getService: jest.fn(() => ({
           call: jest.fn(() => Promise.resolve(SERVICE_1)),
         })),
         getServiceState: jest.fn(() => ({
@@ -43,7 +43,7 @@ describe('listServices/utils.jsx', () => {
         exists: jest.fn(() => ({
           call: jest.fn(() => Promise.resolve({ status: 'fulfilled', value: true })),
         })),
-        getServiceInfo: jest.fn(() => ({
+        getService: jest.fn(() => ({
           call: jest.fn(() => Promise.resolve(SERVICE_1)),
         })),
         getServiceState: jest.fn(() => ({

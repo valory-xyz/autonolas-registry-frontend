@@ -33,7 +33,6 @@ const Details = ({
   id,
   type,
   getDetails,
-  getStatus,
   getHashes,
   handleUpdate,
   getOwner,
@@ -42,7 +41,6 @@ const Details = ({
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [info, setInfo] = useState({});
-  const [status, setStatus] = useState(null);
   const [hashes, setHashes] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [detailsOwner, setDetailsOwner] = useState(false);
@@ -71,11 +69,6 @@ const Details = ({
       setDetailsOwner(ownerAccount);
 
       await getUpdatedHashes();
-
-      if (getStatus) {
-        const statusInfo = await getStatus();
-        setStatus(statusInfo);
-      }
     } catch (e) {
       console.error(e);
     } finally {
@@ -203,6 +196,8 @@ const Details = ({
     );
   };
 
+  const status = get(info, 'state');
+
   return (
     <>
       <Header>
@@ -273,7 +268,6 @@ Details.propTypes = {
   id: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   getDetails: PropTypes.func.isRequired,
-  getStatus: PropTypes.func,
   getHashes: PropTypes.func,
   getOwner: PropTypes.func,
   handleUpdate: PropTypes.func,
@@ -284,7 +278,6 @@ Details.propTypes = {
 Details.defaultProps = {
   account: null,
   handleUpdate: null,
-  getStatus: null,
   getHashes: () => {},
   getOwner: () => {},
   onUpdateHash: () => {},

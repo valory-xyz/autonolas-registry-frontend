@@ -9,25 +9,10 @@ export const getServiceDetails = (id) => new Promise((resolve, reject) => {
 
   // TODO: check if service exists
   contract.methods
-    .getServiceInfo(id)
+    .getService(id)
     .call()
     .then((information) => {
       resolve(information);
-    })
-    .catch((e) => {
-      console.error(e);
-      reject(e);
-    });
-});
-
-export const getServiceStatus = (id) => new Promise((resolve, reject) => {
-  const contract = getServiceContract();
-
-  contract.methods
-    .getServiceState(id)
-    .call()
-    .then((response) => {
-      resolve(response);
     })
     .catch((e) => {
       console.error(e);
@@ -46,11 +31,7 @@ export const getServicesByAccount = (account) => new Promise((resolve, reject) =
         [...Array(length).keys()].map(async (_e, index) => {
           const id = `${index + 1}`;
           const info = await getServiceDetails(id);
-          const status = await getServiceStatus(id);
-
-          const result = info;
-          result.state = status; // appending a service state in result
-          return result;
+          return info;
         }),
       );
 
@@ -94,11 +75,7 @@ export const getServices = () => new Promise((resolve, reject) => {
         const results = await Promise.all(
           validTokenIds.map(async (id) => {
             const info = await getServiceDetails(id);
-            const status = await getServiceStatus(id);
-
-            const result = info;
-            result.state = status; // appending a service state in result
-            return result;
+            return info;
           }),
         );
 
