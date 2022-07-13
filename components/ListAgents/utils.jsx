@@ -6,7 +6,7 @@ export const getAgentDetails = (agentId) => new Promise((resolve, reject) => {
   const contract = getAgentContract();
 
   contract.methods
-    .getInfo(agentId)
+    .getUnit(agentId)
     .call()
     .then((information) => {
       resolve(information);
@@ -27,7 +27,7 @@ export const getAgentsByAccount = (account) => new Promise((resolve, reject) => 
       const promises = [];
       for (let i = 1; i <= length; i += 1) {
         const agentId = `${i}`;
-        const result = contract.methods.getInfo(agentId).call();
+        const result = contract.methods.getUnit(agentId).call();
         promises.push(result);
       }
 
@@ -54,7 +54,7 @@ export const getAgents = () => new Promise((resolve, reject) => {
       const allAgentsPromises = [];
       for (let i = 1; i <= total; i += 1) {
         const agentId = `${i}`;
-        const result = contract.methods.getInfo(agentId).call();
+        const result = contract.methods.getUnit(agentId).call();
         allAgentsPromises.push(result);
       }
 
