@@ -6,7 +6,7 @@ export const getComponentDetails = (id) => new Promise((resolve, reject) => {
   const contract = getComponentContract();
 
   contract.methods
-    .getInfo(id)
+    .getUnit(id)
     .call()
     .then((information) => {
       resolve(information);
@@ -26,7 +26,7 @@ export const getComponentsByAccount = (account) => new Promise((resolve, reject)
       const promises = [];
       for (let i = 1; i <= length; i += 1) {
         const componentId = `${i}`;
-        const result = contract.methods.getInfo(componentId).call();
+        const result = contract.methods.getUnit(componentId).call();
         promises.push(result);
       }
 
@@ -53,7 +53,7 @@ export const getComponents = () => new Promise((resolve, reject) => {
       const allComponentsPromises = [];
       for (let i = 1; i <= total; i += 1) {
         const componentId = `${i}`;
-        const result = contract.methods.getInfo(componentId).call();
+        const result = contract.methods.getUnit(componentId).call();
         allComponentsPromises.push(result);
       }
 

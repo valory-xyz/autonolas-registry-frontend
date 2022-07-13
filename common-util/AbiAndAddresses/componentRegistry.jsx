@@ -3,7 +3,7 @@ export const COMPONENT_REGISTRY_ADDRESS = '0x5FbDB2315678afecb367f032d93F642f641
 export const COMPONENT_REGISTRY = {
   _format: 'hh-sol-artifact-1',
   contractName: 'ComponentRegistry',
-  sourceName: 'contracts/registries/ComponentRegistry.sol',
+  sourceName: 'lib/autonolas-registries/contracts/ComponentRegistry.sol',
   abi: [
     {
       inputs: [
@@ -19,7 +19,7 @@ export const COMPONENT_REGISTRY = {
         },
         {
           internalType: 'string',
-          name: '_bURI',
+          name: '_baseURI',
           type: 'string',
         },
       ],
@@ -46,27 +46,6 @@ export const COMPONENT_REGISTRY = {
         },
       ],
       name: 'AgentInstancesSlotsFilled',
-      type: 'error',
-    },
-    {
-      inputs: [
-        {
-          internalType: 'uint256',
-          name: 'actual',
-          type: 'uint256',
-        },
-        {
-          internalType: 'uint256',
-          name: 'maxNumAgentInstances',
-          type: 'uint256',
-        },
-        {
-          internalType: 'uint256',
-          name: 'serviceId',
-          type: 'uint256',
-        },
-      ],
-      name: 'AgentInstancesSlotsNotFilled',
       type: 'error',
     },
     {
@@ -100,32 +79,11 @@ export const COMPONENT_REGISTRY = {
       inputs: [
         {
           internalType: 'uint256',
-          name: 'provided',
-          type: 'uint256',
-        },
-        {
-          internalType: 'uint256',
-          name: 'expected',
-          type: 'uint256',
-        },
-      ],
-      name: 'AmountLowerThan',
-      type: 'error',
-    },
-    {
-      inputs: [
-        {
-          internalType: 'uint256',
           name: 'componentId',
           type: 'uint256',
         },
       ],
       name: 'ComponentNotFound',
-      type: 'error',
-    },
-    {
-      inputs: [],
-      name: 'EmptyString',
       type: 'error',
     },
     {
@@ -178,80 +136,6 @@ export const COMPONENT_REGISTRY = {
     {
       inputs: [
         {
-          internalType: 'uint256',
-          name: 'provided',
-          type: 'uint256',
-        },
-        {
-          internalType: 'uint256',
-          name: 'expected',
-          type: 'uint256',
-        },
-      ],
-      name: 'InsufficientAllowance',
-      type: 'error',
-    },
-    {
-      inputs: [
-        {
-          internalType: 'address',
-          name: 'account',
-          type: 'address',
-        },
-        {
-          internalType: 'uint256',
-          name: 'deadline',
-          type: 'uint256',
-        },
-        {
-          internalType: 'uint256',
-          name: 'curTime',
-          type: 'uint256',
-        },
-      ],
-      name: 'LockExpired',
-      type: 'error',
-    },
-    {
-      inputs: [
-        {
-          internalType: 'address',
-          name: 'account',
-          type: 'address',
-        },
-        {
-          internalType: 'uint256',
-          name: 'deadline',
-          type: 'uint256',
-        },
-        {
-          internalType: 'uint256',
-          name: 'curTime',
-          type: 'uint256',
-        },
-      ],
-      name: 'LockNotExpired',
-      type: 'error',
-    },
-    {
-      inputs: [
-        {
-          internalType: 'address',
-          name: 'account',
-          type: 'address',
-        },
-        {
-          internalType: 'int128',
-          name: 'amount',
-          type: 'int128',
-        },
-      ],
-      name: 'LockedValueNotZero',
-      type: 'error',
-    },
-    {
-      inputs: [
-        {
           internalType: 'address',
           name: 'sender',
           type: 'address',
@@ -263,65 +147,6 @@ export const COMPONENT_REGISTRY = {
         },
       ],
       name: 'ManagerOnly',
-      type: 'error',
-    },
-    {
-      inputs: [
-        {
-          internalType: 'address',
-          name: 'account',
-          type: 'address',
-        },
-        {
-          internalType: 'uint256',
-          name: 'maxUnlockTime',
-          type: 'uint256',
-        },
-        {
-          internalType: 'uint256',
-          name: 'providedUnlockTime',
-          type: 'uint256',
-        },
-      ],
-      name: 'MaxUnlockTimeReached',
-      type: 'error',
-    },
-    {
-      inputs: [
-        {
-          internalType: 'uint256',
-          name: 'amount',
-          type: 'uint256',
-        },
-      ],
-      name: 'MintRejectedByInflationPolicy',
-      type: 'error',
-    },
-    {
-      inputs: [
-        {
-          internalType: 'address',
-          name: 'account',
-          type: 'address',
-        },
-      ],
-      name: 'NoValueLocked',
-      type: 'error',
-    },
-    {
-      inputs: [
-        {
-          internalType: 'address',
-          name: 'account',
-          type: 'address',
-        },
-      ],
-      name: 'NonTransferrable',
-      type: 'error',
-    },
-    {
-      inputs: [],
-      name: 'NonZeroValue',
       type: 'error',
     },
     {
@@ -381,74 +206,26 @@ export const COMPONENT_REGISTRY = {
       inputs: [
         {
           internalType: 'address',
-          name: 'tokenAddress',
+          name: 'sender',
           type: 'address',
         },
-        {
-          internalType: 'uint256',
-          name: 'productId',
-          type: 'uint256',
-        },
-        {
-          internalType: 'uint256',
-          name: 'deadline',
-          type: 'uint256',
-        },
-        {
-          internalType: 'uint256',
-          name: 'curTime',
-          type: 'uint256',
-        },
-      ],
-      name: 'ProductExpired',
-      type: 'error',
-    },
-    {
-      inputs: [
         {
           internalType: 'address',
-          name: 'tokenAddress',
+          name: 'owner',
           type: 'address',
         },
-        {
-          internalType: 'uint256',
-          name: 'productId',
-          type: 'uint256',
-        },
-        {
-          internalType: 'uint256',
-          name: 'requested',
-          type: 'uint256',
-        },
-        {
-          internalType: 'uint256',
-          name: 'actual',
-          type: 'uint256',
-        },
       ],
-      name: 'ProductSupplyLow',
+      name: 'OwnerOnly',
       type: 'error',
     },
     {
-      inputs: [
-        {
-          internalType: 'uint256',
-          name: 'serviceId',
-          type: 'uint256',
-        },
-      ],
-      name: 'ServiceDoesNotExist',
+      inputs: [],
+      name: 'Paused',
       type: 'error',
     },
     {
-      inputs: [
-        {
-          internalType: 'uint256',
-          name: 'serviceId',
-          type: 'uint256',
-        },
-      ],
-      name: 'ServiceMustBeActive',
+      inputs: [],
+      name: 'ReentrancyGuard',
       type: 'error',
     },
     {
@@ -460,38 +237,6 @@ export const COMPONENT_REGISTRY = {
         },
       ],
       name: 'ServiceMustBeInactive',
-      type: 'error',
-    },
-    {
-      inputs: [
-        {
-          internalType: 'uint256',
-          name: 'serviceId',
-          type: 'uint256',
-        },
-      ],
-      name: 'ServiceNotFound',
-      type: 'error',
-    },
-    {
-      inputs: [
-        {
-          internalType: 'uint256',
-          name: 'teminationBlock',
-          type: 'uint256',
-        },
-        {
-          internalType: 'uint256',
-          name: 'curBlock',
-          type: 'uint256',
-        },
-        {
-          internalType: 'uint256',
-          name: 'serviceId',
-          type: 'uint256',
-        },
-      ],
-      name: 'ServiceTerminated',
       type: 'error',
     },
     {
@@ -524,54 +269,11 @@ export const COMPONENT_REGISTRY = {
       inputs: [
         {
           internalType: 'address',
-          name: 'account',
-          type: 'address',
-        },
-      ],
-      name: 'UnauthorizedAccount',
-      type: 'error',
-    },
-    {
-      inputs: [
-        {
-          internalType: 'address',
           name: 'multisig',
           type: 'address',
         },
       ],
       name: 'UnauthorizedMultisig',
-      type: 'error',
-    },
-    {
-      inputs: [
-        {
-          internalType: 'address',
-          name: 'tokenAddress',
-          type: 'address',
-        },
-      ],
-      name: 'UnauthorizedToken',
-      type: 'error',
-    },
-    {
-      inputs: [
-        {
-          internalType: 'address',
-          name: 'account',
-          type: 'address',
-        },
-        {
-          internalType: 'uint256',
-          name: 'minUnlockTime',
-          type: 'uint256',
-        },
-        {
-          internalType: 'uint256',
-          name: 'providedUnlockTime',
-          type: 'uint256',
-        },
-      ],
-      name: 'UnlockTimeIncorrect',
       type: 'error',
     },
     {
@@ -583,22 +285,6 @@ export const COMPONENT_REGISTRY = {
         },
       ],
       name: 'WrongAgentId',
-      type: 'error',
-    },
-    {
-      inputs: [
-        {
-          internalType: 'uint256',
-          name: 'provided',
-          type: 'uint256',
-        },
-        {
-          internalType: 'uint256',
-          name: 'expected',
-          type: 'uint256',
-        },
-      ],
-      name: 'WrongAmount',
       type: 'error',
     },
     {
@@ -618,61 +304,8 @@ export const COMPONENT_REGISTRY = {
       type: 'error',
     },
     {
-      inputs: [
-        {
-          internalType: 'uint256',
-          name: 'providedBlockNumber',
-          type: 'uint256',
-        },
-        {
-          internalType: 'uint256',
-          name: 'actualBlockNumber',
-          type: 'uint256',
-        },
-      ],
-      name: 'WrongBlockNumber',
-      type: 'error',
-    },
-    {
-      inputs: [
-        {
-          internalType: 'uint256',
-          name: 'componentId',
-          type: 'uint256',
-        },
-      ],
-      name: 'WrongComponentId',
-      type: 'error',
-    },
-    {
       inputs: [],
       name: 'WrongFunction',
-      type: 'error',
-    },
-    {
-      inputs: [
-        {
-          internalType: 'uint8',
-          name: 'hashFunctionProvided',
-          type: 'uint8',
-        },
-        {
-          internalType: 'uint8',
-          name: 'hashFunctionNeeded',
-          type: 'uint8',
-        },
-        {
-          internalType: 'uint8',
-          name: 'sizeProvided',
-          type: 'uint8',
-        },
-        {
-          internalType: 'uint8',
-          name: 'sizeNeeded',
-          type: 'uint8',
-        },
-      ],
-      name: 'WrongHash',
       type: 'error',
     },
     {
@@ -724,22 +357,6 @@ export const COMPONENT_REGISTRY = {
       type: 'error',
     },
     {
-      inputs: [
-        {
-          internalType: 'address',
-          name: 'provided',
-          type: 'address',
-        },
-        {
-          internalType: 'address',
-          name: 'expected',
-          type: 'address',
-        },
-      ],
-      name: 'WrongTokenAddress',
-      type: 'error',
-    },
-    {
       inputs: [],
       name: 'ZeroAddress',
       type: 'error',
@@ -761,13 +378,13 @@ export const COMPONENT_REGISTRY = {
         {
           indexed: true,
           internalType: 'address',
-          name: 'approved',
+          name: 'spender',
           type: 'address',
         },
         {
           indexed: true,
           internalType: 'uint256',
-          name: 'tokenId',
+          name: 'id',
           type: 'uint256',
         },
       ],
@@ -803,19 +420,64 @@ export const COMPONENT_REGISTRY = {
       anonymous: false,
       inputs: [
         {
-          indexed: true,
-          internalType: 'address',
-          name: 'previousOwner',
-          type: 'address',
+          indexed: false,
+          internalType: 'string',
+          name: 'baseURI',
+          type: 'string',
         },
+      ],
+      name: 'BaseURIChanged',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          internalType: 'uint256',
+          name: 'unitId',
+          type: 'uint256',
+        },
+        {
+          indexed: false,
+          internalType: 'enum UnitRegistry.UnitType',
+          name: 'uType',
+          type: 'uint8',
+        },
+        {
+          indexed: false,
+          internalType: 'bytes32',
+          name: 'unitHash',
+          type: 'bytes32',
+        },
+      ],
+      name: 'CreateUnit',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
         {
           indexed: true,
           internalType: 'address',
-          name: 'newOwner',
+          name: 'manager',
           type: 'address',
         },
       ],
-      name: 'OwnershipTransferred',
+      name: 'ManagerUpdated',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
+          internalType: 'address',
+          name: 'owner',
+          type: 'address',
+        },
+      ],
+      name: 'OwnerUpdated',
       type: 'event',
     },
     {
@@ -836,7 +498,7 @@ export const COMPONENT_REGISTRY = {
         {
           indexed: true,
           internalType: 'uint256',
-          name: 'tokenId',
+          name: 'id',
           type: 'uint256',
         },
       ],
@@ -844,28 +506,40 @@ export const COMPONENT_REGISTRY = {
       type: 'event',
     },
     {
-      inputs: [],
-      name: '_BASEURI',
-      outputs: [
+      anonymous: false,
+      inputs: [
         {
-          internalType: 'string',
-          name: '',
-          type: 'string',
+          indexed: false,
+          internalType: 'uint256',
+          name: 'unitId',
+          type: 'uint256',
+        },
+        {
+          indexed: false,
+          internalType: 'enum UnitRegistry.UnitType',
+          name: 'uType',
+          type: 'uint8',
+        },
+        {
+          indexed: false,
+          internalType: 'bytes32',
+          name: 'unitHash',
+          type: 'bytes32',
         },
       ],
-      stateMutability: 'view',
-      type: 'function',
+      name: 'UpdateUnitHash',
+      type: 'event',
     },
     {
       inputs: [
         {
           internalType: 'address',
-          name: 'to',
+          name: 'spender',
           type: 'address',
         },
         {
           internalType: 'uint256',
-          name: 'tokenId',
+          name: 'id',
           type: 'uint256',
         },
       ],
@@ -894,6 +568,19 @@ export const COMPONENT_REGISTRY = {
       type: 'function',
     },
     {
+      inputs: [],
+      name: 'baseURI',
+      outputs: [
+        {
+          internalType: 'string',
+          name: '',
+          type: 'string',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
       inputs: [
         {
           internalType: 'address',
@@ -910,52 +597,43 @@ export const COMPONENT_REGISTRY = {
       inputs: [
         {
           internalType: 'address',
-          name: 'owner',
+          name: 'newOwner',
           type: 'address',
         },
+      ],
+      name: 'changeOwner',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [
         {
           internalType: 'address',
-          name: 'developer',
+          name: 'unitOwner',
           type: 'address',
         },
         {
-          components: [
-            {
-              internalType: 'bytes32',
-              name: 'hash',
-              type: 'bytes32',
-            },
-            {
-              internalType: 'uint8',
-              name: 'hashFunction',
-              type: 'uint8',
-            },
-            {
-              internalType: 'uint8',
-              name: 'size',
-              type: 'uint8',
-            },
-          ],
-          internalType: 'struct IStructs.Multihash',
-          name: 'componentHash',
-          type: 'tuple',
-        },
-        {
-          internalType: 'string',
+          internalType: 'bytes32',
           name: 'description',
-          type: 'string',
+          type: 'bytes32',
         },
         {
-          internalType: 'uint256[]',
+          internalType: 'bytes32',
+          name: 'unitHash',
+          type: 'bytes32',
+        },
+        {
+          internalType: 'uint32[]',
           name: 'dependencies',
-          type: 'uint256[]',
+          type: 'uint32[]',
         },
       ],
       name: 'create',
       outputs: [
         {
           internalType: 'uint256',
-          name: '',
+          name: 'unitId',
           type: 'uint256',
         },
       ],
@@ -966,7 +644,7 @@ export const COMPONENT_REGISTRY = {
       inputs: [
         {
           internalType: 'uint256',
-          name: 'tokenId',
+          name: 'unitId',
           type: 'uint256',
         },
       ],
@@ -985,7 +663,7 @@ export const COMPONENT_REGISTRY = {
       inputs: [
         {
           internalType: 'uint256',
-          name: 'tokenId',
+          name: '',
           type: 'uint256',
         },
       ],
@@ -1001,23 +679,10 @@ export const COMPONENT_REGISTRY = {
       type: 'function',
     },
     {
-      inputs: [],
-      name: 'getBaseURI',
-      outputs: [
-        {
-          internalType: 'string',
-          name: '',
-          type: 'string',
-        },
-      ],
-      stateMutability: 'view',
-      type: 'function',
-    },
-    {
       inputs: [
         {
           internalType: 'uint256',
-          name: 'tokenId',
+          name: 'unitId',
           type: 'uint256',
         },
       ],
@@ -1029,9 +694,9 @@ export const COMPONENT_REGISTRY = {
           type: 'uint256',
         },
         {
-          internalType: 'uint256[]',
+          internalType: 'uint32[]',
           name: 'dependencies',
-          type: 'uint256[]',
+          type: 'uint32[]',
         },
       ],
       stateMutability: 'view',
@@ -1041,11 +706,71 @@ export const COMPONENT_REGISTRY = {
       inputs: [
         {
           internalType: 'uint256',
-          name: 'tokenId',
+          name: 'unitId',
           type: 'uint256',
         },
       ],
-      name: 'getHashes',
+      name: 'getLocalSubComponents',
+      outputs: [
+        {
+          internalType: 'uint32[]',
+          name: 'subComponentIds',
+          type: 'uint32[]',
+        },
+        {
+          internalType: 'uint256',
+          name: 'numSubComponents',
+          type: 'uint256',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'uint256',
+          name: 'unitId',
+          type: 'uint256',
+        },
+      ],
+      name: 'getUnit',
+      outputs: [
+        {
+          components: [
+            {
+              internalType: 'bytes32',
+              name: 'description',
+              type: 'bytes32',
+            },
+            {
+              internalType: 'bytes32',
+              name: 'unitHash',
+              type: 'bytes32',
+            },
+            {
+              internalType: 'uint32[]',
+              name: 'dependencies',
+              type: 'uint32[]',
+            },
+          ],
+          internalType: 'struct UnitRegistry.Unit',
+          name: 'unit',
+          type: 'tuple',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'uint256',
+          name: 'unitId',
+          type: 'uint256',
+        },
+      ],
+      name: 'getUpdatedHashes',
       outputs: [
         {
           internalType: 'uint256',
@@ -1053,87 +778,9 @@ export const COMPONENT_REGISTRY = {
           type: 'uint256',
         },
         {
-          components: [
-            {
-              internalType: 'bytes32',
-              name: 'hash',
-              type: 'bytes32',
-            },
-            {
-              internalType: 'uint8',
-              name: 'hashFunction',
-              type: 'uint8',
-            },
-            {
-              internalType: 'uint8',
-              name: 'size',
-              type: 'uint8',
-            },
-          ],
-          internalType: 'struct IStructs.Multihash[]',
-          name: 'componentHashes',
-          type: 'tuple[]',
-        },
-      ],
-      stateMutability: 'view',
-      type: 'function',
-    },
-    {
-      inputs: [
-        {
-          internalType: 'uint256',
-          name: 'tokenId',
-          type: 'uint256',
-        },
-      ],
-      name: 'getInfo',
-      outputs: [
-        {
-          internalType: 'address',
-          name: 'owner',
-          type: 'address',
-        },
-        {
-          internalType: 'address',
-          name: 'developer',
-          type: 'address',
-        },
-        {
-          components: [
-            {
-              internalType: 'bytes32',
-              name: 'hash',
-              type: 'bytes32',
-            },
-            {
-              internalType: 'uint8',
-              name: 'hashFunction',
-              type: 'uint8',
-            },
-            {
-              internalType: 'uint8',
-              name: 'size',
-              type: 'uint8',
-            },
-          ],
-          internalType: 'struct IStructs.Multihash',
-          name: 'componentHash',
-          type: 'tuple',
-        },
-        {
-          internalType: 'string',
-          name: 'description',
-          type: 'string',
-        },
-        {
-          internalType: 'uint256',
-          name: 'numDependencies',
-          type: 'uint256',
-        },
-        {
-          internalType: 'uint256[]',
-          name: 'dependencies',
-          type: 'uint256[]',
+          internalType: 'bytes32[]',
+          name: 'unitHashes',
+          type: 'bytes32[]',
         },
       ],
       stateMutability: 'view',
@@ -1143,12 +790,12 @@ export const COMPONENT_REGISTRY = {
       inputs: [
         {
           internalType: 'address',
-          name: 'owner',
+          name: '',
           type: 'address',
         },
         {
           internalType: 'address',
-          name: 'operator',
+          name: '',
           type: 'address',
         },
       ],
@@ -1158,6 +805,110 @@ export const COMPONENT_REGISTRY = {
           internalType: 'bool',
           name: '',
           type: 'bool',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'manager',
+      outputs: [
+        {
+          internalType: 'address',
+          name: '',
+          type: 'address',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'bytes32',
+          name: '',
+          type: 'bytes32',
+        },
+      ],
+      name: 'mapHashUnitId',
+      outputs: [
+        {
+          internalType: 'uint32',
+          name: '',
+          type: 'uint32',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256',
+        },
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      name: 'mapSubComponents',
+      outputs: [
+        {
+          internalType: 'uint32',
+          name: '',
+          type: 'uint32',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256',
+        },
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      name: 'mapUnitIdHashes',
+      outputs: [
+        {
+          internalType: 'bytes32',
+          name: '',
+          type: 'bytes32',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      name: 'mapUnits',
+      outputs: [
+        {
+          internalType: 'bytes32',
+          name: 'description',
+          type: 'bytes32',
+        },
+        {
+          internalType: 'bytes32',
+          name: 'unitHash',
+          type: 'bytes32',
         },
       ],
       stateMutability: 'view',
@@ -1193,7 +944,7 @@ export const COMPONENT_REGISTRY = {
       inputs: [
         {
           internalType: 'uint256',
-          name: 'tokenId',
+          name: 'id',
           type: 'uint256',
         },
       ],
@@ -1201,18 +952,11 @@ export const COMPONENT_REGISTRY = {
       outputs: [
         {
           internalType: 'address',
-          name: '',
+          name: 'owner',
           type: 'address',
         },
       ],
       stateMutability: 'view',
-      type: 'function',
-    },
-    {
-      inputs: [],
-      name: 'renounceOwnership',
-      outputs: [],
-      stateMutability: 'nonpayable',
       type: 'function',
     },
     {
@@ -1229,7 +973,7 @@ export const COMPONENT_REGISTRY = {
         },
         {
           internalType: 'uint256',
-          name: 'tokenId',
+          name: 'id',
           type: 'uint256',
         },
       ],
@@ -1252,12 +996,12 @@ export const COMPONENT_REGISTRY = {
         },
         {
           internalType: 'uint256',
-          name: 'tokenId',
+          name: 'id',
           type: 'uint256',
         },
         {
           internalType: 'bytes',
-          name: '_data',
+          name: 'data',
           type: 'bytes',
         },
       ],
@@ -1333,7 +1077,7 @@ export const COMPONENT_REGISTRY = {
       inputs: [
         {
           internalType: 'uint256',
-          name: 'index',
+          name: 'id',
           type: 'uint256',
         },
       ],
@@ -1341,31 +1085,7 @@ export const COMPONENT_REGISTRY = {
       outputs: [
         {
           internalType: 'uint256',
-          name: '',
-          type: 'uint256',
-        },
-      ],
-      stateMutability: 'view',
-      type: 'function',
-    },
-    {
-      inputs: [
-        {
-          internalType: 'address',
-          name: 'owner',
-          type: 'address',
-        },
-        {
-          internalType: 'uint256',
-          name: 'index',
-          type: 'uint256',
-        },
-      ],
-      name: 'tokenOfOwnerByIndex',
-      outputs: [
-        {
-          internalType: 'uint256',
-          name: '',
+          name: 'unitId',
           type: 'uint256',
         },
       ],
@@ -1376,7 +1096,7 @@ export const COMPONENT_REGISTRY = {
       inputs: [
         {
           internalType: 'uint256',
-          name: 'tokenId',
+          name: 'unitId',
           type: 'uint256',
         },
       ],
@@ -1418,7 +1138,7 @@ export const COMPONENT_REGISTRY = {
         },
         {
           internalType: 'uint256',
-          name: 'tokenId',
+          name: 'id',
           type: 'uint256',
         },
       ],
@@ -1428,51 +1148,34 @@ export const COMPONENT_REGISTRY = {
       type: 'function',
     },
     {
-      inputs: [
+      inputs: [],
+      name: 'unitType',
+      outputs: [
         {
-          internalType: 'address',
-          name: 'newOwner',
-          type: 'address',
+          internalType: 'enum UnitRegistry.UnitType',
+          name: '',
+          type: 'uint8',
         },
       ],
-      name: 'transferOwnership',
-      outputs: [],
-      stateMutability: 'nonpayable',
+      stateMutability: 'view',
       type: 'function',
     },
     {
       inputs: [
         {
           internalType: 'address',
-          name: 'owner',
+          name: 'unitOwner',
           type: 'address',
         },
         {
           internalType: 'uint256',
-          name: 'tokenId',
+          name: 'unitId',
           type: 'uint256',
         },
         {
-          components: [
-            {
-              internalType: 'bytes32',
-              name: 'hash',
-              type: 'bytes32',
-            },
-            {
-              internalType: 'uint8',
-              name: 'hashFunction',
-              type: 'uint8',
-            },
-            {
-              internalType: 'uint8',
-              name: 'size',
-              type: 'uint8',
-            },
-          ],
-          internalType: 'struct IStructs.Multihash',
-          name: 'componentHash',
-          type: 'tuple',
+          internalType: 'bytes32',
+          name: 'unitHash',
+          type: 'bytes32',
         },
       ],
       name: 'updateHash',
