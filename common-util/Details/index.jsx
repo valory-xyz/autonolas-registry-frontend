@@ -6,7 +6,12 @@ import capitalize from 'lodash/capitalize';
 import {
   Row, Col, Button, Alert,
 } from 'antd';
-import { NAV_TYPES, SERVICE_STATE, SERVICE_STATE_INFO } from 'util/constants';
+import {
+  NAV_TYPES,
+  SERVICE_STATE,
+  SERVICE_STATE_INFO,
+  NA,
+} from 'util/constants';
 import Loader from 'common-util/components/Loader';
 import { RegisterMessage, getIpfsHashFromBytes32 } from '../List/ListCommon';
 import IpfsHashGenerationModal from '../List/IpfsHashGenerationModal';
@@ -20,7 +25,6 @@ import {
   EachSection,
 } from './styles';
 
-const NA = 'NA';
 const gt = {
   xs: 8,
   sm: 16,
@@ -43,8 +47,8 @@ const Details = ({
   const [info, setInfo] = useState({});
   const [hashes, setHashes] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [detailsOwner, setDetailsOwner] = useState(false);
-  const ownerOfCurrentDetails = get(info, 'owner', null);
+  const [detailsOwner, setDetailsOwner] = useState('');
+  const status = get(info, 'state');
 
   const getUpdatedHashes = async () => {
     try {
@@ -103,11 +107,10 @@ const Details = ({
   const generateDetails = () => {
     const getComponentAndAgentValues = () => {
       const dependencies = get(info, 'dependencies') || [];
-      const isAgent = type === NAV_TYPES.AGENT;
-      const hash = get(hashes, `${isAgent ? 'agent' : 'component'}Hashes`) || [];
+      const hash = get(hashes, 'unitHashes') || [];
 
       return [
-        { title: 'Owner Address', value: ownerOfCurrentDetails || NA },
+        { title: 'Owner Address', value: detailsOwner || NA },
         {
           title: 'Developer Address',
           value: get(info, 'developer', null) || NA,
@@ -117,11 +120,17 @@ const Details = ({
           dataTestId: 'hashes-list',
           value: (
             <>
-              {hash.map((e, index) => (
-                <li key={`${type}-hashes-${index}`}>
-                  {getIpfsHashFromBytes32(e.hash)}
-                </li>
-              ))}
+              {hash.length === 0 ? (
+                NA
+              ) : (
+                <>
+                  {hash.map((e, index) => (
+                    <li key={`${type}-hashes-${index}`}>
+                      {getIpfsHashFromBytes32(e)}
+                    </li>
+                  ))}
+                </>
+              )}
             </>
           ),
         },
@@ -149,7 +158,7 @@ const Details = ({
 
       return [
         { title: 'Name', value: get(info, 'name', null) || NA },
-        { title: 'Owner Address', value: ownerOfCurrentDetails || NA },
+        { title: 'Owner Address', value: detailsOwner || NA },
         {
           title: 'Developer Address',
           value: get(info, 'developer', null) || NA,
@@ -196,36 +205,33 @@ const Details = ({
     );
   };
 
-  const status = get(info, 'state');
-
   return (
     <>
       <Header>
         <DetailsTitle level={2}>{`${capitalize(type)} ID ${id}`}</DetailsTitle>
         <div className="right-content">
-          {/* Update button to be show only if the
-          connected account is the owner */}
-          {account === ownerOfCurrentDetails && (
-            <Button
-              disabled={!handleUpdate}
-              type="primary"
-              ghost
-              onClick={onUpdate}
-            >
-              Update
-            </Button>
-          )}
+          {/* Update button to be show only if the connected account is the owner */}
+          {account.toLowerCase() === detailsOwner.toLowerCase() && (
+            <>
+              <Button
+                disabled={!handleUpdate}
+                type="primary"
+                ghost
+                onClick={onUpdate}
+              >
+                Update
+              </Button>
 
-          {/* This button will be shown only if the agent belongs
-          to the owner and has `onUpdateHash` function */}
-          {onUpdateHash && detailsOwner === ownerOfCurrentDetails && (
-            <Button
-              type="primary"
-              ghost
-              onClick={() => setIsModalVisible(true)}
-            >
-              Update Hash
-            </Button>
+              {onUpdateHash && (
+                <Button
+                  type="primary"
+                  ghost
+                  onClick={() => setIsModalVisible(true)}
+                >
+                  Update Hash
+                </Button>
+              )}
+            </>
           )}
         </div>
       </Header>

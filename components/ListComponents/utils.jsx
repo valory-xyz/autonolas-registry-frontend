@@ -1,5 +1,8 @@
 import { notification } from 'antd';
-import { getMechMinterContract, getComponentContract } from 'common-util/Contracts';
+import {
+  getMechMinterContract,
+  getComponentContract,
+} from 'common-util/Contracts';
 import { getBytes32FromIpfsHash } from 'common-util/List/ListCommon';
 
 export const getComponentDetails = (id) => new Promise((resolve, reject) => {
@@ -71,7 +74,7 @@ export const getComponentHashes = (id) => new Promise((resolve, reject) => {
   const contract = getComponentContract();
 
   contract.methods
-    .getHashes(id)
+    .getUpdatedHashes(id)
     .call()
     .then((response) => {
       resolve(response);
@@ -85,14 +88,9 @@ export const getComponentHashes = (id) => new Promise((resolve, reject) => {
 export const updateComponentHashes = (account, id, newHash) => {
   const contract = getMechMinterContract();
 
-  const hashObject = {
-    hash: getBytes32FromIpfsHash(newHash),
-    hashFunction: '0x12',
-    size: '0x20',
-  };
-
+  // 0 to indicate `components`
   contract.methods
-    .updateComponentHash(id, hashObject)
+    .updateHash('0', id, getBytes32FromIpfsHash(newHash))
     .send({ from: account })
     .then(() => {
       notification.success({ message: 'Hash Updated' });
@@ -103,11 +101,11 @@ export const updateComponentHashes = (account, id, newHash) => {
     });
 };
 
-export const getComponentOwner = (agentId) => new Promise((resolve, reject) => {
+export const getComponentOwner = (id) => new Promise((resolve, reject) => {
   const contract = getComponentContract();
 
   contract.methods
-    .ownerOf(agentId)
+    .ownerOf(id)
     .call()
     .then((response) => {
       resolve(response);
