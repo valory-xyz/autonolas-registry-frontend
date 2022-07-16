@@ -4,10 +4,11 @@ import { connect } from 'react-redux';
 import get from 'lodash/get';
 import capitalize from 'lodash/capitalize';
 import {
-  Row, Col, Button, Alert,
+  Row, Col, Button, Alert, Steps, Space, Divider, Table, Radio,
 } from 'antd';
 import { NAV_TYPES, SERVICE_STATE, SERVICE_STATE_INFO } from 'util/constants';
 import Loader from 'common-util/components/Loader';
+import Text from 'antd/lib/typography/Text';
 import { RegisterMessage, getIpfsHashFromBytes32 } from '../List/ListCommon';
 import IpfsHashGenerationModal from '../List/IpfsHashGenerationModal';
 import { getTable } from './helpers';
@@ -20,6 +21,8 @@ import {
   EachSection,
 } from './styles';
 
+const { Step } = Steps;
+
 const NA = 'NA';
 const gt = {
   xs: 8,
@@ -27,6 +30,121 @@ const gt = {
   md: 24,
   lg: 32,
 };
+
+const PreRegistrationContent = (
+  <Space>
+    <Button>Update</Button>
+    <Button>Activate Registration</Button>
+  </Space>
+);
+
+const getActiveRegistrationContent = () => {
+  const dataSource = [
+    {
+      key: '1',
+      agentId: '1',
+      availableSlots: 3,
+      totalSlots: 10,
+      agentAddresses: 'n/a',
+    },
+    {
+      key: '2',
+      agentId: '4',
+      availableSlots: 0,
+      totalSlots: 10,
+      agentAddresses: 'n/a',
+    },
+  ];
+
+  const columns = [
+    {
+      title: 'Agent ID',
+      dataIndex: 'agentId',
+      key: 'agentId',
+    },
+    {
+      title: 'Available Slots',
+      dataIndex: 'availableSlots',
+      key: 'availableSlots',
+    },
+    {
+      title: 'Total Slots',
+      dataIndex: 'totalSlots',
+      key: 'totalSlots',
+    },
+    {
+      title: 'Agent Addresses',
+      dataIndex: 'agentAddresses',
+      key: 'agentAddresses',
+    },
+  ];
+
+  return (
+    <Space direction="vertical">
+      <Table dataSource={dataSource} columns={columns} pagination={false} />
+      <Button>Register Agents</Button>
+      <Divider />
+      <Button>Terminate</Button>
+    </Space>
+  );
+};
+
+const getFinishedRegistrationContent = () => {
+  const multisigAddresses = [
+    '0x7651239879182341321', '0x7651239879182341322', '0x7651239879182341323',
+  ];
+
+  return (
+    <>
+      <Space direction="vertical" size={1}>
+        <Text>Choose multi-sig implementation:</Text>
+        <Radio.Group>
+          <Space direction="vertical">
+            {
+              multisigAddresses.map(
+                (multisigAddress) => <Radio value={multisigAddress}>{multisigAddress}</Radio>,
+              )
+            }
+          </Space>
+        </Radio.Group>
+        <Button>Deploy</Button>
+        <Divider />
+        <Button>Terminate</Button>
+      </Space>
+    </>
+  );
+};
+
+const DeployedContent = (
+  <Button>Terminate</Button>
+);
+
+const TerminatedBondedContent = (
+  <Button>Unbond</Button>
+);
+
+const SERVICE_STATES = [
+  {
+    title: 'Pre-Registration',
+    content: PreRegistrationContent,
+  },
+  {
+    title: 'Active Registration',
+    content: getActiveRegistrationContent(),
+  },
+  {
+    title: 'Finished Registration',
+    content: getFinishedRegistrationContent(),
+  },
+  {
+    title: 'Deployed',
+    content: DeployedContent,
+  },
+  {
+    title: 'Terminated Bonded',
+    content: TerminatedBondedContent,
+  },
+];
 
 const Details = ({
   account,
@@ -236,7 +354,7 @@ const Details = ({
           <InfoSubHeader>Description</InfoSubHeader>
           <div>{get(info, 'description', null) || NA}</div>
 
-          {status && (
+          {/* {status && (
             <>
               <br />
               <InfoSubHeader>Status</InfoSubHeader>
@@ -247,7 +365,21 @@ const Details = ({
                 showIcon
               />
             </>
-          )}
+          )} */}
+
+          <Divider />
+
+          <InfoSubHeader>State</InfoSubHeader>
+          <Steps direction="vertical">
+            {
+              SERVICE_STATES.map(
+                (state) => (
+                  <Step title={state.title} description={state.content} />
+                ),
+              )
+            }
+          </Steps>
+
         </Col>
         <Col className="gutter-row" span={12}>
           {generateDetails()}

@@ -37,7 +37,6 @@ export const Info = styled.div`
 
 export const EachSection = styled.div`
   padding: 1rem 2rem;
-  background: ${COLOR.TABLE_BLACK};
   border: 1px solid ${COLOR.BORDER_GREY};
   border-bottom-color: transparent;
 `;
