@@ -27,7 +27,7 @@ const Service = ({ account }) => {
 
       const contract = getServiceContract();
       contract.methods
-        .getServiceInfo(id)
+        .getService(id)
         .call()
         .then((result) => {
           setAllLoading(false);

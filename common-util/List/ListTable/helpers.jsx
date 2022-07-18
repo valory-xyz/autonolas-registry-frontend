@@ -72,13 +72,6 @@ export const getTableColumns = (
         render: (text) => <EllipsisMiddle>{text}</EllipsisMiddle>,
       },
       {
-        title: 'Developer',
-        dataIndex: 'developer',
-        key: 'developer',
-        width: 200,
-        render: (text) => <EllipsisMiddle>{text}</EllipsisMiddle>,
-      },
-      {
         title: 'Owner',
         dataIndex: 'owner',
         key: 'owner',
@@ -90,7 +83,7 @@ export const getTableColumns = (
         dataIndex: 'hash',
         key: 'hash',
         width: 200,
-        render: (text) => <EllipsisMiddle>{text.hash}</EllipsisMiddle>,
+        render: (text) => <EllipsisMiddle>{text}</EllipsisMiddle>,
       },
       {
         title: 'No. of component dependencies',
@@ -124,20 +117,6 @@ export const getTableColumns = (
         fixed: 'left',
       },
       {
-        title: 'Name',
-        dataIndex: 'name',
-        key: 'name',
-        width: 160,
-        render: (text) => <EllipsisMiddle>{text}</EllipsisMiddle>,
-      },
-      {
-        title: 'Developer',
-        dataIndex: 'developer',
-        key: 'developer',
-        width: 200,
-        render: (text) => <EllipsisMiddle>{text}</EllipsisMiddle>,
-      },
-      {
         title: 'Owner',
         dataIndex: 'owner',
         key: 'owner',
@@ -148,7 +127,7 @@ export const getTableColumns = (
         title: 'State',
         dataIndex: 'state',
         key: 'state',
-        width: 100,
+        width: 150,
         render: (e) => <>{SERVICE_STATE[e]}</>,
       },
       {
@@ -192,7 +171,7 @@ export const getData = (type, rawData, { filterValue }) => {
       description: item.description || '-',
       developer: item.developer || '-',
       owner: item.owner || '-',
-      hash: item.componentHash || '-',
+      hash: item.unitHash || '-',
       dependency: item.dependencies.length,
     }));
   }
@@ -203,7 +182,7 @@ export const getData = (type, rawData, { filterValue }) => {
       description: item.description || '-',
       developer: item.developer || '-',
       owner: item.owner || '-',
-      hash: item.agentHash || '-',
+      hash: item.unitHash || '-',
       dependency: item.dependencies.length,
     }));
   }
@@ -211,7 +190,6 @@ export const getData = (type, rawData, { filterValue }) => {
   if (type === NAV_TYPES.SERVICE) {
     data = rawData.map((item, index) => ({
       id: `${index + 1}`,
-      name: item.name || '-',
       developer: item.developer || '-',
       owner: item.owner || '-',
       active: `${item.active}`,

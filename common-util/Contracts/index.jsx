@@ -13,7 +13,6 @@ import {
 } from 'common-util/AbiAndAddresses';
 
 export const getMechMinterContract = () => {
-  window.ethereum.enable();
   const web3 = new Web3(window.web3.currentProvider);
   const contract = new web3.eth.Contract(
     REGISTRIES_MANAGER_CONTRACT.abi,
@@ -23,7 +22,6 @@ export const getMechMinterContract = () => {
 };
 
 export const getAgentContract = () => {
-  window.ethereum.enable();
   const web3 = new Web3(window.web3.currentProvider);
   const contract = new web3.eth.Contract(
     AGENT_REGISTRY.abi,
@@ -33,7 +31,6 @@ export const getAgentContract = () => {
 };
 
 export const getComponentContract = () => {
-  window.ethereum.enable();
   const web3 = new Web3(window.web3.currentProvider);
   const contract = new web3.eth.Contract(
     COMPONENT_REGISTRY.abi,
@@ -43,7 +40,6 @@ export const getComponentContract = () => {
 };
 
 export const getServiceContract = () => {
-  window.ethereum.enable();
   const web3 = new Web3(window.web3.currentProvider);
   const contract = new web3.eth.Contract(
     SERVICE_REGISTRY.abi,
@@ -53,7 +49,6 @@ export const getServiceContract = () => {
 };
 
 export const getServiceManagerContract = () => {
-  window.ethereum.enable();
   const web3 = new Web3(window.web3.currentProvider);
   const contract = new web3.eth.Contract(
     SERVICE_MANAGER.abi,

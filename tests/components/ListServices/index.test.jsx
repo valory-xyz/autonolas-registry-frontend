@@ -30,7 +30,7 @@ const SERVICE_1 = { name: 'Service One' };
 
 getServiceContract.mockImplementation(() => ({
   methods: {
-    getServiceInfo: jest.fn(() => ({
+    getService: jest.fn(() => ({
       call: jest.fn(() => Promise.resolve(SERVICE_1)),
     })),
   },

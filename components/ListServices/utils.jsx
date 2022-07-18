@@ -4,15 +4,15 @@ import {
   convertStringToArray,
 } from 'common-util/List/ListCommon';
 
-export const getServiceDetails = (id) => new Promise((resolve, reject) => {
+// --------- HELPER METHODS ---------
+export const getServiceOwner = (id) => new Promise((resolve, reject) => {
   const contract = getServiceContract();
 
-  // TODO: check if service exists
   contract.methods
-    .getServiceInfo(id)
+    .ownerOf(id)
     .call()
-    .then((information) => {
-      resolve(information);
+    .then((response) => {
+      resolve(response);
     })
     .catch((e) => {
       console.error(e);
@@ -20,14 +20,16 @@ export const getServiceDetails = (id) => new Promise((resolve, reject) => {
     });
 });
 
-export const getServiceStatus = (id) => new Promise((resolve, reject) => {
+// --------- utils ---------
+export const getServiceDetails = (id) => new Promise((resolve, reject) => {
   const contract = getServiceContract();
 
+  // TODO: check if service exists
   contract.methods
-    .getServiceState(id)
+    .getService(id)
     .call()
-    .then((response) => {
-      resolve(response);
+    .then((information) => {
+      resolve(information);
     })
     .catch((e) => {
       console.error(e);
@@ -46,11 +48,8 @@ export const getServicesByAccount = (account) => new Promise((resolve, reject) =
         [...Array(length).keys()].map(async (_e, index) => {
           const id = `${index + 1}`;
           const info = await getServiceDetails(id);
-          const status = await getServiceStatus(id);
-
-          const result = info;
-          result.state = status; // appending a service state in result
-          return result;
+          const owner = await getServiceOwner(id);
+          return { ...info, owner };
         }),
       );
 
@@ -94,11 +93,8 @@ export const getServices = () => new Promise((resolve, reject) => {
         const results = await Promise.all(
           validTokenIds.map(async (id) => {
             const info = await getServiceDetails(id);
-            const status = await getServiceStatus(id);
-
-            const result = info;
-            result.state = status; // appending a service state in result
-            return result;
+            const owner = await getServiceOwner(id);
+            return { ...info, owner };
           }),
         );
 
