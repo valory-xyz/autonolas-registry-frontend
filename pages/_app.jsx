@@ -30,6 +30,7 @@ class MyApp extends App {
 
     return (
       <>
+        <GlobalStyle />
         <Head>
           <title>Protocol</title>
           <meta name="description" content="Protocol" />
@@ -41,7 +42,6 @@ class MyApp extends App {
             </Layout>
           </MetamaskProvider>
         </Web3ReactProvider>
-        <GlobalStyle />
       </>
     );
   }

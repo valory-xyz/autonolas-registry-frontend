@@ -2,13 +2,16 @@ import { useState, useEffect } from 'react';
 import { Layout, Menu, Result } from 'antd';
 import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
+import dynamic from 'next/dynamic';
 import useCheckMobileScreen from 'common-util/hooks/useCheckMobileScreen';
-import { Logo as LogoSvg } from 'common-util/svg';
 import Footer from './Footer';
 import Login from '../Login';
 import {
   CustomLayout, Logo, RightMenu, SupportOnlyDesktop,
 } from './styles';
+
+
+const LogoSvg = dynamic(() => import('common-util/svg/logo'));
 
 const { Header, Content } = Layout;
 
@@ -43,7 +46,7 @@ const NavigationBar = ({ children }) => {
   // TODO: fix mobile responsiveness and remove the below component
   if (isMobile) {
     return (
-      <CustomLayout>
+      <CustomLayout hasSider>
         <Header>{logo}</Header>
         <SupportOnlyDesktop>
           <Result

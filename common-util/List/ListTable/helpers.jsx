@@ -15,19 +15,26 @@ const textStyle = { maxWidth: '100%' };
  * helper components
  */
 
-export const EllipsisMiddle = ({ suffixCount, children }) => {
+export const getTrimmedText = (str, suffixCount) => {
+  const text = str.trim();
+  const frontText = text.slice(0, suffixCount);
+  const backText = text.slice(text.length - suffixCount, text.length);
+  return `${frontText}...${backText}`;
+};
+
+export const EllipsisMiddle = ({ suffixCount, children, ...rest }) => {
   if (typeof children !== 'string') return <>{children}</>;
 
-  if (children.length <= 12) return <Text>{children}</Text>;
+  if (children.length <= 12) return <Text {...rest}>{children}</Text>;
 
   /**
    * truncate only if the character exceeds more than 12
    */
-  const text = children.trim();
-  const frontText = text.slice(0, suffixCount);
-  const backText = text.slice(text.length - suffixCount, text.length);
-
-  return <Text style={textStyle}>{`${frontText}...${backText}`}</Text>;
+  return (
+    <Text style={textStyle} {...rest}>
+      {getTrimmedText(children, suffixCount)}
+    </Text>
+  );
 };
 
 EllipsisMiddle.propTypes = {
@@ -62,36 +69,21 @@ export const getTableColumns = (
         key: 'description',
         width: 200,
         className: 'underline',
-        render: (text) => (
-          <EllipsisMiddle>{text}</EllipsisMiddle>
-        ),
-      },
-      {
-        title: 'Developer',
-        dataIndex: 'developer',
-        key: 'developer',
-        width: 200,
-        render: (text) => (
-          <EllipsisMiddle>{text}</EllipsisMiddle>
-        ),
+        render: (text) => <EllipsisMiddle>{text}</EllipsisMiddle>,
       },
       {
         title: 'Owner',
         dataIndex: 'owner',
         key: 'owner',
         width: 160,
-        render: (text) => (
-          <EllipsisMiddle>{text}</EllipsisMiddle>
-        ),
+        render: (text) => <EllipsisMiddle>{text}</EllipsisMiddle>,
       },
       {
         title: 'Hash',
         dataIndex: 'hash',
         key: 'hash',
         width: 200,
-        render: (text) => (
-          <EllipsisMiddle>{text.hash}</EllipsisMiddle>
-        ),
+        render: (text) => <EllipsisMiddle>{text}</EllipsisMiddle>,
       },
       {
         title: 'No. of component dependencies',
@@ -125,37 +117,17 @@ export const getTableColumns = (
         fixed: 'left',
       },
       {
-        title: 'Name',
-        dataIndex: 'name',
-        key: 'name',
-        width: 160,
-        render: (text) => (
-          <EllipsisMiddle>{text}</EllipsisMiddle>
-        ),
-      },
-      {
-        title: 'Developer',
-        dataIndex: 'developer',
-        key: 'developer',
-        width: 200,
-        render: (text) => (
-          <EllipsisMiddle>{text}</EllipsisMiddle>
-        ),
-      },
-      {
         title: 'Owner',
         dataIndex: 'owner',
         key: 'owner',
         width: 200,
-        render: (text) => (
-          <EllipsisMiddle>{text}</EllipsisMiddle>
-        ),
+        render: (text) => <EllipsisMiddle>{text}</EllipsisMiddle>,
       },
       {
         title: 'State',
         dataIndex: 'state',
         key: 'state',
-        width: 100,
+        width: 150,
         render: (e) => <>{SERVICE_STATE[e]}</>,
       },
       {
@@ -199,7 +171,7 @@ export const getData = (type, rawData, { filterValue }) => {
       description: item.description || '-',
       developer: item.developer || '-',
       owner: item.owner || '-',
-      hash: item.componentHash || '-',
+      hash: item.unitHash || '-',
       dependency: item.dependencies.length,
     }));
   }
@@ -210,7 +182,7 @@ export const getData = (type, rawData, { filterValue }) => {
       description: item.description || '-',
       developer: item.developer || '-',
       owner: item.owner || '-',
-      hash: item.agentHash || '-',
+      hash: item.unitHash || '-',
       dependency: item.dependencies.length,
     }));
   }
@@ -218,7 +190,6 @@ export const getData = (type, rawData, { filterValue }) => {
   if (type === NAV_TYPES.SERVICE) {
     data = rawData.map((item, index) => ({
       id: `${index + 1}`,
-      name: item.name || '-',
       developer: item.developer || '-',
       owner: item.owner || '-',
       active: `${item.active}`,

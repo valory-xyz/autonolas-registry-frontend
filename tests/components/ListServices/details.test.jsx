@@ -4,7 +4,6 @@ import Services from 'components/ListServices/details';
 import {
   getServiceDetails,
   getServiceHashes,
-  getServiceStatus,
 } from 'components/ListServices/utils';
 import { dummyAddress, wrapProvider } from '../../helpers';
 
@@ -18,7 +17,6 @@ jest.mock('next/router', () => ({
 jest.mock('components/ListServices/utils', () => ({
   getServiceDetails: jest.fn(),
   getServiceHashes: jest.fn(),
-  getServiceStatus: jest.fn(),
 }));
 
 const dummyDetails = {
@@ -26,7 +24,11 @@ const dummyDetails = {
   name: 'Service One',
   description: 'Service Description',
   agentIds: ['1'],
-  agentParams: [['1', '1000'], ['2', '1000'], ['3', '1000']],
+  agentParams: [
+    ['1', '1000'],
+    ['2', '1000'],
+    ['3', '1000'],
+  ],
   threshold: '5',
   id: 1,
 };
@@ -35,13 +37,9 @@ const dummyHashes = {
   configHashes: ['Service Hash1', 'Service Hash2'],
 };
 
-const dummyServiceState = '1';
-
 describe('listServices/details.jsx', () => {
   getServiceDetails.mockImplementation(() => Promise.resolve(dummyDetails));
   getServiceHashes.mockImplementation(() => Promise.resolve(dummyHashes));
-  getServiceStatus.mockImplementation(() => Promise.resolve(dummyServiceState));
-
 
   it('should render service details', async () => {
     expect.hasAssertions();
@@ -55,9 +53,8 @@ describe('listServices/details.jsx', () => {
       expect(getByText(dummyDetails.owner)).toBeInTheDocument();
       expect(getByText(dummyDetails.description)).toBeInTheDocument();
       expect(getByTestId('hashes-list').childElementCount).toBe(2);
+      expect(getByTestId('agent-id-table')).toBeInTheDocument();
       expect(getByText('Threshold')).toBeInTheDocument();
-      expect(getByTestId('agentNumSlots-dependency').childElementCount).toBe(3);
-      expect(getByTestId('costOfAgentInstance').childElementCount).toBe(3);
     });
   });
 });

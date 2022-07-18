@@ -4,6 +4,7 @@ import { render, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Login from 'components/Login';
 import { CONSTANTS } from 'util/constants';
+import { getTrimmedText } from 'common-util/List/ListTable/helpers';
 import { wrapProvider, wrapProviderError, dummyAddress } from '../../helpers';
 
 const PATHNAME = 'agents';
@@ -12,8 +13,16 @@ jest.mock('next/router', () => ({
   __esModule: true,
   useRouter: jest.fn(),
 }));
-
 const push = jest.fn();
+
+jest.mock('@web3-react/core', () => ({
+  __esModule: true,
+  useWeb3React: jest.fn(() => ({
+    library: {
+      eth: { net: { getId: jest.fn(() => Promise.resolve(31337)) } },
+    },
+  })),
+}));
 
 useRouter.mockImplementation(() => ({ push, pathname: PATHNAME }));
 
@@ -120,7 +129,7 @@ describe('login/index.jsx', () => {
     const { getByTestId } = render(wrapProvider(<Login />));
     const address = getByTestId('metamask-address').textContent;
     await waitFor(async () => {
-      expect(address).toContain(dummyAddress);
+      expect(address).toBe(getTrimmedText(dummyAddress, 6));
     });
   });
 });

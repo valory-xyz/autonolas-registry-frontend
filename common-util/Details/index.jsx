@@ -4,9 +4,22 @@ import { connect } from 'react-redux';
 import get from 'lodash/get';
 import capitalize from 'lodash/capitalize';
 import {
-  Row, Col, Button, Alert, Steps, Space, Divider, Table, Radio,
+  Row,
+  Col,
+  Button,
+  Steps,
+  Space,
+  Divider,
+  Table,
+  Radio,
+  Alert,
 } from 'antd';
-import { NAV_TYPES, SERVICE_STATE, SERVICE_STATE_INFO } from 'util/constants';
+import {
+  NAV_TYPES,
+  SERVICE_STATE,
+  SERVICE_STATE_INFO,
+  NA,
+} from 'util/constants';
 import Loader from 'common-util/components/Loader';
 import Text from 'antd/lib/typography/Text';
 import { RegisterMessage, getIpfsHashFromBytes32 } from '../List/ListCommon';
@@ -23,7 +36,6 @@ import {
 
 const { Step } = Steps;
 
-const NA = 'NA';
 const gt = {
   xs: 8,
   sm: 16,
@@ -91,7 +103,9 @@ const getActiveRegistrationContent = () => {
 
 const getFinishedRegistrationContent = () => {
   const multisigAddresses = [
-    '0x7651239879182341321', '0x7651239879182341322', '0x7651239879182341323',
+    '0x7651239879182341321',
+    '0x7651239879182341322',
+    '0x7651239879182341323',
   ];
 
   return (
@@ -100,11 +114,9 @@ const getFinishedRegistrationContent = () => {
         <Text>Choose multi-sig implementation:</Text>
         <Radio.Group>
           <Space direction="vertical">
-            {
-              multisigAddresses.map(
-                (multisigAddress) => <Radio value={multisigAddress}>{multisigAddress}</Radio>,
-              )
-            }
+            {multisigAddresses.map((multisigAddress) => (
+              <Radio value={multisigAddress}>{multisigAddress}</Radio>
+            ))}
           </Space>
         </Radio.Group>
         <Button>Deploy</Button>
@@ -115,13 +127,9 @@ const getFinishedRegistrationContent = () => {
   );
 };
 
-const DeployedContent = (
-  <Button>Terminate</Button>
-);
+const DeployedContent = <Button>Terminate</Button>;
 
-const TerminatedBondedContent = (
-  <Button>Unbond</Button>
-);
+const TerminatedBondedContent = <Button>Unbond</Button>;
 
 const SERVICE_STATES = [
   {
@@ -151,7 +159,6 @@ const Details = ({
   id,
   type,
   getDetails,
-  getStatus,
   getHashes,
   handleUpdate,
   getOwner,
@@ -160,11 +167,10 @@ const Details = ({
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [info, setInfo] = useState({});
-  const [status, setStatus] = useState(null);
   const [hashes, setHashes] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [detailsOwner, setDetailsOwner] = useState(false);
-  const ownerOfCurrentDetails = get(info, 'owner', null);
+  const [detailsOwner, setDetailsOwner] = useState('');
+  const status = get(info, 'state');
 
   const getUpdatedHashes = async () => {
     try {
@@ -186,14 +192,9 @@ const Details = ({
       setInfo(temp);
 
       const ownerAccount = await getOwner();
-      setDetailsOwner(ownerAccount);
+      setDetailsOwner(ownerAccount || '');
 
       await getUpdatedHashes();
-
-      if (getStatus) {
-        const statusInfo = await getStatus();
-        setStatus(statusInfo);
-      }
     } catch (e) {
       console.error(e);
     } finally {
@@ -228,11 +229,10 @@ const Details = ({
   const generateDetails = () => {
     const getComponentAndAgentValues = () => {
       const dependencies = get(info, 'dependencies') || [];
-      const isAgent = type === NAV_TYPES.AGENT;
-      const hash = get(hashes, `${isAgent ? 'agent' : 'component'}Hashes`) || [];
+      const hash = get(hashes, 'unitHashes') || [];
 
       return [
-        { title: 'Owner Address', value: ownerOfCurrentDetails || NA },
+        { title: 'Owner Address', value: detailsOwner || NA },
         {
           title: 'Developer Address',
           value: get(info, 'developer', null) || NA,
@@ -242,11 +242,17 @@ const Details = ({
           dataTestId: 'hashes-list',
           value: (
             <>
-              {hash.map((e, index) => (
-                <li key={`${type}-hashes-${index}`}>
-                  {getIpfsHashFromBytes32(e.hash)}
-                </li>
-              ))}
+              {hash.length === 0 ? (
+                NA
+              ) : (
+                <>
+                  {hash.map((e, index) => (
+                    <li key={`${type}-hashes-${index}`}>
+                      {getIpfsHashFromBytes32(e)}
+                    </li>
+                  ))}
+                </>
+              )}
             </>
           ),
         },
@@ -274,7 +280,7 @@ const Details = ({
 
       return [
         { title: 'Name', value: get(info, 'name', null) || NA },
-        { title: 'Owner Address', value: ownerOfCurrentDetails || NA },
+        { title: 'Owner Address', value: detailsOwner || NA },
         {
           title: 'Developer Address',
           value: get(info, 'developer', null) || NA,
@@ -326,25 +332,28 @@ const Details = ({
       <Header>
         <DetailsTitle level={2}>{`${capitalize(type)} ID ${id}`}</DetailsTitle>
         <div className="right-content">
-          <Button
-            disabled={!handleUpdate}
-            type="primary"
-            ghost
-            onClick={onUpdate}
-          >
-            Update
-          </Button>
+          {/* Update button to be show only if the connected account is the owner */}
+          {account.toLowerCase() === detailsOwner.toLowerCase() && (
+            <>
+              <Button
+                disabled={!handleUpdate}
+                type="primary"
+                ghost
+                onClick={onUpdate}
+              >
+                Update
+              </Button>
 
-          {/* This button will be shown only if the agent belongs
-          to the owner and has `onUpdateHash` function */}
-          {onUpdateHash && detailsOwner === ownerOfCurrentDetails && (
-            <Button
-              type="primary"
-              ghost
-              onClick={() => setIsModalVisible(true)}
-            >
-              Update Hash
-            </Button>
+              {onUpdateHash && (
+                <Button
+                  type="primary"
+                  ghost
+                  onClick={() => setIsModalVisible(true)}
+                >
+                  Update Hash
+                </Button>
+              )}
+            </>
           )}
         </div>
       </Header>
@@ -354,7 +363,7 @@ const Details = ({
           <InfoSubHeader>Description</InfoSubHeader>
           <div>{get(info, 'description', null) || NA}</div>
 
-          {/* {status && (
+          {status && (
             <>
               <br />
               <InfoSubHeader>Status</InfoSubHeader>
@@ -365,21 +374,16 @@ const Details = ({
                 showIcon
               />
             </>
-          )} */}
+          )}
 
           <Divider />
 
           <InfoSubHeader>State</InfoSubHeader>
           <Steps direction="vertical">
-            {
-              SERVICE_STATES.map(
-                (state) => (
-                  <Step title={state.title} description={state.content} />
-                ),
-              )
-            }
+            {SERVICE_STATES.map((state) => (
+              <Step title={state.title} description={state.content} />
+            ))}
           </Steps>
-
         </Col>
         <Col className="gutter-row" span={12}>
           {generateDetails()}
@@ -401,7 +405,6 @@ Details.propTypes = {
   id: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   getDetails: PropTypes.func.isRequired,
-  getStatus: PropTypes.func,
   getHashes: PropTypes.func,
   getOwner: PropTypes.func,
   handleUpdate: PropTypes.func,
@@ -412,7 +415,6 @@ Details.propTypes = {
 Details.defaultProps = {
   account: null,
   handleUpdate: null,
-  getStatus: null,
   getHashes: () => {},
   getOwner: () => {},
   onUpdateHash: () => {},

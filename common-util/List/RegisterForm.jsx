@@ -15,6 +15,7 @@ export const FORM_NAME = 'register_form';
 const RegisterForm = ({
   account, listType, handleSubmit, handleCancel,
 }) => {
+  const [form] = Form.useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const onFinish = (values) => {
     if (account) {
@@ -26,9 +27,14 @@ const RegisterForm = ({
     console.log('Failed:', errorInfo); /* eslint-disable-line no-console */
   };
 
+  const prefillOwnerAddress = () => {
+    form.setFieldsValue({ owner_address: account });
+  };
+
   return (
     <>
       <Form
+        form={form}
         name={FORM_NAME}
         initialValues={{ remember: true }}
         layout="vertical"
@@ -56,8 +62,20 @@ const RegisterForm = ({
               },
             }),
           ]}
+          className="mb-0"
         >
           <Input placeholder="0x862..." />
+        </Form.Item>
+
+        <Form.Item className="mb-0">
+          <Button
+            htmlType="button"
+            type="link"
+            onClick={prefillOwnerAddress}
+            className="pl-0"
+          >
+            Prefill Address
+          </Button>
         </Form.Item>
 
         <Form.Item
