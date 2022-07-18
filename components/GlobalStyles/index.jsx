@@ -120,7 +120,6 @@ const GlobalStyle = createGlobalStyle`
     .ant-table-tbody > tr {
       > td {
         padding: 12px 16px;
-        background: ${COLOR.TABLE_BLACK};
         &.underline span {
           text-decoration: underline;
         }

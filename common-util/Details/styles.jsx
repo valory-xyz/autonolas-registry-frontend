@@ -20,9 +20,9 @@ export const Header = styled.div`
 `;
 
 export const InfoSubHeader = styled.div`
-  font-weight: 500;
+  font-weight: 700;
   margin-bottom: 0.25rem;
-  color: ${COLOR.GREY_2};
+  color: ${COLOR.BLACK};
 `;
 
 export const Info = styled.div`
