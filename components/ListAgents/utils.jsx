@@ -2,6 +2,38 @@ import { notification } from 'antd';
 import { getMechMinterContract, getAgentContract } from 'common-util/Contracts';
 import { getBytes32FromIpfsHash } from 'common-util/List/ListCommon';
 
+// --------- HELPER METHODS ---------
+export const getAgentOwner = (agentId) => new Promise((resolve, reject) => {
+  const contract = getAgentContract();
+
+  contract.methods
+    .ownerOf(agentId)
+    .call()
+    .then((response) => {
+      resolve(response);
+    })
+    .catch((e) => {
+      console.error(e);
+      reject(e);
+    });
+});
+
+/**
+ * helper to return the list of details (table in index page)
+ */
+const getAgentsHelper = (promiseList, resolve) => {
+  Promise.all(promiseList).then(async (list) => {
+    const results = await Promise.all(
+      list.map(async (info, i) => {
+        const owner = await getAgentOwner(`${i + 1}`);
+        return { ...info, owner };
+      }),
+    );
+    resolve(results);
+  });
+};
+
+// --------- utils ---------
 export const getAgentDetails = (agentId) => new Promise((resolve, reject) => {
   const contract = getAgentContract();
 
@@ -31,9 +63,7 @@ export const getAgentsByAccount = (account) => new Promise((resolve, reject) => 
         promises.push(result);
       }
 
-      Promise.all(promises).then((results) => {
-        resolve(results);
-      });
+      getAgentsHelper(promises, resolve);
     })
     .catch((e) => {
       console.error(e);
@@ -58,9 +88,7 @@ export const getAgents = () => new Promise((resolve, reject) => {
         allAgentsPromises.push(result);
       }
 
-      Promise.all(allAgentsPromises).then((allAgentsList) => {
-        resolve(allAgentsList);
-      });
+      getAgentsHelper(allAgentsPromises, resolve);
     })
     .catch((e) => {
       console.error(e);
@@ -103,18 +131,3 @@ export const updateAgentHashes = (account, id, newHash) => {
       console.error(e);
     });
 };
-
-export const getAgentOwner = (agentId) => new Promise((resolve, reject) => {
-  const contract = getAgentContract();
-
-  contract.methods
-    .ownerOf(agentId)
-    .call()
-    .then((response) => {
-      resolve(response);
-    })
-    .catch((e) => {
-      console.error(e);
-      reject(e);
-    });
-});

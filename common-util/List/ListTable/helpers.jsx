@@ -72,13 +72,6 @@ export const getTableColumns = (
         render: (text) => <EllipsisMiddle>{text}</EllipsisMiddle>,
       },
       {
-        title: 'Developer',
-        dataIndex: 'developer',
-        key: 'developer',
-        width: 200,
-        render: (text) => <EllipsisMiddle>{text}</EllipsisMiddle>,
-      },
-      {
         title: 'Owner',
         dataIndex: 'owner',
         key: 'owner',
@@ -128,13 +121,6 @@ export const getTableColumns = (
         dataIndex: 'name',
         key: 'name',
         width: 160,
-        render: (text) => <EllipsisMiddle>{text}</EllipsisMiddle>,
-      },
-      {
-        title: 'Developer',
-        dataIndex: 'developer',
-        key: 'developer',
-        width: 200,
         render: (text) => <EllipsisMiddle>{text}</EllipsisMiddle>,
       },
       {

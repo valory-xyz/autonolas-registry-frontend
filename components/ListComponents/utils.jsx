@@ -5,6 +5,38 @@ import {
 } from 'common-util/Contracts';
 import { getBytes32FromIpfsHash } from 'common-util/List/ListCommon';
 
+// --------- HELPER METHODS ---------
+export const getComponentOwner = (id) => new Promise((resolve, reject) => {
+  const contract = getComponentContract();
+
+  contract.methods
+    .ownerOf(id)
+    .call()
+    .then((response) => {
+      resolve(response);
+    })
+    .catch((e) => {
+      console.error(e);
+      reject(e);
+    });
+});
+
+/**
+ * helper to return the list of details (table in index page)
+ */
+const getComponentsHelper = (promiseList, resolve) => {
+  Promise.all(promiseList).then(async (allComponentsList) => {
+    const results = await Promise.all(
+      allComponentsList.map(async (info, i) => {
+        const owner = await getComponentOwner(`${i + 1}`);
+        return { ...info, owner };
+      }),
+    );
+    resolve(results);
+  });
+};
+
+// --------- utils ---------
 export const getComponentDetails = (id) => new Promise((resolve, reject) => {
   const contract = getComponentContract();
 
@@ -33,9 +65,7 @@ export const getComponentsByAccount = (account) => new Promise((resolve, reject)
         promises.push(result);
       }
 
-      Promise.all(promises).then((results) => {
-        resolve(results);
-      });
+      getComponentsHelper(promises, resolve);
     })
     .catch((e) => {
       console.error(e);
@@ -60,9 +90,7 @@ export const getComponents = () => new Promise((resolve, reject) => {
         allComponentsPromises.push(result);
       }
 
-      Promise.all(allComponentsPromises).then(async (allComponentsList) => {
-        resolve(allComponentsList);
-      });
+      getComponentsHelper(allComponentsPromises, resolve);
     })
     .catch((e) => {
       console.error(e);
@@ -100,18 +128,3 @@ export const updateComponentHashes = (account, id, newHash) => {
       console.error(e);
     });
 };
-
-export const getComponentOwner = (id) => new Promise((resolve, reject) => {
-  const contract = getComponentContract();
-
-  contract.methods
-    .ownerOf(id)
-    .call()
-    .then((response) => {
-      resolve(response);
-    })
-    .catch((e) => {
-      console.error(e);
-      reject(e);
-    });
-});
