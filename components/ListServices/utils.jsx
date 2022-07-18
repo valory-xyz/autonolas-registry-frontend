@@ -4,6 +4,23 @@ import {
   convertStringToArray,
 } from 'common-util/List/ListCommon';
 
+// --------- HELPER METHODS ---------
+export const getServiceOwner = (id) => new Promise((resolve, reject) => {
+  const contract = getServiceContract();
+
+  contract.methods
+    .ownerOf(id)
+    .call()
+    .then((response) => {
+      resolve(response);
+    })
+    .catch((e) => {
+      console.error(e);
+      reject(e);
+    });
+});
+
+// --------- utils ---------
 export const getServiceDetails = (id) => new Promise((resolve, reject) => {
   const contract = getServiceContract();
 
@@ -31,7 +48,8 @@ export const getServicesByAccount = (account) => new Promise((resolve, reject) =
         [...Array(length).keys()].map(async (_e, index) => {
           const id = `${index + 1}`;
           const info = await getServiceDetails(id);
-          return info;
+          const owner = await getServiceOwner(id);
+          return { ...info, owner };
         }),
       );
 
@@ -75,7 +93,8 @@ export const getServices = () => new Promise((resolve, reject) => {
         const results = await Promise.all(
           validTokenIds.map(async (id) => {
             const info = await getServiceDetails(id);
-            return info;
+            const owner = await getServiceOwner(id);
+            return { ...info, owner };
           }),
         );
 
