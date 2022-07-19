@@ -103,16 +103,8 @@ const GlobalStyle = createGlobalStyle`
 
   /* table */
   .ant-table {
-    .ant-table-cell:first-child {
-      border-left: 1px solid ${COLOR.BORDER_GREY};
-    }
-    .ant-table-cell:last-child {
-      border-right: 1px solid ${COLOR.BORDER_GREY};
-    }
     .ant-table-thead {
       > tr > th {
-        border-top: 1px solid ${COLOR.BORDER_GREY};
-        border-bottom: 2px solid ${COLOR.BORDER_GREY};
         font-weight: normal;
         padding: 12px 16px;
         &:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before {
@@ -143,6 +135,25 @@ const GlobalStyle = createGlobalStyle`
         }
       }
     }
+  }
+
+  .ant-table:not(.ant-table-bordered) {
+    .ant-table-cell:first-child {
+      border-left: 1px solid ${COLOR.BORDER_GREY};
+    }
+    .ant-table-cell:last-child {
+      border-right: 1px solid ${COLOR.BORDER_GREY};
+    }
+    .ant-table-thead {
+      > tr > th {
+        border-top: 1px solid ${COLOR.BORDER_GREY};
+        border-bottom: 1px solid ${COLOR.BORDER_GREY};
+      }
+    }
+  }
+
+  .ant-tooltip-inner {
+    text-align: center;
   }
 
   /* alert */

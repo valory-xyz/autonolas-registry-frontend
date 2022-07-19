@@ -54,3 +54,21 @@ export const SectionContainer = styled.div`
     }
   }
 `;
+
+export const ServiceStateContainer = styled.div`
+  .ant-btn {
+    font-size: 16px;
+    height: 32px;
+    padding: 0 1rem;
+  }
+  .ant-steps-item-description {
+    .ant-divider {
+      margin: 0.75rem 0;
+    }
+  }
+  .step-2-active-registration {
+    .ant-table-wrapper {
+      margin-bottom: 1rem;
+    }
+  }
+`;

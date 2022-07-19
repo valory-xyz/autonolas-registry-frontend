@@ -4,15 +4,7 @@ import { connect } from 'react-redux';
 import get from 'lodash/get';
 import capitalize from 'lodash/capitalize';
 import {
-  Row,
-  Col,
-  Button,
-  Steps,
-  Space,
-  Divider,
-  Table,
-  Radio,
-  Alert,
+  Row, Col, Button, Alert,
 } from 'antd';
 import {
   NAV_TYPES,
@@ -21,9 +13,9 @@ import {
   NA,
 } from 'util/constants';
 import Loader from 'common-util/components/Loader';
-import Text from 'antd/lib/typography/Text';
 import { RegisterMessage, getIpfsHashFromBytes32 } from '../List/ListCommon';
 import IpfsHashGenerationModal from '../List/IpfsHashGenerationModal';
+import { ServiceState } from './ServiceState';
 import { getTable } from './helpers';
 import {
   Header,
@@ -34,125 +26,12 @@ import {
   EachSection,
 } from './styles';
 
-const { Step } = Steps;
-
 const gt = {
   xs: 8,
   sm: 16,
   md: 24,
   lg: 32,
 };
-
-const PreRegistrationContent = (
-  <Space>
-    <Button>Update</Button>
-    <Button>Activate Registration</Button>
-  </Space>
-);
-
-const getActiveRegistrationContent = () => {
-  const dataSource = [
-    {
-      key: '1',
-      agentId: '1',
-      availableSlots: 3,
-      totalSlots: 10,
-      agentAddresses: 'n/a',
-    },
-    {
-      key: '2',
-      agentId: '4',
-      availableSlots: 0,
-      totalSlots: 10,
-      agentAddresses: 'n/a',
-    },
-  ];
-
-  const columns = [
-    {
-      title: 'Agent ID',
-      dataIndex: 'agentId',
-      key: 'agentId',
-    },
-    {
-      title: 'Available Slots',
-      dataIndex: 'availableSlots',
-      key: 'availableSlots',
-    },
-    {
-      title: 'Total Slots',
-      dataIndex: 'totalSlots',
-      key: 'totalSlots',
-    },
-    {
-      title: 'Agent Addresses',
-      dataIndex: 'agentAddresses',
-      key: 'agentAddresses',
-    },
-  ];
-
-  return (
-    <Space direction="vertical">
-      <Table dataSource={dataSource} columns={columns} pagination={false} />
-      <Button>Register Agents</Button>
-      <Divider />
-      <Button>Terminate</Button>
-    </Space>
-  );
-};
-
-const getFinishedRegistrationContent = () => {
-  const multisigAddresses = [
-    '0x7651239879182341321',
-    '0x7651239879182341322',
-    '0x7651239879182341323',
-  ];
-
-  return (
-    <>
-      <Space direction="vertical" size={1}>
-        <Text>Choose multi-sig implementation:</Text>
-        <Radio.Group>
-          <Space direction="vertical">
-            {multisigAddresses.map((multisigAddress) => (
-              <Radio value={multisigAddress}>{multisigAddress}</Radio>
-            ))}
-          </Space>
-        </Radio.Group>
-        <Button>Deploy</Button>
-        <Divider />
-        <Button>Terminate</Button>
-      </Space>
-    </>
-  );
-};
-
-const DeployedContent = <Button>Terminate</Button>;
-
-const TerminatedBondedContent = <Button>Unbond</Button>;
-
-const SERVICE_STATES = [
-  {
-    title: 'Pre-Registration',
-    content: PreRegistrationContent,
-  },
-  {
-    title: 'Active Registration',
-    content: getActiveRegistrationContent(),
-  },
-  {
-    title: 'Finished Registration',
-    content: getFinishedRegistrationContent(),
-  },
-  {
-    title: 'Deployed',
-    content: DeployedContent,
-  },
-  {
-    title: 'Terminated Bonded',
-    content: TerminatedBondedContent,
-  },
-];
 
 const Details = ({
   account,
@@ -171,6 +50,7 @@ const Details = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [detailsOwner, setDetailsOwner] = useState('');
   const status = get(info, 'state');
+  const isOwner = account.toLowerCase() === detailsOwner.toLowerCase();
 
   const getUpdatedHashes = async () => {
     try {
@@ -333,7 +213,7 @@ const Details = ({
         <DetailsTitle level={2}>{`${capitalize(type)} ID ${id}`}</DetailsTitle>
         <div className="right-content">
           {/* Update button to be show only if the connected account is the owner */}
-          {account.toLowerCase() === detailsOwner.toLowerCase() && (
+          {isOwner && (
             <>
               <Button
                 disabled={!handleUpdate}
@@ -376,15 +256,11 @@ const Details = ({
             </>
           )}
 
-          <Divider />
-
-          <InfoSubHeader>State</InfoSubHeader>
-          <Steps direction="vertical">
-            {SERVICE_STATES.map((state) => (
-              <Step title={state.title} description={state.content} />
-            ))}
-          </Steps>
+          {type === NAV_TYPES.SERVICE && (
+            <ServiceState isOwner={isOwner} status={status} />
+          )}
         </Col>
+
         <Col className="gutter-row" span={12}>
           {generateDetails()}
         </Col>
