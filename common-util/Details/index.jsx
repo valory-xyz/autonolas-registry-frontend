@@ -257,7 +257,7 @@ const Details = ({
           )}
 
           {type === NAV_TYPES.SERVICE && (
-            <ServiceState isOwner={isOwner} status={status} />
+            <ServiceState isOwner={isOwner} id={id} status={status} />
           )}
         </Col>
 
@@ -289,7 +289,7 @@ Details.propTypes = {
 };
 
 Details.defaultProps = {
-  account: null,
+  account: '',
   handleUpdate: null,
   getHashes: () => {},
   getOwner: () => {},
@@ -298,7 +298,7 @@ Details.defaultProps = {
 };
 
 const mapStateToProps = (state) => {
-  const account = get(state, 'setup.account') || null;
+  const account = get(state, 'setup.account') || '';
   return { account };
 };
 

@@ -132,7 +132,7 @@ export const getServiceHashes = (id) => new Promise((resolve, reject) => {
   const contract = getServiceContract();
 
   contract.methods
-    .getConfigHashes(id)
+    .getPreviousHashes(id)
     .call()
     .then((information) => {
       resolve(information);

@@ -1,4 +1,4 @@
-import { getServiceContract } from 'common-util/Contracts';
+import { getServiceContract, getServiceManagerContract } from 'common-util/Contracts';
 // import {
 //   getBytes32FromIpfsHash,
 //   convertStringToArray,
@@ -15,6 +15,21 @@ export const getServiceOwner = (id) => new Promise((resolve, reject) => {
     })
     .catch((e) => {
       console.error(e);
+      reject(e);
+    });
+});
+
+export const onActivateRegistration = (id) => new Promise((resolve, reject) => {
+  const contract = getServiceManagerContract();
+
+  contract.methods
+    .activateRegistration(id)
+    .call()
+    .then((information) => {
+      console.log({ information });
+      resolve(information);
+    })
+    .catch((e) => {
       reject(e);
     });
 });

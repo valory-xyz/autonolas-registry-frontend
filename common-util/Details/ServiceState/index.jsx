@@ -11,6 +11,8 @@ import {
   Tooltip,
 } from 'antd';
 import { NA } from 'util/constants';
+import { onActivateRegistration } from './utils';
+import EditableTable from './EditableTable';
 import { ServiceStateContainer, InfoSubHeader } from '../styles';
 
 const { Step } = Steps;
@@ -38,20 +40,26 @@ const STEP_2_TABLE_COLUMNS = [
   },
 ];
 
+const Empty = () => <br />;
+
 /**
  * ServiceState component
  */
-export const ServiceState = ({ isOwner, status }) => {
+export const ServiceState = ({ isOwner, id, status }) => {
   const [currentStep, setCurrentStep] = useState(1);
-  console.log({ status });
 
   useEffect(() => {
-    setCurrentStep(Number(status));
+    setCurrentStep(1);
+    // setCurrentStep(Number(status) - 1);
   }, [status]);
 
   /* ----- step 1 ----- */
-  const handleStep1Registration = () => {
-    console.log('Step - 1, Button 1');
+  const handleStep1Registration = async () => {
+    try {
+      await onActivateRegistration(id);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const handleStep1Update = () => {
@@ -100,7 +108,7 @@ export const ServiceState = ({ isOwner, status }) => {
   };
 
   /* ----- step 4 ----- */
-  const isTerminateDisabled = true;
+  const isTerminateDisabled = !isOwner;
   const terminateBtn = (
     <Button
       disabled={isTerminateDisabled}
@@ -113,7 +121,7 @@ export const ServiceState = ({ isOwner, status }) => {
   );
 
   /* ----- step 5 ----- */
-  const isUnboundDisabled = true;
+  const isUnboundDisabled = !isOwner;
   const unboundBtn = (
     <Button
       disabled={isUnboundDisabled}
@@ -129,97 +137,118 @@ export const ServiceState = ({ isOwner, status }) => {
     <ServiceStateContainer>
       <Divider />
       <InfoSubHeader>State</InfoSubHeader>
+      <EditableTable />
       <Steps direction="vertical" current={currentStep}>
         <Step
           title="Pre-Registration"
-          description={(
-            <Space>
-              <Button onClick={handleStep1Registration}>
-                Activate Registration
-              </Button>
-              <Button onClick={handleStep1Update}>Update</Button>
-            </Space>
-          )}
+          description={
+            currentStep === 0 ? (
+              <Space>
+                <Button onClick={handleStep1Registration}>
+                  Activate Registration
+                </Button>
+                <Button onClick={handleStep1Update}>Update</Button>
+              </Space>
+            ) : (
+              <Empty />
+            )
+          }
         />
 
         <Step
           title="Active Registration"
-          description={(
-            <div className="step-2-active-registration">
-              <Table
-                dataSource={dataSource}
-                columns={STEP_2_TABLE_COLUMNS}
-                pagination={false}
-                bordered
-              />
-              <Button onClick={handleStep2RegisterAgents}>
-                Register Agents
-              </Button>
-              <Divider />
-              <Button onClick={handleStep2Terminate}>Terminate</Button>
-            </div>
-          )}
+          description={
+            currentStep === 1 ? (
+              <div className="step-2-active-registration">
+                <Table
+                  dataSource={dataSource}
+                  columns={STEP_2_TABLE_COLUMNS}
+                  pagination={false}
+                  bordered
+                />
+                <Button onClick={handleStep2RegisterAgents}>
+                  Register Agents
+                </Button>
+                <Divider />
+                <Button onClick={handleStep2Terminate}>Terminate</Button>
+              </div>
+            ) : (
+              <Empty />
+            )
+          }
         />
 
         <Step
           title="Finished Registration"
-          description={(
-            <div className="step-3-finished-registration">
-              <Space direction="vertical" size={1}>
-                <Typography.Text>
-                  Choose multi-sig implementation:
-                </Typography.Text>
-                <Radio.Group>
-                  <Space direction="vertical">
-                    {multisigAddresses.map((multisigAddress) => (
-                      <Radio value={multisigAddress}>{multisigAddress}</Radio>
-                    ))}
-                  </Space>
-                </Radio.Group>
-                <Button onClick={handleStep3Deploy}>Deploy</Button>
-                <Divider className="custom-divider" />
-                <Button onClick={handleStep3Terminate}>Terminate</Button>
-              </Space>
-            </div>
-          )}
+          description={
+            currentStep === 2 ? (
+              <div className="step-3-finished-registration">
+                <Space direction="vertical" size={1}>
+                  <Typography.Text>
+                    Choose multi-sig implementation:
+                  </Typography.Text>
+                  <Radio.Group>
+                    <Space direction="vertical">
+                      {multisigAddresses.map((multisigAddress) => (
+                        <Radio value={multisigAddress}>{multisigAddress}</Radio>
+                      ))}
+                    </Space>
+                  </Radio.Group>
+                  <Button onClick={handleStep3Deploy}>Deploy</Button>
+                  <Divider className="custom-divider" />
+                  <Button onClick={handleStep3Terminate}>Terminate</Button>
+                </Space>
+              </div>
+            ) : (
+              <Empty />
+            )
+          }
         />
 
         <Step
           title="Deployed"
-          description={(
-            <>
-              {isOwner ? (
-                terminateBtn
-              ) : (
-                <Tooltip
-                  title="Only the service owner can take this action"
-                  placement="right"
-                  align="center"
-                >
-                  {terminateBtn}
-                </Tooltip>
-              )}
-            </>
-          )}
+          description={
+            currentStep === 3 ? (
+              <>
+                {isOwner ? (
+                  terminateBtn
+                ) : (
+                  <Tooltip
+                    title="Only the service owner can take this action"
+                    placement="right"
+                    align="center"
+                  >
+                    {terminateBtn}
+                  </Tooltip>
+                )}
+              </>
+            ) : (
+              <Empty />
+            )
+          }
         />
 
         <Step
           title="Terminated Bonded"
-          description={(
-            <>
-              {isOwner ? (
-                unboundBtn
-              ) : (
-                <Tooltip
-                  title="Only agent operators with active bonds can take this action"
-                  placement="right"
-                  align="center"
-                >
-                  {unboundBtn}
-                </Tooltip>
-              )}
-            </>
-          )}
+          description={
+            currentStep === 4 ? (
+              <>
+                {isOwner ? (
+                  unboundBtn
+                ) : (
+                  <Tooltip
+                    title="Only agent operators with active bonds can take this action"
+                    placement="right"
+                    align="center"
+                  >
+                    {unboundBtn}
+                  </Tooltip>
+                )}
+              </>
+            ) : (
+              <Empty />
+            )
+          }
         />
       </Steps>
     </ServiceStateContainer>
@@ -228,6 +257,7 @@ export const ServiceState = ({ isOwner, status }) => {
 
 ServiceState.propTypes = {
   status: PropTypes.string,
+  id: PropTypes.string.isRequired,
   isOwner: PropTypes.bool,
 };
 

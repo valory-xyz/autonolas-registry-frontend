@@ -51,7 +51,6 @@ const Login = ({
       window.ethereum
         .request({ method: CONSTANTS.ETH_REQUESTACCOUNTS })
         .then((result) => {
-          console.log({ result });
           // setting only the 1st account
           setUserAccount(result[0]);
           getBalance(result[0]);
