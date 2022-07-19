@@ -66,6 +66,9 @@ export const ServiceStateContainer = styled.div`
       margin: 0.75rem 0;
     }
   }
+  .ant-table, .ant-input {
+    font-size: 16px;
+  }
   .step-2-active-registration {
     .ant-table-wrapper {
       margin-bottom: 1rem;

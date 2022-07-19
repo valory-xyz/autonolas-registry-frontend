@@ -30,6 +30,9 @@ const GlobalStyle = createGlobalStyle`
   }
 
   /* common */
+  .m-0 {
+    margin: 0 !important;
+  }
   .mb-12 {
     margin-bottom: 12px;
   }

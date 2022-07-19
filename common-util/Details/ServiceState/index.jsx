@@ -4,7 +4,6 @@ import {
   Button,
   Space,
   Divider,
-  Table,
   Radio,
   Typography,
   Steps,
@@ -12,7 +11,7 @@ import {
 } from 'antd';
 import { NA } from 'util/constants';
 import { onActivateRegistration } from './utils';
-import EditableTable from './EditableTable';
+import ActiveRegistrationTable from './ActiveRegistrationTable';
 import { ServiceStateContainer, InfoSubHeader } from '../styles';
 
 const { Step } = Steps;
@@ -37,6 +36,8 @@ const STEP_2_TABLE_COLUMNS = [
     title: 'Agent Addresses',
     dataIndex: 'agentAddresses',
     key: 'agentAddresses',
+    width: '40%',
+    editable: true,
   },
 ];
 
@@ -49,7 +50,7 @@ export const ServiceState = ({ isOwner, id, status }) => {
   const [currentStep, setCurrentStep] = useState(1);
 
   useEffect(() => {
-    setCurrentStep(1);
+    setCurrentStep(2);
     // setCurrentStep(Number(status) - 1);
   }, [status]);
 
@@ -137,7 +138,6 @@ export const ServiceState = ({ isOwner, id, status }) => {
     <ServiceStateContainer>
       <Divider />
       <InfoSubHeader>State</InfoSubHeader>
-      <EditableTable />
       <Steps direction="vertical" current={currentStep}>
         <Step
           title="Pre-Registration"
@@ -160,12 +160,12 @@ export const ServiceState = ({ isOwner, id, status }) => {
           description={
             currentStep === 1 ? (
               <div className="step-2-active-registration">
-                <Table
-                  dataSource={dataSource}
-                  columns={STEP_2_TABLE_COLUMNS}
-                  pagination={false}
+                <ActiveRegistrationTable
+                  data={dataSource}
+                  defaultColumns={STEP_2_TABLE_COLUMNS}
                   bordered
                 />
+
                 <Button onClick={handleStep2RegisterAgents}>
                   Register Agents
                 </Button>
@@ -183,19 +183,21 @@ export const ServiceState = ({ isOwner, id, status }) => {
           description={
             currentStep === 2 ? (
               <div className="step-3-finished-registration">
-                <Space direction="vertical" size={1}>
+                <Space direction="vertical" size={10}>
                   <Typography.Text>
                     Choose multi-sig implementation:
                   </Typography.Text>
+
                   <Radio.Group>
-                    <Space direction="vertical">
+                    <Space direction="vertical" size={10}>
                       {multisigAddresses.map((multisigAddress) => (
                         <Radio value={multisigAddress}>{multisigAddress}</Radio>
                       ))}
                     </Space>
                   </Radio.Group>
+
                   <Button onClick={handleStep3Deploy}>Deploy</Button>
-                  <Divider className="custom-divider" />
+                  <Divider className="m-0" />
                   <Button onClick={handleStep3Terminate}>Terminate</Button>
                 </Space>
               </div>

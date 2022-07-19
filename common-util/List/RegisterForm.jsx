@@ -79,30 +79,6 @@ const RegisterForm = ({
         </Form.Item>
 
         <Form.Item
-          label="Developer Address"
-          name="developer_address"
-          validateFirst
-          rules={[
-            {
-              required: true,
-              message: `Please input the address to which the ${listType} Developer`,
-            },
-            () => ({
-              validator(_, value) {
-                if (Web3.utils.isAddress(value)) return Promise.resolve();
-                return Promise.reject(
-                  new Error(
-                    `Please input a valid address of the ${listType} Developer`,
-                  ),
-                );
-              },
-            }),
-          ]}
-        >
-          <Input placeholder="0x862..." />
-        </Form.Item>
-
-        <Form.Item
           label="Hash"
           name="hash"
           rules={[
@@ -123,19 +99,6 @@ const RegisterForm = ({
         >
           Generate Hash
         </Button>
-
-        <Form.Item
-          label="Description"
-          name="description"
-          rules={[
-            {
-              required: true,
-              message: `Please input the ${listType} Description`,
-            },
-          ]}
-        >
-          <Input.TextArea rows={4} />
-        </Form.Item>
 
         <Form.Item
           label={(

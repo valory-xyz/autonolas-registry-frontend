@@ -114,10 +114,6 @@ const Details = ({
       return [
         { title: 'Owner Address', value: detailsOwner || NA },
         {
-          title: 'Developer Address',
-          value: get(info, 'developer', null) || NA,
-        },
-        {
           title: 'Hash',
           dataTestId: 'hashes-list',
           value: (
@@ -159,12 +155,7 @@ const Details = ({
       const hash = get(hashes, 'configHashes') || [];
 
       return [
-        { title: 'Name', value: get(info, 'name', null) || NA },
         { title: 'Owner Address', value: detailsOwner || NA },
-        {
-          title: 'Developer Address',
-          value: get(info, 'developer', null) || NA,
-        },
         {
           title: 'Hash',
           dataTestId: 'hashes-list',
