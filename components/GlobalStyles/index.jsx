@@ -41,6 +41,9 @@ const GlobalStyle = createGlobalStyle`
   }
 
   /* layout */
+  .ant-layout {
+    background: ${COLOR.WHITE}
+  }
   .ant-layout-header {
     display: flex;
     position: fixed;
