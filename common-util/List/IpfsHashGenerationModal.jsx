@@ -5,15 +5,31 @@ import get from 'lodash/get';
 import {
   Form, Input, Typography, Alert, Button,
 } from 'antd/lib';
-import Hash from 'ipfs-only-hash';
+// import Hash from 'ipfs-only-hash';
 import { CustomModal, YourHashContainer } from './styles';
 
 const { Paragraph } = Typography;
 
 export const FORM_NAME = 'ipfs_creation_form';
 
-const getHash = async (info) => {
-  const hash = await Hash.of(JSON.stringify(info));
+function makeid(length) {
+  let result = '';
+  const characters = 'abcdef0123456789';
+  const charactersLength = characters.length;
+  for (let i = 0; i < length; i += 1) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
+
+const getHash = async () => {
+  // const hash = await Hash.of(JSON.stringify(info), {
+  //   cidVersion: 1,
+  //   format: 'dag-pb',
+  //   hashAlg: 'sha2-256',
+  // });
+  // console.log({ hash });
+  const hash = `0x${makeid(64)}`;
   return hash;
 };
 
