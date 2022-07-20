@@ -294,11 +294,6 @@ export const SERVICE_MANAGER = {
       type: 'error',
     },
     {
-      inputs: [],
-      name: 'WrongFunction',
-      type: 'error',
-    },
-    {
       inputs: [
         {
           internalType: 'uint256',
@@ -399,25 +394,6 @@ export const SERVICE_MANAGER = {
       anonymous: false,
       inputs: [
         {
-          indexed: false,
-          internalType: 'uint256',
-          name: 'serviceId',
-          type: 'uint256',
-        },
-        {
-          indexed: false,
-          internalType: 'uint256',
-          name: 'amount',
-          type: 'uint256',
-        },
-      ],
-      name: 'RewardService',
-      type: 'event',
-    },
-    {
-      anonymous: false,
-      inputs: [
-        {
           indexed: true,
           internalType: 'address',
           name: 'owner',
@@ -426,10 +402,6 @@ export const SERVICE_MANAGER = {
       ],
       name: 'Unpause',
       type: 'event',
-    },
-    {
-      stateMutability: 'payable',
-      type: 'fallback',
     },
     {
       inputs: [
@@ -469,11 +441,6 @@ export const SERVICE_MANAGER = {
           internalType: 'address',
           name: 'serviceOwner',
           type: 'address',
-        },
-        {
-          internalType: 'bytes32',
-          name: 'description',
-          type: 'bytes32',
         },
         {
           internalType: 'bytes32',
@@ -682,11 +649,6 @@ export const SERVICE_MANAGER = {
       inputs: [
         {
           internalType: 'bytes32',
-          name: 'description',
-          type: 'bytes32',
-        },
-        {
-          internalType: 'bytes32',
           name: 'configHash',
           type: 'bytes32',
         },
@@ -733,10 +695,6 @@ export const SERVICE_MANAGER = {
       ],
       stateMutability: 'nonpayable',
       type: 'function',
-    },
-    {
-      stateMutability: 'payable',
-      type: 'receive',
     },
   ],
   bytecode: '',

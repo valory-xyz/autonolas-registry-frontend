@@ -309,11 +309,6 @@ export const SERVICE_REGISTRY = {
       type: 'error',
     },
     {
-      inputs: [],
-      name: 'WrongFunction',
-      type: 'error',
-    },
-    {
       inputs: [
         {
           internalType: 'uint256',
@@ -517,6 +512,38 @@ export const SERVICE_REGISTRY = {
         {
           indexed: true,
           internalType: 'address',
+          name: 'drainer',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          internalType: 'uint256',
+          name: 'amount',
+          type: 'uint256',
+        },
+      ],
+      name: 'Drain',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
+          internalType: 'address',
+          name: 'drainer',
+          type: 'address',
+        },
+      ],
+      name: 'DrainerUpdated',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
+          internalType: 'address',
           name: 'manager',
           type: 'address',
         },
@@ -689,8 +716,17 @@ export const SERVICE_REGISTRY = {
       type: 'event',
     },
     {
-      stateMutability: 'payable',
-      type: 'fallback',
+      inputs: [],
+      name: 'CID_PREFIX',
+      outputs: [
+        {
+          internalType: 'string',
+          name: '',
+          type: 'string',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
     },
     {
       inputs: [],
@@ -796,6 +832,19 @@ export const SERVICE_REGISTRY = {
       inputs: [
         {
           internalType: 'address',
+          name: 'newDrainer',
+          type: 'address',
+        },
+      ],
+      name: 'changeDrainer',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
           name: 'newManager',
           type: 'address',
         },
@@ -848,11 +897,6 @@ export const SERVICE_REGISTRY = {
           internalType: 'address',
           name: 'serviceOwner',
           type: 'address',
-        },
-        {
-          internalType: 'bytes32',
-          name: 'description',
-          type: 'bytes32',
         },
         {
           internalType: 'bytes32',
@@ -930,6 +974,32 @@ export const SERVICE_REGISTRY = {
         },
       ],
       stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'drain',
+      outputs: [
+        {
+          internalType: 'uint256',
+          name: 'amount',
+          type: 'uint256',
+        },
+      ],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'drainer',
+      outputs: [
+        {
+          internalType: 'address',
+          name: '',
+          type: 'address',
+        },
+      ],
+      stateMutability: 'view',
       type: 'function',
     },
     {
@@ -1128,11 +1198,6 @@ export const SERVICE_REGISTRY = {
               internalType: 'address',
               name: 'multisig',
               type: 'address',
-            },
-            {
-              internalType: 'bytes32',
-              name: 'description',
-              type: 'bytes32',
             },
             {
               internalType: 'bytes32',
@@ -1464,11 +1529,6 @@ export const SERVICE_REGISTRY = {
           internalType: 'address',
           name: 'multisig',
           type: 'address',
-        },
-        {
-          internalType: 'bytes32',
-          name: 'description',
-          type: 'bytes32',
         },
         {
           internalType: 'bytes32',
@@ -1875,11 +1935,6 @@ export const SERVICE_REGISTRY = {
         },
         {
           internalType: 'bytes32',
-          name: 'description',
-          type: 'bytes32',
-        },
-        {
-          internalType: 'bytes32',
           name: 'configHash',
           type: 'bytes32',
         },
@@ -1926,10 +1981,6 @@ export const SERVICE_REGISTRY = {
       ],
       stateMutability: 'nonpayable',
       type: 'function',
-    },
-    {
-      stateMutability: 'payable',
-      type: 'receive',
     },
   ],
   bytecode: '',

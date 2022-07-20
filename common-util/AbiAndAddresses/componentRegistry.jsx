@@ -304,11 +304,6 @@ export const COMPONENT_REGISTRY = {
       type: 'error',
     },
     {
-      inputs: [],
-      name: 'WrongFunction',
-      type: 'error',
-    },
-    {
       inputs: [
         {
           internalType: 'uint256',
@@ -531,6 +526,32 @@ export const COMPONENT_REGISTRY = {
       type: 'event',
     },
     {
+      inputs: [],
+      name: 'CID_PREFIX',
+      outputs: [
+        {
+          internalType: 'string',
+          name: '',
+          type: 'string',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'VERSION',
+      outputs: [
+        {
+          internalType: 'string',
+          name: '',
+          type: 'string',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
       inputs: [
         {
           internalType: 'address',
@@ -612,11 +633,6 @@ export const COMPONENT_REGISTRY = {
           internalType: 'address',
           name: 'unitOwner',
           type: 'address',
-        },
-        {
-          internalType: 'bytes32',
-          name: 'description',
-          type: 'bytes32',
         },
         {
           internalType: 'bytes32',
@@ -740,11 +756,6 @@ export const COMPONENT_REGISTRY = {
           components: [
             {
               internalType: 'bytes32',
-              name: 'description',
-              type: 'bytes32',
-            },
-            {
-              internalType: 'bytes32',
               name: 'unitHash',
               type: 'bytes32',
             },
@@ -826,25 +837,6 @@ export const COMPONENT_REGISTRY = {
     {
       inputs: [
         {
-          internalType: 'bytes32',
-          name: '',
-          type: 'bytes32',
-        },
-      ],
-      name: 'mapHashUnitId',
-      outputs: [
-        {
-          internalType: 'uint32',
-          name: '',
-          type: 'uint32',
-        },
-      ],
-      stateMutability: 'view',
-      type: 'function',
-    },
-    {
-      inputs: [
-        {
           internalType: 'uint256',
           name: '',
           type: 'uint256',
@@ -900,11 +892,6 @@ export const COMPONENT_REGISTRY = {
       ],
       name: 'mapUnits',
       outputs: [
-        {
-          internalType: 'bytes32',
-          name: 'description',
-          type: 'bytes32',
-        },
         {
           internalType: 'bytes32',
           name: 'unitHash',
