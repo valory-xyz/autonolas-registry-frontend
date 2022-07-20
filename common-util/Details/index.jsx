@@ -6,10 +6,10 @@ import capitalize from 'lodash/capitalize';
 import { Row, Col, Button } from 'antd/lib';
 import { NAV_TYPES, NA } from 'util/constants';
 import Loader from 'common-util/components/Loader';
-import { RegisterMessage, getIpfsHashFromBytes32 } from '../List/ListCommon';
+import { RegisterMessage } from '../List/ListCommon';
 import IpfsHashGenerationModal from '../List/IpfsHashGenerationModal';
 import { ServiceState } from './ServiceState';
-import { getTable } from './helpers';
+import { getTable, getHashDetails } from './helpers';
 import {
   Header,
   DetailsTitle,
@@ -106,6 +106,7 @@ const Details = ({
   };
 
   const generateDetails = () => {
+    const hash = get(hashes, 'unitHashes') || [];
     const updateHashBtn = isOwner ? (
       <>
         {onUpdateHash && (
@@ -118,7 +119,6 @@ const Details = ({
 
     const getComponentAndAgentValues = () => {
       const dependencies = get(info, 'dependencies') || [];
-      const hash = get(hashes, 'unitHashes') || [];
 
       return [
         { title: 'Owner Address', value: detailsOwner || NA },
@@ -127,21 +127,7 @@ const Details = ({
           dataTestId: 'hashes-list',
           value: (
             <>
-              {hash.length === 0 ? (
-                <div>
-                  <a href={tokenUri} target="_blank" rel="noopener noreferrer">
-                    {tokenUri}
-                  </a>
-                </div>
-              ) : (
-                <>
-                  {hash.map((e, index) => (
-                    <li key={`${type}-hashes-${index}`}>
-                      {getIpfsHashFromBytes32(e)}
-                    </li>
-                  ))}
-                </>
-              )}
+              {getHashDetails(type, hash, tokenUri)}
               {updateHashBtn}
             </>
           ),
@@ -166,9 +152,7 @@ const Details = ({
     };
 
     const getServiceValues = () => {
-      const hash = get(hashes, 'configHashes') || [];
       const serviceState = ['2', '3', '4'].includes(get(info, 'state'));
-
       return [
         { title: 'Owner Address', value: detailsOwner || NA },
         {
@@ -176,11 +160,7 @@ const Details = ({
           dataTestId: 'hashes-list',
           value: (
             <>
-              {hash.map((e, index) => (
-                <li key={`${type}-hashes-${index}`}>
-                  {getIpfsHashFromBytes32(e.hash)}
-                </li>
-              ))}
+              {getHashDetails(type, hash, tokenUri)}
               {updateHashBtn}
             </>
           ),

@@ -124,3 +124,18 @@ export const updateAgentHashes = (account, id, newHash) => {
       console.error(e);
     });
 };
+
+export const getTokenUri = (id) => new Promise((resolve, reject) => {
+  const contract = getAgentContract();
+
+  contract.methods
+    .tokenURI(id)
+    .call()
+    .then((response) => {
+      resolve(response);
+    })
+    .catch((e) => {
+      console.error(e);
+      reject(e);
+    });
+});

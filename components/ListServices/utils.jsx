@@ -134,3 +134,18 @@ export const getServiceHashes = (id) => new Promise((resolve, reject) => {
       reject(e);
     });
 });
+
+export const getTokenUri = (id) => new Promise((resolve, reject) => {
+  const contract = getServiceContract();
+
+  contract.methods
+    .tokenURI(id)
+    .call()
+    .then((response) => {
+      resolve(response);
+    })
+    .catch((e) => {
+      console.error(e);
+      reject(e);
+    });
+});
