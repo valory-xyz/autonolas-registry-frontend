@@ -5,7 +5,7 @@ import get from 'lodash/get';
 import capitalize from 'lodash/capitalize';
 import {
   Row, Col, Button, Alert,
-} from 'antd';
+} from 'antd/lib';
 import {
   NAV_TYPES,
   SERVICE_STATE,
@@ -107,6 +107,16 @@ const Details = ({
   };
 
   const generateDetails = () => {
+    const updateHashBtn = isOwner ? (
+      <>
+        {onUpdateHash && (
+          <Button type="primary" ghost onClick={() => setIsModalVisible(true)}>
+            Update Hash
+          </Button>
+        )}
+      </>
+    ) : null;
+
     const getComponentAndAgentValues = () => {
       const dependencies = get(info, 'dependencies') || [];
       const hash = get(hashes, 'unitHashes') || [];
@@ -127,6 +137,7 @@ const Details = ({
                       {getIpfsHashFromBytes32(e)}
                     </li>
                   ))}
+                  {updateHashBtn}
                 </>
               )}
             </>
@@ -166,6 +177,7 @@ const Details = ({
                   {getIpfsHashFromBytes32(e.hash)}
                 </li>
               ))}
+              {updateHashBtn}
             </>
           ),
         },
@@ -204,7 +216,7 @@ const Details = ({
         <DetailsTitle level={2}>{`${capitalize(type)} ID ${id}`}</DetailsTitle>
         <div className="right-content">
           {/* Update button to be show only if the connected account is the owner */}
-          {isOwner && (
+          {isOwner && type !== NAV_TYPES.SERVICE && (
             <>
               <Button
                 disabled={!handleUpdate}
@@ -214,16 +226,6 @@ const Details = ({
               >
                 Update
               </Button>
-
-              {onUpdateHash && (
-                <Button
-                  type="primary"
-                  ghost
-                  onClick={() => setIsModalVisible(true)}
-                >
-                  Update Hash
-                </Button>
-              )}
             </>
           )}
         </div>
@@ -248,7 +250,12 @@ const Details = ({
           )}
 
           {type === NAV_TYPES.SERVICE && (
-            <ServiceState isOwner={isOwner} id={id} status={status} />
+            <ServiceState
+              isOwner={isOwner}
+              id={id}
+              status={status}
+              agentIds={get(info, 'agentIds')}
+            />
           )}
         </Col>
 
@@ -290,7 +297,7 @@ Details.defaultProps = {
 
 const mapStateToProps = (state) => {
   const account = get(state, 'setup.account') || '';
-  return { account };
+  return { account: account || '' };
 };
 
 export default connect(mapStateToProps, {})(Details);

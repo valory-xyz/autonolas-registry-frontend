@@ -67,7 +67,12 @@ const EditableCell = ({
           },
         ]}
       >
-        <Input.TextArea ref={inputRef} onPressEnter={onSave} onBlur={onSave} />
+        <Input.TextArea
+          ref={inputRef}
+          onPressEnter={onSave}
+          onBlur={onSave}
+          placeholder="0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199, 0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199, 0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199"
+        />
       </Form.Item>
     ) : (
       <div
@@ -86,11 +91,9 @@ const EditableCell = ({
 /**
  * Table
  */
-const ActiveRegistrationTable = ({ data, defaultColumns }) => {
-  const [dataSource, setDataSource] = useState(data);
-
+const ActiveRegistrationTable = ({ data, defaultColumns, setDataSource }) => {
   const handleSave = (row) => {
-    const newData = [...dataSource];
+    const newData = [...data];
     const index = newData.findIndex((item) => row.key === item.key);
     const item = newData[index];
     newData.splice(index, 1, { ...item, ...row });
@@ -124,7 +127,7 @@ const ActiveRegistrationTable = ({ data, defaultColumns }) => {
         components={components}
         rowClassName={() => 'editable-row'}
         bordered
-        dataSource={dataSource}
+        dataSource={data}
         columns={columns}
         pagination={false}
       />

@@ -8,9 +8,9 @@ import {
   Typography,
   Steps,
   Tooltip,
-} from 'antd';
-import { NA } from 'util/constants';
-import { onActivateRegistration } from './utils';
+} from 'antd/lib';
+// import { NA } from 'util/constants';
+import { onActivateRegistration, getStep2DataSource } from './utils';
 import ActiveRegistrationTable from './ActiveRegistrationTable';
 import { ServiceStateContainer, InfoSubHeader } from '../styles';
 
@@ -33,7 +33,7 @@ const STEP_2_TABLE_COLUMNS = [
     key: 'totalSlots',
   },
   {
-    title: 'Agent Addresses',
+    title: 'Agent Instance Addresses',
     dataIndex: 'agentAddresses',
     key: 'agentAddresses',
     width: '40%',
@@ -46,18 +46,28 @@ const Empty = () => <br />;
 /**
  * ServiceState component
  */
-export const ServiceState = ({ isOwner, id, status }) => {
+export const ServiceState = ({
+  isOwner, id, status, agentIds = [],
+}) => {
   const [currentStep, setCurrentStep] = useState(1);
+  const [dataSource, setDataSource] = useState([]);
+
+  useEffect(async () => {
+    if (id && (agentIds || []).length !== 0) {
+      const temp = await getStep2DataSource(id, agentIds || []);
+      setDataSource(temp);
+    }
+  }, [id, agentIds]);
 
   useEffect(() => {
-    setCurrentStep(2);
+    setCurrentStep(1);
     // setCurrentStep(Number(status) - 1);
   }, [status]);
 
   /* ----- step 1 ----- */
   const handleStep1Registration = async () => {
     try {
-      await onActivateRegistration(id);
+      await onActivateRegistration(id, agentIds);
     } catch (e) {
       console.error(e);
     }
@@ -68,23 +78,6 @@ export const ServiceState = ({ isOwner, id, status }) => {
   };
 
   /* ----- step 2 ----- */
-  const dataSource = [
-    {
-      key: '1',
-      agentId: '1',
-      availableSlots: 3,
-      totalSlots: 10,
-      agentAddresses: NA,
-    },
-    {
-      key: '2',
-      agentId: '4',
-      availableSlots: 0,
-      totalSlots: 10,
-      agentAddresses: NA,
-    },
-  ];
-
   const handleStep2RegisterAgents = () => {
     console.log('Step - 2, Button 1');
   };
@@ -163,6 +156,7 @@ export const ServiceState = ({ isOwner, id, status }) => {
                 <ActiveRegistrationTable
                   data={dataSource}
                   defaultColumns={STEP_2_TABLE_COLUMNS}
+                  setDataSource={setDataSource}
                   bordered
                 />
 
@@ -261,11 +255,13 @@ export const ServiceState = ({ isOwner, id, status }) => {
 
 ServiceState.propTypes = {
   status: PropTypes.string,
+  agentIds: PropTypes.shape([]),
   id: PropTypes.string.isRequired,
   isOwner: PropTypes.bool,
 };
 
 ServiceState.defaultProps = {
   status: null,
+  agentIds: [],
   isOwner: false,
 };

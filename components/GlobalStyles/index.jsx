@@ -167,8 +167,24 @@ const GlobalStyle = createGlobalStyle`
 
   /* TODO: figure out why font-size is not working from antd.less */
   .ant-table,
+  .ant-alert,
   .ant-form-item-label > label {
     font-size: 18px;
+  }
+
+  /* TODO: same as above */
+  .ant-steps-item-finish .ant-steps-item-icon > .ant-steps-icon {
+    color: ${COLOR.PRIMARY};
+  }
+  .ant-steps-item-process > .ant-steps-item-container > .ant-steps-item-icon,
+  .ant-steps-item-finish > .ant-steps-item-container > .ant-steps-item-tail::after
+  {
+    background: ${COLOR.PRIMARY};
+  }
+
+  .ant-steps-item-process > .ant-steps-item-container > .ant-steps-item-icon,
+  .ant-steps-item-finish .ant-steps-item-icon {
+    border-color:  ${COLOR.PRIMARY};
   }
 `;
 
