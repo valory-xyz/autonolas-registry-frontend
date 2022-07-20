@@ -21,7 +21,7 @@ Installation:
 
 `yarn`  
 
-To Run Test Suite:  
+To Run Test Suite:
 
 `yarn testc`  
 
