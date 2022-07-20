@@ -122,7 +122,7 @@ const IpfsModal = ({
           name="uri"
           label="URI to Code"
           rules={[{ required: true, message: 'Please input the URI' }]}
-          extra="Should point to resource with MIME type image/*."
+          extra="Should point to package, e.g. https://gateway.autonolas.tech/ipfs/{package_hash}"
         >
           <Input />
         </Form.Item>
