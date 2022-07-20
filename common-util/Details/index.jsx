@@ -3,15 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import get from 'lodash/get';
 import capitalize from 'lodash/capitalize';
-import {
-  Row, Col, Button, Alert,
-} from 'antd/lib';
-import {
-  NAV_TYPES,
-  SERVICE_STATE,
-  SERVICE_STATE_INFO,
-  NA,
-} from 'util/constants';
+import { Row, Col, Button } from 'antd/lib';
+import { NAV_TYPES, NA } from 'util/constants';
 import Loader from 'common-util/components/Loader';
 import { RegisterMessage, getIpfsHashFromBytes32 } from '../List/ListCommon';
 import IpfsHashGenerationModal from '../List/IpfsHashGenerationModal';
@@ -236,19 +229,6 @@ const Details = ({
         <Col className="gutter-row" span={12}>
           <InfoSubHeader>Description</InfoSubHeader>
           <div>{get(info, 'description', null) || NA}</div>
-
-          {status && (
-            <>
-              <br />
-              <InfoSubHeader>Status</InfoSubHeader>
-              <div className="mb-12">{SERVICE_STATE[status]}</div>
-              <Alert
-                message={SERVICE_STATE_INFO[status]}
-                type="info"
-                showIcon
-              />
-            </>
-          )}
 
           {type === NAV_TYPES.SERVICE && (
             <ServiceState
