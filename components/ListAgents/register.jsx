@@ -5,7 +5,6 @@ import { useRouter } from 'next/router';
 import { Typography, notification } from 'antd';
 import RegisterForm from 'common-util/List/RegisterForm';
 import {
-  getBytes32FromIpfsHash,
   AlertInfo,
   AlertError,
 } from 'common-util/List/ListCommon';
@@ -29,10 +28,10 @@ const RegisterAgent = ({ account }) => {
       const contract = getMechMinterContract();
 
       contract.methods
-        .mintAgent(
+        .create(
           '1',
           values.owner_address,
-          getBytes32FromIpfsHash(values.hash),
+          values.hash,
           values.dependencies ? values.dependencies.split(', ') : [],
         )
         .send({ from: account })

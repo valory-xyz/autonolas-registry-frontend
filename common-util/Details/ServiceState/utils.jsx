@@ -3,7 +3,6 @@ import {
   getServiceManagerContract,
 } from 'common-util/Contracts';
 // import {
-//   getBytes32FromIpfsHash,
 //   convertStringToArray,
 // } from 'common-util/List/ListCommon';
 
@@ -25,12 +24,12 @@ export const getServiceOwner = (id) => new Promise((resolve, reject) => {
     });
 });
 
-export const onActivateRegistration = (id) => new Promise((resolve, reject) => {
+export const onActivateRegistration = (account, id) => new Promise((resolve, reject) => {
   const contract = getServiceManagerContract();
 
   contract.methods
     .activateRegistration(id)
-    .call()
+    .send({ from: account })
     .then((information) => {
       resolve(information);
     })

@@ -9,6 +9,7 @@ import {
   getComponentHashes,
   updateComponentHashes,
   getComponentOwner,
+  getTokenUri,
 } from './utils';
 
 const Component = ({ account }) => {
@@ -23,6 +24,7 @@ const Component = ({ account }) => {
         getDetails={() => getComponentDetails(id)}
         getHashes={() => getComponentHashes(id)}
         getOwner={() => getComponentOwner(id)}
+        getTokenUri={() => getTokenUri(id)}
         onUpdateHash={(newHash) => updateComponentHashes(account, id, newHash)}
         onDependencyClick={(e) => router.push(`${URL.COMPONENTS}/${e}`)}
       />

@@ -47,7 +47,7 @@ const Empty = () => <br />;
  * ServiceState component
  */
 export const ServiceState = ({
-  isOwner, id, status, agentIds = [],
+  isOwner, id, status, agentIds = [], account,
 }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [dataSource, setDataSource] = useState([]);
@@ -67,7 +67,7 @@ export const ServiceState = ({
   /* ----- step 1 ----- */
   const handleStep1Registration = async () => {
     try {
-      await onActivateRegistration(id, agentIds);
+      await onActivateRegistration(account, id);
     } catch (e) {
       console.error(e);
     }
@@ -254,6 +254,7 @@ export const ServiceState = ({
 };
 
 ServiceState.propTypes = {
+  account: PropTypes.string,
   status: PropTypes.string,
   agentIds: PropTypes.shape([]),
   id: PropTypes.string.isRequired,
@@ -261,6 +262,7 @@ ServiceState.propTypes = {
 };
 
 ServiceState.defaultProps = {
+  account: null,
   status: null,
   agentIds: [],
   isOwner: false,

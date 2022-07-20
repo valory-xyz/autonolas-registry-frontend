@@ -32,6 +32,7 @@ const Details = ({
   type,
   getDetails,
   getHashes,
+  getTokenUri,
   handleUpdate,
   getOwner,
   onUpdateHash,
@@ -42,8 +43,9 @@ const Details = ({
   const [hashes, setHashes] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [detailsOwner, setDetailsOwner] = useState('');
+  const [tokenUri, setTokenUri] = useState(null);
+
   const status = get(info, 'state');
-  const unitHash = get(info, 'unitHash');
   const isOwner = account.toLowerCase() === detailsOwner.toLowerCase();
 
   const getUpdatedHashes = async () => {
@@ -67,6 +69,9 @@ const Details = ({
 
       const ownerAccount = await getOwner();
       setDetailsOwner(ownerAccount || '');
+
+      const tempTokenUri = await getTokenUri();
+      setTokenUri(tempTokenUri);
 
       await getUpdatedHashes();
     } catch (e) {
@@ -123,7 +128,11 @@ const Details = ({
           value: (
             <>
               {hash.length === 0 ? (
-                <div>{unitHash}</div>
+                <div>
+                  <a href={tokenUri} target="_blank" rel="noopener noreferrer">
+                    {tokenUri}
+                  </a>
+                </div>
               ) : (
                 <>
                   {hash.map((e, index) => (
@@ -158,6 +167,7 @@ const Details = ({
 
     const getServiceValues = () => {
       const hash = get(hashes, 'configHashes') || [];
+      const serviceState = ['2', '3', '4'].includes(get(info, 'state'));
 
       return [
         { title: 'Owner Address', value: detailsOwner || NA },
@@ -177,7 +187,7 @@ const Details = ({
         },
         {
           title: 'Active',
-          value: get(info, 'active', null) ? 'TRUE' : 'FALSE',
+          value: serviceState ? 'TRUE' : 'FALSE',
         },
         {
           type: 'table',
@@ -236,6 +246,7 @@ const Details = ({
               id={id}
               status={status}
               agentIds={get(info, 'agentIds')}
+              account={account}
             />
           )}
         </Col>
@@ -261,6 +272,7 @@ Details.propTypes = {
   type: PropTypes.string.isRequired,
   getDetails: PropTypes.func.isRequired,
   getHashes: PropTypes.func,
+  getTokenUri: PropTypes.func,
   getOwner: PropTypes.func,
   handleUpdate: PropTypes.func,
   onUpdateHash: PropTypes.func,
@@ -271,6 +283,7 @@ Details.defaultProps = {
   account: '',
   handleUpdate: null,
   getHashes: () => {},
+  getTokenUri: () => {},
   getOwner: () => {},
   onUpdateHash: () => {},
   onDependencyClick: () => {},
