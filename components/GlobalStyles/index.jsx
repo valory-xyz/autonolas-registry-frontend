@@ -45,7 +45,7 @@ const GlobalStyle = createGlobalStyle`
 
   /* layout */
   .ant-layout {
-    background: ${COLOR.WHITE}
+    background: ${COLOR.WHITE};
   }
   .ant-layout-header {
     display: flex;
@@ -163,6 +163,12 @@ const GlobalStyle = createGlobalStyle`
   .inherit-alert-info {
     background-color: inherit;
     border-color: ${COLOR.PRIMARY};
+  }
+
+  /* TODO: figure out why font-size is not working from antd.less */
+  .ant-table,
+  .ant-form-item-label > label {
+    font-size: 18px;
   }
 `;
 

@@ -191,7 +191,9 @@ export const ServiceState = ({ isOwner, id, status }) => {
                   <Radio.Group>
                     <Space direction="vertical" size={10}>
                       {multisigAddresses.map((multisigAddress) => (
-                        <Radio value={multisigAddress}>{multisigAddress}</Radio>
+                        <Radio key={multisigAddress} value={multisigAddress}>
+                          {multisigAddress}
+                        </Radio>
                       ))}
                     </Space>
                   </Radio.Group>
