@@ -71,10 +71,9 @@ export const getServices = () => new Promise((resolve, reject) => {
     .totalSupply()
     .call()
     .then((total) => {
-      const { maxServiceId } = total;
       const existsPromises = [];
 
-      for (let i = 1; i <= maxServiceId; i += 1) {
+      for (let i = 1; i <= Number(total); i += 1) {
         const result = contract.methods.exists(`${i}`).call();
         existsPromises.push(result);
       }

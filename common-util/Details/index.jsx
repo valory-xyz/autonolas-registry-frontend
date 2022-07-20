@@ -50,6 +50,7 @@ const Details = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [detailsOwner, setDetailsOwner] = useState('');
   const status = get(info, 'state');
+  const unitHash = get(info, 'unitHash');
   const isOwner = account.toLowerCase() === detailsOwner.toLowerCase();
 
   const getUpdatedHashes = async () => {
@@ -129,7 +130,7 @@ const Details = ({
           value: (
             <>
               {hash.length === 0 ? (
-                NA
+                <div>{unitHash}</div>
               ) : (
                 <>
                   {hash.map((e, index) => (
@@ -137,9 +138,9 @@ const Details = ({
                       {getIpfsHashFromBytes32(e)}
                     </li>
                   ))}
-                  {updateHashBtn}
                 </>
               )}
+              {updateHashBtn}
             </>
           ),
         },
