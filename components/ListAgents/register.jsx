@@ -27,18 +27,12 @@ const RegisterAgent = ({ account }) => {
       setInformation(null);
 
       const contract = getMechMinterContract();
-      const hashObject = {
-        hash: getBytes32FromIpfsHash(values.hash),
-        hashFunction: '0x12',
-        size: '0x20',
-      };
 
       contract.methods
         .mintAgent(
+          '1',
           values.owner_address,
-          values.developer_address,
-          hashObject,
-          values.description,
+          getBytes32FromIpfsHash(values.hash),
           values.dependencies ? values.dependencies.split(', ') : [],
         )
         .send({ from: account })

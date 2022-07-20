@@ -27,10 +27,8 @@ const RegisterService = ({ account }) => {
 
       const contract = getServiceManagerContract();
       contract.methods
-        .serviceCreate(
+        .create(
           values.owner_address,
-          values.service_name,
-          values.service_description,
           getServiceHash(values), // configHash
           convertStringToArray(values.agent_ids),
           getAgentParams(values),

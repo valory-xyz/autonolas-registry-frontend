@@ -100,7 +100,7 @@ export const getAgentHashes = (agentId) => new Promise((resolve, reject) => {
   const contract = getAgentContract();
 
   contract.methods
-    .getHashes(agentId)
+    .getUpdatedHashes(agentId)
     .call()
     .then((response) => {
       resolve(response);
@@ -114,14 +114,8 @@ export const getAgentHashes = (agentId) => new Promise((resolve, reject) => {
 export const updateAgentHashes = (account, id, newHash) => {
   const contract = getMechMinterContract();
 
-  const hashObject = {
-    hash: getBytes32FromIpfsHash(newHash),
-    hashFunction: '0x12',
-    size: '0x20',
-  };
-
   contract.methods
-    .updateAgentHash(id, hashObject)
+    .updateHash('0', id, getBytes32FromIpfsHash(newHash))
     .send({ from: account })
     .then(() => {
       notification.success({ message: 'Hash Updated' });
