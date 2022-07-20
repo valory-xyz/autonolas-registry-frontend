@@ -6,7 +6,7 @@ import { Button } from 'antd';
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
 import { CHAIN_ID, CONSTANTS } from 'util/constants';
-import { GreyButton } from 'common-util/components/Button';
+import { WhiteButton } from 'common-util/components/Button';
 import {
   setUserAccount as setUserAccountFn,
   setUserBalance as setUserBalanceFn,
@@ -148,9 +148,9 @@ const Login = ({
           <EllipsisMiddle data-testid="metamask-address">
             {account ? `${account}` : 'NA'}
           </EllipsisMiddle>
-          <GreyButton type="primary" onClick={handleDisconnect}>
+          <WhiteButton type="primary" onClick={handleDisconnect}>
             Disconnect
-          </GreyButton>
+          </WhiteButton>
         </MetamaskContainer>
       </DetailsContainer>
     </Container>

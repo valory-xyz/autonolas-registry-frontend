@@ -174,32 +174,6 @@ const RegisterForm = ({
         )}
 
         <Form.Item
-          label="Service Name"
-          name="service_name"
-          rules={[
-            {
-              required: true,
-              message: `Please input the ${listType} name`,
-            },
-          ]}
-        >
-          <Input />
-        </Form.Item>
-
-        <Form.Item
-          label="Service Description"
-          name="service_description"
-          rules={[
-            {
-              required: true,
-              message: `Please input the ${listType} Description`,
-            },
-          ]}
-        >
-          <Input.TextArea rows={4} />
-        </Form.Item>
-
-        <Form.Item
           label="Hash"
           name="hash"
           rules={[

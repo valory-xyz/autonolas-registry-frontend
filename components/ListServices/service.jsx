@@ -46,9 +46,7 @@ const Service = ({ account }) => {
 
       const contract = getServiceManagerContract();
       contract.methods
-        .serviceUpdate(
-          values.service_name,
-          values.service_description,
+        .update(
           getServiceHash(values), // configHash
           convertStringToArray(values.agent_ids),
           getAgentParams(values),

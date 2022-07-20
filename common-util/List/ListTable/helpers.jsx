@@ -64,14 +64,6 @@ export const getTableColumns = (
         width: 50,
       },
       {
-        title: 'Description',
-        dataIndex: 'description',
-        key: 'description',
-        width: 200,
-        className: 'underline',
-        render: (text) => <EllipsisMiddle>{text}</EllipsisMiddle>,
-      },
-      {
         title: 'Owner',
         dataIndex: 'owner',
         key: 'owner',

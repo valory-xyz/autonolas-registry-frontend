@@ -30,6 +30,9 @@ const GlobalStyle = createGlobalStyle`
   }
 
   /* common */
+  .m-0 {
+    margin: 0 !important;
+  }
   .mb-12 {
     margin-bottom: 12px;
   }
@@ -41,6 +44,9 @@ const GlobalStyle = createGlobalStyle`
   }
 
   /* layout */
+  .ant-layout {
+    background: ${COLOR.WHITE};
+  }
   .ant-layout-header {
     display: flex;
     position: fixed;
@@ -100,16 +106,8 @@ const GlobalStyle = createGlobalStyle`
 
   /* table */
   .ant-table {
-    .ant-table-cell:first-child {
-      border-left: 1px solid ${COLOR.BORDER_GREY};
-    }
-    .ant-table-cell:last-child {
-      border-right: 1px solid ${COLOR.BORDER_GREY};
-    }
     .ant-table-thead {
       > tr > th {
-        border-top: 1px solid ${COLOR.BORDER_GREY};
-        border-bottom: 2px solid ${COLOR.BORDER_GREY};
         font-weight: normal;
         padding: 12px 16px;
         &:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before {
@@ -120,7 +118,6 @@ const GlobalStyle = createGlobalStyle`
     .ant-table-tbody > tr {
       > td {
         padding: 12px 16px;
-        background: ${COLOR.TABLE_BLACK};
         &.underline span {
           text-decoration: underline;
         }
@@ -143,10 +140,51 @@ const GlobalStyle = createGlobalStyle`
     }
   }
 
+  .ant-table:not(.ant-table-bordered) {
+    .ant-table-cell:first-child {
+      border-left: 1px solid ${COLOR.BORDER_GREY};
+    }
+    .ant-table-cell:last-child {
+      border-right: 1px solid ${COLOR.BORDER_GREY};
+    }
+    .ant-table-thead {
+      > tr > th {
+        border-top: 1px solid ${COLOR.BORDER_GREY};
+        border-bottom: 1px solid ${COLOR.BORDER_GREY};
+      }
+    }
+  }
+
+  .ant-tooltip-inner {
+    text-align: center;
+  }
+
   /* alert */
   .inherit-alert-info {
     background-color: inherit;
     border-color: ${COLOR.PRIMARY};
+  }
+
+  /* TODO: figure out why font-size is not working from antd.less */
+  .ant-table,
+  .ant-alert,
+  .ant-form-item-label > label {
+    font-size: 18px;
+  }
+
+  /* TODO: same as above */
+  .ant-steps-item-finish .ant-steps-item-icon > .ant-steps-icon {
+    color: ${COLOR.PRIMARY};
+  }
+  .ant-steps-item-process > .ant-steps-item-container > .ant-steps-item-icon,
+  .ant-steps-item-finish > .ant-steps-item-container > .ant-steps-item-tail::after
+  {
+    background: ${COLOR.PRIMARY};
+  }
+
+  .ant-steps-item-process > .ant-steps-item-container > .ant-steps-item-icon,
+  .ant-steps-item-finish .ant-steps-item-icon {
+    border-color:  ${COLOR.PRIMARY};
   }
 `;
 

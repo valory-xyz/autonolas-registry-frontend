@@ -27,24 +27,23 @@ WhiteButton.defaultProps = {
 };
 
 /**
- * @returns WhiteButton component
+ * @returns PurpleButton component
  */
-const greyBtnStyle = {
-  color: COLOR.GREY_1,
-  borderColor: COLOR.GREY_1,
-  backgroundColor: COLOR.BLACK,
+const purpleBtnStyle = {
+  color: COLOR.BLACK,
+  borderColor: COLOR.PURPLE,
+  backgroundColor: COLOR.PURPLE,
 };
-
-export const GreyButton = ({ children, ...rest }) => (
-  <Button {...rest} style={greyBtnStyle}>
+export const PurpleButton = ({ children, ...rest }) => (
+  <Button {...rest} style={purpleBtnStyle}>
     {children}
   </Button>
 );
 
-GreyButton.propTypes = {
+PurpleButton.propTypes = {
   children: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
 };
 
-GreyButton.defaultProps = {
+PurpleButton.defaultProps = {
   children: null,
 };

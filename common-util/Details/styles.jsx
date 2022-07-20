@@ -20,9 +20,9 @@ export const Header = styled.div`
 `;
 
 export const InfoSubHeader = styled.div`
-  font-weight: 500;
+  font-weight: 700;
   margin-bottom: 0.25rem;
-  color: ${COLOR.GREY_2};
+  color: ${COLOR.BLACK};
 `;
 
 export const Info = styled.div`
@@ -37,7 +37,6 @@ export const Info = styled.div`
 
 export const EachSection = styled.div`
   padding: 1rem 2rem;
-  background: ${COLOR.TABLE_BLACK};
   border: 1px solid ${COLOR.BORDER_GREY};
   border-bottom-color: transparent;
 `;
@@ -52,6 +51,27 @@ export const SectionContainer = styled.div`
       border-bottom-left-radius: 1rem;
       border-bottom-right-radius: 1rem;
       border-bottom-color: ${COLOR.BORDER_GREY};
+    }
+  }
+`;
+
+export const ServiceStateContainer = styled.div`
+  .ant-btn {
+    font-size: 16px;
+    height: 32px;
+    padding: 0 1rem;
+  }
+  .ant-steps-item-description {
+    .ant-divider {
+      margin: 0.75rem 0;
+    }
+  }
+  .ant-table, .ant-input {
+    font-size: 16px;
+  }
+  .step-2-active-registration {
+    .ant-table-wrapper {
+      margin-bottom: 1rem;
     }
   }
 `;

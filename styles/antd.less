@@ -1,30 +1,30 @@
-@import "~antd/lib/style/themes/dark.less";
 @import "~antd/dist/antd.less";
 
 @custom-height: 42px;
 @valory-input-height: 42px;
-@valory-primary: #00FC82;
+@valory-primary: #7A00F4;
 @valory-grey-1: #C4C4C4;
 @valory-grey-2: #9A9A9A;
 @valory-black: #141414;
+@valory-white: #FFFFFF;
 @valory-table-black: #1B1B1B;
 @valory-red: #EA3324;
 
 @font-size-base: 18px;
 @border-radius-base: 5px;
+@body-background: @valory-white;
 @primary-color: @valory-primary;
-@body-background: @valory-black;
-@component-background: @valory-black;
-@btn-primary-color: hsl(0, 0%, 0%);
+@processing-color: @valory-primary;
 @btn-height-base: @custom-height;
+@btn-font-size-sm: 14px;
 @input-placeholder-color: @valory-grey-2;
 @input-border-color: @valory-grey-1;
+@table-font-size: @font-size-base;
+@table-header-color: @valory-table-black;
+@layout-header-background: @valory-white;
 @input-height-base: @valory-input-height;
-@layout-header-background: @valory-black;
-@table-bg: @valory-table-black;
-@table-header-bg: @valory-table-black;
 @table-header-color: @valory-grey-2;
-@table-row-hover-bg: @valory-table-black;
+@form-item-label-font-size: @font-size-base;
 
 /* form */
 .ant-form {
@@ -32,6 +32,7 @@
     &::before {
       content: '' !important;
     }
+
     &::after {
       content: "*";
       display: inline-block;

@@ -5,7 +5,7 @@ import get from 'lodash/get';
 import capitalize from 'lodash/capitalize';
 import {
   Row, Col, Button, Alert,
-} from 'antd';
+} from 'antd/lib';
 import {
   NAV_TYPES,
   SERVICE_STATE,
@@ -15,6 +15,7 @@ import {
 import Loader from 'common-util/components/Loader';
 import { RegisterMessage, getIpfsHashFromBytes32 } from '../List/ListCommon';
 import IpfsHashGenerationModal from '../List/IpfsHashGenerationModal';
+import { ServiceState } from './ServiceState';
 import { getTable } from './helpers';
 import {
   Header,
@@ -49,6 +50,7 @@ const Details = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [detailsOwner, setDetailsOwner] = useState('');
   const status = get(info, 'state');
+  const isOwner = account.toLowerCase() === detailsOwner.toLowerCase();
 
   const getUpdatedHashes = async () => {
     try {
@@ -70,7 +72,7 @@ const Details = ({
       setInfo(temp);
 
       const ownerAccount = await getOwner();
-      setDetailsOwner(ownerAccount);
+      setDetailsOwner(ownerAccount || '');
 
       await getUpdatedHashes();
     } catch (e) {
@@ -105,16 +107,22 @@ const Details = ({
   };
 
   const generateDetails = () => {
+    const updateHashBtn = isOwner ? (
+      <>
+        {onUpdateHash && (
+          <Button type="primary" ghost onClick={() => setIsModalVisible(true)}>
+            Update Hash
+          </Button>
+        )}
+      </>
+    ) : null;
+
     const getComponentAndAgentValues = () => {
       const dependencies = get(info, 'dependencies') || [];
       const hash = get(hashes, 'unitHashes') || [];
 
       return [
         { title: 'Owner Address', value: detailsOwner || NA },
-        {
-          title: 'Developer Address',
-          value: get(info, 'developer', null) || NA,
-        },
         {
           title: 'Hash',
           dataTestId: 'hashes-list',
@@ -129,6 +137,7 @@ const Details = ({
                       {getIpfsHashFromBytes32(e)}
                     </li>
                   ))}
+                  {updateHashBtn}
                 </>
               )}
             </>
@@ -157,12 +166,7 @@ const Details = ({
       const hash = get(hashes, 'configHashes') || [];
 
       return [
-        { title: 'Name', value: get(info, 'name', null) || NA },
         { title: 'Owner Address', value: detailsOwner || NA },
-        {
-          title: 'Developer Address',
-          value: get(info, 'developer', null) || NA,
-        },
         {
           title: 'Hash',
           dataTestId: 'hashes-list',
@@ -173,6 +177,7 @@ const Details = ({
                   {getIpfsHashFromBytes32(e.hash)}
                 </li>
               ))}
+              {updateHashBtn}
             </>
           ),
         },
@@ -211,7 +216,7 @@ const Details = ({
         <DetailsTitle level={2}>{`${capitalize(type)} ID ${id}`}</DetailsTitle>
         <div className="right-content">
           {/* Update button to be show only if the connected account is the owner */}
-          {account.toLowerCase() === detailsOwner.toLowerCase() && (
+          {isOwner && type !== NAV_TYPES.SERVICE && (
             <>
               <Button
                 disabled={!handleUpdate}
@@ -221,16 +226,6 @@ const Details = ({
               >
                 Update
               </Button>
-
-              {onUpdateHash && (
-                <Button
-                  type="primary"
-                  ghost
-                  onClick={() => setIsModalVisible(true)}
-                >
-                  Update Hash
-                </Button>
-              )}
             </>
           )}
         </div>
@@ -253,7 +248,17 @@ const Details = ({
               />
             </>
           )}
+
+          {type === NAV_TYPES.SERVICE && (
+            <ServiceState
+              isOwner={isOwner}
+              id={id}
+              status={status}
+              agentIds={get(info, 'agentIds')}
+            />
+          )}
         </Col>
+
         <Col className="gutter-row" span={12}>
           {generateDetails()}
         </Col>
@@ -282,7 +287,7 @@ Details.propTypes = {
 };
 
 Details.defaultProps = {
-  account: null,
+  account: '',
   handleUpdate: null,
   getHashes: () => {},
   getOwner: () => {},
@@ -291,8 +296,8 @@ Details.defaultProps = {
 };
 
 const mapStateToProps = (state) => {
-  const account = get(state, 'setup.account') || null;
-  return { account };
+  const account = get(state, 'setup.account') || '';
+  return { account: account || '' };
 };
 
 export default connect(mapStateToProps, {})(Details);
