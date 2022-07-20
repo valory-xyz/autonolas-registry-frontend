@@ -299,11 +299,6 @@ export const REGISTRIES_MANAGER_CONTRACT = {
       type: 'error',
     },
     {
-      inputs: [],
-      name: 'WrongFunction',
-      type: 'error',
-    },
-    {
       inputs: [
         {
           internalType: 'uint256',
@@ -442,7 +437,7 @@ export const REGISTRIES_MANAGER_CONTRACT = {
     {
       inputs: [
         {
-          internalType: 'enum RegistriesManager.UnitType',
+          internalType: 'enum IRegistry.UnitType',
           name: 'unitType',
           type: 'uint8',
         },
@@ -450,11 +445,6 @@ export const REGISTRIES_MANAGER_CONTRACT = {
           internalType: 'address',
           name: 'unitOwner',
           type: 'address',
-        },
-        {
-          internalType: 'bytes32',
-          name: 'description',
-          type: 'bytes32',
         },
         {
           internalType: 'bytes32',
@@ -521,7 +511,7 @@ export const REGISTRIES_MANAGER_CONTRACT = {
     {
       inputs: [
         {
-          internalType: 'enum RegistriesManager.UnitType',
+          internalType: 'enum IRegistry.UnitType',
           name: 'unitType',
           type: 'uint8',
         },
@@ -548,7 +538,6 @@ export const REGISTRIES_MANAGER_CONTRACT = {
       type: 'function',
     },
   ],
-  bytecode: '',
   deployedBytecode: '',
   linkReferences: {},
   deployedLinkReferences: {},
