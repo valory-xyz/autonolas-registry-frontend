@@ -34,11 +34,9 @@ export const SERVICE_STATE = {
   0: 'Non Existent',
   1: 'Pre Registration',
   2: 'Active Registration',
-  3: 'Expired Registration',
-  4: 'Finished Registration',
-  5: 'Deployed',
-  6: 'Terminated Bonded',
-  7: 'Terminated Unbonded',
+  3: 'Finished Registration',
+  4: 'Deployed',
+  5: 'Terminated Bonded',
 };
 
 export const SERVICE_STATE_INFO = {

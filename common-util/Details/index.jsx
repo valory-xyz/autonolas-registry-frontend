@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import get from 'lodash/get';
@@ -44,8 +44,6 @@ const Details = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [detailsOwner, setDetailsOwner] = useState('');
   const [tokenUri, setTokenUri] = useState(null);
-
-  const status = get(info, 'state');
   const isOwner = account.toLowerCase() === detailsOwner.toLowerCase();
 
   const getUpdatedHashes = async () => {
@@ -58,6 +56,15 @@ const Details = ({
       setIsLoading(false);
     }
   };
+
+  const updateDetails = useCallback(async () => {
+    try {
+      const temp = await getDetails();
+      setInfo(temp);
+    } catch (e) {
+      console.error(e);
+    }
+  }, []);
 
   useEffect(async () => {
     setIsLoading(true);
@@ -217,16 +224,13 @@ const Details = ({
 
       <Row gutter={gt}>
         <Col className="gutter-row" span={12}>
-          <InfoSubHeader>Description</InfoSubHeader>
-          <div>{get(info, 'description', null) || NA}</div>
-
           {type === NAV_TYPES.SERVICE && (
             <ServiceState
               isOwner={isOwner}
               id={id}
-              status={status}
-              agentIds={get(info, 'agentIds')}
               account={account}
+              details={info}
+              updateDetails={updateDetails}
             />
           )}
         </Col>
