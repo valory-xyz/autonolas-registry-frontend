@@ -32,8 +32,8 @@ class MyApp extends App {
       <>
         <GlobalStyle />
         <Head>
-          <title>Protocol</title>
-          <meta name="description" content="Protocol" />
+          <title>Autonolas Protocol</title>
+          <meta name="description" content="View and manage components, agents and services via the Autonolas on-chain registry." />
         </Head>
         <Web3ReactProvider getLibrary={getLibrary}>
           <MetamaskProvider>
