@@ -9,8 +9,16 @@ import {
   Steps,
   Tooltip,
 } from 'antd/lib';
+import get from 'lodash/get';
 // import { NA } from 'util/constants';
-import { onActivateRegistration, getStep2DataSource } from './utils';
+import {
+  onActivateRegistration,
+  getStep2DataSource,
+  onTerminate,
+  onStep2RegisterAgents,
+  onStep3Deploy,
+  onStep5Unbond,
+} from './utils';
 import ActiveRegistrationTable from './ActiveRegistrationTable';
 import { ServiceStateContainer, InfoSubHeader } from '../styles';
 
@@ -41,16 +49,30 @@ const STEP_2_TABLE_COLUMNS = [
   },
 ];
 
+const multisigAddresses = [
+  // '0x1c2cD884127b080F940b7546c1e9aaf525b1FA55', // this is for mainnet
+  '0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0',
+];
+
 const Empty = () => <br />;
 
 /**
  * ServiceState component
  */
 export const ServiceState = ({
-  isOwner, id, status, agentIds = [], account,
+  account,
+  isOwner,
+  id,
+  details,
+  updateDetails,
 }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [dataSource, setDataSource] = useState([]);
+  const [radioValue, setRadioValue] = useState(null);
+
+  const status = get(details, 'state');
+  const agentIds = get(details, 'agentIds');
+  const securityDeposit = get(details, 'securityDeposit');
 
   useEffect(async () => {
     if (id && (agentIds || []).length !== 0) {
@@ -67,7 +89,7 @@ export const ServiceState = ({
   /* ----- step 1 ----- */
   const handleStep1Registration = async () => {
     try {
-      await onActivateRegistration(account, id);
+      await onActivateRegistration(account, id, securityDeposit);
     } catch (e) {
       console.error(e);
     }
@@ -78,23 +100,30 @@ export const ServiceState = ({
   };
 
   /* ----- step 2 ----- */
-  const handleStep2RegisterAgents = () => {
-    console.log('Step - 2, Button 1');
+  const handleStep2RegisterAgents = async () => {
+    try {
+      await onStep2RegisterAgents(account, id);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
-  const handleStep2Terminate = () => {
-    console.log('Step - 2, Button 2');
+  const handleStep2Terminate = async () => {
+    try {
+      await onTerminate(account, id);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   /* ----- step 3 ----- */
-  const multisigAddresses = [
-    '0x7651239879182341321',
-    '0x7651239879182341322',
-    '0x7651239879182341323',
-  ];
 
-  const handleStep3Deploy = () => {
-    console.log('Step - 3, Button 1');
+  const handleStep3Deploy = async () => {
+    try {
+      await onStep3Deploy(account, id, radioValue);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const handleStep3Terminate = () => {
@@ -103,12 +132,19 @@ export const ServiceState = ({
 
   /* ----- step 4 ----- */
   const isTerminateDisabled = !isOwner;
+  const handleStep4Terminate = async () => {
+    try {
+      await onTerminate(account, id);
+      await updateDetails();
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   const terminateBtn = (
     <Button
       disabled={isTerminateDisabled}
-      onClick={() => {
-        console.log('Step - 4, Button 1');
-      }}
+      onClick={handleStep4Terminate}
     >
       Terminate
     </Button>
@@ -119,8 +155,13 @@ export const ServiceState = ({
   const unboundBtn = (
     <Button
       disabled={isUnboundDisabled}
-      onClick={() => {
-        console.log('Step - 5, Button 1');
+      onClick={async () => {
+        try {
+          await onStep5Unbond(account, id);
+          await updateDetails();
+        } catch (e) {
+          console.error(e);
+        }
       }}
     >
       Unbond
@@ -182,7 +223,10 @@ export const ServiceState = ({
                     Choose multi-sig implementation:
                   </Typography.Text>
 
-                  <Radio.Group>
+                  <Radio.Group
+                    value={radioValue}
+                    onChange={(e) => setRadioValue(e.target.value)}
+                  >
                     <Space direction="vertical" size={10}>
                       {multisigAddresses.map((multisigAddress) => (
                         <Radio key={multisigAddress} value={multisigAddress}>
@@ -255,15 +299,15 @@ export const ServiceState = ({
 
 ServiceState.propTypes = {
   account: PropTypes.string,
-  status: PropTypes.string,
-  agentIds: PropTypes.shape([]),
   id: PropTypes.string.isRequired,
   isOwner: PropTypes.bool,
+  details: PropTypes.shape([]),
+  updateDetails: PropTypes.func,
 };
 
 ServiceState.defaultProps = {
   account: null,
-  status: null,
-  agentIds: [],
+  details: {},
   isOwner: false,
+  updateDetails: () => {},
 };
