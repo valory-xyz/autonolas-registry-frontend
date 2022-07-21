@@ -6,10 +6,10 @@ import capitalize from 'lodash/capitalize';
 import { Row, Col, Button } from 'antd/lib';
 import { NAV_TYPES, NA } from 'util/constants';
 import Loader from 'common-util/components/Loader';
-import { RegisterMessage, getIpfsHashFromBytes32 } from '../List/ListCommon';
+import { RegisterMessage } from '../List/ListCommon';
 import IpfsHashGenerationModal from '../List/IpfsHashGenerationModal';
 import { ServiceState } from './ServiceState';
-import { getTable } from './helpers';
+import { getTable, getHashDetails } from './helpers';
 import {
   Header,
   DetailsTitle,
@@ -32,6 +32,7 @@ const Details = ({
   type,
   getDetails,
   getHashes,
+  getTokenUri,
   handleUpdate,
   getOwner,
   onUpdateHash,
@@ -42,8 +43,9 @@ const Details = ({
   const [hashes, setHashes] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [detailsOwner, setDetailsOwner] = useState('');
+  const [tokenUri, setTokenUri] = useState(null);
+
   const status = get(info, 'state');
-  const unitHash = get(info, 'unitHash');
   const isOwner = account.toLowerCase() === detailsOwner.toLowerCase();
 
   const getUpdatedHashes = async () => {
@@ -67,6 +69,9 @@ const Details = ({
 
       const ownerAccount = await getOwner();
       setDetailsOwner(ownerAccount || '');
+
+      const tempTokenUri = await getTokenUri();
+      setTokenUri(tempTokenUri);
 
       await getUpdatedHashes();
     } catch (e) {
@@ -101,6 +106,7 @@ const Details = ({
   };
 
   const generateDetails = () => {
+    const hash = get(hashes, 'unitHashes') || [];
     const updateHashBtn = isOwner ? (
       <>
         {onUpdateHash && (
@@ -113,7 +119,6 @@ const Details = ({
 
     const getComponentAndAgentValues = () => {
       const dependencies = get(info, 'dependencies') || [];
-      const hash = get(hashes, 'unitHashes') || [];
 
       return [
         { title: 'Owner Address', value: detailsOwner || NA },
@@ -122,17 +127,7 @@ const Details = ({
           dataTestId: 'hashes-list',
           value: (
             <>
-              {hash.length === 0 ? (
-                <div>{unitHash}</div>
-              ) : (
-                <>
-                  {hash.map((e, index) => (
-                    <li key={`${type}-hashes-${index}`}>
-                      {getIpfsHashFromBytes32(e)}
-                    </li>
-                  ))}
-                </>
-              )}
+              {getHashDetails(type, hash, tokenUri)}
               {updateHashBtn}
             </>
           ),
@@ -157,8 +152,7 @@ const Details = ({
     };
 
     const getServiceValues = () => {
-      const hash = get(hashes, 'configHashes') || [];
-
+      const serviceState = ['2', '3', '4'].includes(get(info, 'state'));
       return [
         { title: 'Owner Address', value: detailsOwner || NA },
         {
@@ -166,18 +160,14 @@ const Details = ({
           dataTestId: 'hashes-list',
           value: (
             <>
-              {hash.map((e, index) => (
-                <li key={`${type}-hashes-${index}`}>
-                  {getIpfsHashFromBytes32(e.hash)}
-                </li>
-              ))}
+              {getHashDetails(type, hash, tokenUri)}
               {updateHashBtn}
             </>
           ),
         },
         {
           title: 'Active',
-          value: get(info, 'active', null) ? 'TRUE' : 'FALSE',
+          value: serviceState ? 'TRUE' : 'FALSE',
         },
         {
           type: 'table',
@@ -236,6 +226,7 @@ const Details = ({
               id={id}
               status={status}
               agentIds={get(info, 'agentIds')}
+              account={account}
             />
           )}
         </Col>
@@ -261,6 +252,7 @@ Details.propTypes = {
   type: PropTypes.string.isRequired,
   getDetails: PropTypes.func.isRequired,
   getHashes: PropTypes.func,
+  getTokenUri: PropTypes.func,
   getOwner: PropTypes.func,
   handleUpdate: PropTypes.func,
   onUpdateHash: PropTypes.func,
@@ -271,6 +263,7 @@ Details.defaultProps = {
   account: '',
   handleUpdate: null,
   getHashes: () => {},
+  getTokenUri: () => {},
   getOwner: () => {},
   onUpdateHash: () => {},
   onDependencyClick: () => {},

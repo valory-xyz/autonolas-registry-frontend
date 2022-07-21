@@ -1,6 +1,5 @@
 import { notification } from 'antd';
 import { getMechMinterContract, getAgentContract } from 'common-util/Contracts';
-import { getBytes32FromIpfsHash } from 'common-util/List/ListCommon';
 
 // --------- HELPER METHODS ---------
 export const getAgentOwner = (agentId) => new Promise((resolve, reject) => {
@@ -115,7 +114,7 @@ export const updateAgentHashes = (account, id, newHash) => {
   const contract = getMechMinterContract();
 
   contract.methods
-    .updateHash('0', id, getBytes32FromIpfsHash(newHash))
+    .updateHash('0', id, newHash)
     .send({ from: account })
     .then(() => {
       notification.success({ message: 'Hash Updated' });
@@ -125,3 +124,18 @@ export const updateAgentHashes = (account, id, newHash) => {
       console.error(e);
     });
 };
+
+export const getTokenUri = (id) => new Promise((resolve, reject) => {
+  const contract = getAgentContract();
+
+  contract.methods
+    .tokenURI(id)
+    .call()
+    .then((response) => {
+      resolve(response);
+    })
+    .catch((e) => {
+      console.error(e);
+      reject(e);
+    });
+});

@@ -9,6 +9,7 @@ import {
   getAgentHashes,
   updateAgentHashes,
   getAgentOwner,
+  getTokenUri,
 } from './utils';
 
 const Agent = ({ account }) => {
@@ -22,6 +23,7 @@ const Agent = ({ account }) => {
         id={id}
         getDetails={() => getAgentDetails(id)}
         getHashes={() => getAgentHashes(id)}
+        getTokenUri={() => getTokenUri(id)}
         getOwner={() => getAgentOwner(id)}
         onUpdateHash={(newHash) => updateAgentHashes(account, id, newHash)}
         onDependencyClick={(e) => router.push(`${URL.AGENTS}/${e}`)}

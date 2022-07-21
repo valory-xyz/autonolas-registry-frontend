@@ -1,6 +1,7 @@
 import { Table, Button } from 'antd/lib';
 import get from 'lodash/get';
 import { getAgentSlots, getBonds } from 'components/ListServices/RegisterForm';
+import { getIpfsHashFromBytes32 } from '../List/ListCommon';
 
 export const COLUMNS = [
   {
@@ -48,3 +49,23 @@ export const getTable = (info, { onDependencyClick }) => {
     />
   );
 };
+
+export const getHashDetails = (type, hash, tokenUri) => (
+  <>
+    {hash.length === 0 ? (
+      <div>
+        <a href={tokenUri} target="_blank" rel="noopener noreferrer">
+          {tokenUri}
+        </a>
+      </div>
+    ) : (
+      <>
+        {hash.map((e, index) => (
+          <li key={`${type}-hashes-${index}`}>
+            {getIpfsHashFromBytes32(e)}
+          </li>
+        ))}
+      </>
+    )}
+  </>
+);

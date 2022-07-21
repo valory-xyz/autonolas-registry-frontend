@@ -1,8 +1,5 @@
 import { getServiceContract } from 'common-util/Contracts';
-import {
-  getBytes32FromIpfsHash,
-  convertStringToArray,
-} from 'common-util/List/ListCommon';
+import { convertStringToArray } from 'common-util/List/ListCommon';
 
 // --------- HELPER METHODS ---------
 export const getServiceOwner = (id) => new Promise((resolve, reject) => {
@@ -107,11 +104,7 @@ export const getServices = () => new Promise((resolve, reject) => {
 });
 
 // for services, hash is hardcoded in frontend
-export const getServiceHash = (values) => ({
-  hash: getBytes32FromIpfsHash(values.hash),
-  hashFunction: '0x12',
-  size: '0x20',
-});
+export const getServiceHash = (values) => values.hash;
 
 /**
  *
@@ -135,6 +128,21 @@ export const getServiceHashes = (id) => new Promise((resolve, reject) => {
     .call()
     .then((information) => {
       resolve(information);
+    })
+    .catch((e) => {
+      console.error(e);
+      reject(e);
+    });
+});
+
+export const getTokenUri = (id) => new Promise((resolve, reject) => {
+  const contract = getServiceContract();
+
+  contract.methods
+    .tokenURI(id)
+    .call()
+    .then((response) => {
+      resolve(response);
     })
     .catch((e) => {
       console.error(e);
