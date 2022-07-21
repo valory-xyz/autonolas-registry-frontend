@@ -224,9 +224,6 @@ const Details = ({
 
       <Row gutter={gt}>
         <Col className="gutter-row" span={12}>
-          <InfoSubHeader>Description</InfoSubHeader>
-          <div>{get(info, 'description', null) || NA}</div>
-
           {type === NAV_TYPES.SERVICE && (
             <ServiceState
               isOwner={isOwner}

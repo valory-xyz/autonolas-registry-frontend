@@ -1,10 +1,35 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
+import React, { useContext, useRef } from 'react';
 import { Form, Input, Table } from 'antd';
-import React, {
-  useContext, useEffect, useRef, useState,
-} from 'react';
+import { get } from 'lodash';
+
+const STEP_2_TABLE_COLUMNS = [
+  {
+    title: 'Agent ID',
+    dataIndex: 'agentId',
+    key: 'agentId',
+  },
+  {
+    title: 'Available Slots',
+    dataIndex: 'availableSlots',
+    key: 'availableSlots',
+    width: 100,
+  },
+  {
+    title: 'Total Slots',
+    dataIndex: 'totalSlots',
+    key: 'totalSlots',
+  },
+  {
+    title: 'Agent Instance Addresses',
+    dataIndex: 'agentAddresses',
+    key: 'agentAddresses',
+    width: '40%',
+    editable: true,
+  },
+];
 
 const EditableContext = React.createContext(null);
 
@@ -28,25 +53,16 @@ const EditableCell = ({
   handleSave,
   ...restProps
 }) => {
-  const [editing, setEditing] = useState(false);
-  const inputRef = useRef(null);
   const form = useContext(EditableContext);
+  const inputRef = useRef(null);
 
-  useEffect(() => {
-    if (editing) {
-      inputRef.current.focus();
-    }
-  }, [editing]);
-
-  const toggleEdit = () => {
-    setEditing(!editing);
+  if (record) {
     form.setFieldsValue({ [dataIndex]: record[dataIndex] });
-  };
+  }
 
   const onSave = async () => {
     try {
       const values = await form.validateFields();
-      toggleEdit();
       handleSave({ ...record, ...values });
     } catch (info) {
       window.console.log('Save failed:', info);
@@ -56,30 +72,21 @@ const EditableCell = ({
   let childNode = children;
 
   if (editable) {
-    childNode = editing ? (
+    childNode = get(record, 'availableSlots') > 0 ? (
       <Form.Item
         style={{ margin: 0 }}
         name={dataIndex}
-        rules={[
-          {
-            required: true,
-            message: `${title} is required.`,
-          },
-        ]}
+        rules={[{ required: true, message: `${title} is required.` }]}
       >
         <Input.TextArea
           ref={inputRef}
           onPressEnter={onSave}
           onBlur={onSave}
-          placeholder="0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199, 0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199, 0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199"
+          placeholder="address 1, address 2"
         />
       </Form.Item>
     ) : (
-      <div
-        className="editable-cell-value-wrap"
-        style={{ paddingRight: 24 }}
-        onClick={toggleEdit}
-      >
+      <div className="editable-cell-value-wrap" style={{ paddingRight: 24 }}>
         {children}
       </div>
     );
@@ -91,7 +98,7 @@ const EditableCell = ({
 /**
  * Table
  */
-const ActiveRegistrationTable = ({ data, defaultColumns, setDataSource }) => {
+const ActiveRegistrationTable = ({ data, setDataSource }) => {
   const handleSave = (row) => {
     const newData = [...data];
     const index = newData.findIndex((item) => row.key === item.key);
@@ -104,7 +111,7 @@ const ActiveRegistrationTable = ({ data, defaultColumns, setDataSource }) => {
     body: { row: EditableRow, cell: EditableCell },
   };
 
-  const columns = defaultColumns.map((c) => {
+  const columns = STEP_2_TABLE_COLUMNS.map((c) => {
     if (!c.editable) {
       return c;
     }

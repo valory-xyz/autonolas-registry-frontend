@@ -7,10 +7,30 @@ import {
 //   convertStringToArray,
 // } from 'common-util/List/ListCommon';
 
-const notifyError = () => notification.error({ message: 'Some error occured' });
+const notifySuccess = (message = 'Terminated Successfully') => notification.success({ message });
+const notifyError = (message = 'Some error occured') => notification.error({ message });
 
+/* ----- helper functions ----- */
 
-/* ----- common/helper functions ----- */
+// params.agentParams.slots[i] = total initial available Slots for the i-th service.agentIds;
+const getBonds = async (id) => {
+  const serviceContract = getServiceContract();
+  const response = await serviceContract.methods.getAgentParams(id).call();
+
+  const bondsArray = [];
+  const slotsArray = [];
+  for (let i = 0; i < response.agentParams.length; i += 1) {
+    const { bond, slots } = response.agentParams[i];
+    slotsArray.push(slots);
+    bondsArray.push(bond);
+  }
+
+  const totalBonds = bondsArray.reduce((p, c) => p + Number(c), 0);
+
+  return { totalBonds, slots: slotsArray, bonds: bondsArray };
+};
+
+/* ----- common functions ----- */
 export const onTerminate = (account, id) => new Promise((resolve, reject) => {
   const contract = getServiceManagerContract();
 
@@ -19,7 +39,7 @@ export const onTerminate = (account, id) => new Promise((resolve, reject) => {
     .send({ from: account })
     .then((information) => {
       resolve(information);
-      notification.success({ message: 'Terminated Successfully' });
+      notifySuccess('Terminated Successfully');
     })
     .catch((e) => {
       reject(e);
@@ -27,7 +47,6 @@ export const onTerminate = (account, id) => new Promise((resolve, reject) => {
     });
 });
 
-/* ----- step 1 functions ----- */
 export const getServiceOwner = (id) => new Promise((resolve, reject) => {
   const contract = getServiceContract();
 
@@ -38,11 +57,11 @@ export const getServiceOwner = (id) => new Promise((resolve, reject) => {
       resolve(response);
     })
     .catch((e) => {
-      console.error(e);
       reject(e);
     });
 });
 
+/* ----- step 1 functions ----- */
 export const onActivateRegistration = (account, id, deposit) => new Promise((resolve, reject) => {
   const contract = getServiceManagerContract();
 
@@ -50,30 +69,21 @@ export const onActivateRegistration = (account, id, deposit) => new Promise((res
     .activateRegistration(id)
     .send({ from: account, value: deposit })
     .then((information) => {
+      notifySuccess('Activated Successfully');
       resolve(information);
     })
     .catch((e) => {
       reject(e);
+      notifyError();
     });
 });
 
 /* ----- step 2 functions ----- */
-export const getStep2DataSource = (id, agentIds) => new Promise((resolve, reject) => {
+export const getStep2DataSource = async (id, agentIds) => new Promise((resolve, reject) => {
   const contract = getServiceContract();
 
-  contract.methods
-    .getAgentParams(id)
-    .call()
-    .then(async (response) => {
-      // params.agentParams.slots[i] = total initial available Slots for the i-th service.agentIds;
-      const slotsArray = [];
-      const bondsArray = [];
-      for (let i = 0; i < response.agentParams.length; i += 1) {
-        const { slots, bond } = response.agentParams[i];
-        slotsArray.push(slots);
-        bondsArray.push(bond);
-      }
-
+  getBonds(id)
+    .then(async ({ slots }) => {
       /**
          * for each agent Id, we call instances = getInstancesForAgentId(serviceId, agentId):
          * instances.numAgentInstances will give the number of occupied instances slots, so in
@@ -94,9 +104,8 @@ export const getStep2DataSource = (id, agentIds) => new Promise((resolve, reject
       const dateSource = agentIds.map((aid, i) => ({
         key: aid,
         agentId: aid,
-        availableSlots:
-            Number(slotsArray[i]) - Number(numAgentInstancesArray[i]),
-        totalSlots: slotsArray[i],
+        availableSlots: Number(slots[i]) - Number(numAgentInstancesArray[i]),
+        totalSlots: slots[i],
         agentAddresses: null,
       }));
 
@@ -107,31 +116,30 @@ export const getStep2DataSource = (id, agentIds) => new Promise((resolve, reject
     });
 });
 
-/**
- * for each agentIds =>
- * TOOD: gets bonds & accumlate
- */
-
-
-export const onStep2RegisterAgents = (account, id) => new Promise((resolve, reject) => {
+export const onStep2RegisterAgents = ({
+  account,
+  serviceId,
+  agentIds,
+  agentInstances,
+}) => new Promise((resolve, reject) => {
   const contract = getServiceManagerContract();
-  // TODO: value types in table
-  const value = {
-    agentInstances: ['0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82'],
-    agentIds: ['1'],
-  };
 
-  contract.methods
-    .registerAgents(id, value.agentInstances, value.agentIds)
-    .send({ from: account, value: '1' }) // TODO: value to be calulcated
-    .then((information) => {
-      resolve(information);
+  getBonds(serviceId)
+    .then(({ totalBonds }) => {
+      contract.methods
+        .registerAgents(serviceId, agentInstances, agentIds)
+        .send({ from: account, value: `${totalBonds}` })
+        .then((information) => {
+          resolve(information);
+          notifySuccess('Registered Successfully');
+        })
+        .catch((e) => reject(e));
     })
     .catch((e) => {
       reject(e);
+      notifyError();
     });
 });
-
 
 /* ----- step 3 functions ----- */
 export const onStep3Deploy = (account, id, radioValue) => new Promise((resolve, reject) => {
@@ -142,9 +150,11 @@ export const onStep3Deploy = (account, id, radioValue) => new Promise((resolve, 
     .send({ from: account })
     .then((information) => {
       resolve(information);
+      notifySuccess('Deployed Successfully');
     })
     .catch((e) => {
       reject(e);
+      notifyError();
     });
 });
 
@@ -159,15 +169,10 @@ export const onStep5Unbond = (account, id) => new Promise((resolve, reject) => {
     .send({ from: account })
     .then((information) => {
       resolve(information);
-      notification.success({ message: 'Unbonded Successfully' });
+      notifySuccess('Unbonded Successfully');
     })
     .catch((e) => {
       notifyError();
       reject(e);
     });
 });
-
-/**
- * TODO: add notification for activate, terminate
- *
- */
