@@ -230,7 +230,6 @@ export const ServiceState = ({
 
   return (
     <ServiceStateContainer>
-      <Divider />
       <InfoSubHeader>State</InfoSubHeader>
       <Steps direction="vertical" current={currentStep}>
         {steps.map(({ title, component }, index) => (
