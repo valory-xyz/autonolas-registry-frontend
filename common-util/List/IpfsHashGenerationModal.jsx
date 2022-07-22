@@ -136,8 +136,8 @@ const IpfsModal = ({
 
         <Form.Item
           name="uri"
-          label="URI to Code"
-          rules={[{ required: true, message: 'Please input the URI' }]}
+          label="URI Pointer to Code"
+          rules={[{ required: true, message: 'Please input the URI Pointer' }]}
           extra="Should point to package, e.g. https://gateway.autonolas.tech/ipfs/{package_hash}"
         >
           <Input />
@@ -151,7 +151,7 @@ const IpfsModal = ({
       </Form>
 
       <YourHashContainer>
-        <p>YOUR HASH:</p>
+        <p>Your hash:</p>
         <Alert
           message={<Paragraph>{ipfsValue || '--'}</Paragraph>}
           type="info"
