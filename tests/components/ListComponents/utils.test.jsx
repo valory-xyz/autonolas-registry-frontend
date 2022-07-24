@@ -4,6 +4,7 @@ import {
   getComponents,
   getComponentsByAccount,
 } from 'components/ListComponents/utils';
+import { dummyAddress } from '../../helpers';
 
 const COMPONENT_1 = { name: 'Component One' };
 
@@ -17,7 +18,7 @@ describe('listComponents/utils.jsx', () => {
 
     getComponentContract.mockImplementation(() => ({
       methods: {
-        getInfo: jest.fn(() => ({
+        getUnit: jest.fn(() => ({
           call: jest.fn(() => Promise.resolve(COMPONENT_1)),
         })),
       },
@@ -35,32 +36,17 @@ describe('listComponents/utils.jsx', () => {
         balanceOf: jest.fn(() => ({
           call: jest.fn(() => Promise.resolve(1)),
         })),
-        getInfo: jest.fn(() => ({
+        getUnit: jest.fn(() => ({
           call: jest.fn(() => Promise.resolve(COMPONENT_1)),
+        })),
+        ownerOf: jest.fn(() => ({
+          call: jest.fn(() => Promise.resolve(dummyAddress)),
         })),
       },
     }));
 
     const result = await getComponentsByAccount();
     expect(result).toMatchObject([COMPONENT_1]);
-  });
-
-  it('getComponentsByAccount: Promise rejected', async () => {
-    expect.hasAssertions();
-
-    getComponentContract.mockImplementation(() => ({
-      methods: {
-        balanceOf: jest.fn(() => ({
-          call: jest.fn(() => Promise.resolve(1)),
-        })),
-        getInfo: jest.fn(() => ({
-          call: jest.fn(() => new Error('Bad Request')),
-        })),
-      },
-    }));
-
-    const result = await getComponentsByAccount();
-    expect(result).toMatchObject([Error('Bad Request')]);
   });
 
   it('getComponents: Promise resolved', async () => {
@@ -71,31 +57,16 @@ describe('listComponents/utils.jsx', () => {
         totalSupply: jest.fn(() => ({
           call: jest.fn(() => Promise.resolve(1)),
         })),
-        getInfo: jest.fn(() => ({
+        getUnit: jest.fn(() => ({
           call: jest.fn(() => Promise.resolve(COMPONENT_1)),
+        })),
+        ownerOf: jest.fn(() => ({
+          call: jest.fn(() => Promise.resolve(dummyAddress)),
         })),
       },
     }));
 
     const result = await getComponents();
     expect(result).toMatchObject([COMPONENT_1]);
-  });
-
-  it('getComponents: Promise rejected', async () => {
-    expect.hasAssertions();
-
-    getComponentContract.mockImplementation(() => ({
-      methods: {
-        totalSupply: jest.fn(() => ({
-          call: jest.fn(() => Promise.resolve(1)),
-        })),
-        getInfo: jest.fn(() => ({
-          call: jest.fn(() => new Error('Bad Request')),
-        })),
-      },
-    }));
-
-    const result = await getComponents();
-    expect(result).toMatchObject([Error('Bad Request')]);
   });
 });

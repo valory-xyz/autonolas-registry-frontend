@@ -12,7 +12,6 @@ export const getAgentOwner = (agentId) => new Promise((resolve, reject) => {
       resolve(response);
     })
     .catch((e) => {
-      console.error(e);
       reject(e);
     });
 });
@@ -20,7 +19,7 @@ export const getAgentOwner = (agentId) => new Promise((resolve, reject) => {
 /**
  * helper to return the list of details (table in index page)
  */
-const getAgentsHelper = (promiseList, resolve) => {
+const getAgentsHelper = (promiseList, resolve, reject) => {
   Promise.all(promiseList).then(async (list) => {
     const results = await Promise.all(
       list.map(async (info, i) => {
@@ -29,6 +28,8 @@ const getAgentsHelper = (promiseList, resolve) => {
       }),
     );
     resolve(results);
+  }).catch((e) => {
+    reject(e);
   });
 };
 
@@ -50,7 +51,6 @@ export const getAgentDetails = (agentId) => new Promise((resolve, reject) => {
 
 export const getAgentsByAccount = (account) => new Promise((resolve, reject) => {
   const contract = getAgentContract();
-
   contract.methods
     .balanceOf(account)
     .call()
@@ -62,7 +62,7 @@ export const getAgentsByAccount = (account) => new Promise((resolve, reject) => 
         promises.push(result);
       }
 
-      getAgentsHelper(promises, resolve);
+      getAgentsHelper(promises, resolve, reject);
     })
     .catch((e) => {
       console.error(e);
@@ -87,7 +87,7 @@ export const getAgents = () => new Promise((resolve, reject) => {
         allAgentsPromises.push(result);
       }
 
-      getAgentsHelper(allAgentsPromises, resolve);
+      getAgentsHelper(allAgentsPromises, resolve, reject);
     })
     .catch((e) => {
       console.error(e);

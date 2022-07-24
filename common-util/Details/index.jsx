@@ -128,7 +128,11 @@ const Details = ({
       const dependencies = get(info, 'dependencies') || [];
 
       return [
-        { title: 'Owner Address', value: detailsOwner || NA },
+        {
+          title: 'Owner Address',
+          dataTestId: 'owner-address',
+          value: detailsOwner || NA,
+        },
         {
           title: 'Hash',
           dataTestId: 'hashes-list',

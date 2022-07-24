@@ -18,13 +18,13 @@ describe('listComponents/register.jsx', () => {
 
     getMechMinterContract.mockImplementation(() => ({
       methods: {
-        mintComponent: jest.fn(() => ({
+        create: jest.fn(() => ({
           send: jest.fn(() => Promise.resolve(NEW_COMPONENT)),
         })),
       },
     }));
 
-    const { container, getByText } = render(
+    const { container, getByText, getByRole } = render(
       wrapProvider(<RegisterComponent />),
     );
 
@@ -32,27 +32,22 @@ describe('listComponents/register.jsx', () => {
     expect(getByText(/Register Component/i)).toBeInTheDocument();
 
     // check if submit button is present
-    expect(container.querySelector('.ant-btn[type="submit"]')).toBeTruthy();
-
+    expect(
+      getByRole('button', { name: 'Prefill Address' }),
+    ).toBeInTheDocument();
     userEvent.type(
       container.querySelector(`#${FORM_NAME}_owner_address`),
       dummyAddress,
     );
-    userEvent.type(
-      container.querySelector(`#${FORM_NAME}_developer_address`),
-      dummyAddress,
-    );
     userEvent.type(container.querySelector(`#${FORM_NAME}_hash`), dummyHash);
-    userEvent.type(
-      container.querySelector(`#${FORM_NAME}_description`),
-      'desc',
-    );
     userEvent.type(
       container.querySelector(`#${FORM_NAME}_dependencies`),
       '1, 2',
     );
 
-    userEvent.click(container.querySelector('.ant-btn[type="submit"]'));
+    const submitButton = getByRole('button', { name: 'Submit' });
+    expect(submitButton).toBeInTheDocument();
+    userEvent.click(submitButton);
 
     await waitFor(async () => {
       // check if `Component registered` on `Submit` click

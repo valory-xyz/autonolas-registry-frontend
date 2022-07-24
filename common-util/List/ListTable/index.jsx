@@ -40,20 +40,23 @@ const ListTable = ({
     return <Loader />;
   }
 
+  const columns = getTableColumns(type, {
+    onViewClick,
+    onUpdateClick,
+    onDeleteClick,
+  });
+  const dataSource = getData(type, list, {
+    filterValue: (filterValue || '').toLowerCase(),
+  });
+
   return (
     <>
       {list.length === 0 ? (
         <ListEmptyMessage type={type} />
       ) : (
         <Table
-          columns={getTableColumns(type, {
-            onViewClick,
-            onUpdateClick,
-            onDeleteClick,
-          })}
-          dataSource={getData(type, list, {
-            filterValue: (filterValue || '').toLowerCase(),
-          })}
+          columns={columns}
+          dataSource={dataSource}
           pagination={false}
           scroll={{ x: scrollX || 1200 }}
           rowKey={(record) => `${type}-row-${record.id}`}
