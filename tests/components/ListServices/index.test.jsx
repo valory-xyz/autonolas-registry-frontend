@@ -39,8 +39,8 @@ getServiceContract.mockImplementation(() => ({
 useRouter.mockImplementation(() => ({ push: jest.fn() }));
 
 // dummy responses mock
-const allServiceResponse = { id: 'all-service-1', name: 'B' };
-const myServiceResponse = { id: 'my-service-1', name: 'A' };
+const allServiceResponse = { id: 'all-service-1', state: '5' };
+const myServiceResponse = { id: 'my-service-1' };
 
 describe('listServices/index.jsx', () => {
   getServices.mockImplementation(() => Promise.resolve([allServiceResponse]));
@@ -49,9 +49,7 @@ describe('listServices/index.jsx', () => {
   it('should render tabs with `All Tab` as active tab & Register button', async () => {
     expect.hasAssertions();
 
-    const { container, getByRole } = render(
-      wrapProvider(<ListServices />),
-    );
+    const { container, getByRole } = render(wrapProvider(<ListServices />));
     // check if the selected tab is `All` & has the correct content
     await waitFor(async () => {
       expect(container.querySelector(ACTIVE_TAB).textContent).toBe('All');
@@ -59,8 +57,8 @@ describe('listServices/index.jsx', () => {
 
     // ckecking Id, description column
     expect(container.querySelector(getTableTd(1)).textContent).toBe('1');
-    expect(container.querySelector(getTableTd(2)).textContent).toBe(
-      allServiceResponse.name,
+    expect(container.querySelector(getTableTd(3)).textContent).toBe(
+      'Terminated Bonded',
     );
 
     // Register button

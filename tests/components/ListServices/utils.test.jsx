@@ -3,6 +3,7 @@ import {
   getServices,
   getServicesByAccount,
 } from 'components/ListServices/utils';
+import { dummyAddress } from '../../helpers';
 
 const SERVICE_1 = { name: 'Service One' };
 
@@ -25,6 +26,9 @@ describe('listServices/utils.jsx', () => {
         getServiceState: jest.fn(() => ({
           call: jest.fn(() => Promise.resolve('0')),
         })),
+        ownerOf: jest.fn(() => ({
+          call: jest.fn(() => Promise.resolve(dummyAddress)),
+        })),
       },
     }));
 
@@ -38,7 +42,7 @@ describe('listServices/utils.jsx', () => {
     getServiceContract.mockImplementation(() => ({
       methods: {
         totalSupply: jest.fn(() => ({
-          call: jest.fn(() => Promise.resolve({ maxServiceId: 1 })),
+          call: jest.fn(() => Promise.resolve(1)),
         })),
         exists: jest.fn(() => ({
           call: jest.fn(() => Promise.resolve({ status: 'fulfilled', value: true })),
@@ -48,6 +52,9 @@ describe('listServices/utils.jsx', () => {
         })),
         getServiceState: jest.fn(() => ({
           call: jest.fn(() => Promise.resolve('0')),
+        })),
+        ownerOf: jest.fn(() => ({
+          call: jest.fn(() => Promise.resolve(dummyAddress)),
         })),
       },
     }));

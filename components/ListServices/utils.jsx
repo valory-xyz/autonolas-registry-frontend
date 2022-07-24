@@ -21,15 +21,14 @@ export const getServiceOwner = (id) => new Promise((resolve, reject) => {
 export const getServiceDetails = (id) => new Promise((resolve, reject) => {
   const contract = getServiceContract();
 
-  // TODO: check if service exists
   contract.methods
     .getService(id)
     .call()
-    .then((information) => {
-      resolve(information);
+    .then(async (information) => {
+      const owner = await getServiceOwner(id);
+      resolve({ ...information, owner });
     })
     .catch((e) => {
-      console.error(e);
       reject(e);
     });
 });
