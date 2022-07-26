@@ -2,7 +2,7 @@ import React from 'react';
 import { render, waitFor } from '@testing-library/react';
 import Services from 'components/ListServices/details';
 import { getAgentSlots, getBonds } from 'components/ListServices/RegisterForm';
-import { getStep2DataSource } from 'common-util/Details/ServiceState/utils';
+import { getServiceTableDataSource } from 'common-util/Details/ServiceState/utils';
 import {
   getServiceDetails,
   getServiceHashes,
@@ -30,7 +30,7 @@ jest.mock('components/ListServices/utils', () => ({
 }));
 
 jest.mock('common-util/Details/ServiceState/utils', () => ({
-  getStep2DataSource: jest.fn(),
+  getServiceTableDataSource: jest.fn(),
 }));
 
 const dummyDetails = {
@@ -56,7 +56,7 @@ describe('listServices/details.jsx', () => {
   getServiceOwner.mockImplementation(() => Promise.resolve(dummyAddress));
   getBonds.mockImplementation(() => Promise.resolve(['1']));
   getAgentSlots.mockImplementation(() => Promise.resolve(['1']));
-  getStep2DataSource.mockImplementation(() => Promise.resolve([
+  getServiceTableDataSource.mockImplementation(() => Promise.resolve([
     {
       key: 1,
       agentId: '1',
