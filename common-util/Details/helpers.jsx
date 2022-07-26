@@ -1,7 +1,8 @@
+import { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { Table, Button } from 'antd/lib';
-import get from 'lodash/get';
-import { getAgentSlots, getBonds } from 'components/ListServices/RegisterForm';
 import { getIpfsHashFromBytes32 } from '../List/ListCommon';
+import { getServiceTableDataSource } from './ServiceState/utils';
 
 export const COLUMNS = [
   {
@@ -24,20 +25,25 @@ export const COLUMNS = [
 /**
  * helper function to generate table
  */
-export const getTable = (info, { onDependencyClick }) => {
-  const dependencies = get(info, 'agentIds') || [];
-  const agentSlots = getAgentSlots(info);
-  const bonds = getBonds(info);
+export const ServiceMiniTable = ({ id, agentIds, onDependencyClick }) => {
+  const [source, setSource] = useState([]);
 
-  const data = dependencies.map((e, index) => ({
-    id: `table-row-${e}`,
+  useEffect(async () => {
+    if (id && (agentIds || []).length !== 0) {
+      const temp = await getServiceTableDataSource(id, agentIds || []);
+      setSource(temp);
+    }
+  }, [id, agentIds]);
+
+  const data = source.map(({ agentId, bond, availableSlots }, index) => ({
+    id: `table-row-${index}`,
     agentId: (
-      <Button type="link" onClick={() => onDependencyClick(e)}>
-        {e}
+      <Button type="link" onClick={() => onDependencyClick(agentId)}>
+        {agentId}
       </Button>
     ),
-    agentNumSlots: agentSlots[index],
-    bonds: bonds[index],
+    agentNumSlots: availableSlots,
+    bonds: bond,
   }));
 
   return (
@@ -48,6 +54,12 @@ export const getTable = (info, { onDependencyClick }) => {
       rowKey={(record) => record.id}
     />
   );
+};
+
+ServiceMiniTable.propTypes = {
+  id: PropTypes.string.isRequired,
+  agentIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+  onDependencyClick: PropTypes.func.isRequired,
 };
 
 export const getHashDetails = (type, hash, tokenUri) => (
@@ -61,9 +73,7 @@ export const getHashDetails = (type, hash, tokenUri) => (
     ) : (
       <>
         {hash.map((e, index) => (
-          <li key={`${type}-hashes-${index}`}>
-            {getIpfsHashFromBytes32(e)}
-          </li>
+          <li key={`${type}-hashes-${index}`}>{getIpfsHashFromBytes32(e)}</li>
         ))}
       </>
     )}

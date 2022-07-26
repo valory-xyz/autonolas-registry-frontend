@@ -15,7 +15,7 @@ import kebabCase from 'lodash/kebabCase';
 import { URL } from 'util/constants';
 import {
   onActivateRegistration,
-  getStep2DataSource,
+  getServiceTableDataSource,
   onTerminate,
   onStep2RegisterAgents,
   onStep3Deploy,
@@ -55,7 +55,7 @@ export const ServiceState = ({
 
   useEffect(async () => {
     if (id && (agentIds || []).length !== 0) {
-      const temp = await getStep2DataSource(id, agentIds || []);
+      const temp = await getServiceTableDataSource(id, agentIds || []);
       setDataSource(temp);
     }
   }, [id, agentIds]);
@@ -230,7 +230,6 @@ export const ServiceState = ({
 
   return (
     <ServiceStateContainer>
-      <Divider />
       <InfoSubHeader>State</InfoSubHeader>
       <Steps direction="vertical" current={currentStep}>
         {steps.map(({ title, component }, index) => (

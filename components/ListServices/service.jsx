@@ -6,10 +6,10 @@ import { Typography, notification } from 'antd';
 import get from 'lodash/get';
 import Loader from 'common-util/components/Loader';
 import { convertStringToArray, AlertError } from 'common-util/List/ListCommon';
-import { getServiceContract, getServiceManagerContract } from 'common-util/Contracts';
+import { getServiceManagerContract } from 'common-util/Contracts';
 import { FormContainer } from 'components/styles';
 import RegisterForm from './RegisterForm';
-import { getServiceHash, getAgentParams } from './utils';
+import { getServiceHash, getAgentParams, getServiceDetails } from './utils';
 
 const { Title } = Typography;
 
@@ -20,22 +20,14 @@ const Service = ({ account }) => {
   const router = useRouter();
   const id = get(router, 'query.id') || null;
 
-  useEffect(() => {
+  useEffect(async () => {
     if (account) {
       setAllLoading(true);
       setServiceInfo({});
 
-      const contract = getServiceContract();
-      contract.methods
-        .getService(id)
-        .call()
-        .then((result) => {
-          setAllLoading(false);
-          setServiceInfo(result);
-        })
-        .catch((e) => {
-          console.error(e);
-        });
+      const result = await getServiceDetails(id);
+      setAllLoading(false);
+      setServiceInfo(result);
     }
   }, [account]);
 

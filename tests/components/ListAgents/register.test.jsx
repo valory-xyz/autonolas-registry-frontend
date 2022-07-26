@@ -18,38 +18,37 @@ describe('listAgents/register.jsx', () => {
 
     getMechMinterContract.mockImplementation(() => ({
       methods: {
-        mintAgent: jest.fn(() => ({
+        create: jest.fn(() => ({
           send: jest.fn(() => Promise.resolve(NEW_AGENT)),
         })),
       },
     }));
 
-    const { container, getByText } = render(wrapProvider(<RegisterAgent />));
+    const { container, getByRole, getByText } = render(
+      wrapProvider(<RegisterAgent />),
+    );
 
     // title
     expect(getByText(/Register Agent/i)).toBeInTheDocument();
 
-    // check if submit button is present
-    expect(container.querySelector('.ant-btn[type="submit"]')).toBeTruthy();
+    expect(
+      getByRole('button', { name: 'Prefill Address' }),
+    ).toBeInTheDocument();
     userEvent.type(
       container.querySelector(`#${FORM_NAME}_owner_address`),
       dummyAddress,
     );
-    userEvent.type(
-      container.querySelector(`#${FORM_NAME}_developer_address`),
-      dummyAddress,
-    );
     userEvent.type(container.querySelector(`#${FORM_NAME}_hash`), dummyHash);
-    userEvent.type(
-      container.querySelector(`#${FORM_NAME}_description`),
-      'desc',
-    );
+    expect(getByRole('button', { name: 'Generate Hash' })).toBeInTheDocument();
     userEvent.type(
       container.querySelector(`#${FORM_NAME}_dependencies`),
       '1, 2',
     );
 
-    userEvent.click(container.querySelector('.ant-btn[type="submit"]'));
+    // submit button
+    const submitButton = getByRole('button', { name: 'Submit' });
+    expect(submitButton).toBeInTheDocument();
+    userEvent.click(submitButton);
 
     await waitFor(async () => {
       // check if `Agent registered` on `Submit` click

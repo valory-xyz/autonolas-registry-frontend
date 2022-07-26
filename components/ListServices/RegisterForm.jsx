@@ -51,18 +51,8 @@ const RegisterForm = ({
           value: formInitialValues.owner || null,
         },
         {
-          name: ['service_name'],
-          value: formInitialValues.name || null,
-        },
-        {
-          name: ['service_description'],
-          value: formInitialValues.description || null,
-        },
-        {
           name: ['hash'],
-          value: getIpfsHashFromBytes32(
-            get(formInitialValues, 'configHash.hash'),
-          ),
+          value: get(formInitialValues, 'configHash'),
         },
         {
           name: ['agent_ids'],
@@ -100,7 +90,7 @@ const RegisterForm = ({
   };
 
   const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo); /* eslint-disable-line no-console */
+    window.console.log('Failed:', errorInfo);
   };
 
   const prefillOwnerAddress = () => {

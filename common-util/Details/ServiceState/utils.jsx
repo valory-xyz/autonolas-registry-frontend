@@ -79,11 +79,11 @@ export const onActivateRegistration = (account, id, deposit) => new Promise((res
 });
 
 /* ----- step 2 functions ----- */
-export const getStep2DataSource = async (id, agentIds) => new Promise((resolve, reject) => {
+export const getServiceTableDataSource = async (id, agentIds) => new Promise((resolve, reject) => {
   const contract = getServiceContract();
 
   getBonds(id)
-    .then(async ({ slots }) => {
+    .then(async ({ slots, bonds }) => {
       /**
          * for each agent Id, we call instances = getInstancesForAgentId(serviceId, agentId):
          * instances.numAgentInstances will give the number of occupied instances slots, so in
@@ -106,6 +106,7 @@ export const getStep2DataSource = async (id, agentIds) => new Promise((resolve, 
         agentId: aid,
         availableSlots: Number(slots[i]) - Number(numAgentInstancesArray[i]),
         totalSlots: slots[i],
+        bond: bonds[i],
         agentAddresses: null,
       }));
 

@@ -9,7 +9,7 @@ import Loader from 'common-util/components/Loader';
 import { RegisterMessage } from '../List/ListCommon';
 import IpfsHashGenerationModal from '../List/IpfsHashGenerationModal';
 import { ServiceState } from './ServiceState';
-import { getTable, getHashDetails } from './helpers';
+import { ServiceMiniTable, getHashDetails } from './helpers';
 import {
   Header,
   DetailsTitle,
@@ -128,7 +128,11 @@ const Details = ({
       const dependencies = get(info, 'dependencies') || [];
 
       return [
-        { title: 'Owner Address', value: detailsOwner || NA },
+        {
+          title: 'Owner Address',
+          dataTestId: 'owner-address',
+          value: detailsOwner || NA,
+        },
         {
           title: 'Hash',
           dataTestId: 'hashes-list',
@@ -160,6 +164,7 @@ const Details = ({
 
     const getServiceValues = () => {
       const serviceState = ['2', '3', '4'].includes(get(info, 'state'));
+      const agentIds = get(info, 'agentIds');
       return [
         { title: 'Owner Address', value: detailsOwner || NA },
         {
@@ -179,7 +184,13 @@ const Details = ({
         {
           type: 'table',
           dataTestId: 'agent-id-table',
-          value: getTable(info, { onDependencyClick }),
+          value: (
+            <ServiceMiniTable
+              id={id}
+              agentIds={agentIds}
+              onDependencyClick={onDependencyClick}
+            />
+          ),
         },
         { title: 'Threshold', value: get(info, 'threshold', null) || NA },
       ];
