@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Web3 from 'web3';
 import { Button, Form, Input } from 'antd/lib';
-import { WhiteButton } from 'common-util/components/Button';
 import get from 'lodash/get';
 import isNil from 'lodash/isNil';
+import { HASH_PREFIX } from 'util/constants';
+import { WhiteButton } from 'common-util/components/Button';
 import IpfsHashGenerationModal from './IpfsHashGenerationModal';
 import { DependencyLabel } from './ListCommon';
 import { RegisterFooter, ComplexLabel } from './styles';
@@ -17,6 +18,17 @@ const RegisterForm = ({
 }) => {
   const [form] = Form.useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [fields, setFields] = useState([]);
+
+  const onGenerateHash = (generatedHash) => {
+    setFields([
+      {
+        name: ['hash'],
+        value: generatedHash || null,
+      },
+    ]);
+  };
+
   const onFinish = (values) => {
     if (account) {
       handleSubmit(values);
@@ -37,6 +49,7 @@ const RegisterForm = ({
         form={form}
         name={FORM_NAME}
         initialValues={{ remember: true }}
+        fields={fields}
         layout="vertical"
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
@@ -88,7 +101,7 @@ const RegisterForm = ({
             },
           ]}
         >
-          <Input placeholder="0x019..." />
+          <Input placeholder="0x019..." addonBefore={HASH_PREFIX} />
         </Form.Item>
 
         <Button
@@ -159,6 +172,7 @@ const RegisterForm = ({
       <IpfsHashGenerationModal
         visible={isModalVisible}
         type={listType}
+        callback={onGenerateHash}
         handleCancel={() => setIsModalVisible(false)}
       />
     </>
