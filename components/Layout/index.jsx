@@ -30,9 +30,7 @@ const NavigationBar = ({ children }) => {
   }, [pathname]);
 
   const handleMenuItemClick = ({ key }) => {
-    // `components` is the homepage hence ''
-    const pushTo = key === 'components' ? '' : key;
-    router.push(`/${pushTo}`);
+    router.push(`/${key}`);
     setSelectedMenu(key);
   };
 
