@@ -19,8 +19,8 @@ import { create } from 'ipfs-http-client';
 // const client = create('/dns/registry.autonolas.tech/tcp/443/https');
 
 const ipfs = create({
-  host: 'ipfs.infura.io',
-  port: 5001,
+  host: 'registry.autonolas.tech',
+  port: 443,
   protocol: 'https',
 });
 
