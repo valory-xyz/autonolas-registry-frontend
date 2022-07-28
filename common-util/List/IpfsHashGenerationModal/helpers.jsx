@@ -5,20 +5,19 @@
  * after uploading the file.
  * 2.  we should convert to base16 (version)
  */
-import { create } from 'ipfs-http-client';
-import isNil from 'lodash/isNil';
-import { HASH_PREFIX } from 'util/constants';
+import { create, CID } from 'ipfs-http-client';
+import { HASH_PREFIX, GATEWAY_URL } from 'util/constants';
 
 const ipfs = create({
-  host: 'registry.staging.autonolas.tech',
+  host: 'registry.autonolas.tech',
   port: 443,
   protocol: 'https',
 });
 
-export const getIpfsHash = async (info) => {
+export const getIpfsHashHelper = async (info) => {
   const updatedInfo = {
     ...info,
-    uri: `https://gateway.autonolas.tech/ipfs/${HASH_PREFIX}${info.uri}`,
+    uri: `${GATEWAY_URL}${HASH_PREFIX}${info.uri}`,
   };
 
   window.console.log(updatedInfo);
@@ -35,9 +34,20 @@ export const getIpfsHash = async (info) => {
     otherOptions,
   );
 
+  // const value = new CID.createV1(response.cid);
   window.console.log(response);
 
-  return response;
+
+  const v1 = response.cid.toV0().toString();
+  window.console.log(response.cid.toString());
+  window.console.log(response.cid.toV0().toString());
+  window.console.log(v1);
+  // window.console.log(response.);
+  const cid = new CID(v1);
+  window.console.log(cid);
+
+  // const hash = response.cid.toV1().toString();
+  return v1;
 };
 
 export const readDataFromIpfs = async (hash) => {
@@ -47,19 +57,4 @@ export const readDataFromIpfs = async (hash) => {
     const data = Buffer.from(itr).toString();
     window.console.log(data);
   }
-};
-
-export const getBase16Validator = (value) => {
-  if (isNil(value) || value === '') {
-    return Promise.resolve();
-  }
-
-  /**
-   * only 64 characters long valid Hash
-   */
-  if (/[0-9A-Fa-f]{64}/gm.test(value)) {
-    return Promise.resolve();
-  }
-  if (value.length === 64) return Promise.resolve();
-  return Promise.reject(new Error('Please input a valid hash'));
 };

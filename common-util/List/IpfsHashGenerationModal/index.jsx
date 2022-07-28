@@ -2,36 +2,27 @@ import React, { Fragment, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import get from 'lodash/get';
+import isNil from 'lodash/isNil';
 import { Form, Input, Button } from 'antd/lib';
-// import Hash from 'ipfs-only-hash';
-import { HASH_PREFIX } from 'util/constants';
-import { getIpfsHash, getBase16Validator } from './helpers';
+import { GATEWAY_URL, HASH_PREFIX } from 'util/constants';
+import { getIpfsHashHelper } from './helpers';
 import { CustomModal } from '../styles';
 
 export const FORM_NAME = 'ipfs_creation_form';
 
-function makeid(length) {
-  let result = '';
-  const characters = 'abcdef0123456789';
-  const charactersLength = characters.length;
-  for (let i = 0; i < length; i += 1) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+export const getBase16Validator = (value) => {
+  if (isNil(value) || value === '') {
+    return Promise.resolve();
   }
-  return result;
-}
 
-const getHash = async () => {
-  // const updatedInfo = {
-  //   ...info,
-  //   uri: `https://gateway.autonolas.tech/ipfs/${HASH_PREFIX}${info.uri}`,
-  // };
-  // const currentHash = await Hash.of(JSON.stringify(updatedInfo), {
-  //   cidVersion: 1,
-  //   format: 'dag-pb',
-  //   hashAlg: 'sha2-256',
-  // });
-  const hash = `0x${makeid(64)}`;
-  return hash;
+  /**
+   * only 64 characters long valid Hash
+   */
+  if (/[0-9A-Fa-f]{64}/gm.test(value)) {
+    return Promise.resolve();
+  }
+  if (value.length === 64) return Promise.resolve();
+  return Promise.reject(new Error('Please input a valid hash'));
 };
 
 const IpfsModal = ({
@@ -47,13 +38,16 @@ const IpfsModal = ({
 
   const onModalClose = () => {
     handleCancel();
+    setTypedUri(''); // on close typedUri should also be reset
   };
 
   const getNewHash = async (values) => {
     try {
       setIsHashLoading(true); // loading on!
-      const hash = await getHash(values);
-      onModalClose();
+
+      const hash = await getIpfsHashHelper(values);
+      if (callback) callback(hash);
+      // onModalClose();
 
       return hash;
     } catch (error) {
@@ -67,21 +61,14 @@ const IpfsModal = ({
 
   const onFinish = async (values) => {
     const hash = await getNewHash(values);
-
-    if (callback) {
-      callback(hash);
-      getIpfsHash(values);
-    }
+    if (callback) callback(hash);
   };
 
   const handleUpdate = () => {
     form.validateFields().then(async (values) => {
       const hash = await getNewHash(values);
       onUpdateHash(hash);
-
-      if (callback) {
-        callback(hash);
-      }
+      if (callback) callback(hash);
     });
   };
 
@@ -162,7 +149,7 @@ const IpfsModal = ({
         <Form.Item
           name="uri"
           label="URI Pointer to Code"
-          extra={`Should point to package, e.g. https://gateway.autonolas.tech/ipfs/${HASH_PREFIX}${typedUri}`}
+          extra={`Should point to package, e.g. ${GATEWAY_URL}${HASH_PREFIX}${typedUri}`}
           rules={[
             {
               required: true,

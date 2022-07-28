@@ -10,6 +10,7 @@ import {
 } from 'common-util/List/ListCommon';
 import { getMechMinterContract } from 'common-util/Contracts';
 import { FormContainer } from 'components/styles';
+import { HASH_PREFIX } from 'util/constants';
 
 const { Title } = Typography;
 
@@ -31,7 +32,7 @@ const RegisterAgent = ({ account }) => {
         .create(
           '1',
           values.owner_address,
-          values.hash,
+          `${HASH_PREFIX}${values.hash}`,
           values.dependencies ? values.dependencies.split(', ') : [],
         )
         .send({ from: account })
