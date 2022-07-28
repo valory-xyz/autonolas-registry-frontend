@@ -6,6 +6,7 @@ import { Form, Input, Button } from 'antd/lib';
 // import Hash from 'ipfs-only-hash';
 import { HASH_PREFIX } from 'util/constants';
 import { CustomModal } from './styles';
+import { getIpfsHash } from './IpfsHashGenerationModal/helpers';
 
 export const FORM_NAME = 'ipfs_creation_form';
 
@@ -44,6 +45,7 @@ const IpfsModal = ({
 
     if (callback) {
       callback(hash);
+      getIpfsHash(values);
     }
   };
 
