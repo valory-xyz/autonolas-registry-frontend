@@ -18,10 +18,9 @@ export const getBase16Validator = (value) => {
   /**
    * only 64 characters long valid Hash
    */
-  if (/[0-9A-Fa-f]{64}/gm.test(value)) {
+  if (/[0-9a-f]{64}/gm.test(value)) {
     return Promise.resolve();
   }
-  if (value.length === 64) return Promise.resolve();
   return Promise.reject(new Error('Please input a valid hash'));
 };
 
@@ -47,7 +46,7 @@ const IpfsModal = ({
 
       const hash = await getIpfsHashHelper(values);
       if (callback) callback(hash);
-      // onModalClose();
+      onModalClose();
 
       return hash;
     } catch (error) {

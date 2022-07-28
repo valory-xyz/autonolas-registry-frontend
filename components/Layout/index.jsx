@@ -25,7 +25,7 @@ const NavigationBar = ({ children }) => {
   useEffect(() => {
     if (pathname) {
       const name = pathname.split('/')[1];
-      setSelectedMenu(name || 'components');
+      setSelectedMenu(name || null);
     }
   }, [pathname]);
 
