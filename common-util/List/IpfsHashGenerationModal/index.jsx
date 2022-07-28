@@ -5,8 +5,8 @@ import get from 'lodash/get';
 import { Form, Input, Button } from 'antd/lib';
 // import Hash from 'ipfs-only-hash';
 import { HASH_PREFIX } from 'util/constants';
-import { CustomModal } from './styles';
-import { getIpfsHash } from './IpfsHashGenerationModal/helpers';
+import { CustomModal } from '../styles';
+import { getIpfsHash } from './helpers';
 
 export const FORM_NAME = 'ipfs_creation_form';
 
@@ -38,10 +38,35 @@ const IpfsModal = ({
   visible, type, onUpdateHash, handleCancel, callback,
 }) => {
   const [form] = Form.useForm();
+  const [isHashLoading, setIsHashLoading] = useState(false);
   const [typedUri, setTypedUri] = useState('');
 
+  const onFinishFailed = (errorInfo) => {
+    console.log('Failed:', errorInfo); /* eslint-disable-line no-console */
+  };
+
+  const onModalClose = () => {
+    handleCancel();
+  };
+
+  const getNewHash = async (values) => {
+    try {
+      setIsHashLoading(true); // loading on!
+      const hash = await getHash(values);
+      onModalClose();
+
+      return hash;
+    } catch (error) {
+      window.console.log(error);
+    } finally {
+      setIsHashLoading(false); // off the loader and close the `Modal`
+    }
+
+    return null;
+  };
+
   const onFinish = async (values) => {
-    const hash = await getHash(values);
+    const hash = await getNewHash(values);
 
     if (callback) {
       callback(hash);
@@ -49,17 +74,9 @@ const IpfsModal = ({
     }
   };
 
-  const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo); /* eslint-disable-line no-console */
-  };
-
-  const onCancel = () => {
-    handleCancel();
-  };
-
   const handleUpdate = () => {
     form.validateFields().then(async (values) => {
-      const hash = await getHash(values);
+      const hash = await getNewHash(values);
       onUpdateHash(hash);
 
       if (callback) {
@@ -81,10 +98,10 @@ const IpfsModal = ({
       cancelText="Cancel"
       destroyOnClose
       width={620}
-      onCancel={handleCancel}
+      onModalClose={handleCancel}
       footer={[
         <Fragment key="footer-1">
-          <Button type="default" htmlType="submit" onClick={onCancel}>
+          <Button type="default" htmlType="submit" onClick={onModalClose}>
             Cancel
           </Button>
 
@@ -93,6 +110,7 @@ const IpfsModal = ({
             key="submit"
             htmlType="submit"
             type="primary"
+            loading={isHashLoading}
             onClick={onUpdateHash ? handleUpdate : handleOk}
           >
             {onUpdateHash ? 'Update Hash' : 'Generate Hash'}
@@ -144,8 +162,23 @@ const IpfsModal = ({
         <Form.Item
           name="uri"
           label="URI Pointer to Code"
-          rules={[{ required: true, message: 'Please input the URI Pointer' }]}
           extra={`Should point to package, e.g. https://gateway.autonolas.tech/ipfs/${HASH_PREFIX}${typedUri}`}
+          rules={[
+            {
+              required: true, message: 'Please input the URI Pointer',
+            },
+            () => ({
+              validator(_, value) {
+                console.log({ value });
+                if (value.length === 64) return Promise.resolve();
+                return Promise.reject(
+                  new Error(
+                    'Please input a valid hash',
+                  ),
+                );
+              },
+            }),
+          ]}
         >
           <Input
             addonBefore={HASH_PREFIX}
