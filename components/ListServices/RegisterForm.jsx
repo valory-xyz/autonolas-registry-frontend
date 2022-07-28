@@ -177,7 +177,7 @@ const RegisterForm = ({
             },
           ]}
         >
-          <Input placeholder="0x019..." addonBefore={HASH_PREFIX} />
+          <Input addonBefore={HASH_PREFIX} />
         </Form.Item>
 
         <Button
