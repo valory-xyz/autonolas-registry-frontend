@@ -19,7 +19,7 @@ import { create } from 'ipfs-http-client';
 // const client = create('/dns/registry.autonolas.tech/tcp/443/https');
 
 const ipfs = create({
-  host: 'registry.autonolas.tech',
+  host: 'registry.staging.autonolas.tech',
   port: 443,
   protocol: 'https',
 });
@@ -29,6 +29,8 @@ export const getIpfsHash = async (info) => {
     ...info,
     uri: `https://gateway.autonolas.tech/ipfs/${HASH_PREFIX}${info.uri}`,
   };
+
+  window.console.log(updatedInfo);
 
   const otherOptions = {
     wrapWithDirectory: false, // default: false

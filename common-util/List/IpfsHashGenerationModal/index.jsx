@@ -167,17 +167,17 @@ const IpfsModal = ({
             {
               required: true, message: 'Please input the URI Pointer',
             },
-            () => ({
-              validator(_, value) {
-                console.log({ value });
-                if (value.length === 64) return Promise.resolve();
-                return Promise.reject(
-                  new Error(
-                    'Please input a valid hash',
-                  ),
-                );
-              },
-            }),
+            // () => ({
+            //   validator(_, value) {
+            //     console.log({ value });
+            //     if (value.length === 64) return Promise.resolve();
+            //     return Promise.reject(
+            //       new Error(
+            //         'Please input a valid hash',
+            //       ),
+            //     );
+            //   },
+            // }),
           ]}
         >
           <Input
