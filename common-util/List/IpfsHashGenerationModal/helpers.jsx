@@ -6,7 +6,7 @@ import { base16 } from 'multiformats/bases/base16';
 import { HASH_PREFIX, GATEWAY_URL } from 'util/constants';
 
 const ipfs = create({
-  host: 'registry.autonolas.tech',
+  host: process.env.NEXT_PUBLIC_REGISTRY_URL,
   port: 443,
   protocol: 'https',
 });
