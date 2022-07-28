@@ -11,7 +11,7 @@ import {
 import { getServiceManagerContract } from 'common-util/Contracts';
 import { FormContainer } from 'components/styles';
 import RegisterForm from './RegisterForm';
-import { getAgentParams, getServiceHash } from './utils';
+import { getAgentParams } from './utils';
 
 const { Title } = Typography;
 
@@ -29,7 +29,7 @@ const RegisterService = ({ account }) => {
       contract.methods
         .create(
           values.owner_address,
-          getServiceHash(values), // configHash
+          `0x${values.hash}`,
           convertStringToArray(values.agent_ids),
           getAgentParams(values),
           values.threshold,

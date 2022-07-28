@@ -32,7 +32,7 @@ const RegisterComponent = ({ account }) => {
         .create(
           '0',
           values.owner_address,
-          values.hash,
+          `0x${values.hash}`,
           values.dependencies ? values.dependencies.split(', ') : [],
         )
         .send({ from: account })

@@ -1,11 +1,8 @@
 /* eslint-disable import/no-unresolved */
 /* eslint-disable no-restricted-syntax */
-/**
- * 1. first we need to JSON data to the backend and get the initial hash =>
- * after uploading the file.
- * 2.  we should convert to base16 (version)
- */
-import { create, CID } from 'ipfs-http-client';
+
+import { create } from 'ipfs-http-client';
+import { base16 } from 'multiformats/bases/base16';
 import { HASH_PREFIX, GATEWAY_URL } from 'util/constants';
 
 const ipfs = create({
@@ -34,20 +31,9 @@ export const getIpfsHashHelper = async (info) => {
     otherOptions,
   );
 
-  // const value = new CID.createV1(response.cid);
-  window.console.log(response);
-
-
-  const v1 = response.cid.toV0().toString();
-  window.console.log(response.cid.toString());
-  window.console.log(response.cid.toV0().toString());
-  window.console.log(v1);
-  // window.console.log(response.);
-  const cid = new CID(v1);
-  window.console.log(cid);
-
-  // const hash = response.cid.toV1().toString();
-  return v1;
+  const hash = response.cid.toV1().toString(base16.encoder);
+  const updatedHash = hash.replace(HASH_PREFIX, '');
+  return updatedHash;
 };
 
 export const readDataFromIpfs = async (hash) => {
