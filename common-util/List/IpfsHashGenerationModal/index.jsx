@@ -5,8 +5,8 @@ import get from 'lodash/get';
 import { Form, Input, Button } from 'antd/lib';
 // import Hash from 'ipfs-only-hash';
 import { HASH_PREFIX } from 'util/constants';
+import { getIpfsHash, getBase16Validator } from './helpers';
 import { CustomModal } from '../styles';
-import { getIpfsHash } from './helpers';
 
 export const FORM_NAME = 'ipfs_creation_form';
 
@@ -98,7 +98,7 @@ const IpfsModal = ({
       cancelText="Cancel"
       destroyOnClose
       width={620}
-      onModalClose={handleCancel}
+      onCancel={handleCancel}
       footer={[
         <Fragment key="footer-1">
           <Button type="default" htmlType="submit" onClick={onModalClose}>
@@ -165,19 +165,14 @@ const IpfsModal = ({
           extra={`Should point to package, e.g. https://gateway.autonolas.tech/ipfs/${HASH_PREFIX}${typedUri}`}
           rules={[
             {
-              required: true, message: 'Please input the URI Pointer',
+              required: true,
+              message: 'Please input the URI Pointer',
             },
-            // () => ({
-            //   validator(_, value) {
-            //     console.log({ value });
-            //     if (value.length === 64) return Promise.resolve();
-            //     return Promise.reject(
-            //       new Error(
-            //         'Please input a valid hash',
-            //       ),
-            //     );
-            //   },
-            // }),
+            () => ({
+              validator(_, value) {
+                return getBase16Validator(value);
+              },
+            }),
           ]}
         >
           <Input
