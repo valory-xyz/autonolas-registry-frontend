@@ -7,7 +7,9 @@ import get from 'lodash/get';
 import isNil from 'lodash/isNil';
 import { HASH_PREFIX } from 'util/constants';
 import { WhiteButton } from 'common-util/components/Button';
-import IpfsHashGenerationModal, { getBase16Validator } from './IpfsHashGenerationModal';
+import IpfsHashGenerationModal, {
+  getBase16Validator,
+} from './IpfsHashGenerationModal';
 import { DependencyLabel } from './ListCommon';
 import { RegisterFooter, ComplexLabel } from './styles';
 
@@ -115,7 +117,7 @@ const RegisterForm = ({
           onClick={() => setIsModalVisible(true)}
           className="mb-12"
         >
-          Save File & Generate Hash
+          Generate Hash & File
         </Button>
 
         <Form.Item
