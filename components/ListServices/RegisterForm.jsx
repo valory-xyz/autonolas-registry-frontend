@@ -6,11 +6,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import get from 'lodash/get';
 import { Button, Form, Input } from 'antd/lib';
+import { HASH_PREFIX } from 'util/constants';
 import { WhiteButton } from 'common-util/components/Button';
-import {
-  getIpfsHashFromBytes32,
-  DependencyLabel,
-} from 'common-util/List/ListCommon';
+import { DependencyLabel } from 'common-util/List/ListCommon';
 import IpfsHashGenerationModal from 'common-util/List/IpfsHashGenerationModal';
 import { ComplexLabel } from 'common-util/List/styles';
 import { RegisterFooter } from 'components/styles';
@@ -32,9 +30,15 @@ const RegisterForm = ({
   const [fields, setFields] = useState([]);
   const router = useRouter();
   const id = get(router, 'query.id') || null;
-  const hash = getIpfsHashFromBytes32(
-    get(formInitialValues, 'configHash.hash'),
-  );
+
+  const onGenerateHash = (generatedHash) => {
+    setFields([
+      {
+        name: ['hash'],
+        value: generatedHash || null,
+      },
+    ]);
+  };
 
   useDeepCompareEffect(() => {
     if (isUpdateForm) {
@@ -173,7 +177,7 @@ const RegisterForm = ({
             },
           ]}
         >
-          <Input placeholder="0x019..." />
+          <Input placeholder="0x019..." addonBefore={HASH_PREFIX} />
         </Form.Item>
 
         <Button
@@ -280,7 +284,7 @@ const RegisterForm = ({
       <IpfsHashGenerationModal
         visible={isModalVisible}
         type={listType}
-        hash={hash}
+        callback={onGenerateHash}
         handleCancel={() => setIsModalVisible(false)}
       />
     </>

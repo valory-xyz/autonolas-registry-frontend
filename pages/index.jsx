@@ -1,3 +1,3 @@
-import ListComponents from 'components/ListComponents';
+import HomePage from 'components/HomePage';
 
-export default ListComponents;
+export default HomePage;

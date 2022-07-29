@@ -2,6 +2,8 @@ import { useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import get from 'lodash/get';
+import round from 'lodash/round';
+import isNil from 'lodash/isNil';
 import { Button } from 'antd';
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
@@ -143,7 +145,7 @@ const Login = ({
     <Container>
       <DetailsContainer>
         <MetamaskContainer>
-          <div>{balance ? `${balance} ETH` : 'NA'}</div>
+          <div>{isNil(balance) ? '--' : `${round(balance, 2)} ETH`}</div>
           <div className="dash" />
           <EllipsisMiddle data-testid="metamask-address">
             {account ? `${account}` : 'NA'}

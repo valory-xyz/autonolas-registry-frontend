@@ -2,13 +2,10 @@ import React, { Fragment, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import get from 'lodash/get';
-import {
-  Form, Input, Typography, Alert, Button,
-} from 'antd/lib';
+import { Form, Input, Button } from 'antd/lib';
 // import Hash from 'ipfs-only-hash';
-import { CustomModal, YourHashContainer } from './styles';
-
-const { Paragraph } = Typography;
+import { HASH_PREFIX } from 'util/constants';
+import { CustomModal } from './styles';
 
 export const FORM_NAME = 'ipfs_creation_form';
 
@@ -23,25 +20,31 @@ function makeid(length) {
 }
 
 const getHash = async () => {
-  // const hash = await Hash.of(JSON.stringify(info), {
+  // const updatedInfo = {
+  //   ...info,
+  //   uri: `https://gateway.autonolas.tech/ipfs/${HASH_PREFIX}${info.uri}`,
+  // };
+  // const currentHash = await Hash.of(JSON.stringify(updatedInfo), {
   //   cidVersion: 1,
   //   format: 'dag-pb',
   //   hashAlg: 'sha2-256',
   // });
-  // console.log({ hash });
   const hash = `0x${makeid(64)}`;
   return hash;
 };
 
 const IpfsModal = ({
-  visible, type, onUpdateHash, handleCancel,
+  visible, type, onUpdateHash, handleCancel, callback,
 }) => {
-  const [ipfsValue, setIpfsValue] = useState(null);
   const [form] = Form.useForm();
+  const [typedUri, setTypedUri] = useState('');
 
   const onFinish = async (values) => {
     const hash = await getHash(values);
-    setIpfsValue(hash);
+
+    if (callback) {
+      callback(hash);
+    }
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -49,21 +52,22 @@ const IpfsModal = ({
   };
 
   const onCancel = () => {
-    setIpfsValue(null);
-    handleCancel();
-  };
-
-  const copyHashAndClose = () => {
-    navigator.clipboard.writeText(ipfsValue);
     handleCancel();
   };
 
   const handleUpdate = () => {
     form.validateFields().then(async (values) => {
       const hash = await getHash(values);
-      setIpfsValue(hash);
       onUpdateHash(hash);
+
+      if (callback) {
+        callback(hash);
+      }
     });
+  };
+
+  const handleOk = () => {
+    form.submit();
   };
 
   return (
@@ -82,15 +86,15 @@ const IpfsModal = ({
             Cancel
           </Button>
 
-          {onUpdateHash ? (
-            <Button type="primary" onClick={handleUpdate}>
-              Update Hash
-            </Button>
-          ) : (
-            <Button type="primary" onClick={copyHashAndClose}>
-              Copy Hash & Close
-            </Button>
-          )}
+          <Button
+            form="myForm"
+            key="submit"
+            htmlType="submit"
+            type="primary"
+            onClick={onUpdateHash ? handleUpdate : handleOk}
+          >
+            {onUpdateHash ? 'Update Hash' : 'Generate Hash'}
+          </Button>
         </Fragment>,
       ]}
     >
@@ -100,6 +104,7 @@ const IpfsModal = ({
         layout="vertical"
         autoComplete="off"
         preserve={false}
+        id="myForm"
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
       >
@@ -138,26 +143,14 @@ const IpfsModal = ({
           name="uri"
           label="URI Pointer to Code"
           rules={[{ required: true, message: 'Please input the URI Pointer' }]}
-          extra="Should point to package, e.g. https://gateway.autonolas.tech/ipfs/{package_hash}"
+          extra={`Should point to package, e.g. https://gateway.autonolas.tech/ipfs/${HASH_PREFIX}${typedUri}`}
         >
-          <Input />
-        </Form.Item>
-
-        <Form.Item>
-          <Button type="primary" htmlType="submit" ghost>
-            Generate Hash
-          </Button>
+          <Input
+            addonBefore={HASH_PREFIX}
+            onChange={(e) => setTypedUri(e.target.value || '')}
+          />
         </Form.Item>
       </Form>
-
-      <YourHashContainer>
-        <p>Your hash:</p>
-        <Alert
-          message={<Paragraph>{ipfsValue || '--'}</Paragraph>}
-          type="info"
-          className="inherit-alert-info"
-        />
-      </YourHashContainer>
     </CustomModal>
   );
 };
@@ -167,11 +160,13 @@ IpfsModal.propTypes = {
   type: PropTypes.string,
   onUpdateHash: PropTypes.func,
   handleCancel: PropTypes.func.isRequired,
+  callback: PropTypes.func,
 };
 
 IpfsModal.defaultProps = {
   type: '',
   onUpdateHash: null,
+  callback: null,
 };
 
 const mapStateToProps = (state) => {

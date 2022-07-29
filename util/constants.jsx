@@ -49,3 +49,5 @@ export const SERVICE_STATE_INFO = {
   6: 'Some agents are bonded with stake.',
   7: 'All agents have left the service and recovered their stake.',
 };
+
+export const HASH_PREFIX = 'f01701220';
