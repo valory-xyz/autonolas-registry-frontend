@@ -42,7 +42,11 @@ const IpfsModal = ({
     try {
       setIsHashLoading(true); // loading on!
 
+      console.log('getNewHash before:', values);
+
       const hash = await getIpfsHashHelper(values);
+      console.log('getNewHash after:', values);
+
       if (callback) callback(hash);
       onModalClose();
 
