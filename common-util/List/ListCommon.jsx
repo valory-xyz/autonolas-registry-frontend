@@ -17,14 +17,6 @@ export const DEPENDENCY_IN_ASC = 'Agent IDs must be input in the order they were
  */
 export const convertStringToArray = (str) => (str ? str.split(',').map((e) => e.trim()) : str);
 
-// https://ethereum.stackexchange.com/a/39961
-// eg. "QmNSUYVKDSvPUnRLKmuxk9diJ6yS96r1TrAXzjTiBcCLAL"
-// "0x017dfd85d4f6cb4dcd715a88101f7b1f06cd1e009b2327a0809d01eb9c91f231"
-export const getBytes32FromIpfsHash = (ipfs) => {
-  if (!ipfs) return null;
-  return `0x${bs58.decode(ipfs).slice(2).toString('hex')}`;
-};
-
 // E.g. "0x017dfd85d4f6cb4dcd715a88101f7b1f06cd1e009b2327a0809d01eb9c91f231"
 // --> "QmNSUYVKDSvPUnRLKmuxk9diJ6yS96r1TrAXzjTiBcCLAL"
 export const getIpfsHashFromBytes32 = (bytes32Hex) => {

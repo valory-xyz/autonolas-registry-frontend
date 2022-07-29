@@ -3,7 +3,6 @@ import {
   getMechMinterContract,
   getComponentContract,
 } from 'common-util/Contracts';
-import { getBytes32FromIpfsHash } from 'common-util/List/ListCommon';
 
 // --------- HELPER METHODS ---------
 export const getComponentOwner = (id) => new Promise((resolve, reject) => {
@@ -118,7 +117,7 @@ export const updateComponentHashes = (account, id, newHash) => {
 
   // 0 to indicate `components`
   contract.methods
-    .updateHash('0', id, getBytes32FromIpfsHash(newHash))
+    .updateHash('0', id, newHash)
     .send({ from: account })
     .then(() => {
       notification.success({ message: 'Hash Updated' });
