@@ -6,12 +6,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import get from 'lodash/get';
 import { Button, Form, Input } from 'antd/lib';
-import { HASH_PREFIX } from 'util/constants';
 import { WhiteButton } from 'common-util/components/Button';
 import { DependencyLabel } from 'common-util/List/ListCommon';
-import IpfsHashGenerationModal, {
-  getBase16Validator,
-} from 'common-util/List/IpfsHashGenerationModal';
+import { FormItemHash } from 'common-util/List/RegisterForm/helpers';
+import IpfsHashGenerationModal from 'common-util/List/IpfsHashGenerationModal';
 import { ComplexLabel } from 'common-util/List/styles';
 import { RegisterFooter } from 'components/styles';
 
@@ -103,6 +101,8 @@ const RegisterForm = ({
     form.setFieldsValue({ owner_address: account });
   };
 
+  const hashValue = form.getFieldValue('hash');
+
   return (
     <>
       <Form
@@ -169,23 +169,7 @@ const RegisterForm = ({
           </Form.Item>
         )}
 
-        <Form.Item
-          label="Hash of Metadata File"
-          name="hash"
-          rules={[
-            {
-              required: true,
-              message: `Please input the IPFS hash of the ${listType}`,
-            },
-            () => ({
-              validator(_, value) {
-                return getBase16Validator(value);
-              },
-            }),
-          ]}
-        >
-          <Input addonBefore={HASH_PREFIX} />
-        </Form.Item>
+        <FormItemHash listType={listType} hashValue={hashValue} />
 
         <Button
           type="primary"
