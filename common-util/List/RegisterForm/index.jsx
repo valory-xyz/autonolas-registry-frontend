@@ -5,13 +5,11 @@ import Web3 from 'web3';
 import { Button, Form, Input } from 'antd/lib';
 import get from 'lodash/get';
 import isNil from 'lodash/isNil';
-import { HASH_PREFIX } from 'util/constants';
 import { WhiteButton } from 'common-util/components/Button';
-import IpfsHashGenerationModal, {
-  getBase16Validator,
-} from './IpfsHashGenerationModal';
-import { DependencyLabel } from './ListCommon';
-import { RegisterFooter, ComplexLabel } from './styles';
+import IpfsHashGenerationModal from '../IpfsHashGenerationModal';
+import { DependencyLabel } from '../ListCommon';
+import { RegisterFooter, ComplexLabel } from '../styles';
+import { FormItemHash } from './helpers';
 
 export const FORM_NAME = 'register_form';
 
@@ -44,6 +42,8 @@ const RegisterForm = ({
   const prefillOwnerAddress = () => {
     form.setFieldsValue({ owner_address: account });
   };
+
+  const hashValue = form.getFieldValue('hash');
 
   return (
     <>
@@ -93,23 +93,7 @@ const RegisterForm = ({
           </Button>
         </Form.Item>
 
-        <Form.Item
-          label="Hash of Metadata File"
-          name="hash"
-          rules={[
-            {
-              required: true,
-              message: `Please input the IPFS hash of the ${listType}`,
-            },
-            () => ({
-              validator(_, value) {
-                return getBase16Validator(value);
-              },
-            }),
-          ]}
-        >
-          <Input addonBefore={HASH_PREFIX} disabled />
-        </Form.Item>
+        <FormItemHash listType={listType} hashValue={hashValue} />
 
         <Button
           type="primary"

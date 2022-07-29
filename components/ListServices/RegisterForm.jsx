@@ -5,17 +5,11 @@ import useDeepCompareEffect from 'use-deep-compare-effect';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import get from 'lodash/get';
-import {
-  Button, Form, Input, Tooltip,
-} from 'antd/lib';
-import { LinkOutlined } from '@ant-design/icons';
-import { HASH_PREFIX } from 'util/constants';
+import { Button, Form, Input } from 'antd/lib';
 import { WhiteButton } from 'common-util/components/Button';
 import { DependencyLabel } from 'common-util/List/ListCommon';
-// import { FormItemHash } from 'common-util/List/RegisterForm';
-import IpfsHashGenerationModal, {
-  getBase16Validator,
-} from 'common-util/List/IpfsHashGenerationModal';
+import { FormItemHash } from 'common-util/List/RegisterForm/helpers';
+import IpfsHashGenerationModal from 'common-util/List/IpfsHashGenerationModal';
 import { ComplexLabel } from 'common-util/List/styles';
 import { RegisterFooter } from 'components/styles';
 
@@ -108,7 +102,6 @@ const RegisterForm = ({
   };
 
   const hashValue = form.getFieldValue('hash');
-  console.log(hashValue);
 
   return (
     <>
@@ -176,41 +169,7 @@ const RegisterForm = ({
           </Form.Item>
         )}
 
-        <Form.Item
-          label="Hash of Metadata File"
-          name="hash"
-          rules={[
-            {
-              required: true,
-              message: `Please input the IPFS hash of the ${listType}`,
-            },
-            () => ({
-              validator(_, value) {
-                return getBase16Validator(value);
-              },
-            }),
-          ]}
-        >
-          <Input
-            disabled
-            addonBefore={HASH_PREFIX}
-            addonAfter={(
-              <Tooltip title="Click to open the generated hash">
-                <LinkOutlined
-                  // style={hashValue ? {}:{backgroundColor: ${}}}
-                  onClick={() => {
-                    if (hashValue) {
-                      window.open(
-                        `https://ipfs.io/ipfs/${HASH_PREFIX}${hashValue}`,
-                        '_blank',
-                      );
-                    }
-                  }}
-                />
-              </Tooltip>
-            )}
-          />
-        </Form.Item>
+        <FormItemHash listType={listType} hashValue={hashValue} />
 
         <Button
           type="primary"
