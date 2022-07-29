@@ -17,8 +17,6 @@ export const getIpfsHashHelper = async (info) => {
     uri: `ipfs://${HASH_PREFIX}${info.uri}`,
   };
 
-  console.log({ updatedInfo });
-
   const otherOptions = {
     wrapWithDirectory: false, // default: false
   };
@@ -28,11 +26,7 @@ export const getIpfsHashHelper = async (info) => {
     otherOptions,
   );
 
-  console.log({ response });
-
   const hash = response.cid.toV1().toString(base16.encoder);
   const updatedHash = hash.replace(HASH_PREFIX, '');
-
-  console.log({ hash, updatedHash });
   return updatedHash;
 };
