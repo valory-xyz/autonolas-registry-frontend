@@ -5,10 +5,14 @@ import useDeepCompareEffect from 'use-deep-compare-effect';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import get from 'lodash/get';
-import { Button, Form, Input } from 'antd/lib';
+import {
+  Button, Form, Input, Tooltip,
+} from 'antd/lib';
+import { LinkOutlined } from '@ant-design/icons';
 import { HASH_PREFIX } from 'util/constants';
 import { WhiteButton } from 'common-util/components/Button';
 import { DependencyLabel } from 'common-util/List/ListCommon';
+// import { FormItemHash } from 'common-util/List/RegisterForm';
 import IpfsHashGenerationModal, {
   getBase16Validator,
 } from 'common-util/List/IpfsHashGenerationModal';
@@ -103,6 +107,9 @@ const RegisterForm = ({
     form.setFieldsValue({ owner_address: account });
   };
 
+  const hashValue = form.getFieldValue('hash');
+  console.log(hashValue);
+
   return (
     <>
       <Form
@@ -184,7 +191,25 @@ const RegisterForm = ({
             }),
           ]}
         >
-          <Input addonBefore={HASH_PREFIX} disabled />
+          <Input
+            disabled
+            addonBefore={HASH_PREFIX}
+            addonAfter={(
+              <Tooltip title="Click to open the generated hash">
+                <LinkOutlined
+                  // style={hashValue ? {}:{backgroundColor: ${}}}
+                  onClick={() => {
+                    if (hashValue) {
+                      window.open(
+                        `https://ipfs.io/ipfs/${HASH_PREFIX}${hashValue}`,
+                        '_blank',
+                      );
+                    }
+                  }}
+                />
+              </Tooltip>
+            )}
+          />
         </Form.Item>
 
         <Button
