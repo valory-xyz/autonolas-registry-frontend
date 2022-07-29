@@ -52,6 +52,7 @@ MyLink.propTypes = {
   href: PropTypes.string.isRequired,
 };
 
+const dependencyHelperText = 'Must be in ascending order – newest agents first, oldest last.';
 export const DependencyLabel = ({ type }) => (
   <div className="label-helper-text">
     {type === 'agent' ? (
@@ -62,8 +63,8 @@ export const DependencyLabel = ({ type }) => (
           Agents
           <ExternalLink size={12} />
         </MyLink>
-        &nbsp;page. Must be in descending order – newest agents first, oldest
-        last.
+        &nbsp;page.&nbsp;
+        {dependencyHelperText}
       </>
     ) : (
       <>
@@ -73,8 +74,8 @@ export const DependencyLabel = ({ type }) => (
           Components
           <ExternalLink size={12} />
         </MyLink>
-        &nbsp;page. Must be in descending order – newest agents first, oldest
-        last.
+        &nbsp;page.&nbsp;
+        {dependencyHelperText}
       </>
     )}
   </div>

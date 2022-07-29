@@ -3,7 +3,7 @@
 
 import { create } from 'ipfs-http-client';
 import { base16 } from 'multiformats/bases/base16';
-import { HASH_PREFIX, GATEWAY_URL } from 'util/constants';
+import { HASH_PREFIX } from 'util/constants';
 
 const ipfs = create({
   host: process.env.NEXT_PUBLIC_REGISTRY_URL,
@@ -14,7 +14,7 @@ const ipfs = create({
 export const getIpfsHashHelper = async (info) => {
   const updatedInfo = {
     ...info,
-    uri: `${GATEWAY_URL}${HASH_PREFIX}${info.uri}`,
+    uri: `ipfs://${HASH_PREFIX}${info.uri}`,
   };
 
   const otherOptions = {
