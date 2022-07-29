@@ -170,7 +170,7 @@ const RegisterForm = ({
         )}
 
         <Form.Item
-          label="Hash"
+          label="Hash of Metadata File"
           name="hash"
           rules={[
             {
@@ -194,7 +194,7 @@ const RegisterForm = ({
           className="mb-12"
         >
           {isUpdateForm ? 'Update' : 'Generate'}
-          &nbsp; Hash
+          &nbsp;Hash & File
         </Button>
 
         <Form.Item

@@ -39,7 +39,7 @@ describe('listAgents/register.jsx', () => {
       dummyAddress,
     );
     userEvent.type(container.querySelector(`#${FORM_NAME}_hash`), dummyHash);
-    expect(getByRole('button', { name: 'Generate Hash' })).toBeInTheDocument();
+    expect(getByRole('button', { name: 'Save File & Generate Hash' })).toBeInTheDocument();
     userEvent.type(
       container.querySelector(`#${FORM_NAME}_dependencies`),
       '1, 2',

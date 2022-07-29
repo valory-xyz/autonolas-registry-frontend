@@ -92,7 +92,7 @@ const RegisterForm = ({
         </Form.Item>
 
         <Form.Item
-          label="Hash"
+          label="Hash of Metadata File"
           name="hash"
           rules={[
             {
@@ -115,7 +115,7 @@ const RegisterForm = ({
           onClick={() => setIsModalVisible(true)}
           className="mb-12"
         >
-          Generate Hash
+          Save File & Generate Hash
         </Button>
 
         <Form.Item
