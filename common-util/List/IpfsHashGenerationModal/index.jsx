@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import get from 'lodash/get';
 import isNil from 'lodash/isNil';
 import { Form, Input, Button } from 'antd/lib';
-import { GATEWAY_URL, HASH_PREFIX } from 'util/constants';
+import { HASH_PREFIX } from 'util/constants';
 import { getIpfsHashHelper } from './helpers';
 import { CustomModal } from '../styles';
 
@@ -29,7 +29,6 @@ const IpfsModal = ({
 }) => {
   const [form] = Form.useForm();
   const [isHashLoading, setIsHashLoading] = useState(false);
-  const [typedUri, setTypedUri] = useState('');
 
   const onFinishFailed = (errorInfo) => {
     console.log('Failed:', errorInfo); /* eslint-disable-line no-console */
@@ -37,7 +36,6 @@ const IpfsModal = ({
 
   const onModalClose = () => {
     handleCancel();
-    setTypedUri(''); // on close typedUri should also be reset
   };
 
   const getNewHash = async (values) => {
@@ -147,12 +145,12 @@ const IpfsModal = ({
 
         <Form.Item
           name="uri"
-          label="URI Pointer to Code"
-          extra={`Should point to package, e.g. ${GATEWAY_URL}${HASH_PREFIX}${typedUri}`}
+          label="Package hash"
+          extra="This hash should point to the package"
           rules={[
             {
               required: true,
-              message: 'Please input the URI Pointer',
+              message: 'Please input the Package hash',
             },
             () => ({
               validator(_, value) {
@@ -161,10 +159,7 @@ const IpfsModal = ({
             }),
           ]}
         >
-          <Input
-            addonBefore={HASH_PREFIX}
-            onChange={(e) => setTypedUri(e.target.value || '')}
-          />
+          <Input addonBefore={HASH_PREFIX} />
         </Form.Item>
       </Form>
     </CustomModal>
