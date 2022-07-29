@@ -4,10 +4,7 @@ import { connect } from 'react-redux';
 import { useRouter } from 'next/router';
 import { Typography, notification } from 'antd';
 import RegisterForm from 'common-util/List/RegisterForm';
-import {
-  AlertInfo,
-  AlertError,
-} from 'common-util/List/ListCommon';
+import { AlertInfo, AlertError } from 'common-util/List/ListCommon';
 import { getMechMinterContract } from 'common-util/Contracts';
 import { FormContainer } from 'components/styles';
 
@@ -31,7 +28,7 @@ const RegisterAgent = ({ account }) => {
         .create(
           '1',
           values.owner_address,
-          values.hash,
+          `0x${values.hash}`,
           values.dependencies ? values.dependencies.split(', ') : [],
         )
         .send({ from: account })

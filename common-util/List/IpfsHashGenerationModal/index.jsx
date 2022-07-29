@@ -2,67 +2,70 @@ import React, { Fragment, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import get from 'lodash/get';
+import isNil from 'lodash/isNil';
 import { Form, Input, Button } from 'antd/lib';
-// import Hash from 'ipfs-only-hash';
 import { HASH_PREFIX } from 'util/constants';
-import { CustomModal } from './styles';
+import { getIpfsHashHelper } from './helpers';
+import { CustomModal } from '../styles';
 
 export const FORM_NAME = 'ipfs_creation_form';
 
-function makeid(length) {
-  let result = '';
-  const characters = 'abcdef0123456789';
-  const charactersLength = characters.length;
-  for (let i = 0; i < length; i += 1) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+export const getBase16Validator = (value) => {
+  if (isNil(value) || value === '') {
+    return Promise.resolve();
   }
-  return result;
-}
 
-const getHash = async () => {
-  // const updatedInfo = {
-  //   ...info,
-  //   uri: `https://gateway.autonolas.tech/ipfs/${HASH_PREFIX}${info.uri}`,
-  // };
-  // const currentHash = await Hash.of(JSON.stringify(updatedInfo), {
-  //   cidVersion: 1,
-  //   format: 'dag-pb',
-  //   hashAlg: 'sha2-256',
-  // });
-  const hash = `0x${makeid(64)}`;
-  return hash;
+  /**
+   * only 64 characters long valid Hash
+   */
+  if (value.length === 64 && /[0-9a-f]/gm.test(value)) {
+    return Promise.resolve();
+  }
+  return Promise.reject(new Error('Please input a valid hash'));
 };
 
 const IpfsModal = ({
   visible, type, onUpdateHash, handleCancel, callback,
 }) => {
   const [form] = Form.useForm();
-  const [typedUri, setTypedUri] = useState('');
-
-  const onFinish = async (values) => {
-    const hash = await getHash(values);
-
-    if (callback) {
-      callback(hash);
-    }
-  };
+  const [isHashLoading, setIsHashLoading] = useState(false);
 
   const onFinishFailed = (errorInfo) => {
     console.log('Failed:', errorInfo); /* eslint-disable-line no-console */
   };
 
-  const onCancel = () => {
+  const onModalClose = () => {
     handleCancel();
+  };
+
+  const getNewHash = async (values) => {
+    try {
+      setIsHashLoading(true); // loading on!
+
+      const hash = await getIpfsHashHelper(values);
+      if (callback) callback(hash);
+      onModalClose();
+
+      return hash;
+    } catch (error) {
+      window.console.log(error);
+    } finally {
+      setIsHashLoading(false); // off the loader and close the `Modal`
+    }
+
+    return null;
+  };
+
+  const onFinish = async (values) => {
+    const hash = await getNewHash(values);
+    if (callback) callback(hash);
   };
 
   const handleUpdate = () => {
     form.validateFields().then(async (values) => {
-      const hash = await getHash(values);
+      const hash = await getNewHash(values);
       onUpdateHash(hash);
-
-      if (callback) {
-        callback(hash);
-      }
+      if (callback) callback(hash);
     });
   };
 
@@ -82,7 +85,7 @@ const IpfsModal = ({
       onCancel={handleCancel}
       footer={[
         <Fragment key="footer-1">
-          <Button type="default" htmlType="submit" onClick={onCancel}>
+          <Button type="default" htmlType="submit" onClick={onModalClose}>
             Cancel
           </Button>
 
@@ -91,6 +94,7 @@ const IpfsModal = ({
             key="submit"
             htmlType="submit"
             type="primary"
+            loading={isHashLoading}
             onClick={onUpdateHash ? handleUpdate : handleOk}
           >
             {onUpdateHash ? 'Update Hash' : 'Generate Hash'}
@@ -141,14 +145,21 @@ const IpfsModal = ({
 
         <Form.Item
           name="uri"
-          label="URI Pointer to Code"
-          rules={[{ required: true, message: 'Please input the URI Pointer' }]}
-          extra={`Should point to package, e.g. https://gateway.autonolas.tech/ipfs/${HASH_PREFIX}${typedUri}`}
+          label="Package hash"
+          extra="This hash should point to the package"
+          rules={[
+            {
+              required: true,
+              message: 'Please input the Package hash',
+            },
+            () => ({
+              validator(_, value) {
+                return getBase16Validator(value);
+              },
+            }),
+          ]}
         >
-          <Input
-            addonBefore={HASH_PREFIX}
-            onChange={(e) => setTypedUri(e.target.value || '')}
-          />
+          <Input addonBefore={HASH_PREFIX} />
         </Form.Item>
       </Form>
     </CustomModal>

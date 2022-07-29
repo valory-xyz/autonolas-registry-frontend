@@ -9,7 +9,9 @@ import { Button, Form, Input } from 'antd/lib';
 import { HASH_PREFIX } from 'util/constants';
 import { WhiteButton } from 'common-util/components/Button';
 import { DependencyLabel } from 'common-util/List/ListCommon';
-import IpfsHashGenerationModal from 'common-util/List/IpfsHashGenerationModal';
+import IpfsHashGenerationModal, {
+  getBase16Validator,
+} from 'common-util/List/IpfsHashGenerationModal';
 import { ComplexLabel } from 'common-util/List/styles';
 import { RegisterFooter } from 'components/styles';
 
@@ -175,9 +177,14 @@ const RegisterForm = ({
               required: true,
               message: `Please input the IPFS hash of the ${listType}`,
             },
+            () => ({
+              validator(_, value) {
+                return getBase16Validator(value);
+              },
+            }),
           ]}
         >
-          <Input placeholder="0x019..." addonBefore={HASH_PREFIX} />
+          <Input addonBefore={HASH_PREFIX} />
         </Form.Item>
 
         <Button

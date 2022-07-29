@@ -7,7 +7,7 @@ import get from 'lodash/get';
 import isNil from 'lodash/isNil';
 import { HASH_PREFIX } from 'util/constants';
 import { WhiteButton } from 'common-util/components/Button';
-import IpfsHashGenerationModal from './IpfsHashGenerationModal';
+import IpfsHashGenerationModal, { getBase16Validator } from './IpfsHashGenerationModal';
 import { DependencyLabel } from './ListCommon';
 import { RegisterFooter, ComplexLabel } from './styles';
 
@@ -99,9 +99,14 @@ const RegisterForm = ({
               required: true,
               message: `Please input the IPFS hash of the ${listType}`,
             },
+            () => ({
+              validator(_, value) {
+                return getBase16Validator(value);
+              },
+            }),
           ]}
         >
-          <Input placeholder="0x019..." addonBefore={HASH_PREFIX} />
+          <Input addonBefore={HASH_PREFIX} />
         </Form.Item>
 
         <Button
