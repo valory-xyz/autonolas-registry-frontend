@@ -42,7 +42,11 @@ const IpfsModal = ({
     try {
       setIsHashLoading(true); // loading on!
 
+      console.log('getNewHash before', values);
+
       const hash = await getIpfsHashHelper(values);
+      console.log('getNewHash after', values);
+
       if (callback) callback(hash);
       onModalClose();
 
@@ -97,7 +101,9 @@ const IpfsModal = ({
             loading={isHashLoading}
             onClick={onUpdateHash ? handleUpdate : handleOk}
           >
-            {onUpdateHash ? 'Save File & Update Hash' : 'Save File & Generate Hash'}
+            {onUpdateHash
+              ? 'Save File & Update Hash'
+              : 'Save File & Generate Hash'}
           </Button>
         </Fragment>,
       ]}
