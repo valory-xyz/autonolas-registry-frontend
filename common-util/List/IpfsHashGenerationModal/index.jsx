@@ -77,7 +77,7 @@ const IpfsModal = ({
     <CustomModal
       visible={visible}
       centered
-      title="Generate IPFS Hash to Code"
+      title="Generate IPFS Hash of Metadata File"
       okText="Copy Hash & Close"
       cancelText="Cancel"
       destroyOnClose
@@ -97,7 +97,7 @@ const IpfsModal = ({
             loading={isHashLoading}
             onClick={onUpdateHash ? handleUpdate : handleOk}
           >
-            {onUpdateHash ? 'Update Hash' : 'Generate Hash'}
+            {onUpdateHash ? 'Save File & Update Hash' : 'Save File & Generate Hash'}
           </Button>
         </Fragment>,
       ]}
