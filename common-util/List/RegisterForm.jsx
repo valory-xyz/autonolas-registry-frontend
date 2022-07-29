@@ -108,7 +108,7 @@ const RegisterForm = ({
             }),
           ]}
         >
-          <Input addonBefore={HASH_PREFIX} />
+          <Input addonBefore={HASH_PREFIX} disabled />
         </Form.Item>
 
         <Button
