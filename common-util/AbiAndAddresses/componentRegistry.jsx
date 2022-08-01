@@ -1,9 +1,7 @@
-export const COMPONENT_REGISTRY_ADDRESS = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
-
-export const COMPONENT_REGISTRY = {
+export const COMPONENT_REGISTRY_CONTRACT = {
   _format: 'hh-sol-artifact-1',
   contractName: 'ComponentRegistry',
-  sourceName: 'lib/autonolas-registries/contracts/ComponentRegistry.sol',
+  sourceName: 'contracts/ComponentRegistry.sol',
   abi: [
     {
       inputs: [

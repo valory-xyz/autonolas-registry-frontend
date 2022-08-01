@@ -1,6 +1,4 @@
-export const SERVICE_MANAGER_ADDRESS = '0x9A676e781A523b5d0C0e43731313A708CB607508';
-
-export const SERVICE_MANAGER = {
+export const SERVICE_MANAGER_CONTRACT = {
   _format: 'hh-sol-artifact-1',
   contractName: 'ServiceManager',
   sourceName: 'lib/autonolas-registries/contracts/ServiceManager.sol',

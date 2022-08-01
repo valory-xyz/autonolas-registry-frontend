@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { Form, Input, Tooltip } from 'antd/lib';
 import { LinkOutlined } from '@ant-design/icons';
-import { HASH_PREFIX } from 'util/constants';
+import { GATEWAY_URL, HASH_PREFIX } from 'util/constants';
 import { getBase16Validator } from '../IpfsHashGenerationModal';
 
 export const FormItemHash = ({ listType, hashValue }) => (
@@ -36,7 +36,7 @@ export const FormItemHash = ({ listType, hashValue }) => (
             onClick={() => {
               if (hashValue) {
                 window.open(
-                  `https://ipfs.io/ipfs/${HASH_PREFIX}${hashValue}`,
+                  `${GATEWAY_URL}${HASH_PREFIX}${hashValue}`,
                   '_blank',
                 );
               }

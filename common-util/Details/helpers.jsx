@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Table, Button } from 'antd/lib';
+import { GATEWAY_URL } from 'util/constants';
 import { getIpfsHashFromBytes32 } from '../List/ListCommon';
 import { getServiceTableDataSource } from './ServiceState/utils';
 
@@ -62,20 +63,28 @@ ServiceMiniTable.propTypes = {
   onDependencyClick: PropTypes.func.isRequired,
 };
 
-export const getHashDetails = (type, hash, tokenUri) => (
-  <>
-    {hash.length === 0 ? (
-      <div>
-        <a href={tokenUri} target="_blank" rel="noopener noreferrer">
-          {tokenUri}
-        </a>
-      </div>
-    ) : (
-      <>
-        {hash.map((e, index) => (
-          <li key={`${type}-hashes-${index}`}>{getIpfsHashFromBytes32(e)}</li>
-        ))}
-      </>
-    )}
-  </>
-);
+const pattern = /https:\/\/localhost\/(agent|component|service)\/+/g;
+
+export const getHashDetails = (type, hash, tokenUri) => {
+  const updatedTokenUri = (tokenUri || '').replace(
+    pattern,
+    GATEWAY_URL,
+  );
+  return (
+    <>
+      {hash.length === 0 ? (
+        <div>
+          <a href={updatedTokenUri} target="_blank" rel="noopener noreferrer">
+            {updatedTokenUri}
+          </a>
+        </div>
+      ) : (
+        <>
+          {hash.map((e, index) => (
+            <li key={`${type}-hashes-${index}`}>{getIpfsHashFromBytes32(e)}</li>
+          ))}
+        </>
+      )}
+    </>
+  );
+};

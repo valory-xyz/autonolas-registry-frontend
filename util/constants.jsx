@@ -1,6 +1,6 @@
-export const CHAIN_ID = 31337;
+export const STAGING_CHAIN_ID = 31337;
 
-export const SUPPORTED_NETWORKS = [1, 3, 4, 5, 42];
+export const SUPPORTED_NETWORKS = [1, STAGING_CHAIN_ID];
 
 export const NA = 'NA';
 
