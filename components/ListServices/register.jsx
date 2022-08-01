@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import { Typography, notification } from 'antd';
 import {
   convertStringToArray,
-  AlertInfo,
+  AlertSuccess,
   AlertError,
 } from 'common-util/List/ListCommon';
 import { getServiceManagerContract } from 'common-util/Contracts';
@@ -62,7 +62,7 @@ const RegisterService = ({ account }) => {
         />
       </FormContainer>
 
-      <AlertInfo information={information} />
+      <AlertSuccess type="Service" information={information} />
       <AlertError error={error} />
     </>
   );

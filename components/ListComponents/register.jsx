@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import { Typography, notification } from 'antd';
 import RegisterForm from 'common-util/List/RegisterForm';
 import {
-  AlertInfo,
+  AlertSuccess,
   AlertError,
 } from 'common-util/List/ListCommon';
 import { getMechMinterContract } from 'common-util/Contracts';
@@ -57,7 +57,7 @@ const RegisterComponent = ({ account }) => {
           handleCancel={handleCancel}
         />
       </FormContainer>
-      <AlertInfo information={information} />
+      <AlertSuccess type="Component" information={information} />
       <AlertError error={error} />
     </>
   );

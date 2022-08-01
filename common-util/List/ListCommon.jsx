@@ -1,10 +1,12 @@
 import PropTypes from 'prop-types';
 import Link from 'next/link';
-import { Alert } from 'antd';
+import { Alert, Typography } from 'antd';
 import bs58 from 'bs58';
 import { ExternalLink } from 'react-feather';
 import { EmptyMessage, RegisterFooter } from 'components/styles';
 import { WhiteButton } from '../components/Button';
+
+const {Text} = Typography
 
 // constants
 export const DEPENDENCY_IN_ASC = 'Agent IDs must be input in the order they were created (oldest first & newest last)';
@@ -135,27 +137,23 @@ export const PrintJson = ({ value }) => (
 );
 PrintJson.propTypes = { value: PropTypes.shape({}).isRequired };
 
-// AlertInfo
-export const AlertInfo = ({ type, information }) => {
+// AlertSuccess
+export const AlertSuccess = ({ type, information }) => {
   if (!information) return null;
   return (
     <Alert
-      message={`${type || 'Registered'} successfully!`}
-      description={(
-        <div data-testid="alert-info-container">
-          <PrintJson value={information} />
-        </div>
-      )}
-      type="info"
+      message={type ? `${type} registered` : 'Registered successfully'}
+      type="success"
+      data-testid="alert-info-container"
       showIcon
     />
   );
 };
-AlertInfo.propTypes = {
+AlertSuccess.propTypes = {
   information: PropTypes.shape({}),
   type: PropTypes.string,
 };
-AlertInfo.defaultProps = {
+AlertSuccess.defaultProps = {
   information: null,
   type: null,
 };
@@ -165,18 +163,14 @@ export const AlertError = ({ error }) => {
   if (!error) return null;
   return (
     <Alert
-      message="Error on Register!"
-      description={(
-        <div data-testid="alert-error-container">
-          <pre>{error.stack}</pre>
-        </div>
-      )}
+      message={error.message}
+      data-testid="alert-error-container"
       type="error"
       showIcon
     />
   );
 };
 AlertError.propTypes = {
-  error: PropTypes.shape({ stack: PropTypes.string }),
+  error: PropTypes.shape({ message: PropTypes.string }),
 };
 AlertError.defaultProps = { error: null };

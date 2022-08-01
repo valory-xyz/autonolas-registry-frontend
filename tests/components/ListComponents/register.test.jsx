@@ -53,7 +53,7 @@ describe('listComponents/register.jsx', () => {
       // check if `Component registered` on `Submit` click
       expect(getByText(/Component registered/i)).toBeInTheDocument();
 
-      // Newly component info should also be displayed in AlertInfo
+      // Newly component info should also be displayed in AlertSuccess
       expect(getByText(/New Component One/i)).toBeInTheDocument();
     });
   });
