@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import get from 'lodash/get';
 import { Button, Form, Input } from 'antd/lib';
 import { WhiteButton } from 'common-util/components/Button';
-import { DependencyLabel } from 'common-util/List/ListCommon';
+import { commaMessage, DependencyLabel } from 'common-util/List/ListCommon';
 import { FormItemHash } from 'common-util/List/RegisterForm/helpers';
 import IpfsHashGenerationModal from 'common-util/List/IpfsHashGenerationModal';
 import { ComplexLabel } from 'common-util/List/styles';
@@ -187,7 +187,7 @@ const RegisterForm = ({
           label={(
             <ComplexLabel>
               Canonical agent Ids
-              <DependencyLabel type="agent" />
+              <DependencyLabel type="service" />
             </ComplexLabel>
           )}
           rules={[
@@ -209,10 +209,19 @@ const RegisterForm = ({
         </Form.Item>
 
         <Form.Item
-          label="No. of slots to canonical agent Ids"
+          label={(
+            <ComplexLabel>
+              No. of slots to canonical agent Ids
+              <div className="label-helper-text">
+                Specify the number of agent instances for each canonical agent
+                listed above. Each canonical agent must have at least one
+                instance.&nbsp;
+                {commaMessage}
+              </div>
+            </ComplexLabel>
+          )}
           name="agent_num_slots"
           validateFirst
-          tooltip="(comma seperated)"
           rules={[
             {
               required: true,
