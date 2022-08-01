@@ -1,6 +1,4 @@
-export const SERVICE_REGISTRY_ADDRESS = '0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82';
-
-export const SERVICE_REGISTRY = {
+export const SERVICE_REGISTRY_CONTRACT = {
   _format: 'hh-sol-artifact-1',
   contractName: 'ServiceRegistry',
   sourceName: 'lib/autonolas-registries/contracts/ServiceRegistry.sol',

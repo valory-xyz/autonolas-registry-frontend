@@ -7,7 +7,7 @@ import isNil from 'lodash/isNil';
 import { Button } from 'antd';
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
-import { CHAIN_ID, CONSTANTS } from 'util/constants';
+import { CONSTANTS, SUPPORTED_NETWORKS } from 'util/constants';
 import { WhiteButton } from 'common-util/components/Button';
 import {
   setUserAccount as setUserAccountFn,
@@ -79,14 +79,14 @@ const Login = ({
     const getChainId = get(library, 'eth.net.getId');
     if (getChainId) {
       const network = await getChainId();
-      if (network === CHAIN_ID) {
+      if (SUPPORTED_NETWORKS.includes(network)) {
         isValidChainId = true;
         setErrorMessage(null);
       } else {
         isValidChainId = false;
         setUserAccount(null);
         setUserBalance(null);
-        setErrorMessage(`Wrong network. Switch to chain ID: ${CHAIN_ID}`);
+        setErrorMessage('Unsupported network');
       }
     }
 

@@ -44,7 +44,7 @@ MyLink.propTypes = {
   href: PropTypes.string.isRequired,
 };
 
-const dependencyHelperText = 'Must be in ascending order – newest agents first, oldest last.';
+const dependencyHelperText = 'Must be in ascending order – newest agents first, oldest last. Each comma must be followed by a space ("1, 2" not "1,2").';
 export const DependencyLabel = ({ type }) => (
   <div className="label-helper-text">
     {type === 'agent' ? (

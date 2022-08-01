@@ -3,7 +3,7 @@
 
 import { create } from 'ipfs-http-client';
 import { base16 } from 'multiformats/bases/base16';
-import { HASH_PREFIX } from 'util/constants';
+import { HASH_PREFIXES } from 'util/constants';
 
 const ipfs = create({
   host: process.env.NEXT_PUBLIC_REGISTRY_URL,
@@ -11,10 +11,10 @@ const ipfs = create({
   protocol: 'https',
 });
 
-export const getIpfsHashHelper = async (info) => {
+export const getIpfsHashHelper = async (info, hashType) => {
   const updatedInfo = {
     ...info,
-    uri: `ipfs://${HASH_PREFIX}${info.uri}`,
+    uri: `ipfs://${hashType}${info.uri}`,
   };
 
   const otherOptions = {
@@ -27,6 +27,8 @@ export const getIpfsHashHelper = async (info) => {
   );
 
   const hash = response.cid.toV1().toString(base16.encoder);
-  const updatedHash = hash.replace(HASH_PREFIX, '');
+
+  // the response will always be of the 'type 1' so replace it.
+  const updatedHash = hash.replace(HASH_PREFIXES.type1, '');
   return updatedHash;
 };

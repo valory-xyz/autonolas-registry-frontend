@@ -1,6 +1,6 @@
-export const CHAIN_ID = 31337;
+export const STAGING_CHAIN_ID = 31337;
 
-export const SUPPORTED_NETWORKS = [1, 3, 4, 5, 42];
+export const SUPPORTED_NETWORKS = [1, STAGING_CHAIN_ID];
 
 export const NA = 'NA';
 
@@ -51,5 +51,9 @@ export const SERVICE_STATE_INFO = {
 };
 
 export const HASH_PREFIX = 'f01701220';
+export const HASH_PREFIXES = {
+  type1: HASH_PREFIX,
+  type2: 'bafybei',
+};
 
 export const GATEWAY_URL = 'https://gateway.autonolas.tech/ipfs/';
