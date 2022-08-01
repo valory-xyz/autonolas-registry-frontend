@@ -3,24 +3,33 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import get from 'lodash/get';
 import isNil from 'lodash/isNil';
-import { Form, Input, Button } from 'antd/lib';
-import { HASH_PREFIX } from 'util/constants';
+import {
+  Form, Input, Button, Select,
+} from 'antd/lib';
+import { HASH_PREFIXES } from 'util/constants';
 import { getIpfsHashHelper } from './helpers';
 import { CustomModal } from '../styles';
 
 export const FORM_NAME = 'ipfs_creation_form';
 
-export const getBase16Validator = (value) => {
+export const getBase16Validator = (value, hashType = HASH_PREFIXES.type1) => {
   if (isNil(value) || value === '') {
     return Promise.resolve();
   }
 
-  /**
-   * only 64 characters long valid Hash
-   */
-  if (value.length === 64 && /[0-9a-f]/gm.test(value)) {
-    return Promise.resolve();
+  if (hashType === HASH_PREFIXES.type1) {
+    // only 64 characters long valid Hash
+    if (value.length === 64 && /[0-9a-f]/gm.test(value)) {
+      return Promise.resolve();
+    }
   }
+
+  if (hashType === HASH_PREFIXES.type2) {
+    if (value.length === 52 && /[0-9a-z]/gm.test(value)) {
+      return Promise.resolve();
+    }
+  }
+
   return Promise.reject(new Error('Please input a valid hash'));
 };
 
@@ -29,6 +38,7 @@ const IpfsModal = ({
 }) => {
   const [form] = Form.useForm();
   const [isHashLoading, setIsHashLoading] = useState(false);
+  const [hashType, setHashType] = useState(HASH_PREFIXES.type1);
 
   const onFinishFailed = (errorInfo) => {
     console.log('Failed:', errorInfo); /* eslint-disable-line no-console */
@@ -42,7 +52,7 @@ const IpfsModal = ({
     try {
       setIsHashLoading(true); // loading on!
 
-      const hash = await getIpfsHashHelper(values);
+      const hash = await getIpfsHashHelper(values, hashType);
       if (callback) callback(hash);
       onModalClose();
 
@@ -156,12 +166,27 @@ const IpfsModal = ({
             },
             () => ({
               validator(_, value) {
-                return getBase16Validator(value);
+                return getBase16Validator(value, hashType);
               },
             }),
           ]}
         >
-          <Input addonBefore={HASH_PREFIX} />
+          <Input
+            addonBefore={(
+              <Select
+                defaultValue={hashType}
+                className="select-before"
+                onChange={(e) => setHashType(e)}
+              >
+                <Select.Option value={HASH_PREFIXES.type1}>
+                  {HASH_PREFIXES.type1}
+                </Select.Option>
+                <Select.Option value={HASH_PREFIXES.type2}>
+                  {HASH_PREFIXES.type2}
+                </Select.Option>
+              </Select>
+            )}
+          />
         </Form.Item>
       </Form>
     </CustomModal>
