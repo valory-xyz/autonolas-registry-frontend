@@ -108,7 +108,7 @@ const RegisterForm = ({
           label={(
             <ComplexLabel>
               Dependencies
-              <DependencyLabel />
+              <DependencyLabel type={listType} />
             </ComplexLabel>
           )}
           name="dependencies"

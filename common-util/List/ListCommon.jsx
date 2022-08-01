@@ -34,9 +34,7 @@ export const getIpfsHashFromBytes32 = (bytes32Hex) => {
 // ----------- components -----------
 export const MyLink = ({ children, href, ...linkProps }) => (
   <Link {...linkProps} href={href}>
-    <a href={href}>
-      {children}
-    </a>
+    <a href={href}>{children}</a>
   </Link>
 );
 MyLink.propTypes = {
@@ -44,34 +42,41 @@ MyLink.propTypes = {
   href: PropTypes.string.isRequired,
 };
 
-const dependencyHelperText = 'Must be in ascending order – newest agents first, oldest last. Each comma must be followed by a space ("1, 2" not "1,2").';
-export const DependencyLabel = ({ type }) => (
-  <div className="label-helper-text">
-    {type === 'agent' ? (
-      <>
-        Comma-separated list of agent IDs which this agent requires. Find IDs
-        on&nbsp;
-        <MyLink href="/agents">
-          Agents
-          <ExternalLink size={12} />
-        </MyLink>
-        &nbsp;page.&nbsp;
-        {dependencyHelperText}
-      </>
-    ) : (
-      <>
-        Comma-separated list of component IDs which this component requires.
-        Find IDs on&nbsp;
-        <MyLink href="/">
-          Components
-          <ExternalLink size={12} />
-        </MyLink>
-        &nbsp;page.&nbsp;
-        {dependencyHelperText}
-      </>
-    )}
-  </div>
-);
+export const commaMessage = 'Each comma must be followed by a space ("1, 2" not "1,2").';
+
+export const DependencyLabel = ({ type }) => {
+  const dependencyHelperText = `Must be in ascending order – newest ${
+    type === 'service' ? 'agents' : 'components'
+  } last, oldest first. ${commaMessage}`;
+
+  return (
+    <div className="label-helper-text">
+      {type === 'service' ? (
+        <>
+          Comma-separated list of agent IDs which this service requires. Find
+          IDs on&nbsp;
+          <MyLink href="/agents">
+            Agents
+            <ExternalLink size={12} />
+          </MyLink>
+          &nbsp;page.&nbsp;
+          {dependencyHelperText}
+        </>
+      ) : (
+        <>
+          {`Comma-separated list of component IDs which this ${type} requires. Find IDs on`}
+          &nbsp;
+          <MyLink href="/components">
+            Components
+            <ExternalLink size={12} />
+          </MyLink>
+          &nbsp;page.&nbsp;
+          {dependencyHelperText}
+        </>
+      )}
+    </div>
+  );
+};
 DependencyLabel.propTypes = { type: PropTypes.string };
 DependencyLabel.defaultProps = { type: 'component' };
 
