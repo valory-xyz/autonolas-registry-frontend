@@ -5,20 +5,20 @@ export const Container = styled.div``;
 export const HeaderRow = styled.div`
   margin-top: 4rem;
   height: 60vh;
-    .hero-title {
-      max-width: 24ch;
-    }
-    .lead {
-      display: inline-block;
-      font-size: 24px;
-      margin-bottom: 2rem;
-    }
-    .header-image {
-      width: 100%;
-      height: 100%;
-      background-size: contain;
-      background-repeat: no-repeat;
-    }
+  .hero-title {
+    max-width: 24ch;
+  }
+  .lead {
+    display: inline-block;
+    font-size: 24px;
+    margin-bottom: 2rem;
+  }
+  .header-image {
+    width: 100%;
+    height: 100%;
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
 `;
 
 export const ContentRow = styled.div`

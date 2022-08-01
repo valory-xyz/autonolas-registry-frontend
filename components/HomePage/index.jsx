@@ -35,12 +35,16 @@ const HomePage = () => (
     <HeaderRow className="row-1">
       <Row>
         <Col span={14} offset={2}>
-          <Title className="hero-title">Register and manage your services, agents and components</Title>
+          <Title className="hero-title">
+            Register and manage your services, agents and components
+          </Title>
           <Text className="lead">
             The easiest way to interact with the Autonolas on-chain registry.
           </Text>
           <Link href={URL.COMPONENTS} passHref>
-            <Button type="primary" size="large">Get Started →</Button>
+            <Button type="primary" size="large">
+              Get Started →
+            </Button>
           </Link>
         </Col>
         <Col span={8}>
@@ -55,14 +59,24 @@ const HomePage = () => (
     </HeaderRow>
 
     <ContentRow className="row-2">
-      <Title level={3} className="title">How are Autonolas services architected? </Title>
+      <Title level={3} className="title">
+        How are Autonolas services architected?
+      </Title>
 
       {LIST.map(({
         title, desc, link, type,
       }) => (
-        <Row className="each-service" key={`each-service-${type}`} align="middle">
+        <Row
+          className="each-service"
+          key={`each-service-${type}`}
+          align="middle"
+        >
           <Col className="column column-1">
-            <img src={`/${IMG_PATH}${type}.svg`} className="each-service-image" alt="" />
+            <img
+              src={`/${IMG_PATH}${type}.svg`}
+              className="each-service-image"
+              alt=""
+            />
           </Col>
 
           <Col className="column column-2">
