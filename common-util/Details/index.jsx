@@ -145,7 +145,7 @@ const Details = ({
     ) : null;
 
     const nftSection = {
-      title: 'NFT',
+      title: 'Image',
       value: <img src={nftUrl} alt="NFT" width={500} height={500} />,
     };
 
@@ -173,7 +173,7 @@ const Details = ({
           dataTestId: 'details-dependency',
           value:
             dependencies.length === 0 ? (
-              <>NA</>
+              <>None</>
             ) : (
               dependencies.map((e) => (
                 <li key={`${type}-dependency-${e}`}>

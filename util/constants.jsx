@@ -2,7 +2,7 @@ export const STAGING_CHAIN_ID = 31337;
 
 export const SUPPORTED_NETWORKS = [1, STAGING_CHAIN_ID];
 
-export const NA = 'NA';
+export const NA = 'n/a';
 
 export const CONSTANTS = {
   ETH_GETBALANCE: 'eth_getBalance',
