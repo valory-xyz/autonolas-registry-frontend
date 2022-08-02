@@ -65,11 +65,10 @@ ServiceMiniTable.propTypes = {
 
 const pattern = /https:\/\/localhost\/(agent|component|service)\/+/g;
 
+export const getAutonolasTokenUri = (tokenUri) => (tokenUri || '').replace(pattern, GATEWAY_URL);
+
 export const getHashDetails = (type, hash, tokenUri) => {
-  const updatedTokenUri = (tokenUri || '').replace(
-    pattern,
-    GATEWAY_URL,
-  );
+  const updatedTokenUri = getAutonolasTokenUri(tokenUri);
   return (
     <>
       {hash.length === 0 ? (

@@ -4,12 +4,16 @@ import { connect } from 'react-redux';
 import get from 'lodash/get';
 import capitalize from 'lodash/capitalize';
 import { Row, Col, Button } from 'antd/lib';
-import { NAV_TYPES, NA } from 'util/constants';
+import { NAV_TYPES, NA, GATEWAY_URL } from 'util/constants';
 import Loader from 'common-util/components/Loader';
 import { RegisterMessage } from '../List/ListCommon';
 import IpfsHashGenerationModal from '../List/IpfsHashGenerationModal';
 import { ServiceState } from './ServiceState';
-import { ServiceMiniTable, getHashDetails } from './helpers';
+import {
+  ServiceMiniTable,
+  getAutonolasTokenUri,
+  getHashDetails,
+} from './helpers';
 import {
   Header,
   DetailsTitle,
@@ -44,6 +48,8 @@ const Details = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [detailsOwner, setDetailsOwner] = useState('');
   const [tokenUri, setTokenUri] = useState(null);
+  const [nftUrl, setNftUrl] = useState(null);
+
   const isOwner = account.toLowerCase() === detailsOwner.toLowerCase();
 
   const getUpdatedHashes = async () => {
@@ -88,6 +94,20 @@ const Details = ({
     }
   }, [account, id]);
 
+  useEffect(async () => {
+    if (tokenUri) {
+      try {
+        const ipfsUrl = getAutonolasTokenUri(tokenUri);
+        const response = await fetch(ipfsUrl);
+        const { image } = await response.json();
+        const imageURL = image.replace('ipfs://', GATEWAY_URL);
+        setNftUrl(imageURL);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }, [tokenUri]);
+
   if (isLoading) {
     return <Loader />;
   }
@@ -124,6 +144,11 @@ const Details = ({
       </>
     ) : null;
 
+    const nftSection = {
+      title: 'Image',
+      value: <img src={nftUrl} alt="NFT" width={500} height={500} />,
+    };
+
     const getComponentAndAgentValues = () => {
       const dependencies = get(info, 'dependencies') || [];
 
@@ -148,7 +173,7 @@ const Details = ({
           dataTestId: 'details-dependency',
           value:
             dependencies.length === 0 ? (
-              <>NA</>
+              <>None</>
             ) : (
               dependencies.map((e) => (
                 <li key={`${type}-dependency-${e}`}>
@@ -159,12 +184,14 @@ const Details = ({
               ))
             ),
         },
+        nftSection,
       ];
     };
 
     const getServiceValues = () => {
       const serviceState = ['2', '3', '4'].includes(get(info, 'state'));
       const agentIds = get(info, 'agentIds');
+
       return [
         { title: 'Owner Address', value: detailsOwner || NA },
         {
@@ -193,6 +220,7 @@ const Details = ({
           ),
         },
         { title: 'Threshold', value: get(info, 'threshold', null) || NA },
+        nftSection,
       ];
     };
 
