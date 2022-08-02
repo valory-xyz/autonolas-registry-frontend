@@ -156,9 +156,9 @@ const IpfsModal = ({
         </Form.Item>
 
         <Form.Item
-          name="uri"
+          name="code_uri"
           label="Package hash"
-          extra="This hash should point to the package"
+          extra="Hash should point to the package"
           rules={[
             {
               required: true,
@@ -187,6 +187,15 @@ const IpfsModal = ({
               </Select>
             )}
           />
+        </Form.Item>
+
+        <Form.Item
+          label="NFT Image URL"
+          name="image"
+          extra="Represents your NFT on marketplaces such as OpenSea"
+          rules={[{ required: true, message: 'Input a URL pointing to an image' }]}
+        >
+          <Input />
         </Form.Item>
       </Form>
     </CustomModal>
