@@ -26,7 +26,7 @@ const Agent = ({ account }) => {
         getTokenUri={() => getTokenUri(id)}
         getOwner={() => getAgentOwner(id)}
         onUpdateHash={(newHash) => updateAgentHashes(account, id, newHash)}
-        onDependencyClick={(e) => router.push(`${URL.AGENTS}/${e}`)}
+        onDependencyClick={(e) => router.push(`${URL.COMPONENTS}/${e}`)}
       />
     </>
   );
