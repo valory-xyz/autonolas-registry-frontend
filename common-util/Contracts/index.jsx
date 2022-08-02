@@ -26,7 +26,6 @@ const ADDRESSES = {
 };
 
 const getWeb3Details = () => {
-  // const chainId = await web3.eth.getChainId();
   const chainId = Number(window.ethereum.chainId);
   const address = ADDRESSES[chainId || STAGING_CHAIN_ID]; // default fallback to be 31337
   return { address };
