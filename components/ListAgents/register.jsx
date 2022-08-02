@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { useRouter } from 'next/router';
 import { Typography, notification } from 'antd';
 import RegisterForm from 'common-util/List/RegisterForm';
-import { AlertInfo, AlertError } from 'common-util/List/ListCommon';
+import { AlertSuccess, AlertError } from 'common-util/List/ListCommon';
 import { getMechMinterContract } from 'common-util/Contracts';
 import { FormContainer } from 'components/styles';
 
@@ -53,7 +53,7 @@ const RegisterAgent = ({ account }) => {
           handleCancel={handleCancel}
         />
       </FormContainer>
-      <AlertInfo information={information} />
+      <AlertSuccess type="Agent" information={information} />
       <AlertError error={error} />
     </>
   );
