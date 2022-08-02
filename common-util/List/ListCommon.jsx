@@ -1,12 +1,10 @@
 import PropTypes from 'prop-types';
 import Link from 'next/link';
-import { Alert, Typography } from 'antd';
+import { Alert } from 'antd';
 import bs58 from 'bs58';
 import { ExternalLink } from 'react-feather';
 import { EmptyMessage, RegisterFooter } from 'components/styles';
 import { WhiteButton } from '../components/Button';
-
-const {Text} = Typography
 
 // constants
 export const DEPENDENCY_IN_ASC = 'Agent IDs must be input in the order they were created (oldest first & newest last)';
