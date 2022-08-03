@@ -46,8 +46,8 @@ const Login = ({
 
   const handleLogin = async () => {
     if (window.ethereum && window.ethereum.isMetaMask) {
-      // remove `disconnect` from localStorage
-      localStorage.removeItem(CONSTANTS.DISCONNECT);
+      // remove `is_connected` from localStorage
+      localStorage.setItem(CONSTANTS.IS_CONNECTED, 'true');
 
       // set user account & balance if chain-id is valid
       window.ethereum
@@ -67,13 +67,14 @@ const Login = ({
 
   // set `disconnect` to localStorage for reference
   const handleDisconnect = () => {
-    localStorage.setItem(CONSTANTS.DISCONNECT, true);
+    localStorage.setItem(CONSTANTS.IS_CONNECTED, 'false');
     setLoaded(false);
     setUserAccount(null);
     setUserBalance(null);
   };
 
   const handleChainChange = async () => {
+    console.log('handleChainChange');
     // check if connected to the correct chain-id
     let isValidChainId = false;
     const getChainId = get(library, 'eth.net.getId');
@@ -96,7 +97,8 @@ const Login = ({
   };
 
   /**
-   * if already loaded, set account and balance of the user.
+   * if already loaded (ie. logged in before and present in localStorage),
+   * set account and balance of the user as we don't store the user details.
    */
   useEffect(() => {
     if (isLoaded && !account) {
