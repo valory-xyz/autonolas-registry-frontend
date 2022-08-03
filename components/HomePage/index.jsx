@@ -43,7 +43,7 @@ const HomePage = () => (
           </Text>
           <Link href={URL.COMPONENTS} passHref>
             <Button type="primary" size="large">
-              Get Started →
+              Get started →
             </Button>
           </Link>
         </Col>

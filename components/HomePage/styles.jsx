@@ -9,7 +9,7 @@ export const HeaderRow = styled.div`
     max-width: 24ch;
   }
   .lead {
-    display: inline-block;
+    display: block;
     font-size: 24px;
     margin-bottom: 2rem;
   }
