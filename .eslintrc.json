@@ -35,6 +35,7 @@
       }
     ],
     "no-console": ["warn", { "allow": ["error"] }],
-    "import/prefer-default-export": "off"
+    "import/prefer-default-export": "off",
+    "jest/no-hooks": "off"
   }
 }

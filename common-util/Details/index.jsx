@@ -146,6 +146,7 @@ const Details = ({
 
     const nftSection = {
       title: 'Image',
+      dataTestId: 'nft-image',
       value: <img src={nftUrl} alt="NFT" width={500} height={500} />,
     };
 

@@ -32,6 +32,8 @@ export const wrapProviderError = (component) => (
   <Provider store={errorStore}>{component}</Provider>
 );
 
-export const dummyFunction = jest.fn(() => {});
-
 export const getTableTd = (i) => `.ant-table-tbody > tr.ant-table-row.ant-table-row-level-0 > td:nth-child(${i})`;
+
+export const mockV1Hash = '6f3212908f2e7a0249b67b05f237a40b76b7d8ef36d5620b281ceb47dcb6b122';
+
+export const mockNftImageHash = '6f3212908f2e7a0249b67b05f237a40b76b7d8ef36d5620b281ceb47dcb6b122';
