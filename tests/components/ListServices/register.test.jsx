@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { getServiceManagerContract } from 'common-util/Contracts';
 import RegisterService from 'components/ListServices/register';
 import { FORM_NAME } from 'components/ListServices/RegisterForm';
-import { act } from 'react-dom/test-utils';
+// import { act } from 'react-dom/test-utils';
 import { wrapProvider, dummyAddress, mockV1Hash } from '../../helpers';
 import { fillIpfsGenerationModal } from '../../helpers/prefillForm';
 
@@ -57,14 +57,14 @@ describe('listServices/register.jsx', () => {
 
     const submitButton = getByRole('button', { name: 'Submit' });
     expect(submitButton).toBeInTheDocument();
+    userEvent.click(submitButton);
 
-    await act(async () => {
-      userEvent.click(submitButton);
-      // TODO: antd form throws error on hash, check console, check console
-      // check if `Service registered` on `Submit` click
-      // expect(container.querySelector('.ant-alert-message').textContent).toBe(
-      //   'Service registered',
-      // );
-    });
+    // await act(async () => {
+    // TODO: antd form throws error on hash, check console, check console
+    // check if `Service registered` on `Submit` click
+    // expect(container.querySelector('.ant-alert-message').textContent).toBe(
+    //   'Service registered',
+    // );
+    // });
   });
 });
