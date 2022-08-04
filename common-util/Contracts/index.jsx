@@ -16,6 +16,13 @@ const ADDRESSES = {
     serviceManager: '0x38b062d11CD7596Ab5aDFe4d0e9F0dC3218E5389',
     serviceRegistry: '0x48b6af7B12C71f09e2fC8aF4855De4Ff54e775cA',
   },
+  5: {
+    agentRegistry: '0xEB5638eefE289691EcE01943f768EDBF96258a80',
+    componentRegistry: '0x7Fd1F4b764fA41d19fe3f63C85d12bf64d2bbf68',
+    registriesManager: '0x10c5525F77F13b28f42c5626240c001c2D57CAd4',
+    serviceManager: '0xcDdD9D9ABaB36fFa882530D69c73FeE5D4001C2d',
+    serviceRegistry: '0x1cEe30D08943EB58EFF84DD1AB44a6ee6FEff63a',
+  },
   31337: {
     agentRegistry: '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512',
     componentRegistry: '0x5FbDB2315678afecb367f032d93F642f64180aa3',
