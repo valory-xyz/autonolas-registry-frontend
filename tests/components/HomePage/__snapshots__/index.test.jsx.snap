@@ -1,0 +1,158 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<HomePage> should render homepage 1`] = `
+<div>
+  <div
+    class="styles__Container-sc-4qo35f-0 iQfcAj"
+  >
+    <div
+      class="styles__HeaderRow-sc-4qo35f-1 iZegtd row-1"
+    >
+      <div
+        class="ant-row"
+      >
+        <div
+          class="ant-col ant-col-14 ant-col-offset-2"
+        >
+          <h1
+            class="ant-typography hero-title"
+          >
+            Register and manage your services, agents and components
+          </h1>
+          <span
+            class="ant-typography lead"
+          >
+            The easiest way to interact with the Autonolas on-chain registry.
+          </span>
+          <a
+            class="ant-btn ant-btn-primary ant-btn-lg"
+            href="/components"
+          >
+            <span>
+              Get started →
+            </span>
+          </a>
+        </div>
+        <div
+          class="ant-col ant-col-8"
+        >
+          <div
+            class="header-image"
+            style="background-image: url(images/homepage/autonomous-agent-service-architecture.svg);"
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      class="styles__ContentRow-sc-4qo35f-2 dXHxAA row-2"
+    >
+      <h3
+        class="ant-typography title"
+      >
+        How are Autonolas services architected?
+      </h3>
+      <div
+        class="ant-row ant-row-middle each-service"
+      >
+        <div
+          class="ant-col column column-1"
+        >
+          <img
+            alt=""
+            class="each-service-image"
+            src="/images/homepage/services.svg"
+          />
+        </div>
+        <div
+          class="ant-col column column-2"
+        >
+          <h5
+            class="ant-typography"
+          >
+            Service owners register and manage complete agent services
+          </h5>
+          <span
+            class="ant-typography description"
+          >
+            They manage how the service is set up. Service owners define the business model of their services, and charge DAOs to use them.
+          </span>
+          <br />
+          <a
+            href="/services"
+          >
+            View all services
+          </a>
+        </div>
+      </div>
+      <div
+        class="ant-row ant-row-middle each-service"
+      >
+        <div
+          class="ant-col column column-1"
+        >
+          <img
+            alt=""
+            class="each-service-image"
+            src="/images/homepage/agents.svg"
+          />
+        </div>
+        <div
+          class="ant-col column column-2"
+        >
+          <h5
+            class="ant-typography"
+          >
+            Services are made of agents
+          </h5>
+          <span
+            class="ant-typography description"
+          >
+            Services are run by multiple  software agents, each with an independent operator. Developers can author full agents, and these can be composed by service owners.
+          </span>
+          <br />
+          <a
+            href="/agents"
+          >
+            View all agents
+          </a>
+        </div>
+      </div>
+      <div
+        class="ant-row ant-row-middle each-service"
+      >
+        <div
+          class="ant-col column column-1"
+        >
+          <img
+            alt=""
+            class="each-service-image"
+            src="/images/homepage/components.svg"
+          />
+        </div>
+        <div
+          class="ant-col column column-2"
+        >
+          <h5
+            class="ant-typography"
+          >
+            Each agent is made of components
+          </h5>
+          <span
+            class="ant-typography description"
+          >
+            Components are smaller blocks of code which can be reused by agent developers.
+          </span>
+          <br />
+          <a
+            href="/components"
+          >
+            View all components
+          </a>
+        </div>
+      </div>
+    </div>
+    <br />
+    <br />
+  </div>
+</div>
+`;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, waitFor } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { getMechMinterContract } from 'common-util/Contracts';
 import RegisterComponent from 'components/ListComponents/register';
@@ -57,12 +57,12 @@ describe('listComponents/register.jsx', () => {
     expect(submitButton).toBeInTheDocument();
     userEvent.click(submitButton);
 
-    await waitFor(async () => {
-      // TODO: antd form throws error on hash, check console
-      // check if `Component registered` on `Submit` click
-      // expect(container.querySelector('.ant-alert-message').textContent).toBe(
-      //   'Component registered',
-      // );
-    });
+    // await waitFor(async () => {
+    // TODO: antd form throws error on hash, check console
+    // check if `Component registered` on `Submit` click
+    // expect(container.querySelector('.ant-alert-message').textContent).toBe(
+    //   'Component registered',
+    // );
+    // });
   });
 });
