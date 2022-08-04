@@ -194,7 +194,11 @@ const Details = ({
       const agentIds = get(info, 'agentIds');
 
       return [
-        { title: 'Owner Address', value: detailsOwner || NA },
+        {
+          title: 'Owner Address',
+          dataTestId: 'owner-address',
+          value: detailsOwner || NA,
+        },
         {
           title: 'Hash',
           dataTestId: 'hashes-list',

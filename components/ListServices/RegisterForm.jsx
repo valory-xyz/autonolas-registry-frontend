@@ -176,6 +176,7 @@ const RegisterForm = ({
           ghost
           onClick={() => setIsModalVisible(true)}
           className="mb-12"
+          data-testid="generate-hash-file"
         >
           {isUpdateForm ? 'Update' : 'Generate'}
           &nbsp;Hash & File

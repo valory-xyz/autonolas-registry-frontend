@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, waitFor } from '@testing-library/react';
+import { GATEWAY_URL } from 'util/constants';
 import Component from 'components/ListComponents/details';
 import {
   getComponentDetails,
@@ -7,13 +8,22 @@ import {
   getComponentOwner,
   getTokenUri,
 } from 'components/ListComponents/utils';
-import { dummyAddress, wrapProvider } from '../../helpers';
+import {
+  dummyAddress,
+  wrapProvider,
+  mockV1Hash,
+  mockNftImageHash,
+} from '../../helpers';
 
 jest.mock('next/router', () => ({
   __esModule: true,
   useRouter() {
     return { query: { id: '1' } };
   },
+}));
+
+jest.mock('common-util/List/IpfsHashGenerationModal/helpers', () => ({
+  getIpfsHashHelper: jest.fn(() => mockV1Hash),
 }));
 
 jest.mock('components/ListComponents/utils', () => ({
@@ -34,7 +44,21 @@ const dummyHashes = {
   componentHashes: ['Component Hash1', 'Component Hash2'],
 };
 
+const unmockedFetch = global.fetch;
+
 describe('listComponents/details.jsx', () => {
+  beforeAll(() => {
+    global.fetch = () => Promise.resolve({
+      json: () => Promise.resolve({
+        image: `ipfs://${mockNftImageHash}`,
+      }),
+    });
+  });
+
+  afterAll(() => {
+    global.fetch = unmockedFetch;
+  });
+
   getComponentDetails.mockImplementation(() => Promise.resolve(dummyDetails));
   getComponentHashes.mockImplementation(() => Promise.resolve(dummyHashes));
   getComponentOwner.mockImplementation(() => Promise.resolve(dummyDetails.owner));
@@ -52,11 +76,15 @@ describe('listComponents/details.jsx', () => {
       expect(getByTestId('owner-address').textContent).toBe(
         dummyDetails.developer,
       );
-      expect(getByTestId('hashes-list')).toHaveTextContent(
-        dummyDetails.tokenUrl,
+      expect(getByTestId('hashes-list').querySelector('a')).toHaveTextContent(
+        `${GATEWAY_URL}12345`,
       );
       expect(getByRole('button', { name: 'Update Hash' })).toBeInTheDocument();
       expect(getByTestId('details-dependency')).toBeInTheDocument();
+
+      // NFT image
+      const displayedImage = getByTestId('nft-image').querySelector('img');
+      expect(displayedImage.src).toBe(`${GATEWAY_URL}${mockNftImageHash}`);
     });
   });
 });

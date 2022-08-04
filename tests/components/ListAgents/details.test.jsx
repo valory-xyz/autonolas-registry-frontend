@@ -8,7 +8,16 @@ import {
   getAgentOwner,
   getTokenUri,
 } from 'components/ListAgents/utils';
-import { dummyAddress, wrapProvider, mockNftImageHash } from '../../helpers';
+import {
+  dummyAddress,
+  wrapProvider,
+  mockNftImageHash,
+  mockV1Hash,
+} from '../../helpers';
+
+jest.mock('common-util/List/IpfsHashGenerationModal/helpers', () => ({
+  getIpfsHashHelper: jest.fn(() => mockV1Hash),
+}));
 
 jest.mock('next/router', () => ({
   __esModule: true,
@@ -24,9 +33,6 @@ jest.mock('components/ListAgents/utils', () => ({
   getTokenUri: jest.fn(),
 }));
 
-// This is the section where we mock `fetch`
-const unmockedFetch = global.fetch;
-
 const dummyDetails = {
   owner: dummyAddress,
   developer: dummyAddress,
@@ -37,6 +43,9 @@ const dummyDetails = {
 const dummyHashes = {
   agentHashes: ['Agent Hash1', 'Agent Hash2'],
 };
+
+// This is the section where we mock `fetch`
+const unmockedFetch = global.fetch;
 
 describe('listAgents/details.jsx', () => {
   beforeAll(() => {

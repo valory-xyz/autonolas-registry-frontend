@@ -1,10 +1,11 @@
 import React from 'react';
-import { render, waitFor, screen } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { getMechMinterContract } from 'common-util/Contracts';
 import RegisterAgent from 'components/ListAgents/register';
 import { FORM_NAME } from 'common-util/List/RegisterForm';
 import { wrapProvider, dummyAddress, mockV1Hash } from '../../helpers';
+import { fillIpfsGenerationModal } from '../../helpers/prefillForm';
 
 const NEW_AGENT = { name: 'New Agent One' };
 
@@ -15,27 +16,6 @@ jest.mock('common-util/Contracts', () => ({
 jest.mock('common-util/List/IpfsHashGenerationModal/helpers', () => ({
   getIpfsHashHelper: jest.fn(() => mockV1Hash),
 }));
-
-const handleSubmit = jest.fn(() => {});
-
-const fillIpfsGenerationModal = () => {
-  userEvent.type(screen.getByRole('textbox', { name: 'Name' }), '1');
-  userEvent.type(screen.getByRole('textbox', { name: 'Description' }), '1');
-  userEvent.type(screen.getByRole('textbox', { name: 'Version' }), '1');
-  userEvent.type(
-    screen.getByRole('textbox', { name: 'Package hash' }),
-    mockV1Hash,
-  );
-  userEvent.type(
-    screen.getByRole('textbox', { name: 'NFT Image URL' }),
-    mockV1Hash,
-  );
-  userEvent.click(
-    screen.getByRole('button', {
-      name: 'Save File & Generate Hash',
-    }),
-  );
-};
 
 describe('listAgents/register.jsx', () => {
   it('should submit the form & register the `Agent` successfully', async () => {
@@ -50,7 +30,7 @@ describe('listAgents/register.jsx', () => {
     }));
 
     const { container, getByRole, getByText } = render(
-      wrapProvider(<RegisterAgent handleSubmit={handleSubmit} />),
+      wrapProvider(<RegisterAgent />),
     );
 
     // title
@@ -80,8 +60,7 @@ describe('listAgents/register.jsx', () => {
     userEvent.click(submitButton);
 
     await waitFor(async () => {
-      // TODO: should be 1
-      expect(handleSubmit.mock.calls).toHaveLength(0);
+      // TODO: antd form throws error on hash, check console
       // check if `Agent registered` on `Submit` click
       // expect(container.querySelector('.ant-alert-message').textContent).toBe(
       //   'Agent registered',
