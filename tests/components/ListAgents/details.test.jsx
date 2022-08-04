@@ -44,7 +44,6 @@ const dummyHashes = {
   agentHashes: ['Agent Hash1', 'Agent Hash2'],
 };
 
-// This is the section where we mock `fetch`
 const unmockedFetch = global.fetch;
 
 describe('listAgents/details.jsx', () => {

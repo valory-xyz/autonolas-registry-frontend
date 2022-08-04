@@ -64,6 +64,7 @@ getServiceManagerContract.mockImplementation(() => ({
 
 useRouter.mockImplementation(() => ({ push: jest.fn() }));
 
+// TODO: fix with antd form
 // eslint-disable-next-line jest/no-disabled-tests
 describe.skip('listServices/service.jsx', () => {
   getServiceDetails.mockImplementation(() => Promise.resolve(SERVICE_1));
