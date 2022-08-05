@@ -4,7 +4,7 @@ import {
   convertStringToArray,
   ListEmptyMessage,
   PrintJson,
-  AlertInfo,
+  AlertSuccess,
   AlertError,
 } from 'common-util/List/ListCommon';
 
@@ -46,44 +46,51 @@ describe('<PrintJson />', () => {
   });
 });
 
-describe('<AlertInfo />', () => {
+describe('<AlertSuccess />', () => {
   it.each([
     {
-      type: 'Agent Registered',
+      type: 'Agent',
       input: { name: 'Valory' },
-      output: /"name": "Valory"/,
     },
-  ])('expects valid object (input=$input)', ({ type, input, output }) => {
+    {
+      type: null,
+      input: { name: 'Valory' },
+    },
+  ])('expects valid object (input=$input)', ({ type, input }) => {
     expect.hasAssertions();
-    const { getByText, getByTestId } = render(<AlertInfo type={type} information={input} />);
-    expect(getByText(output)).toBeInTheDocument();
-    expect(getByText(`${type} successfully!`)).toBeInTheDocument();
-    expect(getByTestId('alert-info-container')).toBeInTheDocument();
+    const { getByText } = render(
+      <AlertSuccess type={type} information={input} />,
+    );
+    if (type) {
+      expect(getByText(`${type} registered`)).toBeInTheDocument();
+    } else {
+      expect(getByText('Registered successfully')).toBeInTheDocument();
+    }
   });
 
-  it.each([
-    { input: null },
-    { input: undefined },
-  ])('expects invalid object (input=$input)', ({ input }) => {
-    const { queryByTestId } = render(<AlertInfo information={input} />);
-    expect(queryByTestId('alert-info-container')).not.toBeInTheDocument();
-  });
+  it.each([{ input: null }, { input: undefined }])(
+    'expects invalid object (input=$input)',
+    ({ input }) => {
+      const { queryByTestId } = render(<AlertSuccess information={input} />);
+      expect(queryByTestId('alert-info-container')).not.toBeInTheDocument();
+    },
+  );
 });
 
 describe('<AlertError />', () => {
   it.each([
-    { input: { stack: 'Exception occured' }, output: /Exception occured/ },
+    { input: new Error('Exception occured'), output: /Exception occured/ },
   ])('expects valid error object (input=$input)', ({ input, output }) => {
     const { getByText, getByTestId } = render(<AlertError error={input} />);
     expect(getByText(output)).toBeInTheDocument();
     expect(getByTestId('alert-error-container')).toBeInTheDocument();
   });
 
-  it.each([
-    { input: null },
-    { input: undefined },
-  ])('expects invalid object (input=$input)', ({ input }) => {
-    const { queryByTestId } = render(<AlertError error={input} />);
-    expect(queryByTestId('alert-error-container')).not.toBeInTheDocument();
-  });
+  it.each([{ input: null }, { input: undefined }])(
+    'expects invalid object (input=$input)',
+    ({ input }) => {
+      const { queryByTestId } = render(<AlertError error={input} />);
+      expect(queryByTestId('alert-error-container')).not.toBeInTheDocument();
+    },
+  );
 });

@@ -95,13 +95,12 @@ const IpfsModal = ({
       onCancel={handleCancel}
       footer={[
         <Fragment key="footer-1">
-          <Button type="default" htmlType="submit" onClick={onModalClose}>
+          <Button type="default" onClick={onModalClose}>
             Cancel
           </Button>
 
           <Button
             form="myForm"
-            key="submit"
             htmlType="submit"
             type="primary"
             loading={isHashLoading}

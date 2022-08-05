@@ -146,6 +146,7 @@ const Details = ({
 
     const nftSection = {
       title: 'Image',
+      dataTestId: 'nft-image',
       value: <img src={nftUrl} alt="NFT" width={500} height={500} />,
     };
 
@@ -193,7 +194,11 @@ const Details = ({
       const agentIds = get(info, 'agentIds');
 
       return [
-        { title: 'Owner Address', value: detailsOwner || NA },
+        {
+          title: 'Owner Address',
+          dataTestId: 'owner-address',
+          value: detailsOwner || NA,
+        },
         {
           title: 'Hash',
           dataTestId: 'hashes-list',
