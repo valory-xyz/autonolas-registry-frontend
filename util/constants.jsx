@@ -7,7 +7,7 @@ export const NA = 'n/a';
 export const CONSTANTS = {
   ETH_GETBALANCE: 'eth_getBalance',
   ETH_REQUESTACCOUNTS: 'eth_requestAccounts',
-  DISCONNECT: 'disconnect_metamask',
+  IS_CONNECTED: 'is_metamask_connected',
 };
 
 export const URL = {
