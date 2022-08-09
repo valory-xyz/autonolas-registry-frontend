@@ -1,13 +1,11 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { Table } from 'antd/lib';
 import { ListEmptyMessage } from 'common-util/List/ListCommon';
 import Loader from 'common-util/components/Loader';
 import { getData, getTableColumns } from './helpers';
 
 const ListTable = ({
-  account,
   type,
   getList,
   filterValue,
@@ -21,20 +19,18 @@ const ListTable = ({
   const { scrollX } = extra;
 
   useEffect(async () => {
-    if (account) {
-      setIsLoading(true);
-      setList([]);
+    setIsLoading(true);
+    setList([]);
 
-      try {
-        const everyComps = await getList();
-        setList(everyComps);
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setIsLoading(false);
-      }
+    try {
+      const everyComps = await getList();
+      setList(everyComps);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsLoading(false);
     }
-  }, [account]);
+  }, []);
 
   if (isLoading) {
     return <Loader />;
@@ -68,7 +64,6 @@ const ListTable = ({
 };
 
 ListTable.propTypes = {
-  account: PropTypes.string,
   type: PropTypes.string.isRequired,
   filterValue: PropTypes.string,
   getList: PropTypes.func.isRequired,
@@ -81,7 +76,6 @@ ListTable.propTypes = {
 };
 
 ListTable.defaultProps = {
-  account: null,
   filterValue: null,
   onViewClick: () => {},
   onUpdateClick: null,
@@ -89,9 +83,4 @@ ListTable.defaultProps = {
   extra: {},
 };
 
-const mapStateToProps = (state) => {
-  const { account } = state.setup;
-  return { account };
-};
-
-export default connect(mapStateToProps, {})(ListTable);
+export default ListTable;

@@ -6,7 +6,6 @@ import capitalize from 'lodash/capitalize';
 import { Row, Col, Button } from 'antd/lib';
 import { NAV_TYPES, NA, GATEWAY_URL } from 'util/constants';
 import Loader from 'common-util/components/Loader';
-import { RegisterMessage } from '../List/ListCommon';
 import IpfsHashGenerationModal from '../List/IpfsHashGenerationModal';
 import { ServiceState } from './ServiceState';
 import {
@@ -110,17 +109,6 @@ const Details = ({
 
   if (isLoading) {
     return <Loader />;
-  }
-
-  if (!account) {
-    return (
-      <>
-        <Header>
-          <DetailsTitle level={2}>{`${capitalize(type)}`}</DetailsTitle>
-        </Header>
-        <RegisterMessage />
-      </>
-    );
   }
 
   const onUpdate = () => {
