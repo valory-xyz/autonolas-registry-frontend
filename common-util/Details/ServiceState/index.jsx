@@ -61,7 +61,6 @@ export const ServiceState = ({
   }, [id, agentIds]);
 
   useEffect(() => {
-    // setCurrentStep(1);
     setCurrentStep(Number(status) - 1);
   }, [status]);
 

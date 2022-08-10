@@ -28,7 +28,7 @@ const Login = ({
   setErrorMessage,
   setLoaded,
 }) => {
-  const { library } = useWeb3React();
+  const { chainId } = useWeb3React();
 
   const getBalance = (accoundPassed) => {
     window.ethereum
@@ -76,10 +76,8 @@ const Login = ({
   const handleChainChange = async () => {
     // check if connected to the correct chain-id
     let isValidChainId = false;
-    const getChainId = get(library, 'eth.net.getId');
-    if (getChainId) {
-      const network = await getChainId();
-      if (SUPPORTED_NETWORKS.includes(network)) {
+    if (chainId) {
+      if (SUPPORTED_NETWORKS.includes(chainId)) {
         isValidChainId = true;
         setErrorMessage(null);
       } else {

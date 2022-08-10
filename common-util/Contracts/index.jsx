@@ -8,7 +8,7 @@ import {
 } from 'common-util/AbiAndAddresses';
 import { STAGING_CHAIN_ID } from 'util/constants';
 
-const ADDRESSES = {
+export const ADDRESSES = {
   1: {
     agentRegistry: '0x2F1f7D38e4772884b88f3eCd8B6b9faCdC319112',
     componentRegistry: '0x15bd56669F57192a97dF41A2aa8f4403e9491776',
