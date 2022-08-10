@@ -11,7 +11,6 @@ const ListTable = ({
   filterValue,
   onViewClick,
   onUpdateClick,
-  onDeleteClick,
   extra,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -39,7 +38,6 @@ const ListTable = ({
   const columns = getTableColumns(type, {
     onViewClick,
     onUpdateClick,
-    onDeleteClick,
   });
   const dataSource = getData(type, list, {
     filterValue: (filterValue || '').toLowerCase(),
@@ -69,7 +67,6 @@ ListTable.propTypes = {
   getList: PropTypes.func.isRequired,
   onViewClick: PropTypes.func,
   onUpdateClick: PropTypes.func,
-  onDeleteClick: PropTypes.func,
   extra: PropTypes.shape({
     scrollX: PropTypes.number,
   }),
@@ -79,7 +76,6 @@ ListTable.defaultProps = {
   filterValue: null,
   onViewClick: () => {},
   onUpdateClick: null,
-  onDeleteClick: () => {},
   extra: {},
 };
 
