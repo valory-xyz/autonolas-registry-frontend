@@ -212,10 +212,19 @@ export const ServiceState = ({
     },
     {
       title: 'Deployed',
-      component: getButton(
-        <Button disabled={!isOwner} onClick={handleStep4Terminate}>
-          Terminate
-        </Button>,
+      component: (
+        <div className="step-4-terminate">
+          <Space direction="vertical" size={10}>
+            <div>
+              {`Safe contract address: ${get(details, 'multisig')}`}
+            </div>
+            {getButton(
+              <Button disabled={!isOwner} onClick={handleStep4Terminate}>
+                Terminate
+              </Button>,
+            )}
+          </Space>
+        </div>
       ),
     },
     {
