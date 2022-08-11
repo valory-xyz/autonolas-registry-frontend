@@ -2,13 +2,7 @@ import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import {
-  Button,
-  Space,
-  Divider,
-  Radio,
-  Typography,
-  Steps,
-  Tooltip,
+  Button, Space, Divider, Steps, Tooltip,
 } from 'antd/lib';
 import get from 'lodash/get';
 import kebabCase from 'lodash/kebabCase';
@@ -22,15 +16,11 @@ import {
   onStep5Unbond,
 } from './utils';
 import ActiveRegistrationTable from './ActiveRegistrationTable';
+import StepThreePayload from './StepThreePayload';
 import { InfoSubHeader } from '../styles';
 import { ServiceStateContainer } from './styles';
 
 const { Step } = Steps;
-
-const multisigAddresses = [
-  // '0x1c2cD884127b080F940b7546c1e9aaf525b1FA55', // this is for mainnet
-  '0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0',
-];
 
 const Empty = () => <br />;
 
@@ -47,7 +37,6 @@ export const ServiceState = ({
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   const [dataSource, setDataSource] = useState([]);
-  const [radioValue, setRadioValue] = useState(null);
 
   const status = get(details, 'state');
   const agentIds = get(details, 'agentIds');
@@ -123,9 +112,9 @@ export const ServiceState = ({
   };
 
   /* ----- step 3 ----- */
-  const handleStep3Deploy = async () => {
+  const handleStep3Deploy = async (radioValue, payload) => {
     try {
-      await onStep3Deploy(account, id, radioValue);
+      await onStep3Deploy(account, id, radioValue, payload);
       await updateDetails();
     } catch (e) {
       console.error(e);
@@ -183,30 +172,10 @@ export const ServiceState = ({
     {
       title: 'Finished Registration',
       component: (
-        <div className="step-3-finished-registration">
-          <Typography.Text>Choose multi-sig implementation:</Typography.Text>
-
-          <Space direction="vertical" size={10}>
-            <Radio.Group
-              value={radioValue}
-              onChange={(e) => setRadioValue(e.target.value)}
-            >
-              <Space direction="vertical" size={10}>
-                {multisigAddresses.map((multisigAddress) => (
-                  <Radio key={multisigAddress} value={multisigAddress}>
-                    {multisigAddress}
-                  </Radio>
-                ))}
-              </Space>
-            </Radio.Group>
-
-            <Button onClick={handleStep3Deploy} disabled={!radioValue}>
-              Deploy
-            </Button>
-            <Divider className="m-0" />
-            <Button onClick={handleTerminate}>Terminate</Button>
-          </Space>
-        </div>
+        <StepThreePayload
+          handleStep3Deploy={handleStep3Deploy}
+          handleTerminate={handleTerminate}
+        />
       ),
     },
     {
@@ -214,9 +183,7 @@ export const ServiceState = ({
       component: (
         <div className="step-4-terminate">
           <Space direction="vertical" size={10}>
-            <div>
-              {`Safe contract address: ${get(details, 'multisig')}`}
-            </div>
+            <div>{`Safe contract address: ${get(details, 'multisig')}`}</div>
             {getButton(
               <Button disabled={!isOwner} onClick={handleStep4Terminate}>
                 Terminate
