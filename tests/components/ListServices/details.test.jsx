@@ -88,6 +88,7 @@ describe('listServices/details.jsx', () => {
       agentId: '1',
       availableSlots: 1,
       totalSlots: '1',
+      bond: 10000000000000,
       agentAddresses: null,
     },
   ]));

@@ -51,10 +51,7 @@ EllipsisMiddle.defaultProps = {
  * helper functions
  */
 
-export const getTableColumns = (
-  type,
-  { onViewClick, onUpdateClick, onDeleteClick },
-) => {
+export const getTableColumns = (type, { onViewClick, onUpdateClick }) => {
   if (type === NAV_TYPES.COMPONENT || type === NAV_TYPES.AGENT) {
     return [
       {
@@ -138,14 +135,6 @@ export const getTableColumns = (
                 Update
               </Button>
             )}
-
-            <Button
-              type="link"
-              disabled
-              onClick={() => onDeleteClick(record.id)}
-            >
-              Delete
-            </Button>
           </Space>
         ),
       },

@@ -17,18 +17,16 @@ const Agent = ({ account }) => {
   const id = get(router, 'query.id') || null;
 
   return (
-    <>
-      <Details
-        type="agent"
-        id={id}
-        getDetails={() => getAgentDetails(id)}
-        getHashes={() => getAgentHashes(id)}
-        getTokenUri={() => getTokenUri(id)}
-        getOwner={() => getAgentOwner(id)}
-        onUpdateHash={(newHash) => updateAgentHashes(account, id, newHash)}
-        onDependencyClick={(e) => router.push(`${URL.COMPONENTS}/${e}`)}
-      />
-    </>
+    <Details
+      type="agent"
+      id={id}
+      getDetails={() => getAgentDetails(id)}
+      getHashes={() => getAgentHashes(id)}
+      getTokenUri={() => getTokenUri(id)}
+      getOwner={() => getAgentOwner(id)}
+      onUpdateHash={(newHash) => updateAgentHashes(account, id, newHash)}
+      onDependencyClick={(e) => router.push(`${URL.COMPONENTS}/${e}`)}
+    />
   );
 };
 

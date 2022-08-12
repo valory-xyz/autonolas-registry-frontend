@@ -78,7 +78,7 @@ const GlobalStyle = createGlobalStyle`
   }
   .site-layout-background {
     padding: 24px 0;
-    min-height: calc(100vh - 134px);
+    min-height: calc(100vh - 140px);
   }
 
   /* tabs */
