@@ -133,7 +133,7 @@ const StepThreePayload = ({ handleStep3Deploy, handleTerminate }) => {
           label="Payload"
           name="payload"
           rules={[{ required: false }]}
-          initialValue="0x"
+          initialValue="0x0000000000000000000000000000000000000000000000000000000000000000"
         >
           <Input />
         </Form.Item>
