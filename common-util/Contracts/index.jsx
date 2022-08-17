@@ -33,34 +33,19 @@ export const ADDRESSES = {
 };
 
 const getWeb3Details = () => {
+  /**
+   * provider = wallect-connect provider or currentProvider by metamask
+   */
+  const web3 = new Web3(window.WEB3_PROVIDER || window.web3.currentProvider);
+
   const chainId = Number(window.ethereum.chainId);
   const address = ADDRESSES[chainId || STAGING_CHAIN_ID]; // default fallback to be 31337
-  return { address };
-};
-
-export const getMechMinterContract = () => {
-  const web3 = new Web3(window.web3.currentProvider);
-  const { registriesManager } = getWeb3Details().address;
-  const contract = new web3.eth.Contract(
-    REGISTRIES_MANAGER_CONTRACT.abi,
-    registriesManager,
-  );
-  return contract;
-};
-
-export const getAgentContract = () => {
-  const web3 = new Web3(window.web3.currentProvider);
-  const { agentRegistry } = getWeb3Details().address;
-  const contract = new web3.eth.Contract(
-    AGENT_REGISTRY_CONTRACT.abi,
-    agentRegistry,
-  );
-  return contract;
+  return { web3, address };
 };
 
 export const getComponentContract = () => {
-  const web3 = new Web3(window.web3.currentProvider);
-  const { componentRegistry } = getWeb3Details().address;
+  const { web3, address } = getWeb3Details();
+  const { componentRegistry } = address;
   const contract = new web3.eth.Contract(
     COMPONENT_REGISTRY_CONTRACT.abi,
     componentRegistry,
@@ -68,9 +53,29 @@ export const getComponentContract = () => {
   return contract;
 };
 
+export const getAgentContract = () => {
+  const { web3, address } = getWeb3Details();
+  const { agentRegistry } = address;
+  const contract = new web3.eth.Contract(
+    AGENT_REGISTRY_CONTRACT.abi,
+    agentRegistry,
+  );
+  return contract;
+};
+
+export const getMechMinterContract = () => {
+  const { web3, address } = getWeb3Details();
+  const { registriesManager } = address;
+  const contract = new web3.eth.Contract(
+    REGISTRIES_MANAGER_CONTRACT.abi,
+    registriesManager,
+  );
+  return contract;
+};
+
 export const getServiceContract = () => {
-  const web3 = new Web3(window.web3.currentProvider);
-  const { serviceRegistry } = getWeb3Details().address;
+  const { web3, address } = getWeb3Details();
+  const { serviceRegistry } = address;
   const contract = new web3.eth.Contract(
     SERVICE_REGISTRY_CONTRACT.abi,
     serviceRegistry,
@@ -79,8 +84,8 @@ export const getServiceContract = () => {
 };
 
 export const getServiceManagerContract = () => {
-  const { serviceManager } = getWeb3Details().address;
-  const web3 = new Web3(window.web3.currentProvider);
+  const { web3, address } = getWeb3Details();
+  const { serviceManager } = address;
   const contract = new web3.eth.Contract(
     SERVICE_MANAGER_CONTRACT.abi,
     serviceManager,

@@ -70,8 +70,6 @@ const Login = ({
     try {
       const modalProvider = await web3Modal.connect();
 
-      // ------ setting to the window object! ------
-      window.MODAL_PROVIDER = modalProvider;
 
       // We plug the initial `provider` and get back
       // a Web3Provider. This will add on methods and
@@ -80,6 +78,12 @@ const Login = ({
 
       const address = await wProvider.eth.getAccounts();
       const currentChainId = await wProvider.eth.getChainId();
+
+      // *******************************************************
+      // ************ setting to the window object! ************
+      // *******************************************************
+      window.MODAL_PROVIDER = modalProvider;
+      window.WEB3_PROVIDER = wProvider;
 
       setUserAccount(address[0]);
       setProvider(modalProvider);
