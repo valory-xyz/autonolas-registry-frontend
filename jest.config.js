@@ -15,9 +15,6 @@ module.exports = {
     '!components/**/styles.{js,jsx}',
     '!components/GlobalStyles/*.{js,jsx}',
 
-    // Infura testing
-    '!components/ListTest/*.{js,jsx}',
-
     // Index page
     '!components/index/.jsx',
   ],
