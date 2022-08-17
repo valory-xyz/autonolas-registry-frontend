@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Table, Button } from 'antd/lib';
 import { GATEWAY_URL } from 'util/constants';
+import { convertToEth } from '../functions';
 import { getIpfsHashFromBytes32 } from '../List/ListCommon';
 import { getServiceTableDataSource } from './ServiceState/utils';
 
@@ -44,7 +45,7 @@ export const ServiceMiniTable = ({ id, agentIds, onDependencyClick }) => {
       </Button>
     ),
     agentNumSlots: availableSlots,
-    bonds: bond,
+    bonds: convertToEth(bond),
   }));
 
   return (

@@ -46,8 +46,18 @@ export const RightMenu = styled.div`
 export const FooterContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-end;
   padding: 1rem 50px;
+  .contracts-info {
+    font-size: 14px;
+    .registry-contract {
+      display: flex;
+      align-items: center;
+      a {
+        margin-left: 8px;
+      }
+    }
+  }
   .socials {
     display: flex;
     column-gap: 28px;

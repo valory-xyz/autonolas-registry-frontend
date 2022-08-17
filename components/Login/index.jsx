@@ -6,8 +6,8 @@ import round from 'lodash/round';
 import isNil from 'lodash/isNil';
 import { Button } from 'antd';
 import { useWeb3React } from '@web3-react/core';
-import { ethers } from 'ethers';
 import { CONSTANTS, SUPPORTED_NETWORKS } from 'util/constants';
+import { convertToEth } from 'common-util/functions';
 import { WhiteButton } from 'common-util/components/Button';
 import {
   setUserAccount as setUserAccountFn,
@@ -28,7 +28,7 @@ const Login = ({
   setErrorMessage,
   setLoaded,
 }) => {
-  const { library } = useWeb3React();
+  const { chainId } = useWeb3React();
 
   const getBalance = (accoundPassed) => {
     window.ethereum
@@ -37,7 +37,7 @@ const Login = ({
         params: [accoundPassed, 'latest'],
       })
       .then((b) => {
-        setUserBalance(ethers.utils.formatEther(b));
+        setUserBalance(convertToEth(b));
       })
       .catch((e) => {
         setErrorMessage(e.message);
@@ -74,13 +74,10 @@ const Login = ({
   };
 
   const handleChainChange = async () => {
-    console.log('handleChainChange');
     // check if connected to the correct chain-id
     let isValidChainId = false;
-    const getChainId = get(library, 'eth.net.getId');
-    if (getChainId) {
-      const network = await getChainId();
-      if (SUPPORTED_NETWORKS.includes(network)) {
+    if (chainId) {
+      if (SUPPORTED_NETWORKS.includes(chainId)) {
         isValidChainId = true;
         setErrorMessage(null);
       } else {

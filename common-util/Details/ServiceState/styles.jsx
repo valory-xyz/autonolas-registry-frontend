@@ -20,9 +20,19 @@ export const ServiceStateContainer = styled.div`
       margin-bottom: 1rem;
     }
   }
+  .step-3-finished-registration {
+    .ant-form,
+    .terminate-btn {
+      margin-top: 1rem;
+    }
+  }
+  .step-4-terminate {
+    > div {
+      font-size: 16px;
+    }
+  }
 
   /* table */
-
   .editable-cell {
     position: relative;
   }

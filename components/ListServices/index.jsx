@@ -35,7 +35,6 @@ const ListServices = ({ account }) => {
           <ListTable
             {...commonProps}
             getList={getServices}
-            onDeleteClick={(e) => window.console.log('Delete Click', e)}
           />
         </TabPane>
         <TabPane tab="My Services" key="my_services">
@@ -43,7 +42,6 @@ const ListServices = ({ account }) => {
             {...commonProps}
             getList={() => getServicesByAccount(account)}
             onUpdateClick={(serviceId) => router.push(`${URL.UPDATE_SERVICE}/${serviceId}`)}
-            onDeleteClick={(e) => window.console.log('Delete Click', e)}
           />
         </TabPane>
       </Tabs>

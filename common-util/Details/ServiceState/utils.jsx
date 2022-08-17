@@ -143,11 +143,11 @@ export const onStep2RegisterAgents = ({
 });
 
 /* ----- step 3 functions ----- */
-export const onStep3Deploy = (account, id, radioValue) => new Promise((resolve, reject) => {
+export const onStep3Deploy = (account, id, radioValue, payload = '0x') => new Promise((resolve, reject) => {
   const contract = getServiceManagerContract();
 
   contract.methods
-    .deploy(id, radioValue, '0x')
+    .deploy(id, radioValue, payload)
     .send({ from: account })
     .then((information) => {
       resolve(information);

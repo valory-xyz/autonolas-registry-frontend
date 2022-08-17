@@ -8,7 +8,7 @@ import {
 } from 'common-util/AbiAndAddresses';
 import { STAGING_CHAIN_ID } from 'util/constants';
 
-const ADDRESSES = {
+export const ADDRESSES = {
   1: {
     agentRegistry: '0x2F1f7D38e4772884b88f3eCd8B6b9faCdC319112',
     componentRegistry: '0x15bd56669F57192a97dF41A2aa8f4403e9491776',
@@ -86,4 +86,14 @@ export const getServiceManagerContract = () => {
     serviceManager,
   );
   return contract;
+};
+
+/**
+ * Other details
+ */
+
+export const multisigAddresses = {
+  1: ['0x1c2cD884127b080F940b7546c1e9aaf525b1FA55'],
+  5: ['0x1d365C93e6c29817dd033A03ecE219419434fAca'],
+  31337: ['0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0'],
 };

@@ -17,18 +17,16 @@ const Component = ({ account }) => {
   const id = get(router, 'query.id') || null;
 
   return (
-    <>
-      <Details
-        type="component"
-        id={id}
-        getDetails={() => getComponentDetails(id)}
-        getHashes={() => getComponentHashes(id)}
-        getOwner={() => getComponentOwner(id)}
-        getTokenUri={() => getTokenUri(id)}
-        onUpdateHash={(newHash) => updateComponentHashes(account, id, newHash)}
-        onDependencyClick={(e) => router.push(`${URL.COMPONENTS}/${e}`)}
-      />
-    </>
+    <Details
+      type="component"
+      id={id}
+      getDetails={() => getComponentDetails(id)}
+      getHashes={() => getComponentHashes(id)}
+      getOwner={() => getComponentOwner(id)}
+      getTokenUri={() => getTokenUri(id)}
+      onUpdateHash={(newHash) => updateComponentHashes(account, id, newHash)}
+      onDependencyClick={(e) => router.push(`${URL.COMPONENTS}/${e}`)}
+    />
   );
 };
 

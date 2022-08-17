@@ -1,8 +1,5 @@
-# protocol-frontend
-This repository contains code for protocol-frontend.
-
-## Project Status
-This project is currently in development. Feel free to create a branch and send me a PR for changes.
+# Autonolas Protocol Frontend
+This repository contains the [Autonolas protocol](https://protocol.autonolas.network/)  frontend.
 
 ## Tech Stack
 - web3.js
@@ -15,23 +12,23 @@ This project is currently in development. Feel free to create a branch and send 
 
 ## Installation and Setup Instructions
 
-Clone down this repository. You will need `node` version ">=14" and `yarn` version ">=1" installed globally on your machine.  
+Clone down this repository. You will need `node` version ">=14" and `yarn` version ">=1" installed globally on your machine.
 
 Installation:
 
-`yarn`  
+`yarn`
 
 To Run Test Suite:
 
-`yarn testc`  
+`yarn testc`
 
 To Start Server:
 
-`yarn dev`  
+`yarn dev`
 
 To Visit App:
 
-`localhost:3000`  
+`localhost:3000`
 
 Once you're running the app, use these details to connect to Valory's dev chain
 - RPC URL: https://dev-chain.valory-infra-dev.autonolas.tech/
