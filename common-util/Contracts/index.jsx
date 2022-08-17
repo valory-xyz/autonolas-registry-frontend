@@ -93,7 +93,7 @@ export const getServiceManagerContract = () => {
  */
 
 export const multisigAddresses = {
-  1: ['0x1c2cD884127b080F940b7546c1e9aaf525b1FA55'],
+  1: ['0x46C0D07F55d4F9B5Eed2Fc9680B5953e5fd7b461'],
   5: ['0x1d365C93e6c29817dd033A03ecE219419434fAca'],
   31337: ['0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0'],
 };
