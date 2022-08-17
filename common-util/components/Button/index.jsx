@@ -1,4 +1,4 @@
-import { Button } from 'antd';
+import { Button } from 'antd/lib';
 import PropTypes from 'prop-types';
 import { COLOR } from 'util/theme';
 

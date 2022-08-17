@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
-import { Typography, notification } from 'antd';
+import { Typography, notification } from 'antd/lib';
 import {
   convertStringToArray,
   AlertSuccess,

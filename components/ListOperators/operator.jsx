@@ -1,4 +1,4 @@
-import { Typography } from 'antd';
+import { Typography } from 'antd/lib';
 import { useRouter } from 'next/router';
 import get from 'lodash/get';
 

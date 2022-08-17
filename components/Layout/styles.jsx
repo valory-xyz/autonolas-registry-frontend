@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Layout } from 'antd';
+import { Layout } from 'antd/lib';
 import { COLOR } from 'util/theme';
 
 export const CustomLayout = styled(Layout)`

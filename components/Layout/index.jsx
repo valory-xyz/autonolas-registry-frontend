@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Layout, Menu, Result } from 'antd';
+import { Layout, Menu, Result } from 'antd/lib';
 import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
@@ -9,7 +9,6 @@ import Login from '../Login';
 import {
   CustomLayout, Logo, RightMenu, SupportOnlyDesktop,
 } from './styles';
-
 
 const LogoSvg = dynamic(() => import('common-util/svg/logo'));
 

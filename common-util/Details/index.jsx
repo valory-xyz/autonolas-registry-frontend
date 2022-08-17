@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import get from 'lodash/get';
 import capitalize from 'lodash/capitalize';
-import { Row, Col, Button } from 'antd';
+import { Row, Col, Button } from 'antd/lib';
 import { NAV_TYPES, NA, GATEWAY_URL } from 'util/constants';
 import Loader from 'common-util/components/Loader';
 import IpfsHashGenerationModal from '../List/IpfsHashGenerationModal';

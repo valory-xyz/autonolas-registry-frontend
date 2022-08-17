@@ -1,4 +1,4 @@
-import { notification } from 'antd';
+import { notification } from 'antd/lib';
 import {
   getMechMinterContract,
   getComponentContract,

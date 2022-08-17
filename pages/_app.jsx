@@ -12,7 +12,7 @@ import Layout from 'components/Layout';
 import { DataProvider } from 'common-util/context';
 import initStore from '../store';
 
-require('../styles/antd.less');
+require('../styles/variables.less');
 
 const getLibrary = (provider) => new Web3(provider);
 

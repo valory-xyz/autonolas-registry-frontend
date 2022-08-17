@@ -5,7 +5,7 @@ import get from 'lodash/get';
 import isNil from 'lodash/isNil';
 import {
   Form, Input, Button, Select,
-} from 'antd';
+} from 'antd/lib';
 import { HASH_PREFIXES } from 'util/constants';
 import { getIpfsHashHelper } from './helpers';
 import { CustomModal } from '../styles';

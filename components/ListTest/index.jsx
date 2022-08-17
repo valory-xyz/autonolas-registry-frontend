@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 // import Web3 from 'web3';
 import {
   Button, Typography, Spin, Alert, Input,
-} from 'antd';
+} from 'antd/lib';
 import {
   getProviderAndSigner,
   getBalance,

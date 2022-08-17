@@ -1,6 +1,6 @@
 /* eslint-disable no-await-in-loop */
 import getConfig from 'next/config';
-import { notification } from 'antd';
+import { notification } from 'antd/lib';
 
 const { ethers } = require('ethers');
 
