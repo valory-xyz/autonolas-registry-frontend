@@ -1,127 +1,157 @@
-import { useEffect } from 'react';
+import { useEffect, useContext, useCallback } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import get from 'lodash/get';
-import round from 'lodash/round';
-import isNil from 'lodash/isNil';
 import { Button } from 'antd';
-import { useWeb3React } from '@web3-react/core';
-import { CONSTANTS, SUPPORTED_NETWORKS } from 'util/constants';
-import { convertToEth } from 'common-util/functions';
-import { WhiteButton } from 'common-util/components/Button';
+import round from 'lodash/round';
+import get from 'lodash/get';
+import isNil from 'lodash/isNil';
+
+// web3 libraries
+import Web3 from 'web3';
+import Web3Modal from 'web3modal';
+
+import { SUPPORTED_NETWORKS } from 'util/constants';
 import {
   setUserAccount as setUserAccountFn,
   setUserBalance as setUserBalanceFn,
+  setChainId as setChainIdFn,
   setErrorMessage as setErrorMessageFn,
-  setLoaded as setLoadedFn,
 } from 'store/setup/actions';
-import { EllipsisMiddle } from 'common-util/List/ListTable/helpers';
-import { Container, DetailsContainer, MetamaskContainer } from './styles';
+import { getBalance } from 'common-util/functions';
+import { DataContext } from 'common-util/context';
+import { providerOptions } from './Helpers';
+import { Container, DetailsContainer, WalletContainer } from './styles';
 
+/* --------------- web3Modal --------------- */
+let web3Modal;
+if (typeof window !== 'undefined') {
+  web3Modal = new Web3Modal({
+    network: 'mainnet', // optional
+    cacheProvider: true,
+    providerOptions, // required
+  });
+}
+
+/* --------------- Login component --------------- */
 const Login = ({
-  isLoaded,
   account,
   balance,
+  chainId,
   errorMessage,
+
+  // functions
   setUserAccount,
   setUserBalance,
+  setChainId,
   setErrorMessage,
-  setLoaded,
 }) => {
-  const { chainId } = useWeb3React();
+  const {
+    provider, web3Provider, setProvider, setWeb3Provider,
+  } = useContext(DataContext);
 
-  const getBalance = (accoundPassed) => {
-    window.ethereum
-      .request({
-        method: CONSTANTS.ETH_GETBALANCE,
-        params: [accoundPassed, 'latest'],
-      })
-      .then((b) => {
-        setUserBalance(convertToEth(b));
-      })
-      .catch((e) => {
-        setErrorMessage(e.message);
-      });
-  };
-
-  const handleLogin = async () => {
-    if (window.ethereum && window.ethereum.isMetaMask) {
-      // remove `is_connected` from localStorage
-      localStorage.setItem(CONSTANTS.IS_CONNECTED, 'true');
-
-      // set user account & balance if chain-id is valid
-      window.ethereum
-        .request({ method: CONSTANTS.ETH_REQUESTACCOUNTS })
-        .then((result) => {
-          // setting only the 1st account
-          setUserAccount(result[0]);
-          getBalance(result[0]);
-        })
-        .catch((e) => {
-          setErrorMessage(e.message);
-        });
-    } else {
-      setErrorMessage('Please install MetaMask browser extension');
+  const setBalance = async (accountPassed) => {
+    try {
+      const result = await getBalance(accountPassed, web3Provider);
+      setUserBalance(result);
+    } catch (error) {
+      setErrorMessage(error);
     }
   };
 
-  // set `disconnect` to localStorage for reference
-  const handleDisconnect = () => {
-    localStorage.setItem(CONSTANTS.IS_CONNECTED, 'false');
-    setLoaded(false);
+  useEffect(async () => {
+    if (account && web3Provider) {
+      setBalance(account);
+    }
+  }, [account, web3Provider]);
+
+  const handleLogin = useCallback(async () => {
+    // This is the initial `provider` that is returned when
+    // using web3Modal to connect. Can be MetaMask or WalletConnect.
+    try {
+      const modalProvider = await web3Modal.connect();
+
+      // ------ setting to the window object! ------
+      window.MODAL_PROVIDER = modalProvider;
+
+      // We plug the initial `provider` and get back
+      // a Web3Provider. This will add on methods and
+      // event listeners such as `.on()` will be different.
+      const wProvider = new Web3(modalProvider);
+
+      const address = await wProvider.eth.getAccounts();
+      const currentChainId = await wProvider.eth.getChainId();
+
+      setUserAccount(address[0]);
+      setProvider(modalProvider);
+      setWeb3Provider(wProvider);
+      setChainId(currentChainId || null);
+    } catch (error) {
+      window.console.error(error);
+    }
+  }, []);
+
+  const disconnectAccount = useCallback(async () => {
+    await web3Modal.clearCachedProvider();
+    if (provider?.disconnect && typeof provider.disconnect === 'function') {
+      await provider.disconnect();
+    }
+
     setUserAccount(null);
     setUserBalance(null);
-  };
+    setErrorMessage(null);
+    setProvider(null);
+  }, [provider]);
 
-  const handleChainChange = async () => {
-    // check if connected to the correct chain-id
-    let isValidChainId = false;
-    if (chainId) {
-      if (SUPPORTED_NETWORKS.includes(chainId)) {
-        isValidChainId = true;
-        setErrorMessage(null);
-      } else {
-        isValidChainId = false;
-        setUserAccount(null);
-        setUserBalance(null);
-        setErrorMessage('Unsupported network');
-      }
-    }
-
-    if (isValidChainId) {
-      await handleLogin();
-    }
-  };
-
-  /**
-   * if already loaded (ie. logged in before and present in localStorage),
-   * set account and balance of the user as we don't store the user details.
-   */
+  // Auto connect to the cached provider
   useEffect(() => {
-    if (isLoaded && !account) {
+    if (web3Modal.cachedProvider) {
       handleLogin();
     }
-  }, [isLoaded]);
+  }, [handleLogin]);
 
-  /**
-   * listener for account, chain changes
-   */
-  const handleAccountChange = (newAccount) => {
-    setUserAccount(newAccount);
-    getBalance(newAccount.toString());
-  };
+  // A `provider` should come with EIP-1193 events. We'll listen for those events
+  // here so that when a user switches accounts or networks, we can update the
+  // local React state with that new information.
+  useEffect(() => {
+    if (provider?.on) {
+      const handleAccountsChanged = (accounts) => {
+        window.console.log('accountsChanged', accounts);
+        setUserAccount(accounts[0]);
+      };
 
-  if (typeof window !== 'undefined' && window.ethereum) {
-    window.ethereum.on('accountsChanged', handleAccountChange);
-    window.ethereum.on('chainChanged', handleChainChange);
-  }
+      // https://docs.ethers.io/v5/concepts/best-practices/#best-practices--network-changes
+      const handleChainChanged = () => {
+        window.location.reload();
+      };
+
+      const handleDisconnect = (error) => {
+        window.console.log('disconnect', error);
+        disconnectAccount();
+      };
+
+      provider.on('accountsChanged', handleAccountsChanged);
+      provider.on('chainChanged', handleChainChanged);
+      provider.on('disconnect', handleDisconnect);
+
+      // cleanup
+      return () => {
+        if (provider.removeListener) {
+          provider.removeListener('accountsChanged', handleAccountsChanged);
+          provider.removeListener('chainChanged', handleChainChanged);
+          provider.removeListener('disconnect', handleDisconnect);
+        }
+      };
+    }
+
+    return () => {};
+  }, [provider, disconnectAccount]);
 
   if (errorMessage) {
     return (
       <Container>
-        <MetamaskContainer data-testid="login-error">
+        <WalletContainer data-testid="login-error">
           {errorMessage}
-        </MetamaskContainer>
+        </WalletContainer>
       </Container>
     );
   }
@@ -129,12 +159,8 @@ const Login = ({
   if (!account) {
     return (
       <Container>
-        <Button
-          type="primary"
-          onClick={handleLogin}
-          data-testid="connect-metamask"
-        >
-          Connect MetaMask
+        <Button variant="purple" onClick={handleLogin}>
+          Connect Wallet
         </Button>
       </Container>
     );
@@ -143,47 +169,48 @@ const Login = ({
   return (
     <Container>
       <DetailsContainer>
-        <MetamaskContainer>
+        <WalletContainer>
+          {!SUPPORTED_NETWORKS.includes(chainId) && (
+            <div className="unsupported-network">Unsupported network</div>
+          )}
           <div>{isNil(balance) ? '--' : `${round(balance, 2)} ETH`}</div>
           <div className="dash" />
-          <EllipsisMiddle data-testid="metamask-address">
-            {account ? `${account}` : 'NA'}
-          </EllipsisMiddle>
-          <WhiteButton type="primary" onClick={handleDisconnect}>
+          <div className="address">{account ? `${account}` : 'NA'}</div>
+          <Button variant="transparent" onClick={disconnectAccount}>
             Disconnect
-          </WhiteButton>
-        </MetamaskContainer>
+          </Button>
+        </WalletContainer>
       </DetailsContainer>
     </Container>
   );
 };
 
 Login.propTypes = {
-  isLoaded: PropTypes.bool,
-  account: PropTypes.string,
-  balance: PropTypes.string,
+  account: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
+  balance: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  chainId: PropTypes.number,
   errorMessage: PropTypes.string,
   setUserAccount: PropTypes.func.isRequired,
   setUserBalance: PropTypes.func.isRequired,
+  setChainId: PropTypes.func.isRequired,
   setErrorMessage: PropTypes.func.isRequired,
-  setLoaded: PropTypes.func.isRequired,
 };
 
 Login.defaultProps = {
-  isLoaded: false,
   account: null,
   balance: null,
+  chainId: null,
   errorMessage: null,
 };
 
 const mapStateToProps = (state) => {
   const {
-    isLoaded, account, balance, errorMessage,
+    account, balance, chainId, errorMessage,
   } = get(state, 'setup', {});
   return {
-    isLoaded,
     account,
     balance,
+    chainId,
     errorMessage,
   };
 };
@@ -191,8 +218,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = {
   setUserAccount: setUserAccountFn,
   setUserBalance: setUserBalanceFn,
+  setChainId: setChainIdFn,
   setErrorMessage: setErrorMessageFn,
-  setLoaded: setLoadedFn,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

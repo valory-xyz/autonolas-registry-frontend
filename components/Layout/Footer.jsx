@@ -1,6 +1,7 @@
 import Image from 'next/image';
+import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
-import { useWeb3React } from '@web3-react/core';
+import get from 'lodash/get';
 import { ADDRESSES } from 'common-util/Contracts';
 import { FooterContainer } from './styles';
 
@@ -23,8 +24,8 @@ const SOCIALS = [
   },
 ];
 
-export const ContractInfo = () => {
-  const { chainId } = useWeb3React();
+const ContractInfo = () => {
+  const chainId = useSelector((state) => get(state, 'setup.chainId'));
   const router = useRouter();
   const { pathname } = router;
   const addresses = ADDRESSES[chainId];

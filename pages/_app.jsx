@@ -9,7 +9,7 @@ import { Web3ReactProvider } from '@web3-react/core';
 
 import GlobalStyle from 'components/GlobalStyles';
 import Layout from 'components/Layout';
-import MetamaskProvider from 'components/Login/Helpers/MetamaskProvider';
+import { DataProvider } from 'common-util/context';
 import initStore from '../store';
 
 require('../styles/antd.less');
@@ -33,15 +33,18 @@ class MyApp extends App {
         <GlobalStyle />
         <Head>
           <title>Autonolas Protocol</title>
-          <meta name="description" content="View and manage components, agents and services via the Autonolas on-chain registry." />
+          <meta
+            name="description"
+            content="View and manage components, agents and services via the Autonolas on-chain registry."
+          />
         </Head>
-        <Web3ReactProvider getLibrary={getLibrary}>
-          <MetamaskProvider>
+        <DataProvider>
+          <Web3ReactProvider getLibrary={getLibrary}>
             <Layout>
               <Component {...pageProps} />
             </Layout>
-          </MetamaskProvider>
-        </Web3ReactProvider>
+          </Web3ReactProvider>
+        </DataProvider>
       </>
     );
   }
