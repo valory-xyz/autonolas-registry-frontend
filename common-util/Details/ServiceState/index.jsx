@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import {
   Button, Space, Divider, Steps, Tooltip,
-} from 'antd/lib';
+} from 'antd';
 import get from 'lodash/get';
 import kebabCase from 'lodash/kebabCase';
 import { URL } from 'util/constants';

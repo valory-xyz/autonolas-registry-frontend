@@ -2,7 +2,7 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Web3 from 'web3';
-import { Button, Form, Input } from 'antd/lib';
+import { Button, Form, Input } from 'antd';
 import get from 'lodash/get';
 import isNil from 'lodash/isNil';
 import { WhiteButton } from 'common-util/components/Button';

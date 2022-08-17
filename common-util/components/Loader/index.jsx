@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Button, Skeleton } from 'antd/lib';
+import { Button, Skeleton } from 'antd';
 
 const Container = styled.div`
   min-height: 200px;

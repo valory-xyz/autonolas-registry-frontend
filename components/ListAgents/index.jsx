@@ -1,6 +1,6 @@
 // import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Tabs } from 'antd/lib';
+import { Tabs } from 'antd';
 import { accountProptype } from 'common-util/Proptype';
 import { useRouter } from 'next/router';
 import { URL, NAV_TYPES } from 'util/constants';

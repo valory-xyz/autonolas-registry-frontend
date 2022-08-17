@@ -11,7 +11,7 @@ import {
   Typography,
   Form,
   Input,
-} from 'antd/lib';
+} from 'antd';
 import { multisigAddresses } from 'common-util/Contracts';
 
 const StepThreePayload = ({ handleStep3Deploy, handleTerminate }) => {
