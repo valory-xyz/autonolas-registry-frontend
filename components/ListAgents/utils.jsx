@@ -114,7 +114,7 @@ export const updateAgentHashes = (account, id, newHash) => {
   const contract = getMechMinterContract();
 
   contract.methods
-    .updateHash('0', id, newHash)
+    .updateHash('1', id, `0x${newHash}`)
     .send({ from: account })
     .then(() => {
       notification.success({ message: 'Hash Updated' });

@@ -117,7 +117,7 @@ export const updateComponentHashes = (account, id, newHash) => {
 
   // 0 to indicate `components`
   contract.methods
-    .updateHash('0', id, newHash)
+    .updateHash('0', id, `0x${newHash}`)
     .send({ from: account })
     .then(() => {
       notification.success({ message: 'Hash Updated' });
