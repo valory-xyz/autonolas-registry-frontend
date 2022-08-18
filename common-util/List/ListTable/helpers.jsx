@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import {
   Input, Space, Button, Typography,
-} from 'antd';
+} from 'antd/lib';
 import { SearchOutlined } from '@ant-design/icons';
 import PropTypes from 'prop-types';
 import some from 'lodash/some';

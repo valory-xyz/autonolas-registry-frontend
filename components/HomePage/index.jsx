@@ -1,7 +1,7 @@
 import { URL } from 'util/constants';
 import {
   Button, Col, Row, Typography,
-} from 'antd';
+} from 'antd/lib';
 import Link from 'next/link';
 import { Container, HeaderRow, ContentRow } from './styles';
 
