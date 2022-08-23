@@ -1,4 +1,4 @@
-import { Button, Typography } from 'antd';
+import { Button, Typography } from 'antd/lib';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import { URL } from 'util/constants';

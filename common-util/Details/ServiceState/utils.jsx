@@ -1,4 +1,4 @@
-import { notification } from 'antd';
+import { notification } from 'antd/lib';
 import {
   getServiceContract,
   getServiceManagerContract,
@@ -134,7 +134,9 @@ export const onStep2RegisterAgents = ({
           resolve(information);
           notifySuccess('Registered Successfully');
         })
-        .catch((e) => reject(e));
+        .catch((e) => {
+          reject(e);
+        });
     })
     .catch((e) => {
       reject(e);

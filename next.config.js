@@ -2,15 +2,13 @@ const withAntdLess = require('next-plugin-antd-less');
 
 module.exports = {
   ...withAntdLess({
-    // lessVarsFilePath: './styles/antd.less',
+    reactStrictMode: true,
+    lessVarsFilePath: './styles/variables.less',
     lessVarsFilePathAppendToEndOfContent: false,
-    cssLoaderOptions: {
-      importLoaders: 1,
-    },
+    cssLoaderOptions: {},
     lessLoaderOptions: {
       javascriptEnabled: true,
     },
-    productionBrowserSourceMaps: true,
     webpack(config) {
       return config;
     },

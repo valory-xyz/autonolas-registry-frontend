@@ -1,9 +1,15 @@
-import { InjectedConnector } from '@web3-react/injected-connector';
-import { SUPPORTED_NETWORKS } from 'util/constants';
+import WalletConnectProvider from '@walletconnect/web3-provider';
 
-const injected = new InjectedConnector({
-  supportedNetworks: SUPPORTED_NETWORKS,
-  supportedChainIds: SUPPORTED_NETWORKS,
-});
-
-export default injected;
+export const providerOptions = {
+  walletconnect: {
+    package: WalletConnectProvider, // required
+    options: {
+      infuraId: undefined, // required
+      rpc: {
+        1: process.env.NEXT_PUBLIC_MAINNET_URL,
+        5: process.env.NEXT_PUBLIC_GOERLI_URL,
+        31337: process.env.NEXT_PUBLIC_AUTONOLAS_URL,
+      },
+    },
+  },
+};
