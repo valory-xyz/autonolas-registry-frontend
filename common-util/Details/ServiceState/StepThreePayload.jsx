@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { ethers } from 'ethers';
-import { useWeb3React } from '@web3-react/core';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+import get from 'lodash/get';
 import {
   Button,
   Space,
@@ -14,7 +15,7 @@ import {
 import { multisigAddresses } from 'common-util/Contracts';
 
 const StepThreePayload = ({ handleStep3Deploy, handleTerminate }) => {
-  const { chainId } = useWeb3React();
+  const chainId = useSelector((state) => get(state, 'setup.chainId'));
   const [form] = Form.useForm();
   const [radioValue, setRadioValue] = useState(null);
   const onFinish = (values) => {

@@ -4,6 +4,7 @@ const initialState = {
   account: null,
   balance: null,
   errorMessage: null,
+  chainId: null,
 
   /**
    * boolean to indicate if the account was loaded
@@ -19,22 +20,11 @@ export default (state = initialState, action) => {
       return { ...state, data };
     }
 
-    case syncTypes.SET_LOADED: {
-      return { ...state, ...action.data };
-    }
-
-    case syncTypes.SET_ACCOUNT: {
-      return { ...state, ...action.data };
-    }
-
-    case syncTypes.SET_BALANCE: {
-      return { ...state, ...action.data };
-    }
-
-    case syncTypes.SET_LOGIN_ERROR: {
-      return { ...state, ...action.data };
-    }
-
+    case syncTypes.SET_LOADED:
+    case syncTypes.SET_ACCOUNT:
+    case syncTypes.SET_BALANCE:
+    case syncTypes.SET_LOGIN_ERROR:
+    case syncTypes.SET_CHAIND_ID:
     case syncTypes.SET_STORE_STATE: {
       return { ...state, ...action.data };
     }
