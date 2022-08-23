@@ -18,7 +18,7 @@ export const COLUMNS = [
     key: 'agentNumSlots',
   },
   {
-    title: 'Bond Cost',
+    title: 'Security Bond',
     dataIndex: 'bonds',
     key: 'bonds',
   },
