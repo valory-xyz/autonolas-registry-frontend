@@ -17,6 +17,7 @@ import {
 } from './utils';
 import ActiveRegistrationTable from './ActiveRegistrationTable';
 import StepThreePayload from './StepThreePayload';
+import StepFourDeploy from './StepFourDeploy';
 import { InfoSubHeader } from '../styles';
 import { ServiceStateContainer } from './styles';
 
@@ -41,6 +42,7 @@ export const ServiceState = ({
   const status = get(details, 'state');
   const agentIds = get(details, 'agentIds');
   const securityDeposit = get(details, 'securityDeposit');
+  const [stepDeployRadioValue, setStepDeployRadioValue] = useState(null);
 
   useEffect(async () => {
     if (id && (agentIds || []).length !== 0) {
@@ -182,10 +184,18 @@ export const ServiceState = ({
       title: 'Deployed',
       component: (
         <div className="step-4-terminate">
+          <StepFourDeploy
+            radioValue={stepDeployRadioValue}
+            setRadioValue={setStepDeployRadioValue}
+          />
+
           <Space direction="vertical" size={10}>
             <div>{`Safe contract address: ${get(details, 'multisig')}`}</div>
             {getButton(
-              <Button disabled={!isOwner} onClick={handleStep4Terminate}>
+              <Button
+                disabled={!isOwner || !stepDeployRadioValue}
+                onClick={handleStep4Terminate}
+              >
                 Terminate
               </Button>,
             )}

@@ -102,3 +102,9 @@ export const multisigAddresses = {
   5: ['0x1d365C93e6c29817dd033A03ecE219419434fAca'],
   31337: ['0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0'],
 };
+
+export const deployMultisigAddresses = {
+  1: ['0x26Ea2dC7ce1b41d0AD0E0521535655d7a94b684c'],
+  5: ['0x26Ea2dC7ce1b41d0AD0E0521535655d7a94b684c'],
+  31337: ['0x26Ea2dC7ce1b41d0AD0E0521535655d7a94b684c'],
+};
