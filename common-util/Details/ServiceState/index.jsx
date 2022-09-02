@@ -17,7 +17,6 @@ import {
 } from './utils';
 import ActiveRegistrationTable from './ActiveRegistrationTable';
 import StepThreePayload from './StepThreePayload';
-import StepFourDeploy from './StepFourDeploy';
 import { InfoSubHeader } from '../styles';
 import { ServiceStateContainer } from './styles';
 
@@ -42,7 +41,6 @@ export const ServiceState = ({
   const status = get(details, 'state');
   const agentIds = get(details, 'agentIds');
   const securityDeposit = get(details, 'securityDeposit');
-  const [stepDeployRadioValue, setStepDeployRadioValue] = useState(null);
 
   useEffect(async () => {
     if (id && (agentIds || []).length !== 0) {
@@ -52,7 +50,7 @@ export const ServiceState = ({
   }, [id, agentIds]);
 
   useEffect(() => {
-    setCurrentStep(Number(status) - 1);
+    setCurrentStep(Number(status) - 2);
   }, [status]);
 
   /* ----- helper functions ----- */
@@ -143,6 +141,8 @@ export const ServiceState = ({
     }
   };
 
+  console.log(details);
+
   const steps = [
     {
       title: 'Pre-Registration',
@@ -177,6 +177,10 @@ export const ServiceState = ({
         <StepThreePayload
           handleStep3Deploy={handleStep3Deploy}
           handleTerminate={handleTerminate}
+          // show multisig (2nd radio button option) if the service multisig !== 0
+          canShowMultisigSameAddress={
+            get(details, 'multisig') !== `0x${'0'.repeat(40)}`
+          }
         />
       ),
     },
@@ -184,18 +188,10 @@ export const ServiceState = ({
       title: 'Deployed',
       component: (
         <div className="step-4-terminate">
-          <StepFourDeploy
-            radioValue={stepDeployRadioValue}
-            setRadioValue={setStepDeployRadioValue}
-          />
-
           <Space direction="vertical" size={10}>
             <div>{`Safe contract address: ${get(details, 'multisig')}`}</div>
             {getButton(
-              <Button
-                disabled={!isOwner || !stepDeployRadioValue}
-                onClick={handleStep4Terminate}
-              >
+              <Button disabled={!isOwner} onClick={handleStep4Terminate}>
                 Terminate
               </Button>,
             )}
@@ -245,3 +241,14 @@ ServiceState.defaultProps = {
   isOwner: false,
   updateDetails: () => {},
 };
+
+/**
+ * 3rd step
+ * radio button => either the preivous or the current one
+ *
+ * for the 2nd radition button
+ * - available only if => service.multisig !== 0
+ *
+ * 4th step
+ *
+ */

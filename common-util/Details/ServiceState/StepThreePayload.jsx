@@ -12,9 +12,16 @@ import {
   Form,
   Input,
 } from 'antd/lib';
-import { multisigAddresses } from 'common-util/Contracts';
+import {
+  multisigAddresses,
+  multisigSameAddresses,
+} from 'common-util/Contracts';
 
-const StepThreePayload = ({ handleStep3Deploy, handleTerminate }) => {
+const StepThreePayload = ({
+  handleStep3Deploy,
+  handleTerminate,
+  canShowMultisigSameAddress,
+}) => {
   const chainId = useSelector((state) => get(state, 'setup.chainId'));
   const [form] = Form.useForm();
   const [radioValue, setRadioValue] = useState(null);
@@ -47,6 +54,11 @@ const StepThreePayload = ({ handleStep3Deploy, handleTerminate }) => {
     console.log('Failed:', errorInfo); /* eslint-disable-line no-console */
   };
 
+  const otherAddress = canShowMultisigSameAddress
+    ? multisigSameAddresses[chainId] || []
+    : [];
+  const options = [...(multisigAddresses[chainId] || []), ...otherAddress];
+
   return (
     <div className="step-3-finished-registration">
       <div>
@@ -58,7 +70,7 @@ const StepThreePayload = ({ handleStep3Deploy, handleTerminate }) => {
         onChange={(e) => setRadioValue(e.target.value)}
       >
         <Space direction="vertical" size={10}>
-          {(multisigAddresses[chainId] || []).map((multisigAddress) => (
+          {options.map((multisigAddress) => (
             <Radio key={multisigAddress} value={multisigAddress}>
               {multisigAddress}
             </Radio>
@@ -66,85 +78,91 @@ const StepThreePayload = ({ handleStep3Deploy, handleTerminate }) => {
         </Space>
       </Radio.Group>
 
-      <Form
-        form={form}
-        layout="vertical"
-        name="mult-sig-form"
-        autoComplete="off"
-        preserve={false}
-        id="myForm"
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-      >
-        <Form.Item
-          label="To"
-          name="addressTo"
-          rules={[{ required: false }]}
-          initialValue="0x0000000000000000000000000000000000000000"
+      {/* form should be shown only if 1st radio button is selected
+      2nd radio button means everything will be handled by the backend */}
+      {radioValue === otherAddress[0] && (
+        <Form
+          form={form}
+          layout="vertical"
+          name="mult-sig-form"
+          autoComplete="off"
+          preserve={false}
+          id="myForm"
+          onFinish={onFinish}
+          onFinishFailed={onFinishFailed}
         >
-          <Input />
-        </Form.Item>
+          <Form.Item
+            label="To"
+            name="addressTo"
+            rules={[{ required: false }]}
+            initialValue="0x0000000000000000000000000000000000000000"
+          >
+            <Input />
+          </Form.Item>
 
-        <Form.Item
-          label="Fallback Handler"
-          name="addressFallbackHandler"
-          rules={[{ required: true, message: 'Please input Fallback Handler' }]}
-          initialValue="0xf48f2b2d2a534e402487b3ee7c18c33aec0fe5e4"
-        >
-          <Input />
-        </Form.Item>
+          <Form.Item
+            label="Fallback Handler"
+            name="addressFallbackHandler"
+            rules={[
+              { required: true, message: 'Please input Fallback Handler' },
+            ]}
+            initialValue="0xf48f2b2d2a534e402487b3ee7c18c33aec0fe5e4"
+          >
+            <Input />
+          </Form.Item>
 
-        <Form.Item
-          label="Payment Token"
-          name="paymentToken"
-          rules={[{ required: false }]}
-          initialValue="0x0000000000000000000000000000000000000000"
-        >
-          <Input />
-        </Form.Item>
+          <Form.Item
+            label="Payment Token"
+            name="paymentToken"
+            rules={[{ required: false }]}
+            initialValue="0x0000000000000000000000000000000000000000"
+          >
+            <Input />
+          </Form.Item>
 
-        <Form.Item
-          label="Payable PaymentReceiver"
-          name="payablePaymentReceiver"
-          rules={[{ required: false }]}
-          initialValue="0x0000000000000000000000000000000000000000"
-        >
-          <Input />
-        </Form.Item>
+          <Form.Item
+            label="Payable PaymentReceiver"
+            name="payablePaymentReceiver"
+            rules={[{ required: false }]}
+            initialValue="0x0000000000000000000000000000000000000000"
+          >
+            <Input />
+          </Form.Item>
 
-        <Form.Item
-          label="Payment"
-          name="payment"
-          rules={[{ required: false }]}
-          initialValue={0}
-        >
-          <Input />
-        </Form.Item>
+          <Form.Item
+            label="Payment"
+            name="payment"
+            rules={[{ required: false }]}
+            initialValue={0}
+          >
+            <Input />
+          </Form.Item>
 
-        <Form.Item
-          label="Nonce"
-          name="nonce"
-          rules={[{ required: true, message: 'Please input Nonce' }]}
-          initialValue={parseInt(Date.now() / 1000, 10)}
-        >
-          <Input />
-        </Form.Item>
+          <Form.Item
+            label="Nonce"
+            name="nonce"
+            rules={[{ required: true, message: 'Please input Nonce' }]}
+            initialValue={parseInt(Date.now() / 1000, 10)}
+          >
+            <Input />
+          </Form.Item>
 
-        <Form.Item
-          label="Payload"
-          name="payload"
-          rules={[{ required: false }]}
-          initialValue="0x"
-        >
-          <Input />
-        </Form.Item>
+          <Form.Item
+            label="Payload"
+            name="payload"
+            rules={[{ required: false }]}
+            initialValue="0x"
+          >
+            <Input />
+          </Form.Item>
 
-        <Form.Item>
-          <Button type="primary" htmlType="submit" disabled={!radioValue}>
-            Submit
-          </Button>
-        </Form.Item>
-      </Form>
+          <Form.Item>
+            <Button type="primary" htmlType="submit" disabled={!radioValue}>
+              Submit
+            </Button>
+          </Form.Item>
+        </Form>
+      )}
       <Divider className="m-0" />
       <Button onClick={handleTerminate} className="terminate-btn">
         Terminate
@@ -156,11 +174,13 @@ const StepThreePayload = ({ handleStep3Deploy, handleTerminate }) => {
 StepThreePayload.propTypes = {
   handleStep3Deploy: PropTypes.func,
   handleTerminate: PropTypes.func,
+  canShowMultisigSameAddress: PropTypes.bool,
 };
 
 StepThreePayload.defaultProps = {
   handleStep3Deploy: () => {},
   handleTerminate: () => {},
+  canShowMultisigSameAddress: false,
 };
 
 export default StepThreePayload;

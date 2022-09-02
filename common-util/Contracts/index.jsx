@@ -99,12 +99,12 @@ export const getServiceManagerContract = () => {
 
 export const multisigAddresses = {
   1: ['0x46C0D07F55d4F9B5Eed2Fc9680B5953e5fd7b461'],
-  5: ['0x1d365C93e6c29817dd033A03ecE219419434fAca'],
+  5: ['0x65dD51b02049ad1B6FF7fa9Ea3322E1D2CAb1176'],
   31337: ['0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0'],
 };
 
-export const deployMultisigAddresses = {
+export const multisigSameAddresses = {
   1: ['0x26Ea2dC7ce1b41d0AD0E0521535655d7a94b684c'],
-  5: ['0x26Ea2dC7ce1b41d0AD0E0521535655d7a94b684c'],
-  31337: ['0x26Ea2dC7ce1b41d0AD0E0521535655d7a94b684c'],
+  5: ['0x92499E80f50f06C4078794C179986907e7822Ea1'],
+  31337: ['0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82'],
 };
