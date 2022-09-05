@@ -40,6 +40,9 @@ export const ServiceState = ({
 
   const status = get(details, 'state');
   const agentIds = get(details, 'agentIds');
+  const multisig = get(details, 'multisig');
+  const threshold = get(details, 'threshold');
+  const owner = get(details, 'owner');
   const securityDeposit = get(details, 'securityDeposit');
 
   useEffect(async () => {
@@ -175,12 +178,16 @@ export const ServiceState = ({
       title: 'Finished Registration',
       component: (
         <StepThreePayload
+          serviceId={id}
           handleStep3Deploy={handleStep3Deploy}
           handleTerminate={handleTerminate}
           // show multisig (2nd radio button option) if the service multisig !== 0
           canShowMultisigSameAddress={
             get(details, 'multisig') !== `0x${'0'.repeat(40)}`
           }
+          multisig={multisig}
+          threshold={threshold}
+          owner={owner}
         />
       ),
     },
@@ -189,7 +196,7 @@ export const ServiceState = ({
       component: (
         <div className="step-4-terminate">
           <Space direction="vertical" size={10}>
-            <div>{`Safe contract address: ${get(details, 'multisig')}`}</div>
+            <div>{`Safe contract address: ${multisig}`}</div>
             {getButton(
               <Button disabled={!isOwner} onClick={handleStep4Terminate}>
                 Terminate

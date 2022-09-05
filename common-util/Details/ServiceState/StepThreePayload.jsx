@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+import WalletConnectProvider from '@walletconnect/web3-provider';
 import get from 'lodash/get';
 import {
   Button,
@@ -16,8 +17,17 @@ import {
   multisigAddresses,
   multisigSameAddresses,
 } from 'common-util/Contracts';
+import { GNOSIS_SAFE_CONTRACT } from 'common-util/AbiAndAddresses';
+import { getServiceAgentInstances } from './utils';
+
+const safeContracts = require('@gnosis.pm/safe-contracts');
+// MULTI_SEND_CONTRACT
 
 const StepThreePayload = ({
+  serviceId,
+  owner: serviceOwner,
+  threshold,
+  multisig,
   handleStep3Deploy,
   handleTerminate,
   canShowMultisigSameAddress,
@@ -25,6 +35,7 @@ const StepThreePayload = ({
   const chainId = useSelector((state) => get(state, 'setup.chainId'));
   const [form] = Form.useForm();
   const [radioValue, setRadioValue] = useState(null);
+  const [agentInstances, setAgentInstances] = useState(null);
   const onFinish = (values) => {
     const payload = ethers.utils.solidityPack(
       [
@@ -50,6 +61,11 @@ const StepThreePayload = ({
     handleStep3Deploy(radioValue, payload);
   };
 
+  useEffect(async () => {
+    const response = await getServiceAgentInstances(serviceId);
+    setAgentInstances(response);
+  }, []);
+
   const onFinishFailed = (errorInfo) => {
     console.log('Failed:', errorInfo); /* eslint-disable-line no-console */
   };
@@ -58,6 +74,9 @@ const StepThreePayload = ({
     ? multisigSameAddresses[chainId] || []
     : [];
   const options = [...(multisigAddresses[chainId] || []), ...otherAddress];
+  const isMultiSig = (multisigAddresses[chainId] || [])[0];
+
+  console.log({ safeContracts });
 
   return (
     <div className="step-3-finished-registration">
@@ -80,7 +99,7 @@ const StepThreePayload = ({
 
       {/* form should be shown only if 1st radio button is selected
       2nd radio button means everything will be handled by the backend */}
-      {radioValue === otherAddress[0] && (
+      {radioValue === isMultiSig && (
         <Form
           form={form}
           layout="vertical"
@@ -163,6 +182,90 @@ const StepThreePayload = ({
           </Form.Item>
         </Form>
       )}
+
+      {radioValue !== isMultiSig && (
+        <Button
+          type="primary"
+          disabled={!radioValue}
+          onClick={async () => {
+            const data = ethers.utils.solidityPack(['address'], [multisig]);
+            // const multisigContract = await ethers.getContractFactory('GnosisSafe');
+
+            //             const provider = new providers.Web3Provider(web3);
+            // const signer = provider.getSigner()
+            // const address = await signer.getAddress();
+
+            const network = {
+              name: 'dev',
+              chainId: 1337,
+              ensAddress: 'https://chain.staging.autonolas.tech/',
+            };
+
+            const multisigContract = new ethers.Contract(
+              multisig,
+              GNOSIS_SAFE_CONTRACT.abi,
+              ethers.getDefaultProvider('https://chain.staging.autonolas.tech/'),
+              // window.WEB3_PROVIDER.eth.currentProvider,
+              // ethers.providers.getNetwork(31337),
+              // WalletConnectProvider,
+              // window.web3.currentProvider,
+            );
+
+            const nonce = await multisigContract.nonce();
+
+            console.log(agentInstances);
+            console.log({
+              multisig,
+              data,
+              threshold,
+              multisigContract,
+              nonce,
+            });
+
+            const callData = [];
+            const txs = [];
+
+            // Add the addresses, but keep the threshold the same
+            for (let i = 0; i < agentInstances.length; i += 1) {
+              callData[i] = multisigContract.interface.encodeFunctionData(
+                'addOwnerWithThreshold',
+                [agentInstances[i], threshold],
+              );
+              txs[i] = safeContracts.buildSafeTransaction({
+                to: multisig,
+                data: callData[i],
+                nonce: 0,
+              });
+            }
+
+            callData.push(
+              multisigContract.interface.encodeFunctionData('removeOwner', [
+                agentInstances[0],
+                serviceOwner,
+                threshold,
+              ]),
+            );
+            txs.push(
+              safeContracts.buildSafeTransaction({
+                to: multisig,
+                data: callData[callData.length - 1],
+                nonce: 0,
+              }),
+            );
+
+            console.log('===========-========');
+            console.log({
+              callData,
+              txs,
+            });
+
+            // handleStep3Deploy(radioValue, data);
+          }}
+        >
+          Submit 2
+        </Button>
+      )}
+
       <Divider className="m-0" />
       <Button onClick={handleTerminate} className="terminate-btn">
         Terminate
@@ -172,6 +275,9 @@ const StepThreePayload = ({
 };
 
 StepThreePayload.propTypes = {
+  serviceId: PropTypes.string.isRequired,
+  multisig: PropTypes.string.isRequired,
+  threshold: PropTypes.string.isRequired,
   handleStep3Deploy: PropTypes.func,
   handleTerminate: PropTypes.func,
   canShowMultisigSameAddress: PropTypes.bool,

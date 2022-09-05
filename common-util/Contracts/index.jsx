@@ -27,8 +27,8 @@ export const ADDRESSES = {
     agentRegistry: '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512',
     componentRegistry: '0x5FbDB2315678afecb367f032d93F642f64180aa3',
     registriesManager: '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0',
-    serviceManager: '0x9A676e781A523b5d0C0e43731313A708CB607508',
-    serviceRegistry: '0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82',
+    serviceManager: '0xB7f8BC63BbcaD18155201308C8f3540b07f84F5e',
+    serviceRegistry: '0x610178dA211FEF7D417bC0e6FeD39F05609AD788',
   },
 };
 
@@ -38,6 +38,10 @@ const getWeb3Details = () => {
    */
   const web3 = new Web3(window.WEB3_PROVIDER || window.web3.currentProvider);
 
+  console.log({
+    web3,
+    // G: web3.getSigner(),
+  });
   const chainId = Number(window.ethereum.chainId);
   const address = ADDRESSES[chainId || STAGING_CHAIN_ID]; // default fallback to be 31337
   return { web3, address };
@@ -100,11 +104,23 @@ export const getServiceManagerContract = () => {
 export const multisigAddresses = {
   1: ['0x46C0D07F55d4F9B5Eed2Fc9680B5953e5fd7b461'],
   5: ['0x65dD51b02049ad1B6FF7fa9Ea3322E1D2CAb1176'],
-  31337: ['0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0'],
+  31337: ['0x9A676e781A523b5d0C0e43731313A708CB607508'],
 };
 
 export const multisigSameAddresses = {
   1: ['0x26Ea2dC7ce1b41d0AD0E0521535655d7a94b684c'],
   5: ['0x92499E80f50f06C4078794C179986907e7822Ea1'],
-  31337: ['0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82'],
+  31337: ['0x0B306BF915C4d645ff596e518fAf3F9669b97016'],
+};
+
+export const safeMultiSend = {
+  1: ['0xA238CBeb142c10Ef7Ad8442C6D1f9E89e07e7761'],
+  5: ['0xA238CBeb142c10Ef7Ad8442C6D1f9E89e07e7761'],
+  31337: ['0x959922bE3CAee4b8Cd9a407cc3ac1C251C2007B1'],
+};
+
+export const gnosisSafeMaster = {
+  1: '0xd9Db270c1B5E3Bd161E8c8503c55cEABeE709552',
+  5: '0xd9Db270c1B5E3Bd161E8c8503c55cEABeE709552',
+  31337: '0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0',
 };
