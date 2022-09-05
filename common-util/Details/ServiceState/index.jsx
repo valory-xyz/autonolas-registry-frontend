@@ -144,8 +144,6 @@ export const ServiceState = ({
     }
   };
 
-  console.log(details);
-
   const steps = [
     {
       title: 'Pre-Registration',
@@ -179,15 +177,16 @@ export const ServiceState = ({
       component: (
         <StepThreePayload
           serviceId={id}
+          multisig={multisig}
+          threshold={threshold}
+          owner={owner}
           handleStep3Deploy={handleStep3Deploy}
           handleTerminate={handleTerminate}
           // show multisig (2nd radio button option) if the service multisig !== 0
           canShowMultisigSameAddress={
             get(details, 'multisig') !== `0x${'0'.repeat(40)}`
           }
-          multisig={multisig}
-          threshold={threshold}
-          owner={owner}
+
         />
       ),
     },

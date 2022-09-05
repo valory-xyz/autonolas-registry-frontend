@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import WalletConnectProvider from '@walletconnect/web3-provider';
 import get from 'lodash/get';
 import {
   Button,
@@ -17,11 +16,8 @@ import {
   multisigAddresses,
   multisigSameAddresses,
 } from 'common-util/Contracts';
-import { GNOSIS_SAFE_CONTRACT } from 'common-util/AbiAndAddresses';
-import { getServiceAgentInstances } from './utils';
-
-const safeContracts = require('@gnosis.pm/safe-contracts');
-// MULTI_SEND_CONTRACT
+import { getServiceAgentInstances } from '../utils';
+import { handleMultisigSubmit } from './utils';
 
 const StepThreePayload = ({
   serviceId,
@@ -75,8 +71,6 @@ const StepThreePayload = ({
     : [];
   const options = [...(multisigAddresses[chainId] || []), ...otherAddress];
   const isMultiSig = (multisigAddresses[chainId] || [])[0];
-
-  console.log({ safeContracts });
 
   return (
     <div className="step-3-finished-registration">
@@ -188,81 +182,15 @@ const StepThreePayload = ({
           type="primary"
           disabled={!radioValue}
           onClick={async () => {
-            const data = ethers.utils.solidityPack(['address'], [multisig]);
-            // const multisigContract = await ethers.getContractFactory('GnosisSafe');
-
-            //             const provider = new providers.Web3Provider(web3);
-            // const signer = provider.getSigner()
-            // const address = await signer.getAddress();
-
-            const network = {
-              name: 'dev',
-              chainId: 1337,
-              ensAddress: 'https://chain.staging.autonolas.tech/',
-            };
-
-            const multisigContract = new ethers.Contract(
+            await handleMultisigSubmit({
               multisig,
-              GNOSIS_SAFE_CONTRACT.abi,
-              ethers.getDefaultProvider('https://chain.staging.autonolas.tech/'),
-              // window.WEB3_PROVIDER.eth.currentProvider,
-              // ethers.providers.getNetwork(31337),
-              // WalletConnectProvider,
-              // window.web3.currentProvider,
-            );
-
-            const nonce = await multisigContract.nonce();
-
-            console.log(agentInstances);
-            console.log({
-              multisig,
-              data,
               threshold,
-              multisigContract,
-              nonce,
+              agentInstances,
+              serviceOwner,
             });
-
-            const callData = [];
-            const txs = [];
-
-            // Add the addresses, but keep the threshold the same
-            for (let i = 0; i < agentInstances.length; i += 1) {
-              callData[i] = multisigContract.interface.encodeFunctionData(
-                'addOwnerWithThreshold',
-                [agentInstances[i], threshold],
-              );
-              txs[i] = safeContracts.buildSafeTransaction({
-                to: multisig,
-                data: callData[i],
-                nonce: 0,
-              });
-            }
-
-            callData.push(
-              multisigContract.interface.encodeFunctionData('removeOwner', [
-                agentInstances[0],
-                serviceOwner,
-                threshold,
-              ]),
-            );
-            txs.push(
-              safeContracts.buildSafeTransaction({
-                to: multisig,
-                data: callData[callData.length - 1],
-                nonce: 0,
-              }),
-            );
-
-            console.log('===========-========');
-            console.log({
-              callData,
-              txs,
-            });
-
-            // handleStep3Deploy(radioValue, data);
           }}
         >
-          Submit 2
+          Submit Two
         </Button>
       )}
 
@@ -277,6 +205,7 @@ const StepThreePayload = ({
 StepThreePayload.propTypes = {
   serviceId: PropTypes.string.isRequired,
   multisig: PropTypes.string.isRequired,
+  owner: PropTypes.string.isRequired,
   threshold: PropTypes.string.isRequired,
   handleStep3Deploy: PropTypes.func,
   handleTerminate: PropTypes.func,

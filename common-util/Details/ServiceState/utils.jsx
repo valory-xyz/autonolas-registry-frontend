@@ -152,8 +152,7 @@ export const getServiceAgentInstances = (id) => new Promise((resolve, reject) =>
     .getAgentInstances(id)
     .call()
     .then((response) => {
-      console.log(response);
-      resolve(response.agentInstances);
+      resolve(response?.agentInstances);
     })
     .catch((e) => {
       reject(e);
@@ -162,9 +161,6 @@ export const getServiceAgentInstances = (id) => new Promise((resolve, reject) =>
 
 export const onStep3Deploy = (account, id, radioValue, payload = '0x') => new Promise((resolve, reject) => {
   const contract = getServiceManagerContract();
-  console.log({
-    account, id, radioValue, payload,
-  });
 
   contract.methods
     .deploy(id, radioValue, payload)

@@ -38,10 +38,6 @@ const getWeb3Details = () => {
    */
   const web3 = new Web3(window.WEB3_PROVIDER || window.web3.currentProvider);
 
-  console.log({
-    web3,
-    // G: web3.getSigner(),
-  });
   const chainId = Number(window.ethereum.chainId);
   const address = ADDRESSES[chainId || STAGING_CHAIN_ID]; // default fallback to be 31337
   return { web3, address };
