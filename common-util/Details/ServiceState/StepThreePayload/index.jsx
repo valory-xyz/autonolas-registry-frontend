@@ -187,6 +187,9 @@ const StepThreePayload = ({
               threshold,
               agentInstances,
               serviceOwner,
+              chainId,
+              handleStep3Deploy,
+              radioValue,
             });
           }}
         >

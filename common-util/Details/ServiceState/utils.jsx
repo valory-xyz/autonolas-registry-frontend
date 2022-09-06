@@ -25,7 +25,11 @@ const getBonds = async (id) => {
     bondsArray.push(bond);
   }
 
-  const totalBonds = bondsArray.reduce((p, c) => p + Number(c), 0);
+  let totalBonds = 0;
+  slotsArray.forEach((eachSlot) => {
+    const bondsForEachSlot = bondsArray.reduce((p, c) => p + Number(c), 0);
+    totalBonds += bondsForEachSlot * Number(eachSlot);
+  });
 
   return { totalBonds, slots: slotsArray, bonds: bondsArray };
 };

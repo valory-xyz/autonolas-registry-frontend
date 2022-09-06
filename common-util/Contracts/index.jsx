@@ -110,8 +110,8 @@ export const multisigSameAddresses = {
 };
 
 export const safeMultiSend = {
-  1: ['0xA238CBeb142c10Ef7Ad8442C6D1f9E89e07e7761'],
-  5: ['0xA238CBeb142c10Ef7Ad8442C6D1f9E89e07e7761'],
+  1: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
+  5: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
   31337: ['0x959922bE3CAee4b8Cd9a407cc3ac1C251C2007B1'],
 };
 

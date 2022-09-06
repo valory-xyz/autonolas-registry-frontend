@@ -56,7 +56,8 @@ const RegisterForm = ({
         },
         {
           name: ['hash'],
-          value: get(formInitialValues, 'configHash'),
+          // remove 0x prefix else it will throw error
+          value: get(formInitialValues, 'configHash')?.replace(/0x/i, ''),
         },
         {
           name: ['agent_ids'],
@@ -300,7 +301,7 @@ RegisterForm.propTypes = {
     owner: PropTypes.string,
     name: PropTypes.string,
     description: PropTypes.string,
-    configHash: PropTypes.array,
+    configHash: PropTypes.string,
     agentIds: PropTypes.arrayOf(PropTypes.string),
     agentNumSlots: PropTypes.arrayOf(PropTypes.string),
     agentParams: PropTypes.arrayOf(PropTypes.array),
