@@ -1,10 +1,10 @@
 /* eslint-disable no-underscore-dangle */
+import { ethers } from 'ethers';
 import {
   GNOSIS_SAFE_CONTRACT,
   MULTI_SEND_CONTRACT,
 } from 'common-util/AbiAndAddresses';
 import { safeMultiSend } from 'common-util/Contracts';
-import { ethers } from 'ethers';
 
 const safeContracts = require('@gnosis.pm/safe-contracts');
 
@@ -17,29 +17,13 @@ export const handleMultisigSubmit = async ({
   handleStep3Deploy,
   radioValue,
 }) => {
-  // const data = ethers.utils.solidityPack(['address'], [multisig]);
-
-  // const multisigContract = new ethers.Contract(
-  //   multisig,
-  //   GNOSIS_SAFE_CONTRACT.abi,
-  //   ethers.getDefaultProvider('https://chain.staging.autonolas.tech/'),
-  // );
-
-  // const multisigContract = new ethers.utils.Interface(GNOSIS_SAFE_CONTRACT.abi);
   const multisigContract = new ethers.Contract(
     multisig,
     GNOSIS_SAFE_CONTRACT.abi,
     ethers.getDefaultProvider('https://chain.staging.autonolas.tech/'),
   );
-  console.log({ multisigContract });
 
-  const iface = new ethers.utils.Interface(GNOSIS_SAFE_CONTRACT.abi);
   const nonce = await multisigContract.nonce();
-  const tttt = await multisigContract.getThreshold();
-
-  console.log({
-    iface, abc: iface.encodeFunctionData, nonce, tttt,
-  });
 
   const callData = [];
   const txs = [];
@@ -72,8 +56,6 @@ export const handleMultisigSubmit = async ({
     }),
   );
 
-  console.log({ callData, txs, multiSendAddress: safeMultiSend[31337] });
-
   const multiSendContract = new ethers.Contract(
     safeMultiSend[31337][0],
     MULTI_SEND_CONTRACT.abi,
@@ -86,14 +68,9 @@ export const handleMultisigSubmit = async ({
     nonce,
   );
 
-  console.log({ safeTx });
-
   const provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
-  // Prompt user for account connections
   await provider.send('eth_requestAccounts', []);
   const signer = provider.getSigner();
-  console.log('Account:', await signer.getAddress());
-  console.log(signer._signTypedData);
 
   const EIP712_SAFE_TX_TYPE = {
     SafeTx: [
@@ -117,8 +94,6 @@ export const handleMultisigSubmit = async ({
     safeTx,
   );
 
-  console.log({ signatureBytes });
-
   const safeExecData = multisigContract.interface.encodeFunctionData(
     'execTransaction',
     [
@@ -140,5 +115,5 @@ export const handleMultisigSubmit = async ({
     [multisig, safeExecData],
   );
 
-  // handleStep3Deploy(radioValue, packedData);
+  handleStep3Deploy(radioValue, packedData);
 };
