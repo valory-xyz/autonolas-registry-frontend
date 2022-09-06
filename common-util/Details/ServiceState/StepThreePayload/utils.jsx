@@ -68,7 +68,10 @@ export const handleMultisigSubmit = async ({
     nonce,
   );
 
-  const provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
+  const provider = new ethers.providers.Web3Provider(
+    window.WEB3_PROVIDER || window.web3.currentProvider,
+    'any',
+  );
   await provider.send('eth_requestAccounts', []);
   const signer = provider.getSigner();
 
