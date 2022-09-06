@@ -98,12 +98,12 @@ export const ServiceState = ({
   /* ----- step 2 ----- */
   const handleStep2RegisterAgents = async () => {
     const ids = [];
-    // const agentInstances = [];
     const instances = dataSource.map(
       ({ agentAddresses, agentId, availableSlots }) => {
         /**
          * constructs agentIds:
-         * agentInstances would need 2 addresses of instances ie. regAgentIds would be [1, 1]
+         * If there are 2 slots then agentInstances would need 2 addresses of instances
+         * ie. regAgentIds would be [1, 1]
          */
         for (let i = 0; i < availableSlots; i += 1) {
           ids.push(agentId);
@@ -258,14 +258,3 @@ ServiceState.defaultProps = {
   isOwner: false,
   updateDetails: () => {},
 };
-
-/**
- * 3rd step
- * radio button => either the preivous or the current one
- *
- * for the 2nd radition button
- * - available only if => service.multisig !== 0
- *
- * 4th step
- *
- */
