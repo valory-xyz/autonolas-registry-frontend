@@ -193,7 +193,7 @@ const StepThreePayload = ({
             });
           }}
         >
-          Submit Two
+          Submit
         </Button>
       )}
 
