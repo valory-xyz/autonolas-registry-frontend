@@ -120,3 +120,9 @@ export const gnosisSafeMaster = {
   5: '0xd9Db270c1B5E3Bd161E8c8503c55cEABeE709552',
   31337: '0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0',
 };
+
+export const rpcUrl = {
+  1: 'https://mainnet.infura.io/v3/',
+  5: 'https://goerli.infura.io/v3/',
+  31337: 'localhost:3000',
+};
