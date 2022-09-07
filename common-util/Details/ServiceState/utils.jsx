@@ -3,9 +3,6 @@ import {
   getServiceContract,
   getServiceManagerContract,
 } from 'common-util/Contracts';
-// import {
-//   convertStringToArray,
-// } from 'common-util/List/ListCommon';
 
 const notifySuccess = (message = 'Terminated Successfully') => notification.success({ message });
 const notifyError = (message = 'Some error occured') => notification.error({ message });
@@ -25,10 +22,19 @@ const getBonds = async (id) => {
     bondsArray.push(bond);
   }
 
+  /**
+   * totalBonds is calculated for every slots
+   * agentParams = [{ slots: 2, bond: 2000 }, { slots: 3, bond: 4000 }]
+   * slotsArray = [2, 3]
+   * bondsArray = [2000, 4000]
+   *
+   * totalBonds = (2 * 2000) + (3 * 4000)
+   *            = 4000 + 12000
+   *            = 16000
+   */
   let totalBonds = 0;
-  slotsArray.forEach((eachSlot) => {
-    const bondsForEachSlot = bondsArray.reduce((p, c) => p + Number(c), 0);
-    totalBonds += bondsForEachSlot * Number(eachSlot);
+  slotsArray.forEach((eachSlot, index) => {
+    totalBonds += Number(eachSlot) * Number(bondsArray(index));
   });
 
   return { totalBonds, slots: slotsArray, bonds: bondsArray };

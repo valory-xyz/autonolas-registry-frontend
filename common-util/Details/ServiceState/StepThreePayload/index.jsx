@@ -178,23 +178,25 @@ const StepThreePayload = ({
       )}
 
       {radioValue !== isMultiSig && (
-        <Button
-          type="primary"
-          disabled={!radioValue}
-          onClick={async () => {
-            await handleMultisigSubmit({
-              multisig,
-              threshold,
-              agentInstances,
-              serviceOwner,
-              chainId,
-              handleStep3Deploy,
-              radioValue,
-            });
-          }}
-        >
-          Submit
-        </Button>
+        <div className="mb-12 mt-8">
+          <Button
+            type="primary"
+            disabled={!radioValue}
+            onClick={async () => {
+              await handleMultisigSubmit({
+                multisig,
+                threshold,
+                agentInstances,
+                serviceOwner,
+                chainId,
+                handleStep3Deploy,
+                radioValue,
+              });
+            }}
+          >
+            Submit
+          </Button>
+        </div>
       )}
 
       <Divider className="m-0" />
