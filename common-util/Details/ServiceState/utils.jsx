@@ -34,7 +34,7 @@ const getBonds = async (id) => {
    */
   let totalBonds = 0;
   slotsArray.forEach((eachSlot, index) => {
-    totalBonds += Number(eachSlot) * Number(bondsArray(index));
+    totalBonds += Number(eachSlot) * Number(bondsArray[index]);
   });
 
   return { totalBonds, slots: slotsArray, bonds: bondsArray };
