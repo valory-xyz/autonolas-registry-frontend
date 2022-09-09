@@ -222,7 +222,7 @@ export const ServiceState = ({
     },
     {
       title: 'Terminated Bonded',
-      component: getButton(<Button onClick={handleStep5Unbond}>Unbond</Button>),
+      component: <Button onClick={handleStep5Unbond}>Unbond</Button>,
     },
   ];
 

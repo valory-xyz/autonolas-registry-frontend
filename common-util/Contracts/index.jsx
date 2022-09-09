@@ -124,5 +124,5 @@ export const gnosisSafeMaster = {
 export const rpcUrl = {
   1: 'https://mainnet.infura.io/v3/',
   5: 'https://goerli.infura.io/v3/',
-  31337: 'localhost:3000',
+  31337: 'http://localhost:8545',
 };
