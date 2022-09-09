@@ -8,6 +8,21 @@ import { rpcUrl, safeMultiSend } from 'common-util/Contracts';
 
 const safeContracts = require('@gnosis.pm/safe-contracts');
 
+const EIP712_SAFE_TX_TYPE = {
+  SafeTx: [
+    { type: 'address', name: 'to' },
+    { type: 'uint256', name: 'value' },
+    { type: 'bytes', name: 'data' },
+    { type: 'uint8', name: 'operation' },
+    { type: 'uint256', name: 'safeTxGas' },
+    { type: 'uint256', name: 'baseGas' },
+    { type: 'uint256', name: 'gasPrice' },
+    { type: 'address', name: 'gasToken' },
+    { type: 'address', name: 'refundReceiver' },
+    { type: 'uint256', name: 'nonce' },
+  ],
+};
+
 export const handleMultisigSubmit = async ({
   multisig,
   threshold,
@@ -68,27 +83,13 @@ export const handleMultisigSubmit = async ({
     nonce,
   );
 
+  // signer
   const provider = new ethers.providers.Web3Provider(
     window.web3.currentProvider,
     'any',
   );
   await provider.send('eth_requestAccounts', []);
   const signer = provider.getSigner();
-
-  const EIP712_SAFE_TX_TYPE = {
-    SafeTx: [
-      { type: 'address', name: 'to' },
-      { type: 'uint256', name: 'value' },
-      { type: 'bytes', name: 'data' },
-      { type: 'uint8', name: 'operation' },
-      { type: 'uint256', name: 'safeTxGas' },
-      { type: 'uint256', name: 'baseGas' },
-      { type: 'uint256', name: 'gasPrice' },
-      { type: 'address', name: 'gasToken' },
-      { type: 'address', name: 'refundReceiver' },
-      { type: 'uint256', name: 'nonce' },
-    ],
-  };
 
   // Get the signature of a multisend transaction
   const signatureBytes = await signer._signTypedData(

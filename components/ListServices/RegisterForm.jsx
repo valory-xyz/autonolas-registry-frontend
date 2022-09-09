@@ -56,7 +56,8 @@ const RegisterForm = ({
         },
         {
           name: ['hash'],
-          // remove 0x prefix else it will throw error
+          // remove 0x prefix as it is already coming from backend
+          // If not removed, it will throw error
           value: get(formInitialValues, 'configHash')?.replace(/0x/i, ''),
         },
         {

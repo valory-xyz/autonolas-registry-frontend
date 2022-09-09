@@ -177,6 +177,7 @@ const StepThreePayload = ({
         </Form>
       )}
 
+      {/* submits the data for 2nd radio button (ie. 2nd multisig option) */}
       {radioValue !== isMultiSig && (
         <div className="mb-12 mt-8">
           <Button

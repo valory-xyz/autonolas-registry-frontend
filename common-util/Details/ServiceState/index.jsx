@@ -103,7 +103,7 @@ export const ServiceState = ({
         /**
          * constructs agentIds:
          * If there are 2 slots then agentInstances would need 2 addresses of instances
-         * ie. regAgentIds would be [1, 1]
+         * ie. ids = [1, 1]
          */
         for (let i = 0; i < availableSlots; i += 1) {
           ids.push(agentId);
@@ -222,6 +222,7 @@ export const ServiceState = ({
     },
     {
       title: 'Terminated Bonded',
+      // TODO: button to be disabled if not operator (needs more details)
       component: <Button onClick={handleStep5Unbond}>Unbond</Button>,
     },
   ];
