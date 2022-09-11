@@ -40,6 +40,9 @@ export const ServiceState = ({
 
   const status = get(details, 'state');
   const agentIds = get(details, 'agentIds');
+  const multisig = get(details, 'multisig');
+  const threshold = get(details, 'threshold');
+  const owner = get(details, 'owner');
   const securityDeposit = get(details, 'securityDeposit');
 
   useEffect(async () => {
@@ -94,15 +97,31 @@ export const ServiceState = ({
 
   /* ----- step 2 ----- */
   const handleStep2RegisterAgents = async () => {
-    const agentInstances = dataSource.map(
-      ({ agentAddresses }) => agentAddresses,
+    const ids = [];
+    const instances = dataSource.map(
+      ({ agentAddresses, agentId, availableSlots }) => {
+        /**
+         * constructs agentIds:
+         * If there are 2 slots then agentInstances would need 2 addresses of instances
+         * ie. ids = [1, 1]
+         */
+        for (let i = 0; i < availableSlots; i += 1) {
+          ids.push(agentId);
+        }
+
+        return (agentAddresses || '').trim();
+      },
     );
+    const agentInstances = (instances || [])
+      .join()
+      .split(',')
+      .map((e) => e.trim());
 
     try {
       await onStep2RegisterAgents({
         account,
         serviceId: id,
-        agentIds,
+        agentIds: ids,
         agentInstances,
       });
       await updateDetails();
@@ -173,8 +192,16 @@ export const ServiceState = ({
       title: 'Finished Registration',
       component: (
         <StepThreePayload
+          serviceId={id}
+          multisig={multisig}
+          threshold={threshold}
+          owner={owner}
           handleStep3Deploy={handleStep3Deploy}
           handleTerminate={handleTerminate}
+          // show multisig (2nd radio button option) if the service multisig !== 0
+          canShowMultisigSameAddress={
+            get(details, 'multisig') !== `0x${'0'.repeat(40)}`
+          }
         />
       ),
     },
@@ -183,7 +210,7 @@ export const ServiceState = ({
       component: (
         <div className="step-4-terminate">
           <Space direction="vertical" size={10}>
-            <div>{`Safe contract address: ${get(details, 'multisig')}`}</div>
+            <div>{`Safe contract address: ${multisig}`}</div>
             {getButton(
               <Button disabled={!isOwner} onClick={handleStep4Terminate}>
                 Terminate
@@ -195,11 +222,8 @@ export const ServiceState = ({
     },
     {
       title: 'Terminated Bonded',
-      component: getButton(
-        <Button disabled={!isOwner} onClick={handleStep5Unbond}>
-          Unbond
-        </Button>,
-      ),
+      // TODO: button to be disabled if not operator (needs more details)
+      component: <Button onClick={handleStep5Unbond}>Unbond</Button>,
     },
   ];
 

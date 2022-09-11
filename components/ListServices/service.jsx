@@ -9,7 +9,7 @@ import { convertStringToArray, AlertError } from 'common-util/List/ListCommon';
 import { getServiceManagerContract } from 'common-util/Contracts';
 import { FormContainer } from 'components/styles';
 import RegisterForm from './RegisterForm';
-import { getServiceHash, getAgentParams, getServiceDetails } from './utils';
+import { getAgentParams, getServiceDetails } from './utils';
 
 const { Title } = Typography;
 
@@ -39,7 +39,7 @@ const Service = ({ account }) => {
       const contract = getServiceManagerContract();
       contract.methods
         .update(
-          getServiceHash(values), // configHash
+          `0x${values.hash}`,
           convertStringToArray(values.agent_ids),
           getAgentParams(values),
           values.threshold,
