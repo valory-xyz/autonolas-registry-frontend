@@ -1,5 +1,5 @@
 # Autonolas Protocol Frontend
-This repository contains the [Autonolas protocol](https://protocol.autonolas.network/)  frontend.
+This repository contains the [Autonolas protocol](https://protocol.autonolas.network/) frontend.
 
 ## Tech Stack
 - web3.js

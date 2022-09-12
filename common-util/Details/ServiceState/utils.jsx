@@ -3,9 +3,6 @@ import {
   getServiceContract,
   getServiceManagerContract,
 } from 'common-util/Contracts';
-// import {
-//   convertStringToArray,
-// } from 'common-util/List/ListCommon';
 
 const notifySuccess = (message = 'Terminated Successfully') => notification.success({ message });
 const notifyError = (message = 'Some error occured') => notification.error({ message });
@@ -25,7 +22,20 @@ const getBonds = async (id) => {
     bondsArray.push(bond);
   }
 
-  const totalBonds = bondsArray.reduce((p, c) => p + Number(c), 0);
+  /**
+   * totalBonds is calculated for every slots
+   * agentParams = [{ slots: 2, bond: 2000 }, { slots: 3, bond: 4000 }]
+   * slotsArray = [2, 3]
+   * bondsArray = [2000, 4000]
+   *
+   * totalBonds = (2 * 2000) + (3 * 4000)
+   *            = 4000 + 12000
+   *            = 16000
+   */
+  let totalBonds = 0;
+  slotsArray.forEach((eachSlot, index) => {
+    totalBonds += Number(eachSlot) * Number(bondsArray[index]);
+  });
 
   return { totalBonds, slots: slotsArray, bonds: bondsArray };
 };
@@ -145,6 +155,20 @@ export const onStep2RegisterAgents = ({
 });
 
 /* ----- step 3 functions ----- */
+export const getServiceAgentInstances = (id) => new Promise((resolve, reject) => {
+  const contract = getServiceContract();
+
+  contract.methods
+    .getAgentInstances(id)
+    .call()
+    .then((response) => {
+      resolve(response?.agentInstances);
+    })
+    .catch((e) => {
+      reject(e);
+    });
+});
+
 export const onStep3Deploy = (account, id, radioValue, payload = '0x') => new Promise((resolve, reject) => {
   const contract = getServiceManagerContract();
 

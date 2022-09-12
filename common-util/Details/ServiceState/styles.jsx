@@ -24,7 +24,7 @@ export const ServiceStateContainer = styled.div`
   .step-3-finished-registration {
     .ant-form,
     .terminate-btn {
-      margin-top: 1rem;
+      margin-top: 0.75rem;
     }
   }
   .step-4-terminate {
