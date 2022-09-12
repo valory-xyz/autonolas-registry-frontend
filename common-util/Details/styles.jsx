@@ -7,6 +7,10 @@ export const DetailsTitle = styled(Typography.Title)`
   margin: 0 !important;
 `;
 
+export const SubTitle = styled(Typography.Text)`
+  margin-top: 0.5rem;
+`;
+
 export const Header = styled.div`
   display: flex;
   align-items: center;
@@ -36,9 +40,11 @@ export const Info = styled.div`
 `;
 
 export const EachSection = styled.div`
-  padding: 1rem 2rem;
+  padding-top: 1.25rem;
+`;
+
+export const NftImageContainer = styled.img`
   border: 1px solid ${COLOR.BORDER_GREY};
-  border-bottom-color: transparent;
 `;
 
 export const SectionContainer = styled.div`

@@ -3,7 +3,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import get from 'lodash/get';
 import capitalize from 'lodash/capitalize';
-import { Row, Col, Button } from 'antd/lib';
+import { ArrowUpRight } from 'react-feather';
+import {
+  Row, Col, Button, Typography,
+} from 'antd/lib';
 import { NAV_TYPES, NA, GATEWAY_URL } from 'util/constants';
 import Loader from 'common-util/components/Loader';
 import IpfsHashGenerationModal from '../List/IpfsHashGenerationModal';
@@ -16,12 +19,14 @@ import {
 import {
   Header,
   DetailsTitle,
-  InfoSubHeader,
+  SubTitle,
   Info,
   SectionContainer,
   EachSection,
+  NftImageContainer,
 } from './styles';
 
+const { Text, Link } = Typography;
 const gt = {
   xs: 8,
   sm: 16,
@@ -47,7 +52,7 @@ const Details = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [detailsOwner, setDetailsOwner] = useState('');
   const [tokenUri, setTokenUri] = useState(null);
-  const [nftUrl, setNftUrl] = useState(null);
+  const [hashDetails, setHashDetails] = useState(null);
 
   const isOwner = account.toLowerCase() === detailsOwner.toLowerCase();
 
@@ -98,9 +103,8 @@ const Details = ({
       try {
         const ipfsUrl = getAutonolasTokenUri(tokenUri);
         const response = await fetch(ipfsUrl);
-        const { image } = await response.json();
-        const imageURL = image.replace('ipfs://', GATEWAY_URL);
-        setNftUrl(imageURL);
+        const json = await response.json();
+        setHashDetails(json);
       } catch (e) {
         console.error(e);
       }
@@ -135,7 +139,14 @@ const Details = ({
     const nftSection = {
       title: 'Image',
       dataTestId: 'nft-image',
-      value: <img src={nftUrl} alt="NFT" width={500} height={500} />,
+      value: hashDetails ? (
+        <img
+          src={(hashDetails.image || '').replace('ipfs://', GATEWAY_URL)}
+          alt="NFT"
+          width={500}
+          height={500}
+        />
+      ) : null,
     };
 
     const getComponentAndAgentValues = () => {
@@ -143,19 +154,43 @@ const Details = ({
 
       return [
         {
-          title: 'Owner Address',
-          dataTestId: 'owner-address',
-          value: detailsOwner || NA,
-        },
-        {
           title: 'Hash',
           dataTestId: 'hashes-list',
           value: (
             <>
-              {getHashDetails(type, hash, tokenUri)}
+              <Link href={getAutonolasTokenUri(tokenUri)} target="_blank">
+                View Hash&nbsp;
+                <ArrowUpRight size={16} />
+              </Link>
+              &nbsp;•&nbsp;
+              <Link
+                target="_blank"
+                href={(get(hashDetails, 'code_uri') || '').replace(
+                  'ipfs://',
+                  GATEWAY_URL,
+                )}
+              >
+                View Code&nbsp;
+                <ArrowUpRight size={16} />
+              </Link>
               {updateHashBtn}
             </>
           ),
+        },
+        {
+          title: 'Description',
+          dataTestId: 'description',
+          value: get(hashDetails, 'description') || NA,
+        },
+        {
+          title: 'Version',
+          dataTestId: 'version',
+          value: get(hashDetails, 'attributes[0].value') || NA,
+        },
+        {
+          title: 'Owner Address',
+          dataTestId: 'owner-address',
+          value: detailsOwner || NA,
         },
         {
           title: 'Component Dependencies',
@@ -173,7 +208,6 @@ const Details = ({
               ))
             ),
         },
-        nftSection,
       ];
     };
 
@@ -225,7 +259,7 @@ const Details = ({
       <SectionContainer>
         {details.map(({ title, value, dataTestId }, index) => (
           <EachSection key={`${type}-details-${index}`}>
-            <InfoSubHeader>{title}</InfoSubHeader>
+            {title && <SubTitle strong>{title}</SubTitle>}
             <Info data-testid={dataTestId || ''}>{value}</Info>
           </EachSection>
         ))}
@@ -236,7 +270,6 @@ const Details = ({
   return (
     <>
       <Header>
-        <DetailsTitle level={2}>{`${capitalize(type)} ID ${id}`}</DetailsTitle>
         <div className="right-content">
           {/* Update button to be show only if the connected account is the owner */}
           {isOwner && type !== NAV_TYPES.SERVICE && (
@@ -256,6 +289,13 @@ const Details = ({
 
       <Row gutter={gt}>
         <Col className="gutter-row" span={12}>
+          <Text strong>Component Name</Text>
+          <DetailsTitle level={2}>
+            {`${capitalize(type)} ID ${id}`}
+          </DetailsTitle>
+
+          {generateDetails()}
+
           {type === NAV_TYPES.SERVICE && (
             <ServiceState
               isOwner={isOwner}
@@ -268,7 +308,15 @@ const Details = ({
         </Col>
 
         <Col className="gutter-row" span={12}>
-          {generateDetails()}
+          <NftImageContainer
+            src={(get(hashDetails, 'image') || '').replace(
+              'ipfs://',
+              GATEWAY_URL,
+            )}
+            alt="NFT"
+            width={600}
+            height={600}
+          />
         </Col>
       </Row>
 
