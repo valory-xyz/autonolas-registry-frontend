@@ -165,7 +165,7 @@ export const getData = (type, rawData, { filterValue, current }) => {
       developer: item.developer || '-',
       owner: item.owner || '-',
       hash: item.unitHash || '-',
-      dependency: item.dependencies.length,
+      dependency: (item.dependencies || []).length,
     }));
   }
 
@@ -176,7 +176,7 @@ export const getData = (type, rawData, { filterValue, current }) => {
       developer: item.developer || '-',
       owner: item.owner || '-',
       hash: item.unitHash || '-',
-      dependency: item.dependencies.length,
+      dependency: (item.dependencies || []).length,
     }));
   }
 
