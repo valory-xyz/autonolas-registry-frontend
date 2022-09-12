@@ -8,6 +8,7 @@ export const COLOR = {
   TABLE_BLACK: '#1B1B1B',
   PURPLE: '#7A00F4',
   RED_1: '#EA3324',
+  GREEN: '#52C41A',
 };
 
 export const BOX_SHADOW = {};

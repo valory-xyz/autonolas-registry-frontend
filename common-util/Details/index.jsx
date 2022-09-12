@@ -3,30 +3,24 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import get from 'lodash/get';
 import capitalize from 'lodash/capitalize';
-import { ArrowUpRight } from 'react-feather';
 import {
   Row, Col, Button, Typography,
 } from 'antd/lib';
-import { NAV_TYPES, NA, GATEWAY_URL } from 'util/constants';
+import { NAV_TYPES, GATEWAY_URL } from 'util/constants';
 import Loader from 'common-util/components/Loader';
 import IpfsHashGenerationModal from '../List/IpfsHashGenerationModal';
 import { ServiceState } from './ServiceState';
 import {
-  ServiceMiniTable,
-  getAutonolasTokenUri,
-  getHashDetails,
+  getAutonolasTokenUri, DetailsInfo,
 } from './helpers';
 import {
   Header,
   DetailsTitle,
-  SubTitle,
-  Info,
-  SectionContainer,
-  EachSection,
+
   NftImageContainer,
 } from './styles';
 
-const { Text, Link } = Typography;
+const { Text } = Typography;
 const gt = {
   xs: 8,
   sm: 16,
@@ -124,149 +118,6 @@ const Details = ({
     setIsModalVisible(false);
   };
 
-  const generateDetails = () => {
-    const hash = get(hashes, 'unitHashes') || [];
-    const updateHashBtn = isOwner ? (
-      <>
-        {onUpdateHash && (
-          <Button type="primary" ghost onClick={() => setIsModalVisible(true)}>
-            Update Hash
-          </Button>
-        )}
-      </>
-    ) : null;
-
-    const nftSection = {
-      title: 'Image',
-      dataTestId: 'nft-image',
-      value: hashDetails ? (
-        <img
-          src={(hashDetails.image || '').replace('ipfs://', GATEWAY_URL)}
-          alt="NFT"
-          width={500}
-          height={500}
-        />
-      ) : null,
-    };
-
-    const getComponentAndAgentValues = () => {
-      const dependencies = get(info, 'dependencies') || [];
-
-      return [
-        {
-          title: 'Hash',
-          dataTestId: 'hashes-list',
-          value: (
-            <>
-              <Link href={getAutonolasTokenUri(tokenUri)} target="_blank">
-                View Hash&nbsp;
-                <ArrowUpRight size={16} />
-              </Link>
-              &nbsp;•&nbsp;
-              <Link
-                target="_blank"
-                href={(get(hashDetails, 'code_uri') || '').replace(
-                  'ipfs://',
-                  GATEWAY_URL,
-                )}
-              >
-                View Code&nbsp;
-                <ArrowUpRight size={16} />
-              </Link>
-              {updateHashBtn}
-            </>
-          ),
-        },
-        {
-          title: 'Description',
-          dataTestId: 'description',
-          value: get(hashDetails, 'description') || NA,
-        },
-        {
-          title: 'Version',
-          dataTestId: 'version',
-          value: get(hashDetails, 'attributes[0].value') || NA,
-        },
-        {
-          title: 'Owner Address',
-          dataTestId: 'owner-address',
-          value: detailsOwner || NA,
-        },
-        {
-          title: 'Component Dependencies',
-          dataTestId: 'details-dependency',
-          value:
-            dependencies.length === 0 ? (
-              <>None</>
-            ) : (
-              dependencies.map((e) => (
-                <li key={`${type}-dependency-${e}`}>
-                  <Button type="link" onClick={() => onDependencyClick(e)}>
-                    {e}
-                  </Button>
-                </li>
-              ))
-            ),
-        },
-      ];
-    };
-
-    const getServiceValues = () => {
-      const serviceState = ['2', '3', '4'].includes(get(info, 'state'));
-      const agentIds = get(info, 'agentIds');
-
-      return [
-        {
-          title: 'Owner Address',
-          dataTestId: 'owner-address',
-          value: detailsOwner || NA,
-        },
-        {
-          title: 'Hash',
-          dataTestId: 'hashes-list',
-          value: (
-            <>
-              {getHashDetails(type, hash, tokenUri)}
-              {updateHashBtn}
-            </>
-          ),
-        },
-        {
-          title: 'Active',
-          value: serviceState ? 'TRUE' : 'FALSE',
-        },
-        {
-          type: 'table',
-          dataTestId: 'agent-id-table',
-          value: (
-            <ServiceMiniTable
-              id={id}
-              agentIds={agentIds}
-              onDependencyClick={onDependencyClick}
-            />
-          ),
-        },
-        { title: 'Threshold', value: get(info, 'threshold', null) || NA },
-        nftSection,
-      ];
-    };
-
-    const details = type === NAV_TYPES.SERVICE
-      ? getServiceValues()
-      : getComponentAndAgentValues();
-
-    return (
-      <SectionContainer>
-        {details.map(({ title, value, dataTestId }, index) => (
-          <EachSection key={`${type}-details-${index}`}>
-            {title && <SubTitle strong>{title}</SubTitle>}
-            <Info data-testid={dataTestId || ''}>{value}</Info>
-          </EachSection>
-        ))}
-      </SectionContainer>
-    );
-  };
-
   return (
     <>
       <Header>
@@ -294,7 +145,19 @@ const Details = ({
             {`${capitalize(type)} ID ${id}`}
           </DetailsTitle>
 
-          {generateDetails()}
+          <DetailsInfo
+            isOwner={isOwner}
+            type={type}
+            id={id}
+            tokenUri={tokenUri}
+            hashes={hashes}
+            info={info}
+            hashDetails={hashDetails}
+            detailsOwner={detailsOwner}
+            onUpdateHash={onUpdateHash}
+            setIsModalVisible={setIsModalVisible}
+            onDependencyClick={onDependencyClick}
+          />
 
           {type === NAV_TYPES.SERVICE && (
             <ServiceState

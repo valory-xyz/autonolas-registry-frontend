@@ -47,6 +47,23 @@ export const NftImageContainer = styled.img`
   border: 1px solid ${COLOR.BORDER_GREY};
 `;
 
+export const ServiceStatus = styled.div`
+  display: inline-block;
+  &.active svg {
+    fill: ${COLOR.GREEN};
+    color: ${COLOR.GREEN};
+  }
+  &.inactive svg {
+    fill: ${COLOR.RED_1};
+    color: ${COLOR.RED_1};
+  }
+  svg {
+    top: -2px;
+    margin-right: 6px;
+    position: relative;
+  }
+`;
+
 export const SectionContainer = styled.div`
   ${EachSection} {
     &:first-child {
