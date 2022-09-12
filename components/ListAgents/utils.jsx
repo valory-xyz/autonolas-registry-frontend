@@ -1,4 +1,5 @@
 import { notification } from 'antd/lib';
+import { TOTAL_VIEW_COUNT } from 'util/constants';
 import { getMechMinterContract, getAgentContract } from 'common-util/Contracts';
 
 // --------- HELPER METHODS ---------
@@ -20,17 +21,19 @@ export const getAgentOwner = (agentId) => new Promise((resolve, reject) => {
  * helper to return the list of details (table in index page)
  */
 const getAgentsHelper = (promiseList, resolve, reject) => {
-  Promise.all(promiseList).then(async (list) => {
-    const results = await Promise.all(
-      list.map(async (info, i) => {
-        const owner = await getAgentOwner(`${i + 1}`);
-        return { ...info, owner };
-      }),
-    );
-    resolve(results);
-  }).catch((e) => {
-    reject(e);
-  });
+  Promise.all(promiseList)
+    .then(async (list) => {
+      const results = await Promise.all(
+        list.map(async (info, i) => {
+          const owner = await getAgentOwner(`${i + 1}`);
+          return { ...info, owner };
+        }),
+      );
+      resolve(results);
+    })
+    .catch((e) => {
+      reject(e);
+    });
 };
 
 // --------- utils ---------
@@ -49,50 +52,73 @@ export const getAgentDetails = (agentId) => new Promise((resolve, reject) => {
     });
 });
 
-export const getAgentsByAccount = (account) => new Promise((resolve, reject) => {
+export const getTotalForMyAgents = (account) => new Promise((resolve, reject) => {
   const contract = getAgentContract();
   contract.methods
     .balanceOf(account)
     .call()
-    .then((length) => {
-      const promises = [];
-      for (let i = 1; i <= length; i += 1) {
-        const agentId = `${i}`;
-        const result = contract.methods.getUnit(agentId).call();
-        promises.push(result);
-      }
-
-      getAgentsHelper(promises, resolve, reject);
+    .then((response) => {
+      resolve(response);
     })
     .catch((e) => {
-      console.error(e);
       reject(e);
     });
+});
+
+export const getAgentsByAccount = (total, nextPage) => new Promise((resolve, reject) => {
+  const contract = getAgentContract();
+
+  try {
+    const promises = [];
+    const first = (nextPage - 1) * TOTAL_VIEW_COUNT + 1;
+    const last = Math.min(nextPage * TOTAL_VIEW_COUNT, total);
+    for (let i = first; i <= last; i += 1) {
+      const agentId = `${i}`;
+      const result = contract.methods.getUnit(agentId).call();
+      promises.push(result);
+    }
+
+    getAgentsHelper(promises, resolve);
+  } catch (e) {
+    console.error(e);
+    reject(e);
+  }
 });
 
 /**
  * Function to return all agents
  */
-export const getAgents = () => new Promise((resolve, reject) => {
+export const getTotalForAllAgents = () => new Promise((resolve, reject) => {
   const contract = getAgentContract();
-
   contract.methods
     .totalSupply()
     .call()
-    .then((total) => {
-      const allAgentsPromises = [];
-      for (let i = 1; i <= total; i += 1) {
-        const agentId = `${i}`;
-        const result = contract.methods.getUnit(agentId).call();
-        allAgentsPromises.push(result);
-      }
-
-      getAgentsHelper(allAgentsPromises, resolve, reject);
+    .then((response) => {
+      resolve(response);
     })
     .catch((e) => {
-      console.error(e);
       reject(e);
     });
+});
+
+export const getAgents = (total, nextPage) => new Promise((resolve, reject) => {
+  const contract = getAgentContract();
+
+  try {
+    const allAgentsPromises = [];
+    const first = (nextPage - 1) * TOTAL_VIEW_COUNT + 1;
+    const last = Math.min(nextPage * TOTAL_VIEW_COUNT, total);
+    for (let i = first; i <= last; i += 1) {
+      const agentId = `${i}`;
+      const result = contract.methods.getUnit(agentId).call();
+      allAgentsPromises.push(result);
+    }
+
+    getAgentsHelper(allAgentsPromises, resolve, reject);
+  } catch (e) {
+    console.error(e);
+    reject(e);
+  }
 });
 
 export const getAgentHashes = (agentId) => new Promise((resolve, reject) => {

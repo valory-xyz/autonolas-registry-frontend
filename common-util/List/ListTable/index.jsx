@@ -15,8 +15,8 @@ const ListTable = ({
   onUpdateClick,
   extra,
 }) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [total, setTotal] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [total, setTotal] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [list, setList] = useState([]);
   const { scrollX } = extra;
@@ -32,16 +32,18 @@ const ListTable = ({
   }, []);
 
   useEffect(async () => {
-    setIsLoading(true);
-    setList([]);
+    if (total && currentPage) {
+      setIsLoading(true);
+      setList([]);
 
-    try {
-      const everyComps = await getList(total, currentPage);
-      setList(everyComps);
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setIsLoading(false);
+      try {
+        const everyComps = await getList(total, currentPage);
+        setList(everyComps);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setIsLoading(false);
+      }
     }
   }, [total, currentPage]);
 
