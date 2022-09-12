@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import { URL, NAV_TYPES } from 'util/constants';
 import ListTable from 'common-util/List/ListTable';
 import { useExtraTabContent } from 'common-util/List/ListTable/helpers';
-import { getComponents, getComponentsByAccount } from './utils';
+import { getComponents, getComponentsByAccount, getTotalComponents } from './utils';
 
 const { TabPane } = Tabs;
 
@@ -33,6 +33,7 @@ const ListComponents = ({ account }) => {
             getList={getComponents}
             filterValue={searchValue}
             onViewClick={onViewClick}
+            getTotal={getTotalComponents}
           />
         </TabPane>
 

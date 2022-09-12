@@ -6,7 +6,7 @@ import { SearchOutlined } from '@ant-design/icons';
 import PropTypes from 'prop-types';
 import some from 'lodash/some';
 import includes from 'lodash/includes';
-import { NAV_TYPES, SERVICE_STATE } from 'util/constants';
+import { NAV_TYPES, SERVICE_STATE, TOTAL_VIEW_COUNT } from 'util/constants';
 
 const { Text, Title } = Typography;
 const textStyle = { maxWidth: '100%' };
@@ -144,11 +144,23 @@ export const getTableColumns = (type, { onViewClick, onUpdateClick }) => {
   return [];
 };
 
-export const getData = (type, rawData, { filterValue }) => {
+export const getData = (type, rawData, { filterValue, current }) => {
+  /**
+   * @example
+   * TOTAL_VIEW_COUNT = 10, current = 1
+   * start = ((1 - 1) * 10) + 1
+   *       = (0 * 10) + 1
+   *       = 1
+   * TOTAL_VIEW_COUNT = 10, current = 1
+   * start = ((5 - 1) * 10) + 1
+   *       = 40 + 1
+   *       = 41
+   */
+  const startIndex = (current - 1) * TOTAL_VIEW_COUNT + 1;
   let data = [];
   if (type === NAV_TYPES.COMPONENT) {
     data = rawData.map((item, index) => ({
-      id: `${index + 1}`,
+      id: `${startIndex + index}`,
       description: item.description || '-',
       developer: item.developer || '-',
       owner: item.owner || '-',
@@ -159,7 +171,7 @@ export const getData = (type, rawData, { filterValue }) => {
 
   if (type === NAV_TYPES.AGENT) {
     data = rawData.map((item, index) => ({
-      id: `${index + 1}`,
+      id: `${startIndex + index}`,
       description: item.description || '-',
       developer: item.developer || '-',
       owner: item.owner || '-',
@@ -170,7 +182,7 @@ export const getData = (type, rawData, { filterValue }) => {
 
   if (type === NAV_TYPES.SERVICE) {
     data = rawData.map((item, index) => ({
-      id: `${index + 1}`,
+      id: `${startIndex + index}`,
       developer: item.developer || '-',
       owner: item.owner || '-',
       active: `${item.active}`,

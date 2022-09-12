@@ -57,3 +57,6 @@ export const HASH_PREFIXES = {
 };
 
 export const GATEWAY_URL = 'https://gateway.autonolas.tech/ipfs/';
+
+// max componets/agents/service to be shown in a single view
+export const TOTAL_VIEW_COUNT = 10;
