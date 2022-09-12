@@ -5,7 +5,12 @@ import { useRouter } from 'next/router';
 import { URL, NAV_TYPES } from 'util/constants';
 import ListTable from 'common-util/List/ListTable';
 import { useExtraTabContent } from 'common-util/List/ListTable/helpers';
-import { getServices, getServicesByAccount } from './utils';
+import {
+  getServices,
+  getServicesByAccount,
+  getTotalForAllServices,
+  getTotalForMyServices,
+} from './utils';
 
 const { TabPane } = Tabs;
 
@@ -35,12 +40,14 @@ const ListServices = ({ account }) => {
           <ListTable
             {...commonProps}
             getList={getServices}
+            getTotal={getTotalForAllServices}
           />
         </TabPane>
         <TabPane tab="My Services" key="my_services">
           <ListTable
             {...commonProps}
-            getList={() => getServicesByAccount(account)}
+            getList={getServicesByAccount}
+            getTotal={() => getTotalForMyServices(account)}
             onUpdateClick={(serviceId) => router.push(`${URL.UPDATE_SERVICE}/${serviceId}`)}
           />
         </TabPane>

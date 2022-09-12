@@ -26,6 +26,7 @@ const ListTable = ({
     try {
       const totalTemp = await getTotal();
       setTotal(Number(totalTemp));
+      if (Number(totalTemp) === 0) setIsLoading(false);
     } catch (e) {
       console.error(e);
     }
