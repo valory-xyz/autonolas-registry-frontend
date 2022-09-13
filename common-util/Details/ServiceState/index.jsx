@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import {
-  Button, Space, Divider, Steps, Tooltip,
+  Button, Space, Divider, Steps, Tooltip, Image,
 } from 'antd/lib';
 import get from 'lodash/get';
 import kebabCase from 'lodash/kebabCase';
@@ -37,6 +37,7 @@ export const ServiceState = ({
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   const [dataSource, setDataSource] = useState([]);
+  const [isStateImageVisible, setIsStateImageVisible] = useState(false);
 
   const status = get(details, 'state');
   const agentIds = get(details, 'agentIds');
@@ -229,7 +230,30 @@ export const ServiceState = ({
 
   return (
     <ServiceStateContainer>
-      <InfoSubHeader>State</InfoSubHeader>
+      <InfoSubHeader>
+        State
+        <Button
+          type="link"
+          size="large"
+          onClick={() => setIsStateImageVisible(true)}
+        >
+          Learn about service states
+        </Button>
+      </InfoSubHeader>
+
+      <Image
+        width={200}
+        style={{ display: 'none' }}
+        src="/images/service-lifecycle.png"
+        preview={{
+          visible: isStateImageVisible,
+          src: '/images/service-lifecycle.png',
+          onVisibleChange: (value) => {
+            setIsStateImageVisible(value);
+          },
+        }}
+      />
+
       <Steps direction="vertical" current={currentStep}>
         {steps.map(({ title, component }, index) => (
           <Step

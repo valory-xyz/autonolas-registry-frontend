@@ -172,6 +172,11 @@ const GlobalStyle = createGlobalStyle`
     background-color: inherit;
     border-color: ${COLOR.PRIMARY};
   }
+
+  /* ant image */
+  .ant-image-preview-wrap {
+    background: ${COLOR.GREY_2}
+  }
 `;
 
 export default GlobalStyle;

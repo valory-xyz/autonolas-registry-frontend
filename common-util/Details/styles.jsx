@@ -24,9 +24,14 @@ export const Header = styled.div`
 `;
 
 export const InfoSubHeader = styled.div`
+  display: flex;
+  align-items: center;
   font-weight: 700;
   margin-bottom: 0.25rem;
   color: ${COLOR.BLACK};
+  .ant-btn {
+    font-size: 18px;
+  }
 `;
 
 export const Info = styled.div`

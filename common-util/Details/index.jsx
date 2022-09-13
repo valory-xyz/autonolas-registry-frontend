@@ -159,6 +159,7 @@ const Details = ({
             onDependencyClick={onDependencyClick}
           />
 
+          <br />
           {type === NAV_TYPES.SERVICE && (
             <ServiceState
               isOwner={isOwner}

@@ -195,7 +195,13 @@ export const DetailsInfo = ({
             )}
             &nbsp;•&nbsp;
             {viewHashAndCode}
-            {updateHashBtn}
+
+            {updateHashBtn && (
+              <>
+                <br />
+                {updateHashBtn}
+              </>
+            )}
           </>
         ),
       },
