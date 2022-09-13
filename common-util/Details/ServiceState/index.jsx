@@ -241,18 +241,19 @@ export const ServiceState = ({
         </Button>
       </InfoSubHeader>
 
-      <Image
-        width={200}
-        style={{ display: 'none' }}
-        src="/images/service-lifecycle.png"
-        preview={{
-          visible: isStateImageVisible,
-          src: '/images/service-lifecycle.png',
-          onVisibleChange: (value) => {
-            setIsStateImageVisible(value);
-          },
-        }}
-      />
+      {isStateImageVisible && (
+        <Image
+          width={200}
+          src="/images/service-lifecycle.png"
+          preview={{
+            visible: isStateImageVisible,
+            src: '/images/service-lifecycle.png',
+            onVisibleChange: (value) => {
+              setIsStateImageVisible(value);
+            },
+          }}
+        />
+      )}
 
       <Steps direction="vertical" current={currentStep}>
         {steps.map(({ title, component }, index) => (

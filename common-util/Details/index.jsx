@@ -10,15 +10,8 @@ import { NAV_TYPES, GATEWAY_URL } from 'util/constants';
 import Loader from 'common-util/components/Loader';
 import IpfsHashGenerationModal from '../List/IpfsHashGenerationModal';
 import { ServiceState } from './ServiceState';
-import {
-  getAutonolasTokenUri, DetailsInfo,
-} from './helpers';
-import {
-  Header,
-  DetailsTitle,
-
-  NftImageContainer,
-} from './styles';
+import { getAutonolasTokenUri, DetailsInfo } from './helpers';
+import { Header, DetailsTitle, NftImageContainer } from './styles';
 
 const { Text } = Typography;
 const gt = {
@@ -158,17 +151,6 @@ const Details = ({
             setIsModalVisible={setIsModalVisible}
             onDependencyClick={onDependencyClick}
           />
-
-          <br />
-          {type === NAV_TYPES.SERVICE && (
-            <ServiceState
-              isOwner={isOwner}
-              id={id}
-              account={account}
-              details={info}
-              updateDetails={updateDetails}
-            />
-          )}
         </Col>
 
         <Col className="gutter-row" span={12}>
@@ -178,9 +160,19 @@ const Details = ({
               GATEWAY_URL,
             )}
             alt="NFT"
-            width={600}
-            height={600}
+            width={type === NAV_TYPES.SERVICE ? 300 : 600}
+            height={type === NAV_TYPES.SERVICE ? 300 : 600}
           />
+
+          {type === NAV_TYPES.SERVICE && (
+            <ServiceState
+              isOwner={isOwner}
+              id={id}
+              account={account}
+              details={info}
+              updateDetails={updateDetails}
+            />
+          )}
         </Col>
       </Row>
 

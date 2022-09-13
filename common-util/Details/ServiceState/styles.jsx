@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 export const ServiceStateContainer = styled.div`
+  margin-top: 1rem;
   .ant-btn {
     font-size: 16px;
     height: 32px;
