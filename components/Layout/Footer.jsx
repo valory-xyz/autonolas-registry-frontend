@@ -29,7 +29,7 @@ const ContractInfo = () => {
   const router = useRouter();
   const { pathname } = router;
   const addresses = ADDRESSES[chainId];
-  if (!chainId || !addresses) return null;
+  if (!chainId || !addresses) return <ContractsInfoContainer />;
 
   const getCurrentPageAddresses = () => {
     if ((pathname || '').includes('components')) {

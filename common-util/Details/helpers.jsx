@@ -143,7 +143,6 @@ export const DetailsInfo = ({
     const dependencies = get(info, 'dependencies') || [];
     return [
       {
-        title: 'Hash',
         dataTestId: 'hashes-list',
         value: (
           <>
@@ -178,7 +177,6 @@ export const DetailsInfo = ({
 
     return [
       {
-        title: 'Hash',
         dataTestId: 'hashes-list',
         value: (
           <>
