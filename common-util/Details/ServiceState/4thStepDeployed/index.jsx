@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Table, Space } from 'antd/lib';
 import { Address } from 'common-util/styles';
-import { getOperatorAndAgentInstance } from '../utils';
+import { getAgentInstanceAndOperator } from '../utils';
 
 const columns = [
   {
@@ -24,7 +24,7 @@ const Deployed = ({ serviceId, multisig, terminateButton }) => {
 
   useEffect(async () => {
     if (serviceId) {
-      const tempData = await getOperatorAndAgentInstance(serviceId);
+      const tempData = await getAgentInstanceAndOperator(serviceId);
       setData(tempData);
     }
   }, [serviceId]);
@@ -48,13 +48,12 @@ const Deployed = ({ serviceId, multisig, terminateButton }) => {
 
 Deployed.propTypes = {
   serviceId: PropTypes.string,
-  multisig: PropTypes.string,
+  multisig: PropTypes.string.isRequired,
   terminateButton: PropTypes.element.isRequired,
 };
 
 Deployed.defaultProps = {
   serviceId: null,
-  multisig: '',
 };
 
 export default Deployed;

@@ -186,7 +186,7 @@ export const onStep3Deploy = (account, id, radioValue, payload = '0x') => new Pr
 });
 
 /* ----- step 4 functions ----- */
-export const getOperatorAndAgentInstance = (id) => new Promise((resolve, reject) => {
+export const getAgentInstanceAndOperator = (id) => new Promise((resolve, reject) => {
   const contract = getServiceContract();
 
   contract.methods

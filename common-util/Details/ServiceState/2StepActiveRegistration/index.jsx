@@ -21,7 +21,7 @@ const ActiveRegistration = ({
       const response = await getBonds(serviceId);
       setTotalBond(convertToEth(response?.totalBonds || 0));
     }
-  }, []);
+  }, [serviceId]);
 
   return (
     <div className="step-2-active-registration">
