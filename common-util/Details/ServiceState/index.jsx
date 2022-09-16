@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import {
-  Button, Space, Divider, Steps, Tooltip, Image,
+  Button, Space, Steps, Tooltip, Image,
 } from 'antd/lib';
 import get from 'lodash/get';
 import kebabCase from 'lodash/kebabCase';
@@ -15,8 +15,8 @@ import {
   onStep3Deploy,
   onStep5Unbond,
 } from './utils';
-import ActiveRegistrationTable from './ActiveRegistrationTable';
 import StepThreePayload from './StepThreePayload';
+import StepActiveRegistration from './2StepActiveRegistration';
 import { InfoSubHeader } from '../styles';
 import { ServiceStateContainer } from './styles';
 
@@ -176,17 +176,13 @@ export const ServiceState = ({
     {
       title: 'Active Registration',
       component: (
-        <div className="step-2-active-registration">
-          <ActiveRegistrationTable
-            data={dataSource}
-            setDataSource={setDataSource}
-            bordered
-          />
-
-          <Button onClick={handleStep2RegisterAgents}>Register Agents</Button>
-          <Divider />
-          <Button onClick={handleTerminate}>Terminate</Button>
-        </div>
+        <StepActiveRegistration
+          serviceId={id}
+          dataSource={dataSource}
+          setDataSource={setDataSource}
+          handleStep2RegisterAgents={handleStep2RegisterAgents}
+          handleTerminate={handleTerminate}
+        />
       ),
     },
     {

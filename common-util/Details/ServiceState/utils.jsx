@@ -10,7 +10,7 @@ const notifyError = (message = 'Some error occured') => notification.error({ mes
 /* ----- helper functions ----- */
 
 // params.agentParams.slots[i] = total initial available Slots for the i-th service.agentIds;
-const getBonds = async (id) => {
+export const getBonds = async (id) => {
   const serviceContract = getServiceContract();
   const response = await serviceContract.methods.getAgentParams(id).call();
 
