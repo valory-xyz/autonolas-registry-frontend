@@ -36,6 +36,9 @@ export const ServiceStateContainer = styled.div`
     > div {
       font-size: 16px;
     }
+    .ant-table {
+      font-size: 16px;
+    }
   }
 
   /* table */

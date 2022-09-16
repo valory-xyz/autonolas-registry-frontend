@@ -15,8 +15,9 @@ import {
   onStep3Deploy,
   onStep5Unbond,
 } from './utils';
-import StepThreePayload from './StepThreePayload';
 import StepActiveRegistration from './2StepActiveRegistration';
+import StepThreePayload from './StepThreePayload';
+import Deployed from './4thStepDeployed';
 import { InfoSubHeader } from '../styles';
 import { ServiceStateContainer } from './styles';
 
@@ -205,16 +206,15 @@ export const ServiceState = ({
     {
       title: 'Deployed',
       component: (
-        <div className="step-4-terminate">
-          <Space direction="vertical" size={10}>
-            <div>{`Safe contract address: ${multisig}`}</div>
-            {getButton(
-              <Button disabled={!isOwner} onClick={handleStep4Terminate}>
-                Terminate
-              </Button>,
-            )}
-          </Space>
-        </div>
+        <Deployed
+          serviceId={id}
+          multisig={multisig}
+          terminateButton={getButton(
+            <Button disabled={!isOwner} onClick={handleStep4Terminate}>
+              Terminate
+            </Button>,
+          )}
+        />
       ),
     },
     {
