@@ -44,7 +44,9 @@ const ActiveRegistration = ({
 
 ActiveRegistration.propTypes = {
   serviceId: PropTypes.string,
-  dataSource: PropTypes.objectOf([]).isRequired,
+  dataSource: PropTypes.arrayOf(
+    PropTypes.oneOfType([PropTypes.array, PropTypes.string]),
+  ).isRequired,
   setDataSource: PropTypes.func.isRequired,
   handleStep2RegisterAgents: PropTypes.func.isRequired,
   handleTerminate: PropTypes.func.isRequired,

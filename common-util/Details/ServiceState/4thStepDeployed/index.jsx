@@ -2,10 +2,7 @@ import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Table, Space } from 'antd/lib';
 import { Address } from 'common-util/styles';
-import {
-  getServiceAgentInstances,
-  getOperatorAndAgentInstance,
-} from '../utils';
+import { getOperatorAndAgentInstance } from '../utils';
 
 const columns = [
   {
@@ -25,19 +22,23 @@ const columns = [
 const Deployed = ({ serviceId, multisig, terminateButton }) => {
   const [data, setData] = useState([]);
 
-  // fetch the details again on 4th step to get agentInstances
   useEffect(async () => {
     if (serviceId) {
-      const response = await getServiceAgentInstances(serviceId);
-      const tempDate = await getOperatorAndAgentInstance(response);
-      setData(tempDate);
+      const tempData = await getOperatorAndAgentInstance(serviceId);
+      setData(tempData);
     }
-  }, []);
+  }, [serviceId]);
 
   return (
     <div className="step-4-terminate">
       <Space direction="vertical" size={10}>
-        <Table columns={columns} dataSource={data} pagination={false} />
+        <Table
+          columns={columns}
+          dataSource={data}
+          pagination={false}
+          bordered
+          rowKey="id"
+        />
         <div>{`Safe contract address: ${multisig}`}</div>
         {terminateButton}
       </Space>

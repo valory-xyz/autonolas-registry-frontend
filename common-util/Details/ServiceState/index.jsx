@@ -16,7 +16,7 @@ import {
   onStep5Unbond,
 } from './utils';
 import StepActiveRegistration from './2StepActiveRegistration';
-import StepThreePayload from './StepThreePayload';
+import StepFinishedRegistration from './3rdStepFinishedRegistration';
 import Deployed from './4thStepDeployed';
 import { InfoSubHeader } from '../styles';
 import { ServiceStateContainer } from './styles';
@@ -42,9 +42,9 @@ export const ServiceState = ({
 
   const status = get(details, 'state');
   const agentIds = get(details, 'agentIds');
-  const multisig = get(details, 'multisig');
-  const threshold = get(details, 'threshold');
-  const owner = get(details, 'owner');
+  const multisig = get(details, 'multisig') || '';
+  const threshold = get(details, 'threshold') || '';
+  const owner = get(details, 'owner') || '';
   const securityDeposit = get(details, 'securityDeposit');
 
   useEffect(async () => {
@@ -189,7 +189,7 @@ export const ServiceState = ({
     {
       title: 'Finished Registration',
       component: (
-        <StepThreePayload
+        <StepFinishedRegistration
           serviceId={id}
           multisig={multisig}
           threshold={threshold}

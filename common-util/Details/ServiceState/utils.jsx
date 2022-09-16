@@ -186,27 +186,28 @@ export const onStep3Deploy = (account, id, radioValue, payload = '0x') => new Pr
 });
 
 /* ----- step 4 functions ----- */
-export const getOperatorAndAgentInstance = (agentInstAddress) => new Promise((resolve, reject) => {
+export const getOperatorAndAgentInstance = (id) => new Promise((resolve, reject) => {
   const contract = getServiceContract();
 
-  Promise.all(
-    agentInstAddress.map(async (key, index) => {
-      const id = `${key}`;
-      const operatorAddress = await contract.methods
-        .mapAgentInstanceOperators(id)
-        .call();
-      return {
-        id: `agent-instance-row-${index + 1}`,
-        operatorAddress,
-        agentInstance: key,
-      };
-    }),
-  )
-    .then((results) => {
-      resolve(results);
+  contract.methods
+    .getAgentInstances(id)
+    .call()
+    .then(async (response) => {
+      const data = await Promise.all(
+        (response?.agentInstances || []).map(async (key, index) => {
+          const operatorAddress = await contract.methods
+            .mapAgentInstanceOperators(key)
+            .call();
+          return {
+            id: `agent-instance-row-${index + 1}`,
+            operatorAddress,
+            agentInstance: key,
+          };
+        }),
+      );
+      resolve(data);
     })
     .catch((e) => {
-      console.error(e);
       reject(e);
     });
 });
