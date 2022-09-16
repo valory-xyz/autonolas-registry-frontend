@@ -15,6 +15,10 @@ export const ServiceStateContainer = styled.div`
 
   .step-2-active-registration {
     .ant-table-wrapper {
+    }
+    .ant-typography {
+      display: block;
+      font-size: 14px;
       margin-bottom: 1rem;
     }
     .ant-table,
@@ -30,6 +34,9 @@ export const ServiceStateContainer = styled.div`
   }
   .step-4-terminate {
     > div {
+      font-size: 16px;
+    }
+    .ant-table {
       font-size: 16px;
     }
   }
@@ -48,6 +55,10 @@ export const ServiceStateContainer = styled.div`
     padding: 4px 11px;
     border: 1px solid #d9d9d9;
     border-radius: 2px;
+  }
+
+  .ant-form-item-explain.ant-form-item-explain-error {
+    font-size: 16px;
   }
 
   [data-theme="dark"] .editable-row:hover .editable-cell-value-wrap {

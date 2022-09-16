@@ -70,9 +70,10 @@ const EditableCell = ({
   };
 
   let childNode = children;
+  const slots = get(record, 'availableSlots') || 0;
 
   if (editable) {
-    childNode = get(record, 'availableSlots') > 0 ? (
+    childNode = slots > 0 ? (
       <Form.Item
         style={{ margin: 0 }}
         name={dataIndex}
@@ -82,7 +83,7 @@ const EditableCell = ({
           ref={inputRef}
           onPressEnter={onSave}
           onBlur={onSave}
-          placeholder="address 1, address 2"
+          placeholder={[...new Array(slots)].map((_i, index) => `Address ${index + 1}`).join(', ')}
         />
       </Form.Item>
     ) : (

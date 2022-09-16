@@ -173,7 +173,7 @@ export const DetailsInfo = ({
 
   const getServiceValues = () => {
     const serviceState = ['2', '3', '4'].includes(get(info, 'state'));
-    const agentIds = get(info, 'agentIds');
+    const agentIds = get(info, 'agentIds') || [];
 
     return [
       {
