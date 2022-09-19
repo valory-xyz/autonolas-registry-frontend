@@ -6,12 +6,12 @@ import capitalize from 'lodash/capitalize';
 import {
   Row, Col, Button, Typography,
 } from 'antd/lib';
-import { NAV_TYPES, GATEWAY_URL } from 'util/constants';
+import { NAV_TYPES } from 'util/constants';
 import Loader from 'common-util/components/Loader';
 import IpfsHashGenerationModal from '../List/IpfsHashGenerationModal';
 import { ServiceState } from './ServiceState';
-import { getAutonolasTokenUri, DetailsInfo } from './helpers';
-import { Header, DetailsTitle, NftImageContainer } from './styles';
+import { getAutonolasTokenUri, DetailsInfo, NftImage } from './helpers';
+import { Header, DetailsTitle } from './styles';
 
 const { Text } = Typography;
 const gt = {
@@ -154,15 +154,9 @@ const Details = ({
         </Col>
 
         <Col className="gutter-row" span={12}>
-          <NftImageContainer
-            src={(get(hashDetails, 'image') || '').replace(
-              'ipfs://',
-              GATEWAY_URL,
-            )}
-            alt="NFT"
-            width={type === NAV_TYPES.SERVICE ? 300 : 600}
-            height={type === NAV_TYPES.SERVICE ? 300 : 600}
-          />
+          {type !== NAV_TYPES.SERVICE && (
+            <NftImage hashDetails={hashDetails} type={type} />
+          )}
 
           {type === NAV_TYPES.SERVICE && (
             <ServiceState

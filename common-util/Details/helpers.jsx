@@ -13,6 +13,7 @@ import {
   SectionContainer,
   EachSection,
   ServiceStatus,
+  NftImageContainer,
 } from './styles';
 
 const { Link, Text } = Typography;
@@ -78,6 +79,15 @@ ServiceMiniTable.propTypes = {
 const pattern = /https:\/\/localhost\/(agent|component|service)\/+/g;
 
 export const getAutonolasTokenUri = (tokenUri) => (tokenUri || '').replace(pattern, GATEWAY_URL);
+
+export const NftImage = ({ hashDetails, type }) => (
+  <NftImageContainer
+    src={(get(hashDetails, 'image') || '').replace('ipfs://', GATEWAY_URL)}
+    alt="NFT"
+    width={type === NAV_TYPES.SERVICE ? 300 : 600}
+    height={type === NAV_TYPES.SERVICE ? 300 : 600}
+  />
+);
 
 export const DetailsInfo = ({
   isOwner,
@@ -195,6 +205,10 @@ export const DetailsInfo = ({
             {viewHashAndCode}
           </>
         ),
+      },
+      {
+        dataTestId: 'service-nft-image',
+        value: <NftImage hashDetails={hashDetails} type={type} />,
       },
       ...commonDetails,
       {
