@@ -2,7 +2,12 @@ import React from 'react';
 import { render, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import ListAgents from 'components/ListAgents';
-import { getAgents, getAgentsByAccount } from 'components/ListAgents/utils';
+import {
+  getAgents,
+  getAgentsByAccount,
+  getTotalForAllAgents,
+  getTotalForMyAgents,
+} from 'components/ListAgents/utils';
 import { useRouter } from 'next/router';
 import { wrapProvider, ACTIVE_TAB, getTableTd } from '../../helpers';
 
@@ -15,6 +20,8 @@ jest.mock('next/router', () => ({
 jest.mock('components/ListAgents/utils', () => ({
   getAgents: jest.fn(),
   getAgentsByAccount: jest.fn(),
+  getTotalForAllAgents: jest.fn(),
+  getTotalForMyAgents: jest.fn(),
 }));
 
 useRouter.mockImplementation(() => ({ push: jest.fn() }));
@@ -23,10 +30,11 @@ useRouter.mockImplementation(() => ({ push: jest.fn() }));
 const allAgentsResponse = { id: 'all-agent-1', dependencies: ['4'] };
 const myAgentsResponse = { id: 'my-agent-1', dependencies: ['5'] };
 
-// test cases
 describe('listAgents/index.jsx', () => {
   getAgents.mockImplementation(() => Promise.resolve([allAgentsResponse]));
   getAgentsByAccount.mockImplementation(() => Promise.resolve([myAgentsResponse]));
+  getTotalForAllAgents.mockImplementation(() => Promise.resolve(1));
+  getTotalForMyAgents.mockImplementation(() => Promise.resolve(1));
 
   it('should render tabs with `All Tab` as active tab & Register button', async () => {
     expect.hasAssertions();
@@ -51,9 +59,7 @@ describe('listAgents/index.jsx', () => {
 
   it('should render tabs with `My Agents` as active tab & Register button', async () => {
     expect.hasAssertions();
-    const { container, getByRole } = render(
-      wrapProvider(<ListAgents />),
-    );
+    const { container, getByRole } = render(wrapProvider(<ListAgents />));
 
     // click the `My agents` tab
     userEvent.click(container.querySelector('.ant-tabs-tab:nth-child(2)'));

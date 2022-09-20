@@ -13,6 +13,7 @@ import {
   wrapProvider,
   mockNftImageHash,
   mockV1Hash,
+  mockCodeUri,
 } from '../../helpers';
 
 jest.mock('common-util/List/IpfsHashGenerationModal/helpers', () => ({
@@ -44,14 +45,20 @@ const dummyHashes = {
   agentHashes: ['Agent Hash1', 'Agent Hash2'],
 };
 
+const dummyIpfs = {
+  image: `ipfs://${mockNftImageHash}`,
+  name: 'Some name',
+  description: 'Some description',
+  code_uri: `ipfs://${mockCodeUri}`,
+  attributes: [{ trait_type: 'version', value: '0.0.0.1' }],
+};
+
 const unmockedFetch = global.fetch;
 
 describe('listAgents/details.jsx', () => {
   beforeAll(() => {
     global.fetch = () => Promise.resolve({
-      json: () => Promise.resolve({
-        image: `ipfs://${mockNftImageHash}`,
-      }),
+      json: () => Promise.resolve(dummyIpfs),
     });
   });
 
@@ -66,25 +73,34 @@ describe('listAgents/details.jsx', () => {
 
   it('should render agent details', async () => {
     expect.hasAssertions();
-    const { container, getByTestId, getByRole } = render(
+    const { getByText, getByTestId, getByRole } = render(
       wrapProvider(<AgentDetails />),
     );
     await waitFor(async () => {
-      expect(container.querySelector('.ant-typography').textContent).toBe(
-        'Agent ID 1',
+      // left column content
+      expect(getByText('Agent ID 1')).toBeInTheDocument();
+      expect(getByTestId('view-hash-link').getAttribute('href')).toBe(
+        `${GATEWAY_URL}12345`,
+      );
+      expect(getByTestId('view-code-link').getAttribute('href')).toBe(
+        `${GATEWAY_URL}${mockCodeUri}`,
+      );
+      expect(getByTestId('description').textContent).toBe(
+        dummyIpfs.description,
+      );
+      expect(getByTestId('version').textContent).toBe(
+        dummyIpfs.attributes[0].value,
       );
       expect(getByTestId('owner-address').textContent).toBe(
         dummyDetails.developer,
-      );
-      expect(getByTestId('hashes-list').querySelector('a')).toHaveTextContent(
-        `${GATEWAY_URL}12345`,
       );
       expect(getByRole('button', { name: 'Update Hash' })).toBeInTheDocument();
       expect(getByTestId('details-dependency')).toBeInTheDocument();
 
       // NFT image
-      const displayedImage = getByTestId('nft-image').querySelector('img');
-      expect(displayedImage.src).toBe(`${GATEWAY_URL}${mockNftImageHash}`);
+      expect(getByTestId('nft-image').getAttribute('src')).toBe(
+        `${GATEWAY_URL}${mockNftImageHash}`,
+      );
     });
   });
 });
