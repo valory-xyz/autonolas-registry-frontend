@@ -5,6 +5,8 @@ import ListComponents from 'components/ListComponents';
 import {
   getComponents,
   getComponentsByAccount,
+  getTotalForAllComponents,
+  getTotalForMyComponents,
 } from 'components/ListComponents/utils';
 import { useRouter } from 'next/router';
 import { wrapProvider, ACTIVE_TAB, getTableTd } from '../../helpers';
@@ -18,6 +20,8 @@ jest.mock('next/router', () => ({
 jest.mock('components/ListComponents/utils', () => ({
   getComponents: jest.fn(),
   getComponentsByAccount: jest.fn(),
+  getTotalForAllComponents: jest.fn(),
+  getTotalForMyComponents: jest.fn(),
 }));
 
 useRouter.mockImplementation(() => ({ push: jest.fn() }));
@@ -29,6 +33,8 @@ const myComponentResponse = { id: 'my-component-1', dependencies: ['2'] };
 describe('listComponents/index.jsx', () => {
   getComponents.mockImplementation(() => Promise.resolve([allComponentResponse]));
   getComponentsByAccount.mockImplementation(() => Promise.resolve([myComponentResponse]));
+  getTotalForAllComponents.mockImplementation(() => Promise.resolve(1));
+  getTotalForMyComponents.mockImplementation(() => Promise.resolve(1));
 
   it('should render tabs with `All Tab` as active tab & Register button', async () => {
     expect.hasAssertions();
