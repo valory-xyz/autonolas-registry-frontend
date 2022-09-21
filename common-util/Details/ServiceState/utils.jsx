@@ -10,7 +10,7 @@ const notifyError = (message = 'Some error occured') => notification.error({ mes
 /* ----- helper functions ----- */
 
 // params.agentParams.slots[i] = total initial available Slots for the i-th service.agentIds;
-const getBonds = async (id) => {
+export const getBonds = async (id) => {
   const serviceContract = getServiceContract();
   const response = await serviceContract.methods.getAgentParams(id).call();
 
@@ -186,6 +186,31 @@ export const onStep3Deploy = (account, id, radioValue, payload = '0x') => new Pr
 });
 
 /* ----- step 4 functions ----- */
+export const getAgentInstanceAndOperator = (id) => new Promise((resolve, reject) => {
+  const contract = getServiceContract();
+
+  contract.methods
+    .getAgentInstances(id)
+    .call()
+    .then(async (response) => {
+      const data = await Promise.all(
+        (response?.agentInstances || []).map(async (key, index) => {
+          const operatorAddress = await contract.methods
+            .mapAgentInstanceOperators(key)
+            .call();
+          return {
+            id: `agent-instance-row-${index + 1}`,
+            operatorAddress,
+            agentInstance: key,
+          };
+        }),
+      );
+      resolve(data);
+    })
+    .catch((e) => {
+      reject(e);
+    });
+});
 
 /* ----- step 5 functions ----- */
 export const onStep5Unbond = (account, id) => new Promise((resolve, reject) => {
