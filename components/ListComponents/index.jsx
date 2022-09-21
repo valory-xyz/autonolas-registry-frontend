@@ -49,7 +49,6 @@ const ListComponents = ({ account }) => {
             filterValue={searchValue}
             onViewClick={onViewClick}
             getTotal={() => getTotalForMyComponents(account)}
-            isAccountRequired
           />
         </TabPane>
       </Tabs>

@@ -49,7 +49,6 @@ const ListAgents = ({ account }) => {
             getList={getAgentsByAccount}
             onViewClick={onViewClick}
             getTotal={() => getTotalForMyAgents(account)}
-            isAccountRequired
           />
         </TabPane>
       </Tabs>

@@ -133,9 +133,7 @@ const Details = ({
 
       <Row gutter={gt}>
         <Col className="gutter-row" span={12}>
-          <Text strong>
-            {`${capitalize(type)} Name`}
-          </Text>
+          <Text strong>Component Name</Text>
           <DetailsTitle level={2}>
             {`${capitalize(type)} ID ${id}`}
           </DetailsTitle>
