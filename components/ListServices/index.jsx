@@ -49,6 +49,7 @@ const ListServices = ({ account }) => {
             getList={getServicesByAccount}
             getTotal={() => getTotalForMyServices(account)}
             onUpdateClick={(serviceId) => router.push(`${URL.UPDATE_SERVICE}/${serviceId}`)}
+            isAccountRequired
           />
         </TabPane>
       </Tabs>

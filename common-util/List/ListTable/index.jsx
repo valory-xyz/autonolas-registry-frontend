@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Table } from 'antd/lib';
+import { useSelector } from 'react-redux';
+import get from 'lodash/get';
 import { TOTAL_VIEW_COUNT } from 'util/constants';
 import { ListEmptyMessage } from 'common-util/List/ListCommon';
 import Loader from 'common-util/components/Loader';
@@ -14,26 +16,31 @@ const ListTable = ({
   onViewClick,
   onUpdateClick,
   extra,
+  isAccountRequired,
 }) => {
+  const account = useSelector((state) => get(state, 'setup.account'));
   const [isLoading, setIsLoading] = useState(true);
   const [total, setTotal] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [list, setList] = useState([]);
   const { scrollX } = extra;
+  const canCallApi = isAccountRequired ? !!account : true;
 
   // fetch the total first!
   useEffect(async () => {
-    try {
-      const totalTemp = await getTotal();
-      setTotal(Number(totalTemp));
-      if (Number(totalTemp) === 0) setIsLoading(false);
-    } catch (e) {
-      console.error(e);
+    if (canCallApi) {
+      try {
+        const totalTemp = await getTotal();
+        setTotal(Number(totalTemp));
+        if (Number(totalTemp) === 0) setIsLoading(false);
+      } catch (e) {
+        console.error(e);
+      }
     }
-  }, []);
+  }, [account]);
 
   useEffect(async () => {
-    if (total && currentPage) {
+    if (total && currentPage && canCallApi) {
       setIsLoading(true);
       setList([]);
 
@@ -46,10 +53,17 @@ const ListTable = ({
         setIsLoading(false);
       }
     }
-  }, [total, currentPage]);
+  }, [account, total, currentPage]);
 
   if (isLoading) {
-    return <Loader />;
+    return (
+      <Loader
+        isAccountRequired={isAccountRequired}
+        message={
+          isAccountRequired ? `To see your ${type}s, connect wallet` : ''
+        }
+      />
+    );
   }
 
   const columns = getTableColumns(type, {
@@ -90,6 +104,7 @@ ListTable.propTypes = {
   getTotal: PropTypes.func,
   onViewClick: PropTypes.func,
   onUpdateClick: PropTypes.func,
+  isAccountRequired: PropTypes.bool,
   extra: PropTypes.shape({
     scrollX: PropTypes.number,
   }),
@@ -101,6 +116,7 @@ ListTable.defaultProps = {
   onViewClick: () => {},
   onUpdateClick: null,
   extra: {},
+  isAccountRequired: false,
 };
 
 export default ListTable;
