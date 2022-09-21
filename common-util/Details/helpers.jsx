@@ -196,17 +196,13 @@ export const DetailsInfo = ({
         dataTestId: 'hashes-list',
         value: (
           <>
-            {serviceState ? (
-              <ServiceStatus className="active">
-                <Circle size={8} />
-                <Text>Active</Text>
-              </ServiceStatus>
-            ) : (
-              <ServiceStatus className="inactive">
-                <Circle size={8} />
-                <Text>Inactive</Text>
-              </ServiceStatus>
-            )}
+            <ServiceStatus
+              className={serviceState ? 'active' : 'inactive'}
+              data-testid="service-status"
+            >
+              <Circle size={8} />
+              <Text>{serviceState ? 'Active' : 'Inactive'}</Text>
+            </ServiceStatus>
             &nbsp;•&nbsp;
             {viewHashAndCode}
           </>

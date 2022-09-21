@@ -14,8 +14,6 @@ import { ComplexLabel } from 'common-util/List/styles';
 import { RegisterFooter } from 'components/styles';
 
 export const FORM_NAME = 'serviceRegisterForm';
-export const getAgentSlots = (info) => (info.agentParams || []).map((param) => param[0]);
-export const getBonds = (info) => (info.agentParams || []).map((param) => param[1]);
 
 const RegisterForm = ({
   account,

@@ -2,8 +2,12 @@ import React from 'react';
 import { render, waitFor } from '@testing-library/react';
 import { GATEWAY_URL } from 'util/constants';
 import Services from 'components/ListServices/details';
-import { getAgentSlots, getBonds } from 'components/ListServices/RegisterForm';
-import { getServiceTableDataSource } from 'common-util/Details/ServiceState/utils';
+import {
+  getServiceTableDataSource,
+  getAgentInstanceAndOperator,
+  getServiceAgentInstances,
+  getBonds,
+} from 'common-util/Details/ServiceState/utils';
 import {
   getServiceDetails,
   getServiceHashes,
@@ -15,6 +19,8 @@ import {
   wrapProvider,
   mockNftImageHash,
   mockV1Hash,
+  mockIpfs,
+  mockCodeUri,
 } from '../../helpers';
 
 jest.mock('next/router', () => ({
@@ -28,11 +34,6 @@ jest.mock('common-util/List/IpfsHashGenerationModal/helpers', () => ({
   getIpfsHashHelper: jest.fn(() => mockV1Hash),
 }));
 
-jest.mock('components/ListServices/RegisterForm', () => ({
-  getBonds: jest.fn(),
-  getAgentSlots: jest.fn(),
-}));
-
 jest.mock('components/ListServices/utils', () => ({
   getServiceDetails: jest.fn(),
   getServiceHashes: jest.fn(),
@@ -42,6 +43,9 @@ jest.mock('components/ListServices/utils', () => ({
 
 jest.mock('common-util/Details/ServiceState/utils', () => ({
   getServiceTableDataSource: jest.fn(),
+  getAgentInstanceAndOperator: jest.fn(),
+  getServiceAgentInstances: jest.fn(),
+  getBonds: jest.fn(),
 }));
 
 const dummyDetails = {
@@ -66,9 +70,7 @@ const unmockedFetch = global.fetch;
 describe('listServices/details.jsx', () => {
   beforeAll(() => {
     global.fetch = () => Promise.resolve({
-      json: () => Promise.resolve({
-        image: `ipfs://${mockNftImageHash}`,
-      }),
+      json: () => Promise.resolve(mockIpfs),
     });
   });
 
@@ -81,7 +83,7 @@ describe('listServices/details.jsx', () => {
   getServiceOwner.mockImplementation(() => Promise.resolve(dummyAddress));
   getTokenUri.mockImplementation(() => Promise.resolve(dummyDetails.tokenUrl));
   getBonds.mockImplementation(() => Promise.resolve(['1']));
-  getAgentSlots.mockImplementation(() => Promise.resolve(['1']));
+  getServiceAgentInstances.mockImplementation(() => Promise.resolve(['1']));
   getServiceTableDataSource.mockImplementation(() => Promise.resolve([
     {
       key: 1,
@@ -92,6 +94,13 @@ describe('listServices/details.jsx', () => {
       agentAddresses: null,
     },
   ]));
+  getAgentInstanceAndOperator.mockImplementation(() => Promise.resolve([
+    {
+      id: 'agent-instance-row-1',
+      operatorAddress: 'operator_address_1',
+      agentInstance: 'agent_instance_1',
+    },
+  ]));
 
   it('should render service details', async () => {
     expect.hasAssertions();
@@ -99,18 +108,28 @@ describe('listServices/details.jsx', () => {
       wrapProvider(<Services />),
     );
     await waitFor(async () => {
-      expect(container.querySelector('.ant-typography').textContent).toBe(
-        'Service ID 1',
+      expect(getByText('Service ID 1')).toBeInTheDocument();
+      expect(getByTestId('service-status').textContent).toBe('Inactive');
+      expect(getByTestId('view-hash-link').getAttribute('href')).toBe(
+        `${GATEWAY_URL}12345`,
+      );
+      expect(getByTestId('view-code-link').getAttribute('href')).toBe(
+        `${GATEWAY_URL}${mockCodeUri}`,
+      );
+
+      // NFT image (display on left side for services)
+      const displayedImage = getByTestId('service-nft-image').querySelector('img');
+      expect(displayedImage.src).toBe(`${GATEWAY_URL}${mockNftImageHash}`);
+
+      expect(getByTestId('description').textContent).toBe(mockIpfs.description);
+      expect(getByTestId('version').textContent).toBe(
+        mockIpfs.attributes[0].value,
       );
       expect(getByTestId('owner-address').textContent).toBe(dummyDetails.owner);
       expect(getByTestId('agent-id-table')).toBeInTheDocument();
       expect(getByText('Threshold')).toBeInTheDocument();
 
-      // NFT image
-      const displayedImage = getByTestId('nft-image').querySelector('img');
-      expect(displayedImage.src).toBe(`${GATEWAY_URL}${mockNftImageHash}`);
-
-      // state (left-side content)
+      // state (right-side content)
       const getTitle = (i) => container.querySelector(
         `.ant-steps-item:nth-child(${i}) .ant-steps-item-title`,
       );
