@@ -45,7 +45,7 @@ describe('listComponents/utils.jsx', () => {
       },
     }));
 
-    const result = await getComponentsByAccount();
+    const result = await getComponentsByAccount(1, 1);
     expect(result).toMatchObject([COMPONENT_1]);
   });
 
@@ -66,7 +66,7 @@ describe('listComponents/utils.jsx', () => {
       },
     }));
 
-    const result = await getComponents();
+    const result = await getComponents(1, 1);
     expect(result).toMatchObject([COMPONENT_1]);
   });
 });

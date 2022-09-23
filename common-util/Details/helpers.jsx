@@ -86,6 +86,7 @@ export const NftImage = ({ hashDetails, type }) => (
     alt="NFT"
     width={type === NAV_TYPES.SERVICE ? 300 : 600}
     height={type === NAV_TYPES.SERVICE ? 300 : 600}
+    data-testid="nft-image"
   />
 );
 
@@ -113,13 +114,18 @@ export const DetailsInfo = ({
 
   const viewHashAndCode = (
     <>
-      <Link href={getAutonolasTokenUri(tokenUri)} target="_blank">
+      <Link
+        target="_blank"
+        data-testid="view-hash-link"
+        href={getAutonolasTokenUri(tokenUri)}
+      >
         View Hash&nbsp;
         <ArrowUpRight size={16} />
       </Link>
       &nbsp;•&nbsp;
       <Link
         target="_blank"
+        data-testid="view-code-link"
         href={(get(hashDetails, 'code_uri') || '').replace(
           'ipfs://',
           GATEWAY_URL,
@@ -190,17 +196,13 @@ export const DetailsInfo = ({
         dataTestId: 'hashes-list',
         value: (
           <>
-            {serviceState ? (
-              <ServiceStatus className="active">
-                <Circle size={8} />
-                <Text>Active</Text>
-              </ServiceStatus>
-            ) : (
-              <ServiceStatus className="inactive">
-                <Circle size={8} />
-                <Text>Inactive</Text>
-              </ServiceStatus>
-            )}
+            <ServiceStatus
+              className={serviceState ? 'active' : 'inactive'}
+              data-testid="service-status"
+            >
+              <Circle size={8} />
+              <Text>{serviceState ? 'Active' : 'Inactive'}</Text>
+            </ServiceStatus>
             &nbsp;•&nbsp;
             {viewHashAndCode}
           </>

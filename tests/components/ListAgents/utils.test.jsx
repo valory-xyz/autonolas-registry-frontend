@@ -26,7 +26,7 @@ describe('listAgents/utils.jsx', () => {
       },
     }));
 
-    const result = await getAgentsByAccount();
+    const result = await getAgentsByAccount(1, 1);
     expect(result).toMatchObject([AGENT_1]);
   });
 
@@ -47,7 +47,7 @@ describe('listAgents/utils.jsx', () => {
       },
     }));
 
-    const result = await getAgents();
+    const result = await getAgents(1, 1);
     expect(result).toMatchObject([AGENT_1]);
   });
 });

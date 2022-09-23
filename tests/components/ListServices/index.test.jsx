@@ -5,6 +5,8 @@ import ListServices from 'components/ListServices';
 import {
   getServices,
   getServicesByAccount,
+  getTotalForAllServices,
+  getTotalForMyServices,
 } from 'components/ListServices/utils';
 import { useRouter } from 'next/router';
 import { getServiceContract } from 'common-util/Contracts';
@@ -19,6 +21,8 @@ jest.mock('next/router', () => ({
 jest.mock('components/ListServices/utils', () => ({
   getServices: jest.fn(),
   getServicesByAccount: jest.fn(),
+  getTotalForAllServices: jest.fn(),
+  getTotalForMyServices: jest.fn(),
 }));
 
 jest.mock('common-util/Contracts', () => ({
@@ -45,6 +49,8 @@ const myServiceResponse = { id: 'my-service-1' };
 describe('listServices/index.jsx', () => {
   getServices.mockImplementation(() => Promise.resolve([allServiceResponse]));
   getServicesByAccount.mockImplementation(() => Promise.resolve([myServiceResponse]));
+  getTotalForAllServices.mockImplementation(() => Promise.resolve(1));
+  getTotalForMyServices.mockImplementation(() => Promise.resolve(1));
 
   it('should render tabs with `All Tab` as active tab & Register button', async () => {
     expect.hasAssertions();
