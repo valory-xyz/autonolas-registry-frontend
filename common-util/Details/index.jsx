@@ -114,6 +114,12 @@ const Details = ({
   return (
     <>
       <Header>
+        <div>
+          <Text strong>{`${capitalize(type)} Name`}</Text>
+          <DetailsTitle level={2}>
+            {`${capitalize(type)} ID ${id}`}
+          </DetailsTitle>
+        </div>
         <div className="right-content">
           {/* Update button to be show only if the connected account is the owner */}
           {isOwner && type !== NAV_TYPES.SERVICE && (
@@ -133,13 +139,6 @@ const Details = ({
 
       <Row gutter={gt}>
         <Col className="gutter-row" span={12}>
-          <Text strong>
-            {`${capitalize(type)} Name`}
-          </Text>
-          <DetailsTitle level={2}>
-            {`${capitalize(type)} ID ${id}`}
-          </DetailsTitle>
-
           <DetailsInfo
             isOwner={isOwner}
             type={type}
