@@ -11,14 +11,15 @@ import Web3 from 'web3';
 import Web3Modal from 'web3modal';
 
 import { SUPPORTED_NETWORKS } from 'util/constants';
+import { EllipsisMiddle } from 'common-util/List/ListTable/helpers';
+import { getBalance } from 'common-util/functions';
+import { DataContext } from 'common-util/context';
 import {
   setUserAccount as setUserAccountFn,
   setUserBalance as setUserBalanceFn,
   setChainId as setChainIdFn,
   setErrorMessage as setErrorMessageFn,
 } from 'store/setup/actions';
-import { getBalance } from 'common-util/functions';
-import { DataContext } from 'common-util/context';
 import { providerOptions } from './Helpers';
 import { Container, DetailsContainer, WalletContainer } from './styles';
 
@@ -69,7 +70,6 @@ const Login = ({
     // using web3Modal to connect. Can be MetaMask or WalletConnect.
     try {
       const modalProvider = await web3Modal.connect();
-
 
       // We plug the initial `provider` and get back
       // a Web3Provider. This will add on methods and
@@ -179,7 +179,9 @@ const Login = ({
           )}
           <div>{isNil(balance) ? '--' : `${round(balance, 2)} ETH`}</div>
           <div className="dash" />
-          <div className="address">{account ? `${account}` : 'NA'}</div>
+          <EllipsisMiddle data-testid="wallet-address">
+            {account ? `${account}` : 'NA'}
+          </EllipsisMiddle>
           <Button variant="transparent" onClick={disconnectAccount}>
             Disconnect
           </Button>

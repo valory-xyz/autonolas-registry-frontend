@@ -48,19 +48,27 @@ export const FooterContainer = styled.div`
   justify-content: space-between;
   align-items: flex-end;
   padding: 1rem 50px;
-  .contracts-info {
-    font-size: 14px;
-    .registry-contract {
-      display: flex;
-      align-items: center;
-      a {
-        margin-left: 8px;
-      }
-    }
-  }
   .socials {
     display: flex;
     column-gap: 28px;
+  }
+  .footer {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0%);
+  }
+`;
+
+export const ContractsInfoContainer = styled.div`
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  .registry-contract {
+    display: flex;
+    align-items: center;
+  }
+  img {
+    margin-right: 8px;
   }
 `;
 

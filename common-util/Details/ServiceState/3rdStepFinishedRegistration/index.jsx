@@ -219,9 +219,9 @@ StepThreePayload.propTypes = {
 };
 
 StepThreePayload.defaultProps = {
+  canShowMultisigSameAddress: false,
   handleStep3Deploy: () => {},
   handleTerminate: () => {},
-  canShowMultisigSameAddress: false,
 };
 
 export default StepThreePayload;
