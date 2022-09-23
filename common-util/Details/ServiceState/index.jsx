@@ -23,8 +23,6 @@ import { ServiceStateContainer } from './styles';
 
 const { Step } = Steps;
 
-const Empty = () => <br />;
-
 /**
  * ServiceState component
  */
@@ -252,12 +250,8 @@ export const ServiceState = ({
       )}
 
       <Steps direction="vertical" current={currentStep}>
-        {steps.map(({ title, component }, index) => (
-          <Step
-            key={kebabCase(title)}
-            title={title}
-            description={currentStep === index ? component : <Empty />}
-          />
+        {steps.map(({ title, component }) => (
+          <Step key={kebabCase(title)} title={title} description={component} />
         ))}
       </Steps>
     </ServiceStateContainer>

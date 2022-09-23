@@ -15,7 +15,6 @@ export const Header = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 2rem;
   .right-content {
     .ant-btn {
       margin-left: 1rem;
