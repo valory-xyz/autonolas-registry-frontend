@@ -4,6 +4,8 @@ import { useRouter } from 'next/router';
 import get from 'lodash/get';
 import { Footer as CommonFooter } from 'autonolas-frontend-library';
 import { ADDRESSES } from 'common-util/Contracts';
+import { ContractsInfoContainer } from './styles';
+
 const SOCIALS = [
   {
     type: 'web',
@@ -28,12 +30,13 @@ const ContractInfo = () => {
   const router = useRouter();
   const { pathname } = router;
   const addresses = ADDRESSES[chainId];
-
-  if (!chainId || !addresses) return null;
+  if (!chainId || !addresses) return <ContractsInfoContainer />;
 
   const getCurrentPageAddresses = () => {
     if ((pathname || '').includes('components')) {
       return {
+        registryText: 'ComponentRegistry',
+        managerText: 'ComponentManager',
         registry: addresses.componentRegistry,
         manager: addresses.registriesManager,
       };
@@ -41,6 +44,8 @@ const ContractInfo = () => {
 
     if ((pathname || '').includes('agents')) {
       return {
+        registryText: 'ComponentRegistry',
+        managerText: 'ComponentManager',
         registry: addresses.agentRegistry,
         manager: addresses.registriesManager,
       };
@@ -48,12 +53,19 @@ const ContractInfo = () => {
 
     if ((pathname || '').includes('services')) {
       return {
+        registryText: 'ServiceRegistry',
+        managerText: 'ServiceManager',
         registry: addresses.serviceRegistry,
         manager: addresses.serviceManager,
       };
     }
 
-    return { registry: null, manager: null };
+    return {
+      registry: null,
+      manager: null,
+      registryText: null,
+      managerText: null,
+    };
   };
 
   const getEtherscanLink = (address) => {
@@ -63,29 +75,34 @@ const ContractInfo = () => {
 
   const getContractInfo = (text, addressToPoint) => (
     <div className="registry-contract">
-      <span>{text}</span>
       <a
         href={getEtherscanLink(addressToPoint)}
         target="_blank"
         rel="noopener noreferrer"
       >
-        <img
-          alt="Etherscan link"
-          width={18}
-          height={18}
-          src="/images/etherscan-logo.svg"
-        />
+        {text}
       </a>
     </div>
   );
 
-  const { registry, manager } = getCurrentPageAddresses();
+  const {
+    registry, manager, managerText, registryText,
+  } = getCurrentPageAddresses();
 
   return (
-    <>
-      {getContractInfo('Registry Contract:', registry)}
-      {getContractInfo('Manager Contract:', manager)}
-    </>
+    <ContractsInfoContainer>
+      <img
+        alt="Etherscan link"
+        width={18}
+        height={18}
+        src="/images/etherscan-logo.svg"
+      />
+      <span>Contracts</span>
+      &nbsp;•&nbsp;
+      {getContractInfo(registryText, registry)}
+      &nbsp;•&nbsp;
+      {getContractInfo(managerText, manager)}
+    </ContractsInfoContainer>
   );
 };
 

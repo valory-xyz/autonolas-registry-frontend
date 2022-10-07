@@ -3,25 +3,17 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import get from 'lodash/get';
 import capitalize from 'lodash/capitalize';
-import { Row, Col, Button } from 'antd/lib';
-import { NAV_TYPES, NA, GATEWAY_URL } from 'util/constants';
+import {
+  Row, Col, Button, Typography,
+} from 'antd/lib';
+import { NAV_TYPES } from 'util/constants';
 import Loader from 'common-util/components/Loader';
 import IpfsHashGenerationModal from '../List/IpfsHashGenerationModal';
 import { ServiceState } from './ServiceState';
-import {
-  ServiceMiniTable,
-  getAutonolasTokenUri,
-  getHashDetails,
-} from './helpers';
-import {
-  Header,
-  DetailsTitle,
-  InfoSubHeader,
-  Info,
-  SectionContainer,
-  EachSection,
-} from './styles';
+import { getAutonolasTokenUri, DetailsInfo, NftImage } from './helpers';
+import { Header, DetailsTitle } from './styles';
 
+const { Text } = Typography;
 const gt = {
   xs: 8,
   sm: 16,
@@ -47,7 +39,7 @@ const Details = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [detailsOwner, setDetailsOwner] = useState('');
   const [tokenUri, setTokenUri] = useState(null);
-  const [nftUrl, setNftUrl] = useState(null);
+  const [hashDetails, setHashDetails] = useState(null);
 
   const isOwner = account.toLowerCase() === detailsOwner.toLowerCase();
 
@@ -98,9 +90,8 @@ const Details = ({
       try {
         const ipfsUrl = getAutonolasTokenUri(tokenUri);
         const response = await fetch(ipfsUrl);
-        const { image } = await response.json();
-        const imageURL = image.replace('ipfs://', GATEWAY_URL);
-        setNftUrl(imageURL);
+        const json = await response.json();
+        setHashDetails(json);
       } catch (e) {
         console.error(e);
       }
@@ -120,123 +111,15 @@ const Details = ({
     setIsModalVisible(false);
   };
 
-  const generateDetails = () => {
-    const hash = get(hashes, 'unitHashes') || [];
-    const updateHashBtn = isOwner ? (
-      <>
-        {onUpdateHash && (
-          <Button type="primary" ghost onClick={() => setIsModalVisible(true)}>
-            Update Hash
-          </Button>
-        )}
-      </>
-    ) : null;
-
-    const nftSection = {
-      title: 'Image',
-      dataTestId: 'nft-image',
-      value: <img src={nftUrl} alt="NFT" width={500} height={500} />,
-    };
-
-    const getComponentAndAgentValues = () => {
-      const dependencies = get(info, 'dependencies') || [];
-
-      return [
-        {
-          title: 'Owner Address',
-          dataTestId: 'owner-address',
-          value: detailsOwner || NA,
-        },
-        {
-          title: 'Hash',
-          dataTestId: 'hashes-list',
-          value: (
-            <>
-              {getHashDetails(type, hash, tokenUri)}
-              {updateHashBtn}
-            </>
-          ),
-        },
-        {
-          title: 'Component Dependencies',
-          dataTestId: 'details-dependency',
-          value:
-            dependencies.length === 0 ? (
-              <>None</>
-            ) : (
-              dependencies.map((e) => (
-                <li key={`${type}-dependency-${e}`}>
-                  <Button type="link" onClick={() => onDependencyClick(e)}>
-                    {e}
-                  </Button>
-                </li>
-              ))
-            ),
-        },
-        nftSection,
-      ];
-    };
-
-    const getServiceValues = () => {
-      const serviceState = ['2', '3', '4'].includes(get(info, 'state'));
-      const agentIds = get(info, 'agentIds');
-
-      return [
-        {
-          title: 'Owner Address',
-          dataTestId: 'owner-address',
-          value: detailsOwner || NA,
-        },
-        {
-          title: 'Hash',
-          dataTestId: 'hashes-list',
-          value: (
-            <>
-              {getHashDetails(type, hash, tokenUri)}
-              {updateHashBtn}
-            </>
-          ),
-        },
-        {
-          title: 'Active',
-          value: serviceState ? 'TRUE' : 'FALSE',
-        },
-        {
-          type: 'table',
-          dataTestId: 'agent-id-table',
-          value: (
-            <ServiceMiniTable
-              id={id}
-              agentIds={agentIds}
-              onDependencyClick={onDependencyClick}
-            />
-          ),
-        },
-        { title: 'Threshold', value: get(info, 'threshold', null) || NA },
-        nftSection,
-      ];
-    };
-
-    const details = type === NAV_TYPES.SERVICE
-      ? getServiceValues()
-      : getComponentAndAgentValues();
-
-    return (
-      <SectionContainer>
-        {details.map(({ title, value, dataTestId }, index) => (
-          <EachSection key={`${type}-details-${index}`}>
-            <InfoSubHeader>{title}</InfoSubHeader>
-            <Info data-testid={dataTestId || ''}>{value}</Info>
-          </EachSection>
-        ))}
-      </SectionContainer>
-    );
-  };
-
   return (
     <>
       <Header>
-        <DetailsTitle level={2}>{`${capitalize(type)} ID ${id}`}</DetailsTitle>
+        <div>
+          <Text strong>{`${capitalize(type)} Name`}</Text>
+          <DetailsTitle level={2}>
+            {`${capitalize(type)} ID ${id}`}
+          </DetailsTitle>
+        </div>
         <div className="right-content">
           {/* Update button to be show only if the connected account is the owner */}
           {isOwner && type !== NAV_TYPES.SERVICE && (
@@ -256,6 +139,26 @@ const Details = ({
 
       <Row gutter={gt}>
         <Col className="gutter-row" span={12}>
+          <DetailsInfo
+            isOwner={isOwner}
+            type={type}
+            id={id}
+            tokenUri={tokenUri}
+            hashes={hashes}
+            info={info}
+            hashDetails={hashDetails}
+            detailsOwner={detailsOwner}
+            onUpdateHash={onUpdateHash}
+            setIsModalVisible={setIsModalVisible}
+            onDependencyClick={onDependencyClick}
+          />
+        </Col>
+
+        <Col className="gutter-row" span={12}>
+          {type !== NAV_TYPES.SERVICE && (
+            <NftImage hashDetails={hashDetails} type={type} />
+          )}
+
           {type === NAV_TYPES.SERVICE && (
             <ServiceState
               isOwner={isOwner}
@@ -265,10 +168,6 @@ const Details = ({
               updateDetails={updateDetails}
             />
           )}
-        </Col>
-
-        <Col className="gutter-row" span={12}>
-          {generateDetails()}
         </Col>
       </Row>
 

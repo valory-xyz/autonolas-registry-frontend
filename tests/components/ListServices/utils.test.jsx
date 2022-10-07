@@ -32,7 +32,7 @@ describe('listServices/utils.jsx', () => {
       },
     }));
 
-    const result = await getServicesByAccount();
+    const result = await getServicesByAccount(1, 1);
     expect(result).toMatchObject([SERVICE_1]);
   });
 
@@ -59,7 +59,7 @@ describe('listServices/utils.jsx', () => {
       },
     }));
 
-    const result = await getServices();
+    const result = await getServices(1, 1);
     expect(result).toMatchObject([SERVICE_1]);
   });
 });

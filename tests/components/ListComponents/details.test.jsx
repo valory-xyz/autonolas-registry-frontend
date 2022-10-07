@@ -13,6 +13,8 @@ import {
   wrapProvider,
   mockV1Hash,
   mockNftImageHash,
+  mockIpfs,
+  mockCodeUri,
 } from '../../helpers';
 
 jest.mock('next/router', () => ({
@@ -49,9 +51,7 @@ const unmockedFetch = global.fetch;
 describe('listComponents/details.jsx', () => {
   beforeAll(() => {
     global.fetch = () => Promise.resolve({
-      json: () => Promise.resolve({
-        image: `ipfs://${mockNftImageHash}`,
-      }),
+      json: () => Promise.resolve(mockIpfs),
     });
   });
 
@@ -66,25 +66,32 @@ describe('listComponents/details.jsx', () => {
 
   it('should render component details', async () => {
     expect.hasAssertions();
-    const { container, getByRole, getByTestId } = render(
+    const { getByText, getByRole, getByTestId } = render(
       wrapProvider(<Component />),
     );
     await waitFor(async () => {
-      expect(container.querySelector('.ant-typography').textContent).toBe(
-        'Component ID 1',
+      // left column content
+      expect(getByText('Component ID 1')).toBeInTheDocument();
+      expect(getByTestId('view-hash-link').getAttribute('href')).toBe(
+        `${GATEWAY_URL}12345`,
+      );
+      expect(getByTestId('view-code-link').getAttribute('href')).toBe(
+        `${GATEWAY_URL}${mockCodeUri}`,
+      );
+      expect(getByTestId('description').textContent).toBe(mockIpfs.description);
+      expect(getByTestId('version').textContent).toBe(
+        mockIpfs.attributes[0].value,
       );
       expect(getByTestId('owner-address').textContent).toBe(
         dummyDetails.developer,
-      );
-      expect(getByTestId('hashes-list').querySelector('a')).toHaveTextContent(
-        `${GATEWAY_URL}12345`,
       );
       expect(getByRole('button', { name: 'Update Hash' })).toBeInTheDocument();
       expect(getByTestId('details-dependency')).toBeInTheDocument();
 
       // NFT image
-      const displayedImage = getByTestId('nft-image').querySelector('img');
-      expect(displayedImage.src).toBe(`${GATEWAY_URL}${mockNftImageHash}`);
+      expect(getByTestId('nft-image').getAttribute('src')).toBe(
+        `${GATEWAY_URL}${mockNftImageHash}`,
+      );
     });
   });
 });
