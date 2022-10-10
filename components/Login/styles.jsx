@@ -1,5 +1,6 @@
 import styled from 'styled-components';
-import { COLOR, MEDIA_QUERY } from 'util/theme';
+import { COLOR } from 'util/theme';
+import { MEDIA_QUERY } from 'autonolas-frontend-library';
 
 export const Container = styled.div``;
 
