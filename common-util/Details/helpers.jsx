@@ -42,11 +42,13 @@ export const COLUMNS = [
 export const ServiceMiniTable = ({ id, agentIds, onDependencyClick }) => {
   const [source, setSource] = useState([]);
 
-  useEffect(async () => {
-    if (id && (agentIds || []).length !== 0) {
-      const temp = await getServiceTableDataSource(id, agentIds || []);
-      setSource(temp);
-    }
+  useEffect(() => {
+    (async () => {
+      if (id && (agentIds || []).length !== 0) {
+        const temp = await getServiceTableDataSource(id, agentIds || []);
+        setSource(temp);
+      }
+    })();
   }, [id, agentIds]);
 
   const data = source.map(({ agentId, bond, availableSlots }, index) => ({

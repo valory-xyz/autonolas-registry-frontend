@@ -22,11 +22,13 @@ const columns = [
 const Deployed = ({ serviceId, multisig, terminateButton }) => {
   const [data, setData] = useState([]);
 
-  useEffect(async () => {
-    if (serviceId) {
-      const tempData = await getAgentInstanceAndOperator(serviceId);
-      setData(tempData);
-    }
+  useEffect(() => {
+    (async () => {
+      if (serviceId) {
+        const tempData = await getAgentInstanceAndOperator(serviceId);
+        setData(tempData);
+      }
+    })();
   }, [serviceId]);
 
   return (

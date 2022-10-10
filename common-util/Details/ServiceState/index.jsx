@@ -45,11 +45,13 @@ export const ServiceState = ({
   const owner = get(details, 'owner') || '';
   const securityDeposit = get(details, 'securityDeposit');
 
-  useEffect(async () => {
-    if (id && (agentIds || []).length !== 0) {
-      const temp = await getServiceTableDataSource(id, agentIds || []);
-      setDataSource(temp);
-    }
+  useEffect(() => {
+    (async () => {
+      if (id && (agentIds || []).length !== 0) {
+        const temp = await getServiceTableDataSource(id, agentIds || []);
+        setDataSource(temp);
+      }
+    })();
   }, [id, agentIds]);
 
   useEffect(() => {
