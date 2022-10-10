@@ -91,17 +91,22 @@ const ContractInfo = () => {
 
   return (
     <ContractsInfoContainer>
-      <img
-        alt="Etherscan link"
-        width={18}
-        height={18}
-        src="/images/etherscan-logo.svg"
-      />
-      <span>Contracts</span>
-      &nbsp;•&nbsp;
-      {getContractInfo(registryText, registry)}
-      &nbsp;•&nbsp;
-      {getContractInfo(managerText, manager)}
+      {/* should not display contracts on homepage */}
+      {pathname !== '/' && (
+        <>
+          <img
+            alt="Etherscan link"
+            width={18}
+            height={18}
+            src="/images/etherscan-logo.svg"
+          />
+          <span>Contracts</span>
+          &nbsp;•&nbsp;
+          {getContractInfo(registryText, registry)}
+          &nbsp;•&nbsp;
+          {getContractInfo(managerText, manager)}
+        </>
+      )}
     </ContractsInfoContainer>
   );
 };
