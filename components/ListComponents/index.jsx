@@ -5,7 +5,12 @@ import { useRouter } from 'next/router';
 import { URL, NAV_TYPES } from 'util/constants';
 import ListTable from 'common-util/List/ListTable';
 import { useExtraTabContent } from 'common-util/List/ListTable/helpers';
-import { getComponents, getComponentsByAccount } from './utils';
+import {
+  getComponents,
+  getComponentsByAccount,
+  getTotalForAllComponents,
+  getTotalForMyComponents,
+} from './utils';
 
 const { TabPane } = Tabs;
 
@@ -33,15 +38,18 @@ const ListComponents = ({ account }) => {
             getList={getComponents}
             filterValue={searchValue}
             onViewClick={onViewClick}
+            getTotal={getTotalForAllComponents}
           />
         </TabPane>
 
         <TabPane tab="My Components" key="my_components">
           <ListTable
             type={NAV_TYPES.COMPONENT}
-            getList={() => getComponentsByAccount(account)}
+            getList={getComponentsByAccount}
             filterValue={searchValue}
             onViewClick={onViewClick}
+            getTotal={() => getTotalForMyComponents(account)}
+            isAccountRequired
           />
         </TabPane>
       </Tabs>

@@ -7,11 +7,14 @@ export const DetailsTitle = styled(Typography.Title)`
   margin: 0 !important;
 `;
 
+export const SubTitle = styled(Typography.Text)`
+  margin-top: 0.5rem;
+`;
+
 export const Header = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 2rem;
   .right-content {
     .ant-btn {
       margin-left: 1rem;
@@ -20,9 +23,14 @@ export const Header = styled.div`
 `;
 
 export const InfoSubHeader = styled.div`
+  display: flex;
+  align-items: center;
   font-weight: 700;
   margin-bottom: 0.25rem;
   color: ${COLOR.BLACK};
+  .ant-btn {
+    font-size: 18px;
+  }
 `;
 
 export const Info = styled.div`
@@ -36,9 +44,28 @@ export const Info = styled.div`
 `;
 
 export const EachSection = styled.div`
-  padding: 1rem 2rem;
+  padding-top: 1.25rem;
+`;
+
+export const NftImageContainer = styled.img`
   border: 1px solid ${COLOR.BORDER_GREY};
-  border-bottom-color: transparent;
+`;
+
+export const ServiceStatus = styled.div`
+  display: inline-block;
+  &.active svg {
+    fill: ${COLOR.GREEN};
+    color: ${COLOR.GREEN};
+  }
+  &.inactive svg {
+    fill: ${COLOR.RED_1};
+    color: ${COLOR.RED_1};
+  }
+  svg {
+    top: -2px;
+    margin-right: 6px;
+    position: relative;
+  }
 `;
 
 export const SectionContainer = styled.div`

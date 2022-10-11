@@ -6,7 +6,12 @@ import { useRouter } from 'next/router';
 import { URL, NAV_TYPES } from 'util/constants';
 import ListTable from 'common-util/List/ListTable';
 import { useExtraTabContent } from 'common-util/List/ListTable/helpers';
-import { getAgents, getAgentsByAccount } from './utils';
+import {
+  getAgents,
+  getAgentsByAccount,
+  getTotalForAllAgents,
+  getTotalForMyAgents,
+} from './utils';
 
 const { TabPane } = Tabs;
 
@@ -34,14 +39,17 @@ const ListAgents = ({ account }) => {
             filterValue={searchValue}
             getList={getAgents}
             onViewClick={onViewClick}
+            getTotal={getTotalForAllAgents}
           />
         </TabPane>
         <TabPane tab="My Agents" key="my_agents">
           <ListTable
             type={NAV_TYPES.AGENT}
             filterValue={searchValue}
-            getList={() => getAgentsByAccount(account)}
+            getList={getAgentsByAccount}
             onViewClick={onViewClick}
+            getTotal={() => getTotalForMyAgents(account)}
+            isAccountRequired
           />
         </TabPane>
       </Tabs>

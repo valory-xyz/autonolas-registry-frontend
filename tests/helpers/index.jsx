@@ -37,3 +37,13 @@ export const getTableTd = (i) => `.ant-table-tbody > tr.ant-table-row.ant-table-
 export const mockV1Hash = '6f3212908f2e7a0249b67b05f237a40b76b7d8ef36d5620b281ceb47dcb6b122';
 
 export const mockNftImageHash = '9cf4ae0b5d082843b3b34d0d400abbeffcb5a98b68ea89f3abf151f182315ab0';
+
+export const mockCodeUri = 'f017012209cf4ae0b5d082843b3b34d0d400abbeffcb5a98b68ea89f3abf151f182315ab0';
+
+export const mockIpfs = {
+  image: `ipfs://${mockNftImageHash}`,
+  name: 'Some name',
+  description: 'Some description',
+  code_uri: `ipfs://${mockCodeUri}`,
+  attributes: [{ trait_type: 'version', value: '0.0.0.1' }],
+};

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import {
-  Button, Space, Divider, Steps, Tooltip,
+  Button, Space, Steps, Tooltip, Image,
 } from 'antd/lib';
 import get from 'lodash/get';
 import kebabCase from 'lodash/kebabCase';
@@ -15,14 +15,13 @@ import {
   onStep3Deploy,
   onStep5Unbond,
 } from './utils';
-import ActiveRegistrationTable from './ActiveRegistrationTable';
-import StepThreePayload from './StepThreePayload';
+import StepActiveRegistration from './2StepActiveRegistration';
+import StepFinishedRegistration from './3rdStepFinishedRegistration';
+import Deployed from './4thStepDeployed';
 import { InfoSubHeader } from '../styles';
 import { ServiceStateContainer } from './styles';
 
 const { Step } = Steps;
-
-const Empty = () => <br />;
 
 /**
  * ServiceState component
@@ -37,12 +36,13 @@ export const ServiceState = ({
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   const [dataSource, setDataSource] = useState([]);
+  const [isStateImageVisible, setIsStateImageVisible] = useState(false);
 
   const status = get(details, 'state');
   const agentIds = get(details, 'agentIds');
-  const multisig = get(details, 'multisig');
-  const threshold = get(details, 'threshold');
-  const owner = get(details, 'owner');
+  const multisig = get(details, 'multisig') || '';
+  const threshold = get(details, 'threshold') || '';
+  const owner = get(details, 'owner') || '';
   const securityDeposit = get(details, 'securityDeposit');
 
   useEffect(async () => {
@@ -175,23 +175,19 @@ export const ServiceState = ({
     {
       title: 'Active Registration',
       component: (
-        <div className="step-2-active-registration">
-          <ActiveRegistrationTable
-            data={dataSource}
-            setDataSource={setDataSource}
-            bordered
-          />
-
-          <Button onClick={handleStep2RegisterAgents}>Register Agents</Button>
-          <Divider />
-          <Button onClick={handleTerminate}>Terminate</Button>
-        </div>
+        <StepActiveRegistration
+          serviceId={id}
+          dataSource={dataSource}
+          setDataSource={setDataSource}
+          handleStep2RegisterAgents={handleStep2RegisterAgents}
+          handleTerminate={handleTerminate}
+        />
       ),
     },
     {
       title: 'Finished Registration',
       component: (
-        <StepThreePayload
+        <StepFinishedRegistration
           serviceId={id}
           multisig={multisig}
           threshold={threshold}
@@ -208,16 +204,15 @@ export const ServiceState = ({
     {
       title: 'Deployed',
       component: (
-        <div className="step-4-terminate">
-          <Space direction="vertical" size={10}>
-            <div>{`Safe contract address: ${multisig}`}</div>
-            {getButton(
-              <Button disabled={!isOwner} onClick={handleStep4Terminate}>
-                Terminate
-              </Button>,
-            )}
-          </Space>
-        </div>
+        <Deployed
+          serviceId={id}
+          multisig={multisig}
+          terminateButton={getButton(
+            <Button disabled={!isOwner} onClick={handleStep4Terminate}>
+              Terminate
+            </Button>,
+          )}
+        />
       ),
     },
     {
@@ -229,14 +224,34 @@ export const ServiceState = ({
 
   return (
     <ServiceStateContainer>
-      <InfoSubHeader>State</InfoSubHeader>
+      <InfoSubHeader>
+        State
+        <Button
+          type="link"
+          size="large"
+          onClick={() => setIsStateImageVisible(true)}
+        >
+          Learn about service states
+        </Button>
+      </InfoSubHeader>
+
+      {isStateImageVisible && (
+        <Image
+          width={200}
+          src="/images/service-lifecycle.png"
+          preview={{
+            visible: isStateImageVisible,
+            src: '/images/service-lifecycle.png',
+            onVisibleChange: (value) => {
+              setIsStateImageVisible(value);
+            },
+          }}
+        />
+      )}
+
       <Steps direction="vertical" current={currentStep}>
-        {steps.map(({ title, component }, index) => (
-          <Step
-            key={kebabCase(title)}
-            title={title}
-            description={currentStep === index ? component : <Empty />}
-          />
+        {steps.map(({ title, component }) => (
+          <Step key={kebabCase(title)} title={title} description={component} />
         ))}
       </Steps>
     </ServiceStateContainer>

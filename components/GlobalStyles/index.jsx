@@ -18,7 +18,6 @@ const GlobalStyle = createGlobalStyle`
   html {
     width: 100%;
     height: 100%;
-    overscroll-behavior: none;
     margin: 0;
     font-family: texgyreheros__regular, sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -172,6 +171,11 @@ const GlobalStyle = createGlobalStyle`
   .inherit-alert-info {
     background-color: inherit;
     border-color: ${COLOR.PRIMARY};
+  }
+
+  /* ant image */
+  .ant-image-preview-wrap {
+    background: ${COLOR.GREY_2}
   }
 `;
 

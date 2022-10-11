@@ -1,4 +1,5 @@
 import { notification } from 'antd/lib';
+import { TOTAL_VIEW_COUNT } from 'util/constants';
 import {
   getMechMinterContract,
   getComponentContract,
@@ -24,9 +25,9 @@ export const getComponentOwner = (id) => new Promise((resolve, reject) => {
  * helper to return the list of details (table in index page)
  */
 const getComponentsHelper = (promiseList, resolve) => {
-  Promise.all(promiseList).then(async (allComponentsList) => {
+  Promise.all(promiseList).then(async (componentsList) => {
     const results = await Promise.all(
-      allComponentsList.map(async (info, i) => {
+      componentsList.map(async (info, i) => {
         const owner = await getComponentOwner(`${i + 1}`);
         return { ...info, owner };
       }),
@@ -51,50 +52,84 @@ export const getComponentDetails = (id) => new Promise((resolve, reject) => {
     });
 });
 
-export const getComponentsByAccount = (account) => new Promise((resolve, reject) => {
+export const getTotalForMyComponents = (account) => new Promise((resolve, reject) => {
   const contract = getComponentContract();
   contract.methods
     .balanceOf(account)
     .call()
-    .then((length) => {
-      const promises = [];
-      for (let i = 1; i <= length; i += 1) {
-        const componentId = `${i}`;
-        const result = contract.methods.getUnit(componentId).call();
-        promises.push(result);
-      }
-
-      getComponentsHelper(promises, resolve);
+    .then((response) => {
+      resolve(response);
     })
     .catch((e) => {
-      console.error(e);
       reject(e);
     });
+});
+
+export const getComponentsByAccount = (total, nextPage) => new Promise((resolve, reject) => {
+  const contract = getComponentContract();
+
+  try {
+    const allComponentsPromises = [];
+    const first = (nextPage - 1) * TOTAL_VIEW_COUNT + 1;
+    const last = Math.min(nextPage * TOTAL_VIEW_COUNT, total);
+    for (let i = first; i <= last; i += 1) {
+      const componentId = `${i}`;
+      const result = contract.methods.getUnit(componentId).call();
+      allComponentsPromises.push(result);
+    }
+
+    getComponentsHelper(allComponentsPromises, resolve);
+  } catch (e) {
+    console.error(e);
+    reject(e);
+  }
 });
 
 /**
  * Function to return all components
  */
-export const getComponents = () => new Promise((resolve, reject) => {
+export const getTotalForAllComponents = () => new Promise((resolve, reject) => {
   const contract = getComponentContract();
-
   contract.methods
     .totalSupply()
     .call()
-    .then((total) => {
-      const allComponentsPromises = [];
-      for (let i = 1; i <= total; i += 1) {
-        const componentId = `${i}`;
-        const result = contract.methods.getUnit(componentId).call();
-        allComponentsPromises.push(result);
-      }
-
-      getComponentsHelper(allComponentsPromises, resolve);
+    .then((response) => {
+      resolve(response);
     })
     .catch((e) => {
-      console.error(e);
       reject(e);
     });
+});
+
+export const getComponents = (total, nextPage) => new Promise((resolve, reject) => {
+  const contract = getComponentContract();
+
+  try {
+    const allComponentsPromises = [];
+    /**
+       * @example
+       * TOTAL_VIEW_COUNT = 10
+       * nextPage = 5
+       * total = 45
+       * first = ((5 - 1) * 10) + 1
+       *      = (4 * 10) + 1
+       *      = 41
+       * last = min(5 * 10, 45)
+       *      = 45
+       */
+    const first = (nextPage - 1) * TOTAL_VIEW_COUNT + 1;
+    const last = Math.min(nextPage * TOTAL_VIEW_COUNT, total);
+    for (let i = first; i <= last; i += 1) {
+      const componentId = `${i}`;
+      const result = contract.methods.getUnit(componentId).call();
+      allComponentsPromises.push(result);
+    }
+
+    getComponentsHelper(allComponentsPromises, resolve);
+  } catch (e) {
+    console.error(e);
+    reject(e);
+  }
 });
 
 export const getComponentHashes = (id) => new Promise((resolve, reject) => {
