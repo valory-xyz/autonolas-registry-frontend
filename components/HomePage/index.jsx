@@ -1,5 +1,7 @@
 import { URL } from 'util/constants';
-import { Button, Col, Row, Typography } from 'antd/lib';
+import {
+  Button, Col, Row, Typography,
+} from 'antd/lib';
 import Link from 'next/link';
 import { Container, HeaderRow, ContentRow } from './styles';
 
@@ -61,7 +63,9 @@ const HomePage = () => (
         How are Autonolas services architected?
       </Title>
 
-      {LIST.map(({ title, desc, link, type }) => (
+      {LIST.map(({
+        title, desc, link, type,
+      }) => (
         <Row
           className="each-service"
           key={`each-service-${type}`}
