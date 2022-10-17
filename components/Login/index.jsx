@@ -10,10 +10,10 @@ import isNil from 'lodash/isNil';
 import Web3 from 'web3';
 import Web3Modal from 'web3modal';
 
+import { Web3DataContext } from 'autonolas-frontend-library';
 import { SUPPORTED_NETWORKS } from 'util/constants';
 import { EllipsisMiddle } from 'common-util/List/ListTable/helpers';
 import { getBalance } from 'common-util/functions';
-import { DataContext } from 'common-util/context';
 import {
   setUserAccount as setUserAccountFn,
   setUserBalance as setUserBalanceFn,
@@ -48,7 +48,7 @@ const Login = ({
 }) => {
   const {
     provider, web3Provider, setProvider, setWeb3Provider,
-  } = useContext(DataContext);
+  } = useContext(Web3DataContext);
 
   const setBalance = async (accountPassed) => {
     try {
