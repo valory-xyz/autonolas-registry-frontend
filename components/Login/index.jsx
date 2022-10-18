@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import { Login as LoginComponent } from 'autonolas-frontend-library';
 import {
   setUserAccount as setUserAccountFn,
@@ -7,6 +8,8 @@ import {
   setChainId as setChainIdFn,
   setErrorMessage as setErrorMessageFn,
 } from 'store/setup/actions';
+
+const Container = styled.div``;
 
 const Login = ({
   setUserAccount,
@@ -19,22 +22,26 @@ const Login = ({
     setUserBalance(response.balance);
     setChainId(response.chainId);
   };
+
   const onDisconnect = () => {
     setUserAccount(null);
     setUserBalance(null);
     setErrorMessage(null);
     setChainId(null);
   };
+
   const onError = (error) => {
     setErrorMessage(error);
   };
 
   return (
-    <LoginComponent
-      onConnect={onConnect}
-      onDisconnect={onDisconnect}
-      onError={onError}
-    />
+    <Container>
+      <LoginComponent
+        onConnect={onConnect}
+        onDisconnect={onDisconnect}
+        onError={onError}
+      />
+    </Container>
   );
 };
 
