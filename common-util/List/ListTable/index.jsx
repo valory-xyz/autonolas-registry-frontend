@@ -27,32 +27,36 @@ const ListTable = ({
   const canCallApi = isAccountRequired ? !!account : true;
 
   // fetch the total first!
-  useEffect(async () => {
-    if (canCallApi) {
-      try {
-        const totalTemp = await getTotal();
-        setTotal(Number(totalTemp));
-        if (Number(totalTemp) === 0) setIsLoading(false);
-      } catch (e) {
-        console.error(e);
+  useEffect(() => {
+    (async () => {
+      if (canCallApi) {
+        try {
+          const totalTemp = await getTotal();
+          setTotal(Number(totalTemp));
+          if (Number(totalTemp) === 0) setIsLoading(false);
+        } catch (e) {
+          console.error(e);
+        }
       }
-    }
+    })();
   }, [account]);
 
-  useEffect(async () => {
-    if (total && currentPage && canCallApi) {
-      setIsLoading(true);
-      setList([]);
+  useEffect(() => {
+    (async () => {
+      if (total && currentPage && canCallApi) {
+        setIsLoading(true);
+        setList([]);
 
-      try {
-        const everyComps = await getList(total, currentPage);
-        setList(everyComps);
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setIsLoading(false);
+        try {
+          const everyComps = await getList(total, currentPage);
+          setList(everyComps);
+        } catch (e) {
+          console.error(e);
+        } finally {
+          setIsLoading(false);
+        }
       }
-    }
+    })();
   }, [account, total, currentPage]);
 
   if (isLoading) {

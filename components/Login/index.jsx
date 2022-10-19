@@ -59,7 +59,7 @@ const Login = ({
     }
   };
 
-  useEffect(async () => {
+  useEffect(() => {
     if (account && web3Provider) {
       setBalance(account);
     }
@@ -146,7 +146,6 @@ const Login = ({
         }
       };
     }
-
     return () => {};
   }, [provider, disconnectAccount]);
 

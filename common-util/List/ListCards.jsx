@@ -12,20 +12,22 @@ const ListCards = ({
   const [isLoading, setIsLoading] = useState(false);
   const [list, setList] = useState([]);
 
-  useEffect(async () => {
-    if (account) {
-      setIsLoading(true);
-      setList([]);
+  useEffect(() => {
+    (async () => {
+      if (account) {
+        setIsLoading(true);
+        setList([]);
 
-      try {
-        const everyComps = await getList();
-        setList(everyComps);
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setIsLoading(false);
+        try {
+          const everyComps = await getList();
+          setList(everyComps);
+        } catch (e) {
+          console.error(e);
+        } finally {
+          setIsLoading(false);
+        }
       }
-    }
+    })();
   }, [account]);
 
   if (isLoading) {
