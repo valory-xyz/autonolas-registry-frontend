@@ -39,11 +39,11 @@ class MyApp extends App {
           />
         </Head>
         {/* <Web3DataProvider> */}
-          <Web3ReactProvider getLibrary={getLibrary}>
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
-          </Web3ReactProvider>
+        <Web3ReactProvider getLibrary={getLibrary}>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </Web3ReactProvider>
         {/* </Web3DataProvider> */}
       </>
     );

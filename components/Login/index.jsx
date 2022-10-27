@@ -43,12 +43,12 @@ const Login = ({
   return (
     <Container>
       LOGIN
-      {/* <LoginComponent
+      <div
         rpc={rpc}
         onConnect={onConnect}
         onDisconnect={onDisconnect}
         onError={onError}
-      /> */}
+      />
     </Container>
   );
 };
@@ -69,4 +69,7 @@ const mapDispatchToProps = {
   setErrorMessage: setErrorMessageFn,
 };
 
-export default connect(null, mapDispatchToProps)(Login);
+export const Late = connect(null, mapDispatchToProps)(Login);
+
+const MyLogin = () => <>LOGIN</>;
+export default MyLogin;

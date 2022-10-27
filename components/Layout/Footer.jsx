@@ -25,7 +25,7 @@ const SOCIALS = [
   },
 ];
 
-const ContractInfo = () => {
+export const ContractInfo = () => {
   const chainId = useSelector((state) => get(state, 'setup.chainId'));
   const router = useRouter();
   const { pathname } = router;
@@ -136,6 +136,6 @@ export const getSocials = () => (
 //   <CommonFooter leftContent={<ContractInfo />} rightContent={getSocials()} />
 // );
 
-const Footer = () => <>FOOTER</>
+const Footer = () => <>FOOTER</>;
 
 export default Footer;
