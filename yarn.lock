@@ -4308,9 +4308,9 @@ atomic-sleep@^1.0.0:
   resolved "https://registry.yarnpkg.com/atomic-sleep/-/atomic-sleep-1.0.0.tgz#eb85b77a601fc932cfe432c5acd364a9e2c9075b"
   integrity sha512-kNOjDqAh7px0XWNI+4QbzoiR/nTkHAWNud2uvnJquD1/x5a7EQZMJT0AczqK0Qn67oY/TTQ1LbUKajZpp3I9tQ==
 
-"autonolas-frontend-library@git+https://github.com/valory-xyz/autonolas-frontend-library.git#5d2d1ff":
+"autonolas-frontend-library@git://github.com/valory-xyz/autonolas-frontend-library.git":
   version "1.0.0"
-  resolved "git+https://github.com/valory-xyz/autonolas-frontend-library.git#5d2d1ff70e9fc54d625332136b52fa8b38750dda"
+  resolved "git://github.com/valory-xyz/autonolas-frontend-library.git#5d2d1ff70e9fc54d625332136b52fa8b38750dda"
   dependencies:
     "@walletconnect/web3-provider" "^1.8.0"
     "@web3-react/core" "^6.1.9"
