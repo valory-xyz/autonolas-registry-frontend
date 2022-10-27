@@ -1,11 +1,13 @@
 import styled from 'styled-components';
 import { Layout } from 'antd/lib';
+import { COLOR } from 'autonolas-frontend-library';
 
 export const CustomLayout = styled(Layout)`
   .registry-tabs {
     .ant-tabs-extra-content {
       &:not(:last-child) {
         .ant-typography {
+          color: ${COLOR.PRIMARY};
           margin: 0 12px 0 0;
         }
       }

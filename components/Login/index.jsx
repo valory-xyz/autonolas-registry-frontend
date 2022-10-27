@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-// import { Login as LoginComponent } from 'autonolas-frontend-library';
+import { Login as LoginComponent } from 'autonolas-frontend-library';
 import {
   setUserAccount as setUserAccountFn,
   setUserBalance as setUserBalanceFn,
@@ -42,8 +42,7 @@ const Login = ({
 
   return (
     <Container>
-      LOGIN
-      <div
+      <LoginComponent
         rpc={rpc}
         onConnect={onConnect}
         onDisconnect={onDisconnect}
@@ -69,7 +68,4 @@ const mapDispatchToProps = {
   setErrorMessage: setErrorMessageFn,
 };
 
-export const Late = connect(null, mapDispatchToProps)(Login);
-
-const MyLogin = () => <>LOGIN</>;
-export default MyLogin;
+export default connect(null, mapDispatchToProps)(Login);
