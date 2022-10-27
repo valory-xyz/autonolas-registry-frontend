@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Login as LoginComponent } from 'autonolas-frontend-library';
+// import { Login as LoginComponent } from 'autonolas-frontend-library';
 import {
   setUserAccount as setUserAccountFn,
   setUserBalance as setUserBalanceFn,
@@ -42,12 +42,13 @@ const Login = ({
 
   return (
     <Container>
-      <LoginComponent
+      LOGIN
+      {/* <LoginComponent
         rpc={rpc}
         onConnect={onConnect}
         onDisconnect={onDisconnect}
         onError={onError}
-      />
+      /> */}
     </Container>
   );
 };

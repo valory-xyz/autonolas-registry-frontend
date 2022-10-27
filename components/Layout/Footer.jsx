@@ -2,7 +2,7 @@ import Image from 'next/image';
 import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 import get from 'lodash/get';
-import { Footer as CommonFooter } from 'autonolas-frontend-library';
+// import { Footer as CommonFooter } from 'autonolas-frontend-library';
 import { ADDRESSES } from 'common-util/Contracts';
 import { ContractsInfoContainer } from './styles';
 
@@ -132,8 +132,10 @@ export const getSocials = () => (
   </div>
 );
 
-const Footer = () => (
-  <CommonFooter leftContent={<ContractInfo />} rightContent={getSocials()} />
-);
+// const Footer = () => (
+//   <CommonFooter leftContent={<ContractInfo />} rightContent={getSocials()} />
+// );
+
+const Footer = () => <>FOOTER</>
 
 export default Footer;
