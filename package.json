@@ -17,7 +17,7 @@
     "@zeit/next-css": "^1.0.1",
     "@zeit/next-less": "^1.0.1",
     "antd": "^4.12.3",
-    "autonolas-frontend-library": "github:valory-xyz/autonolas-frontend-library",
+    "autonolas-frontend-library": "valory-xyz/autonolas-frontend-library#5d2d1ff",
     "bs58": "^4.0.1",
     "ethers": "^5.5.2",
     "ipfs": "^0.63.5",
