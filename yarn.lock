@@ -4308,7 +4308,7 @@ atomic-sleep@^1.0.0:
   resolved "https://registry.yarnpkg.com/atomic-sleep/-/atomic-sleep-1.0.0.tgz#eb85b77a601fc932cfe432c5acd364a9e2c9075b"
   integrity sha512-kNOjDqAh7px0XWNI+4QbzoiR/nTkHAWNud2uvnJquD1/x5a7EQZMJT0AczqK0Qn67oY/TTQ1LbUKajZpp3I9tQ==
 
-autonolas-frontend-library@valory-xyz/autonolas-frontend-library:
+"autonolas-frontend-library@github:valory-xyz/autonolas-frontend-library":
   version "1.0.0"
   resolved "https://codeload.github.com/valory-xyz/autonolas-frontend-library/tar.gz/5d2d1ff70e9fc54d625332136b52fa8b38750dda"
   dependencies:
