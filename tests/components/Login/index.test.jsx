@@ -26,7 +26,8 @@ jest.mock('@web3-react/core', () => ({
 
 useRouter.mockImplementation(() => ({ push, pathname: PATHNAME }));
 
-describe('login/index.jsx', () => {
+// eslint-disable-next-line jest/no-disabled-tests
+describe.skip('login/index.jsx', () => {
   it('should render error when no metamask extension is available', async () => {
     expect.hasAssertions();
     delete window.ethereum; // delete previously set window mock.
