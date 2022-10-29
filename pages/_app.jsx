@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import Web3 from 'web3';
 import { Web3ReactProvider } from '@web3-react/core';
 
-import { Web3DataProvider } from 'autonolas-frontend-library';
+import { Web3DataProvider } from '@autonolas/frontend-library';
 import GlobalStyle from 'components/GlobalStyles';
 import Layout from 'components/Layout';
 import initStore from '../store';
