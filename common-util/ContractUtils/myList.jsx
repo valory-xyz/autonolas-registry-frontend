@@ -4,6 +4,9 @@ export const filterByOwner = (account, results = []) => results.filter(
   (e) => (e.owner || '').toLowerCase() === (account || '').toLowerCase(),
 );
 
+/**
+ * get all the list and filter by owner
+ */
 export const getListByAccount = async ({
   account, total, getUnit, getOwner,
 }) => new Promise((resolve, reject) => {
@@ -31,6 +34,9 @@ export const getListByAccount = async ({
   }
 });
 
+/**
+ * call API once and return based on pagination
+ */
 export const getMyListOnPagination = async ({
   total,
   nextPage,

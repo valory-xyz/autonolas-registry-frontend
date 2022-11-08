@@ -27,18 +27,18 @@ const ListAgents = ({ account }) => {
   const onViewClick = (id) => router.push(`${URL.AGENTS}/${id}`);
 
   // my components
-  const [myComponentsList, setMyComponentsList] = useState([]);
-  const getMyComponentsApi = async () => {
+  const [myAgentsList, setMyAgentsList] = useState([]);
+  const setMyAgentsApi = async () => {
     const e = await getAgentsByAccount(account);
-    setMyComponentsList(e);
+    setMyAgentsList(e);
     return e;
   };
 
-  const getMyAgents = async (myComponentsTotal, nextPage) => getMyListOnPagination({
-    total: myComponentsTotal,
+  const getMyAgents = async (myAgentsTotal, nextPage) => getMyListOnPagination({
+    total: myAgentsTotal,
     nextPage,
-    myList: myComponentsList,
-    getMyList: getMyComponentsApi,
+    myList: myAgentsList,
+    getMyList: setMyAgentsApi,
   });
 
   return (
