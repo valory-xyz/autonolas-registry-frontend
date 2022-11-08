@@ -1,6 +1,7 @@
 import { notification } from 'antd/lib';
 import { TOTAL_VIEW_COUNT } from 'util/constants';
 import { getMechMinterContract, getAgentContract } from 'common-util/Contracts';
+import { getListByAccount } from 'common-util/ContractUtils/myList';
 
 // --------- HELPER METHODS ---------
 export const getAgentOwner = (agentId) => new Promise((resolve, reject) => {
@@ -65,26 +66,6 @@ export const getTotalForMyAgents = (account) => new Promise((resolve, reject) =>
     });
 });
 
-export const getAgentsByAccount = (total, nextPage) => new Promise((resolve, reject) => {
-  const contract = getAgentContract();
-
-  try {
-    const promises = [];
-    const first = (nextPage - 1) * TOTAL_VIEW_COUNT + 1;
-    const last = Math.min(nextPage * TOTAL_VIEW_COUNT, total);
-    for (let i = first; i <= last; i += 1) {
-      const agentId = `${i}`;
-      const result = contract.methods.getUnit(agentId).call();
-      promises.push(result);
-    }
-
-    getAgentsHelper(promises, resolve);
-  } catch (e) {
-    console.error(e);
-    reject(e);
-  }
-});
-
 /**
  * Function to return all agents
  */
@@ -120,6 +101,20 @@ export const getAgents = (total, nextPage) => new Promise((resolve, reject) => {
     reject(e);
   }
 });
+
+
+export const getAgentsByAccount = async (account) => {
+  const contract = getAgentContract();
+  const total = await getTotalForAllAgents();
+  const { getUnit } = contract.methods;
+
+  return getListByAccount({
+    account,
+    total,
+    getUnit,
+    getOwner: getAgentOwner,
+  });
+};
 
 export const getAgentHashes = (agentId) => new Promise((resolve, reject) => {
   const contract = getAgentContract();

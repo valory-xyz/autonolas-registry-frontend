@@ -3,6 +3,7 @@ import {
   getMechMinterContract,
   getComponentContract,
 } from 'common-util/Contracts';
+import { getListByAccount } from 'common-util/ContractUtils/myList';
 import { getFirstAndLastIndex } from 'common-util/functions';
 
 // --------- HELPER METHODS ---------
@@ -82,33 +83,13 @@ export const getTotalForMyComponents = (account) => new Promise((resolve, reject
 export const getComponentsByAccount = async (account) => {
   const contract = getComponentContract();
   const total = await getTotalForAllComponents();
+  const { getUnit } = contract.methods;
 
-  return new Promise((resolve, reject) => {
-    try {
-      const allComponentsPromises = [];
-      for (let i = 1; i <= total; i += 1) {
-        const componentId = `${i}`;
-        const result = contract.methods.getUnit(componentId).call();
-        allComponentsPromises.push(result);
-      }
-
-      Promise.all(allComponentsPromises).then(async (componentsList) => {
-        const results = await Promise.all(
-          componentsList.map(async (info, i) => {
-            const owner = await getComponentOwner(`${i + 1}`);
-            return { ...info, owner };
-          }),
-        );
-
-        const finalResult = results.filter(
-          (e) => (e.owner || '').toLowerCase() === (account || '').toLowerCase(),
-        );
-        resolve(finalResult);
-      });
-    } catch (e) {
-      console.error(e);
-      reject(e);
-    }
+  return getListByAccount({
+    account,
+    total,
+    getUnit,
+    getOwner: getComponentOwner,
   });
 };
 
