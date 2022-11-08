@@ -1,17 +1,21 @@
 import { getFirstAndLastIndex } from 'common-util/functions';
 
+export const filterByOwner = (account, results = []) => results.filter(
+  (e) => (e.owner || '').toLowerCase() === (account || '').toLowerCase(),
+);
+
 export const getListByAccount = async ({
   account, total, getUnit, getOwner,
 }) => new Promise((resolve, reject) => {
   try {
-    const allComponentsPromises = [];
+    const allListPromise = [];
     for (let i = 1; i <= total; i += 1) {
-      const componentId = `${i}`;
-      const result = getUnit(componentId).call();
-      allComponentsPromises.push(result);
+      const id = `${i}`;
+      const result = getUnit(id).call();
+      allListPromise.push(result);
     }
 
-    Promise.all(allComponentsPromises).then(async (componentsList) => {
+    Promise.all(allListPromise).then(async (componentsList) => {
       const results = await Promise.all(
         componentsList.map(async (info, i) => {
           const owner = await getOwner(`${i + 1}`);
@@ -19,10 +23,7 @@ export const getListByAccount = async ({
         }),
       );
 
-      const finalResult = results.filter(
-        (e) => (e.owner || '').toLowerCase() === (account || '').toLowerCase(),
-      );
-      resolve(finalResult);
+      resolve(filterByOwner(account, results));
     });
   } catch (e) {
     console.error(e);
