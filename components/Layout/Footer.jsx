@@ -2,8 +2,9 @@ import Image from 'next/image';
 import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 import get from 'lodash/get';
+import { Footer as CommonFooter } from '@autonolas/frontend-library';
 import { ADDRESSES } from 'common-util/Contracts';
-import { FooterContainer, ContractsInfoContainer } from './styles';
+import { ContractsInfoContainer } from './styles';
 
 const SOCIALS = [
   {
@@ -90,17 +91,22 @@ const ContractInfo = () => {
 
   return (
     <ContractsInfoContainer>
-      <img
-        alt="Etherscan link"
-        width={18}
-        height={18}
-        src="/images/etherscan-logo.svg"
-      />
-      <span>Contracts</span>
-      &nbsp;•&nbsp;
-      {getContractInfo(registryText, registry)}
-      &nbsp;•&nbsp;
-      {getContractInfo(managerText, manager)}
+      {/* should not display contracts on homepage */}
+      {pathname !== '/' && (
+        <>
+          <img
+            alt="Etherscan link"
+            width={18}
+            height={18}
+            src="/images/etherscan-logo.svg"
+          />
+          <span>Contracts</span>
+          &nbsp;•&nbsp;
+          {getContractInfo(registryText, registry)}
+          &nbsp;•&nbsp;
+          {getContractInfo(managerText, manager)}
+        </>
+      )}
     </ContractsInfoContainer>
   );
 };
@@ -127,16 +133,7 @@ export const getSocials = () => (
 );
 
 const Footer = () => (
-  <FooterContainer>
-    <ContractInfo />
-
-    <div className="footer">
-      ©&nbsp;Valory&nbsp;
-      {new Date().getFullYear()}
-    </div>
-
-    {getSocials()}
-  </FooterContainer>
+  <CommonFooter leftContent={<ContractInfo />} rightContent={getSocials()} />
 );
 
 export default Footer;

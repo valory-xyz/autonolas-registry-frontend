@@ -57,9 +57,11 @@ const StepThreePayload = ({
     handleStep3Deploy(radioValue, payload);
   };
 
-  useEffect(async () => {
-    const response = await getServiceAgentInstances(serviceId);
-    setAgentInstances(response);
+  useEffect(() => {
+    (async () => {
+      const response = await getServiceAgentInstances(serviceId);
+      setAgentInstances(response);
+    })();
   }, []);
 
   const onFinishFailed = (errorInfo) => {

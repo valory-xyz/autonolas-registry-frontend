@@ -20,15 +20,17 @@ const Service = ({ account }) => {
   const router = useRouter();
   const id = get(router, 'query.id') || null;
 
-  useEffect(async () => {
-    if (account) {
-      setAllLoading(true);
-      setServiceInfo({});
+  useEffect(() => {
+    (async () => {
+      if (account) {
+        setAllLoading(true);
+        setServiceInfo({});
 
-      const result = await getServiceDetails(id);
-      setAllLoading(false);
-      setServiceInfo(result);
-    }
+        const result = await getServiceDetails(id);
+        setAllLoading(false);
+        setServiceInfo(result);
+      }
+    })();
   }, [account]);
 
   /* helper functions */

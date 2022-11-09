@@ -16,11 +16,13 @@ const ActiveRegistration = ({
 }) => {
   const [totalBond, setTotalBond] = useState(null);
 
-  useEffect(async () => {
-    if (serviceId) {
-      const response = await getBonds(serviceId);
-      setTotalBond(convertToEth(response?.totalBonds || 0));
-    }
+  useEffect(() => {
+    (async () => {
+      if (serviceId) {
+        const response = await getBonds(serviceId);
+        setTotalBond(convertToEth(response?.totalBonds || 0));
+      }
+    })();
   }, [serviceId]);
 
   return (

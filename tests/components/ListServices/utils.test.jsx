@@ -17,6 +17,12 @@ describe('listServices/utils.jsx', () => {
 
     getServiceContract.mockImplementation(() => ({
       methods: {
+        totalSupply: jest.fn(() => ({
+          call: jest.fn(() => Promise.resolve(1)),
+        })),
+        exists: jest.fn(() => ({
+          call: jest.fn(() => Promise.resolve({ status: 'fulfilled', value: true })),
+        })),
         balanceOf: jest.fn(() => ({
           call: jest.fn(() => Promise.resolve(1)),
         })),
@@ -32,7 +38,7 @@ describe('listServices/utils.jsx', () => {
       },
     }));
 
-    const result = await getServicesByAccount(1, 1);
+    const result = await getServicesByAccount(dummyAddress);
     expect(result).toMatchObject([SERVICE_1]);
   });
 

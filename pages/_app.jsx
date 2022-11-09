@@ -7,9 +7,9 @@ import PropTypes from 'prop-types';
 import Web3 from 'web3';
 import { Web3ReactProvider } from '@web3-react/core';
 
+import { Web3DataProvider } from '@autonolas/frontend-library';
 import GlobalStyle from 'components/GlobalStyles';
 import Layout from 'components/Layout';
-import { DataProvider } from 'common-util/context';
 import initStore from '../store';
 
 require('../styles/variables.less');
@@ -38,13 +38,13 @@ class MyApp extends App {
             content="View and manage components, agents and services via the Autonolas on-chain registry."
           />
         </Head>
-        <DataProvider>
+        <Web3DataProvider>
           <Web3ReactProvider getLibrary={getLibrary}>
             <Layout>
               <Component {...pageProps} />
             </Layout>
           </Web3ReactProvider>
-        </DataProvider>
+        </Web3DataProvider>
       </>
     );
   }

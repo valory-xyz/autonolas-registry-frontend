@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { Layout } from 'antd/lib';
-import { COLOR } from 'util/theme';
+import { COLOR } from '@autonolas/frontend-library';
 
 export const CustomLayout = styled(Layout)`
   .registry-tabs {

@@ -1,10 +1,12 @@
-import PropTypes from 'prop-types';
+import { useState } from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import { Tabs } from 'antd/lib';
 import { useRouter } from 'next/router';
 import { URL, NAV_TYPES } from 'util/constants';
 import ListTable from 'common-util/List/ListTable';
 import { useExtraTabContent } from 'common-util/List/ListTable/helpers';
+import { getMyListOnPagination } from 'common-util/ContractUtils/myList';
 import {
   getComponents,
   getComponentsByAccount,
@@ -22,6 +24,21 @@ const ListComponents = ({ account }) => {
   });
 
   const onViewClick = (id) => router.push(`${URL.COMPONENTS}/${id}`);
+
+  // my components
+  const [myComponentsList, setMyComponentsList] = useState([]);
+  const getMyComponentsApi = async () => {
+    const e = await getComponentsByAccount(account);
+    setMyComponentsList(e);
+    return e;
+  };
+
+  const getMyComponents = async (myComponentsTotal, nextPage) => getMyListOnPagination({
+    total: myComponentsTotal,
+    nextPage,
+    myList: myComponentsList,
+    getMyList: getMyComponentsApi,
+  });
 
   return (
     <>
@@ -45,7 +62,7 @@ const ListComponents = ({ account }) => {
         <TabPane tab="My Components" key="my_components">
           <ListTable
             type={NAV_TYPES.COMPONENT}
-            getList={getComponentsByAccount}
+            getList={getMyComponents}
             filterValue={searchValue}
             onViewClick={onViewClick}
             getTotal={() => getTotalForMyComponents(account)}

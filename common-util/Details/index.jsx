@@ -63,39 +63,43 @@ const Details = ({
     }
   }, []);
 
-  useEffect(async () => {
-    setIsLoading(true);
-    setInfo([]);
+  useEffect(() => {
+    (async () => {
+      setIsLoading(true);
+      setInfo([]);
 
-    try {
-      const temp = await getDetails();
-      setInfo(temp);
-
-      const ownerAccount = await getOwner();
-      setDetailsOwner(ownerAccount || '');
-
-      const tempTokenUri = await getTokenUri();
-      setTokenUri(tempTokenUri);
-
-      await getUpdatedHashes();
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [account, id]);
-
-  useEffect(async () => {
-    if (tokenUri) {
       try {
-        const ipfsUrl = getAutonolasTokenUri(tokenUri);
-        const response = await fetch(ipfsUrl);
-        const json = await response.json();
-        setHashDetails(json);
+        const temp = await getDetails();
+        setInfo(temp);
+
+        const ownerAccount = await getOwner();
+        setDetailsOwner(ownerAccount || '');
+
+        const tempTokenUri = await getTokenUri();
+        setTokenUri(tempTokenUri);
+
+        await getUpdatedHashes();
       } catch (e) {
         console.error(e);
+      } finally {
+        setIsLoading(false);
       }
-    }
+    })();
+  }, [account, id]);
+
+  useEffect(() => {
+    (async () => {
+      if (tokenUri) {
+        try {
+          const ipfsUrl = getAutonolasTokenUri(tokenUri);
+          const response = await fetch(ipfsUrl);
+          const json = await response.json();
+          setHashDetails(json);
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    })();
   }, [tokenUri]);
 
   if (isLoading) {

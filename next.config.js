@@ -1,4 +1,6 @@
+/* eslint-disable no-param-reassign */
 const withAntdLess = require('next-plugin-antd-less');
+const path = require('path');
 
 module.exports = {
   ...withAntdLess({
@@ -10,6 +12,11 @@ module.exports = {
       javascriptEnabled: true,
     },
     webpack(config) {
+      config.resolve.alias.react = path.resolve('./node_modules/react');
+      config.resolve.alias['react-dom'] = path.resolve('./node_modules/react-dom');
+      config.resolve.alias.antd = path.resolve('./node_modules/antd');
+      config.resolve.alias['styled-components'] = path.resolve('./node_modules/styled-components');
+
       return config;
     },
   }),
@@ -18,5 +25,8 @@ module.exports = {
     INFURA_PROJECT_SECRET: process.env.INFURA_PROJECT_ID,
     INFURA_TO_PUBLIC_ADDRESS: process.env.INFURA_TO_PUBLIC_ADDRESS,
     TEST_NETWORK: process.env.TEST_NETWORK,
+  },
+  compiler: {
+    styledComponents: true,
   },
 };
