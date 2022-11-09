@@ -1,6 +1,7 @@
 import { TOTAL_VIEW_COUNT } from 'util/constants';
 import { getServiceContract } from 'common-util/Contracts';
 import { convertStringToArray } from 'common-util/List/ListCommon';
+import { filterByOwner } from 'common-util/ContractUtils/myList';
 
 // --------- HELPER METHODS ---------
 export const getServiceOwner = (id) => new Promise((resolve, reject) => {
@@ -43,31 +44,6 @@ export const getTotalForMyServices = (account) => new Promise((resolve, reject) 
       resolve(response);
     })
     .catch((e) => {
-      reject(e);
-    });
-});
-
-export const getServicesByAccount = (total, nextPage) => new Promise((resolve, reject) => {
-  const keyArrays = [];
-  const first = (nextPage - 1) * TOTAL_VIEW_COUNT + 1;
-  const last = Math.min(nextPage * TOTAL_VIEW_COUNT, total);
-  for (let i = first; i <= last; i += 1) {
-    keyArrays.push(i);
-  }
-
-  Promise.all(
-    keyArrays.map(async (key) => {
-      const id = `${key}`;
-      const info = await getServiceDetails(id);
-      const owner = await getServiceOwner(id);
-      return { ...info, owner };
-    }),
-  )
-    .then((results) => {
-      resolve(results);
-    })
-    .catch((e) => {
-      console.error(e);
       reject(e);
     });
 });
@@ -127,6 +103,16 @@ export const getServices = (total, nextPage) => new Promise((resolve, reject) =>
     reject(e);
   }
 });
+
+export const getServicesByAccount = async (account) => {
+  const total = await getTotalForAllServices();
+  const list = await getServices(
+    total,
+    Math.round(total / TOTAL_VIEW_COUNT + 1),
+  );
+
+  return new Promise((resolve) => resolve(filterByOwner(account, list)));
+};
 
 // for services, hash is hardcoded in frontend
 export const getServiceHash = (values) => values.hash;

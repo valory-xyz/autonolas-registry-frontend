@@ -1,9 +1,10 @@
 import { notification } from 'antd/lib';
-import { TOTAL_VIEW_COUNT } from 'util/constants';
 import {
   getMechMinterContract,
   getComponentContract,
 } from 'common-util/Contracts';
+import { getListByAccount } from 'common-util/ContractUtils/myList';
+import { getFirstAndLastIndex } from 'common-util/functions';
 
 // --------- HELPER METHODS ---------
 export const getComponentOwner = (id) => new Promise((resolve, reject) => {
@@ -52,42 +53,7 @@ export const getComponentDetails = (id) => new Promise((resolve, reject) => {
     });
 });
 
-export const getTotalForMyComponents = (account) => new Promise((resolve, reject) => {
-  const contract = getComponentContract();
-  contract.methods
-    .balanceOf(account)
-    .call()
-    .then((response) => {
-      resolve(response);
-    })
-    .catch((e) => {
-      reject(e);
-    });
-});
-
-export const getComponentsByAccount = (total, nextPage) => new Promise((resolve, reject) => {
-  const contract = getComponentContract();
-
-  try {
-    const allComponentsPromises = [];
-    const first = (nextPage - 1) * TOTAL_VIEW_COUNT + 1;
-    const last = Math.min(nextPage * TOTAL_VIEW_COUNT, total);
-    for (let i = first; i <= last; i += 1) {
-      const componentId = `${i}`;
-      const result = contract.methods.getUnit(componentId).call();
-      allComponentsPromises.push(result);
-    }
-
-    getComponentsHelper(allComponentsPromises, resolve);
-  } catch (e) {
-    console.error(e);
-    reject(e);
-  }
-});
-
-/**
- * Function to return all components
- */
+// totals
 export const getTotalForAllComponents = () => new Promise((resolve, reject) => {
   const contract = getComponentContract();
   contract.methods
@@ -101,24 +67,42 @@ export const getTotalForAllComponents = () => new Promise((resolve, reject) => {
     });
 });
 
+export const getTotalForMyComponents = (account) => new Promise((resolve, reject) => {
+  const contract = getComponentContract();
+  contract.methods
+    .balanceOf(account)
+    .call()
+    .then((response) => {
+      resolve(response);
+    })
+    .catch((e) => {
+      reject(e);
+    });
+});
+
+export const getComponentsByAccount = async (account) => {
+  const contract = getComponentContract();
+  const total = await getTotalForAllComponents();
+  const { getUnit } = contract.methods;
+
+  return getListByAccount({
+    account,
+    total,
+    getUnit,
+    getOwner: getComponentOwner,
+  });
+};
+
+/**
+ * Function to return all components
+ */
 export const getComponents = (total, nextPage) => new Promise((resolve, reject) => {
   const contract = getComponentContract();
 
   try {
     const allComponentsPromises = [];
-    /**
-       * @example
-       * TOTAL_VIEW_COUNT = 10
-       * nextPage = 5
-       * total = 45
-       * first = ((5 - 1) * 10) + 1
-       *      = (4 * 10) + 1
-       *      = 41
-       * last = min(5 * 10, 45)
-       *      = 45
-       */
-    const first = (nextPage - 1) * TOTAL_VIEW_COUNT + 1;
-    const last = Math.min(nextPage * TOTAL_VIEW_COUNT, total);
+
+    const { first, last } = getFirstAndLastIndex(total, nextPage);
     for (let i = first; i <= last; i += 1) {
       const componentId = `${i}`;
       const result = contract.methods.getUnit(componentId).call();
