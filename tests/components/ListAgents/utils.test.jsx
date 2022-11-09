@@ -14,6 +14,9 @@ describe('listAgents/utils.jsx', () => {
 
     getAgentContract.mockImplementation(() => ({
       methods: {
+        totalSupply: jest.fn(() => ({
+          call: jest.fn(() => Promise.resolve(1)),
+        })),
         balanceOf: jest.fn(() => ({
           call: jest.fn(() => Promise.resolve(1)),
         })),
@@ -26,7 +29,7 @@ describe('listAgents/utils.jsx', () => {
       },
     }));
 
-    const result = await getAgentsByAccount(1, 1);
+    const result = await getAgentsByAccount(dummyAddress);
     expect(result).toMatchObject([AGENT_1]);
   });
 
