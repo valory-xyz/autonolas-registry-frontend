@@ -33,6 +33,9 @@ describe('listComponents/utils.jsx', () => {
 
     getComponentContract.mockImplementation(() => ({
       methods: {
+        totalSupply: jest.fn(() => ({
+          call: jest.fn(() => Promise.resolve(1)),
+        })),
         balanceOf: jest.fn(() => ({
           call: jest.fn(() => Promise.resolve(1)),
         })),
@@ -45,7 +48,7 @@ describe('listComponents/utils.jsx', () => {
       },
     }));
 
-    const result = await getComponentsByAccount(1, 1);
+    const result = await getComponentsByAccount(dummyAddress);
     expect(result).toMatchObject([COMPONENT_1]);
   });
 
