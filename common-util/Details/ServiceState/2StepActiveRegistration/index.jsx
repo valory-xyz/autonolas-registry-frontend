@@ -7,12 +7,15 @@ import ActiveRegistrationTable from '../ActiveRegistrationTable';
 
 const { Text } = Typography;
 
+const STEP = 2;
+
 const ActiveRegistration = ({
   serviceId,
   dataSource,
   setDataSource,
   handleStep2RegisterAgents,
   handleTerminate,
+  getOtherBtnProps,
 }) => {
   const [totalBond, setTotalBond] = useState(null);
 
@@ -37,9 +40,14 @@ const ActiveRegistration = ({
         {totalBond}
         &nbsp;ETH per agent instance
       </Text>
-      <Button onClick={handleStep2RegisterAgents}>Register Agents</Button>
+
+      <Button onClick={handleStep2RegisterAgents} {...getOtherBtnProps(STEP)}>
+        Register Agents
+      </Button>
       <Divider />
-      <Button onClick={handleTerminate}>Terminate</Button>
+      <Button onClick={handleTerminate} {...getOtherBtnProps(STEP)}>
+        Terminate
+      </Button>
     </div>
   );
 };
@@ -52,6 +60,7 @@ ActiveRegistration.propTypes = {
   setDataSource: PropTypes.func.isRequired,
   handleStep2RegisterAgents: PropTypes.func.isRequired,
   handleTerminate: PropTypes.func.isRequired,
+  getOtherBtnProps: PropTypes.func.isRequired,
 };
 
 ActiveRegistration.defaultProps = {

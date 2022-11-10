@@ -19,6 +19,8 @@ import {
 import { getServiceAgentInstances } from '../utils';
 import { handleMultisigSubmit } from './utils';
 
+const STEP = 3;
+
 const StepThreePayload = ({
   serviceId,
   owner: serviceOwner,
@@ -27,6 +29,7 @@ const StepThreePayload = ({
   handleStep3Deploy,
   handleTerminate,
   canShowMultisigSameAddress,
+  getOtherBtnProps,
 }) => {
   const chainId = useSelector((state) => get(state, 'setup.chainId'));
   const [form] = Form.useForm();
@@ -172,7 +175,11 @@ const StepThreePayload = ({
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" disabled={!radioValue}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              {...getOtherBtnProps(STEP, { isDisabled: !radioValue })}
+            >
               Submit
             </Button>
           </Form.Item>
@@ -184,7 +191,6 @@ const StepThreePayload = ({
         <div className="mb-12 mt-8">
           <Button
             type="primary"
-            disabled={!radioValue}
             onClick={async () => {
               await handleMultisigSubmit({
                 multisig,
@@ -196,6 +202,7 @@ const StepThreePayload = ({
                 radioValue,
               });
             }}
+            {...getOtherBtnProps(STEP, { isDisabled: !radioValue })}
           >
             Submit
           </Button>
@@ -203,7 +210,11 @@ const StepThreePayload = ({
       )}
 
       <Divider className="m-0" />
-      <Button onClick={handleTerminate} className="terminate-btn">
+      <Button
+        onClick={handleTerminate}
+        className="terminate-btn"
+        {...getOtherBtnProps(STEP)}
+      >
         Terminate
       </Button>
     </div>
@@ -218,6 +229,7 @@ StepThreePayload.propTypes = {
   handleStep3Deploy: PropTypes.func,
   handleTerminate: PropTypes.func,
   canShowMultisigSameAddress: PropTypes.bool,
+  getOtherBtnProps: PropTypes.func.isRequired,
 };
 
 StepThreePayload.defaultProps = {
