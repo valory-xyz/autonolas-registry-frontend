@@ -21,12 +21,12 @@ export const getAgentOwner = (agentId) => new Promise((resolve, reject) => {
 /**
  * helper to return the list of details (table in index page)
  */
-const getAgentsHelper = (promiseList, resolve, reject) => {
+const getAgentsHelper = (startIndex, promiseList, resolve, reject) => {
   Promise.all(promiseList)
     .then(async (list) => {
       const results = await Promise.all(
         list.map(async (info, i) => {
-          const owner = await getAgentOwner(`${i + 1}`);
+          const owner = await getAgentOwner(`${startIndex + i}`);
           return { ...info, owner };
         }),
       );
@@ -95,13 +95,12 @@ export const getAgents = (total, nextPage) => new Promise((resolve, reject) => {
       allAgentsPromises.push(result);
     }
 
-    getAgentsHelper(allAgentsPromises, resolve, reject);
+    getAgentsHelper(first, allAgentsPromises, resolve, reject);
   } catch (e) {
     console.error(e);
     reject(e);
   }
 });
-
 
 export const getAgentsByAccount = async (account) => {
   const contract = getAgentContract();

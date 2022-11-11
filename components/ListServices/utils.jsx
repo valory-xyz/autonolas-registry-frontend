@@ -81,7 +81,7 @@ export const getServices = (total, nextPage) => new Promise((resolve, reject) =>
       // filter services which don't exists (deleted or destroyed)
       const validTokenIds = [];
       existsResult.forEach((item, index) => {
-        const serviceId = `${index + 1}`;
+        const serviceId = `${first + index}`;
         if (item.status === 'fulfilled' && !!item.value) {
           validTokenIds.push(serviceId);
         }
