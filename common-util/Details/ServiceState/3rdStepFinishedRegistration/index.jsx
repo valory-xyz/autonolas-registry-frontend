@@ -84,6 +84,8 @@ const StepThreePayload = ({
   const options = [...(multisigAddresses[chainId] || []), ...otherAddress];
   const isMultiSig = (multisigAddresses[chainId] || [])[0];
 
+  const btnProps = getOtherBtnProps(STEP);
+
   return (
     <div className="step-3-finished-registration">
       <div>
@@ -93,6 +95,7 @@ const StepThreePayload = ({
       <Radio.Group
         value={radioValue}
         onChange={(e) => setRadioValue(e.target.value)}
+        disabled={btnProps.disabled}
       >
         <Space direction="vertical" size={10}>
           {options.map((multisigAddress) => (
@@ -220,7 +223,7 @@ const StepThreePayload = ({
       <Button
         onClick={handleTerminate}
         className="terminate-btn"
-        {...getOtherBtnProps(STEP)}
+        {...btnProps}
       >
         Terminate
       </Button>

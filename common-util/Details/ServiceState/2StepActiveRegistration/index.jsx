@@ -37,12 +37,15 @@ const ActiveRegistration = ({
     };
   }, [serviceId]);
 
+  const btnProps = getOtherBtnProps(STEP);
+
   return (
     <div className="step-2-active-registration">
       <ActiveRegistrationTable
         data={dataSource}
         setDataSource={setDataSource}
         bordered
+        isDisabled={btnProps.disabled}
       />
       <Text type="secondary">
         Adding instances will cause a bond of&nbsp;
@@ -50,11 +53,11 @@ const ActiveRegistration = ({
         &nbsp;ETH per agent instance
       </Text>
 
-      <Button onClick={handleStep2RegisterAgents} {...getOtherBtnProps(STEP)}>
+      <Button onClick={handleStep2RegisterAgents} {...btnProps}>
         Register Agents
       </Button>
       <Divider />
-      <Button onClick={handleTerminate} {...getOtherBtnProps(STEP)}>
+      <Button onClick={handleTerminate} {...btnProps}>
         Terminate
       </Button>
     </div>

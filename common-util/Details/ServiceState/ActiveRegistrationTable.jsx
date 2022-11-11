@@ -49,6 +49,7 @@ const EditableCell = ({
   dataIndex,
   record,
   handleSave,
+  isDisabled,
   ...restProps
 }) => {
   const form = useContext(EditableContext);
@@ -78,6 +79,7 @@ const EditableCell = ({
         rules={[{ required: true, message: `${title} is required.` }]}
       >
         <Input.TextArea
+          disabled={isDisabled}
           ref={inputRef}
           onPressEnter={onSave}
           onBlur={onSave}
@@ -97,7 +99,7 @@ const EditableCell = ({
 /**
  * Table
  */
-const ActiveRegistrationTable = ({ data, setDataSource }) => {
+const ActiveRegistrationTable = ({ data, setDataSource, isDisabled }) => {
   const handleSave = (row) => {
     const newData = [...data];
     const index = newData.findIndex((item) => row.key === item.key);
@@ -123,6 +125,7 @@ const ActiveRegistrationTable = ({ data, setDataSource }) => {
         dataIndex: c.dataIndex,
         title: c.title,
         handleSave,
+        isDisabled,
       }),
     };
   });
