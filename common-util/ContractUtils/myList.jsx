@@ -21,8 +21,9 @@ export const getListByAccount = async ({
     Promise.all(allListPromise).then(async (componentsList) => {
       const results = await Promise.all(
         componentsList.map(async (info, i) => {
-          const owner = await getOwner(`${i + 1}`);
-          return { ...info, owner };
+          const id = `${i + 1}`;
+          const owner = await getOwner(id);
+          return { ...info, id, owner };
         }),
       );
 
