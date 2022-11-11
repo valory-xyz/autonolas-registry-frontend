@@ -164,8 +164,8 @@ export const ServiceState = ({
 
   /**
    *
-   * @param {*} step step to compare with current active service state
-   * @param {*} extra default values of each property
+   * @param {number} step step to compare with current active service state
+   * @param {object} extra default values of each property
    * @returns other props for button
    */
   const getOtherBtnProps = (step, extra) => {
