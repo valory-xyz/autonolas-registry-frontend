@@ -20,12 +20,21 @@ const ActiveRegistration = ({
   const [totalBond, setTotalBond] = useState(null);
 
   useEffect(() => {
+    // react will throw an warning if we use setState after the component is unmounted,
+    // hence need to check if the component is actually mounted
+    let isMounted = true;
     (async () => {
       if (serviceId) {
         const response = await getBonds(serviceId);
-        setTotalBond(convertToEth(response?.totalBonds || 0));
+        if (isMounted) {
+          setTotalBond(convertToEth((response?.totalBonds || 0).toString()));
+        }
       }
     })();
+
+    return () => {
+      isMounted = false;
+    };
   }, [serviceId]);
 
   return (
@@ -55,7 +64,7 @@ const ActiveRegistration = ({
 ActiveRegistration.propTypes = {
   serviceId: PropTypes.string,
   dataSource: PropTypes.arrayOf(
-    PropTypes.oneOfType([PropTypes.array, PropTypes.string]),
+    PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   ).isRequired,
   setDataSource: PropTypes.func.isRequired,
   handleStep2RegisterAgents: PropTypes.func.isRequired,

@@ -61,10 +61,17 @@ const StepThreePayload = ({
   };
 
   useEffect(() => {
+    let isMounted = true;
     (async () => {
       const response = await getServiceAgentInstances(serviceId);
-      setAgentInstances(response);
+      if (isMounted) {
+        setAgentInstances(response);
+      }
     })();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const onFinishFailed = (errorInfo) => {

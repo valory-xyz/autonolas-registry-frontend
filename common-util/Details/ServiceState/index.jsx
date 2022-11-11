@@ -171,7 +171,7 @@ export const ServiceState = ({
   const getOtherBtnProps = (step, extra) => {
     const { isDisabled } = extra || {};
     return {
-      disabled: currentStep + 1 !== step || !!isDisabled,
+      disabled: currentStep + 1 !== step || !!isDisabled || !account,
     };
   };
 
@@ -288,9 +288,7 @@ ServiceState.propTypes = {
   account: PropTypes.string,
   id: PropTypes.string.isRequired,
   isOwner: PropTypes.bool,
-  details: PropTypes.arrayOf(
-    PropTypes.oneOfType([PropTypes.array, PropTypes.string]),
-  ),
+  details: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   updateDetails: PropTypes.func,
 };
 
