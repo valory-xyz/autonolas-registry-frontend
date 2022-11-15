@@ -92,7 +92,7 @@ export const getServices = (total, nextPage) => new Promise((resolve, reject) =>
         validTokenIds.map(async (id) => {
           const info = await getServiceDetails(id);
           const owner = await getServiceOwner(id);
-          return { ...info, owner };
+          return { ...info, id, owner };
         }),
       );
 

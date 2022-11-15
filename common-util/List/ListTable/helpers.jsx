@@ -160,7 +160,7 @@ export const getData = (type, rawData, { filterValue, current }) => {
   let data = [];
   if (type === NAV_TYPES.COMPONENT) {
     data = rawData.map((item, index) => ({
-      id: `${startIndex + index}`,
+      id: item.id || `${startIndex + index}`,
       description: item.description || '-',
       developer: item.developer || '-',
       owner: item.owner || '-',
@@ -171,7 +171,7 @@ export const getData = (type, rawData, { filterValue, current }) => {
 
   if (type === NAV_TYPES.AGENT) {
     data = rawData.map((item, index) => ({
-      id: `${startIndex + index}`,
+      id: item.id || `${startIndex + index}`,
       description: item.description || '-',
       developer: item.developer || '-',
       owner: item.owner || '-',
@@ -182,7 +182,7 @@ export const getData = (type, rawData, { filterValue, current }) => {
 
   if (type === NAV_TYPES.SERVICE) {
     data = rawData.map((item, index) => ({
-      id: `${startIndex + index}`,
+      id: item.id || `${startIndex + index}`,
       developer: item.developer || '-',
       owner: item.owner || '-',
       active: `${item.active}`,
