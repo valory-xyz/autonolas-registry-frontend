@@ -7,23 +7,37 @@ import ActiveRegistrationTable from '../ActiveRegistrationTable';
 
 const { Text } = Typography;
 
+const STEP = 2;
+
 const ActiveRegistration = ({
   serviceId,
   dataSource,
   setDataSource,
   handleStep2RegisterAgents,
   handleTerminate,
+  getOtherBtnProps,
 }) => {
   const [totalBond, setTotalBond] = useState(null);
 
   useEffect(() => {
+    // react will throw an warning if we use setState after the component is unmounted,
+    // hence need to check if the component is actually mounted
+    let isMounted = true;
     (async () => {
       if (serviceId) {
         const response = await getBonds(serviceId);
-        setTotalBond(convertToEth(response?.totalBonds || 0));
+        if (isMounted) {
+          setTotalBond(convertToEth((response?.totalBonds || 0).toString()));
+        }
       }
     })();
+
+    return () => {
+      isMounted = false;
+    };
   }, [serviceId]);
+
+  const btnProps = getOtherBtnProps(STEP);
 
   return (
     <div className="step-2-active-registration">
@@ -31,15 +45,21 @@ const ActiveRegistration = ({
         data={dataSource}
         setDataSource={setDataSource}
         bordered
+        isDisabled={btnProps.disabled}
       />
       <Text type="secondary">
         Adding instances will cause a bond of&nbsp;
         {totalBond}
         &nbsp;ETH per agent instance
       </Text>
-      <Button onClick={handleStep2RegisterAgents}>Register Agents</Button>
+
+      <Button onClick={handleStep2RegisterAgents} {...btnProps}>
+        Register Agents
+      </Button>
       <Divider />
-      <Button onClick={handleTerminate}>Terminate</Button>
+      <Button onClick={handleTerminate} {...btnProps}>
+        Terminate
+      </Button>
     </div>
   );
 };
@@ -47,11 +67,12 @@ const ActiveRegistration = ({
 ActiveRegistration.propTypes = {
   serviceId: PropTypes.string,
   dataSource: PropTypes.arrayOf(
-    PropTypes.oneOfType([PropTypes.array, PropTypes.string]),
+    PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   ).isRequired,
   setDataSource: PropTypes.func.isRequired,
   handleStep2RegisterAgents: PropTypes.func.isRequired,
   handleTerminate: PropTypes.func.isRequired,
+  getOtherBtnProps: PropTypes.func.isRequired,
 };
 
 ActiveRegistration.defaultProps = {

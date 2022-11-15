@@ -30,8 +30,6 @@ To Visit App:
 
 `localhost:3000`
 
-Once you're running the app, use these details to connect to Valory's dev chain
-- RPC URL: https://dev-chain.valory-infra-dev.autonolas.tech/
-- Chain Id: 31337
+Once you're running the app, you can connect to Valory's [Autonolas Registory](https://github.com/valory-xyz/autonolas-registries) through docker
 
-<img width="878" alt="add-new-network" src="https://user-images.githubusercontent.com/22061815/149757107-0111fb9f-3a79-4f2b-8000-71533e740b43.png">
+<img width="723" alt="metamask-network-connect" src="https://user-images.githubusercontent.com/22061815/201097646-f9f6f1e5-ac89-4260-8a26-7ade8d20bd2d.png">

@@ -19,6 +19,8 @@ import {
 import { getServiceAgentInstances } from '../utils';
 import { handleMultisigSubmit } from './utils';
 
+const STEP = 3;
+
 const StepThreePayload = ({
   serviceId,
   owner: serviceOwner,
@@ -27,6 +29,7 @@ const StepThreePayload = ({
   handleStep3Deploy,
   handleTerminate,
   canShowMultisigSameAddress,
+  getOtherBtnProps,
 }) => {
   const chainId = useSelector((state) => get(state, 'setup.chainId'));
   const [form] = Form.useForm();
@@ -58,10 +61,17 @@ const StepThreePayload = ({
   };
 
   useEffect(() => {
+    let isMounted = true;
     (async () => {
       const response = await getServiceAgentInstances(serviceId);
-      setAgentInstances(response);
+      if (isMounted) {
+        setAgentInstances(response);
+      }
     })();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const onFinishFailed = (errorInfo) => {
@@ -74,6 +84,8 @@ const StepThreePayload = ({
   const options = [...(multisigAddresses[chainId] || []), ...otherAddress];
   const isMultiSig = (multisigAddresses[chainId] || [])[0];
 
+  const btnProps = getOtherBtnProps(STEP);
+
   return (
     <div className="step-3-finished-registration">
       <div>
@@ -83,6 +95,7 @@ const StepThreePayload = ({
       <Radio.Group
         value={radioValue}
         onChange={(e) => setRadioValue(e.target.value)}
+        disabled={btnProps.disabled}
       >
         <Space direction="vertical" size={10}>
           {options.map((multisigAddress) => (
@@ -172,7 +185,11 @@ const StepThreePayload = ({
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" disabled={!radioValue}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              {...getOtherBtnProps(STEP, { isDisabled: !radioValue })}
+            >
               Submit
             </Button>
           </Form.Item>
@@ -184,7 +201,6 @@ const StepThreePayload = ({
         <div className="mb-12 mt-8">
           <Button
             type="primary"
-            disabled={!radioValue}
             onClick={async () => {
               await handleMultisigSubmit({
                 multisig,
@@ -196,6 +212,7 @@ const StepThreePayload = ({
                 radioValue,
               });
             }}
+            {...getOtherBtnProps(STEP, { isDisabled: !radioValue })}
           >
             Submit
           </Button>
@@ -203,7 +220,11 @@ const StepThreePayload = ({
       )}
 
       <Divider className="m-0" />
-      <Button onClick={handleTerminate} className="terminate-btn">
+      <Button
+        onClick={handleTerminate}
+        className="terminate-btn"
+        {...btnProps}
+      >
         Terminate
       </Button>
     </div>
@@ -218,6 +239,7 @@ StepThreePayload.propTypes = {
   handleStep3Deploy: PropTypes.func,
   handleTerminate: PropTypes.func,
   canShowMultisigSameAddress: PropTypes.bool,
+  getOtherBtnProps: PropTypes.func.isRequired,
 };
 
 StepThreePayload.defaultProps = {
