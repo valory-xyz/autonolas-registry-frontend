@@ -23,12 +23,19 @@ const Deployed = ({ serviceId, multisig, terminateButton }) => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
+    let isMounted = true;
     (async () => {
       if (serviceId) {
         const tempData = await getAgentInstanceAndOperator(serviceId);
-        setData(tempData);
+        if (isMounted) {
+          setData(tempData);
+        }
       }
     })();
+
+    return () => {
+      isMounted = false;
+    };
   }, [serviceId]);
 
   return (
