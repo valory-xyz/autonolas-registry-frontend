@@ -12,7 +12,6 @@ const ListTable = ({
   type,
   getList,
   getTotal,
-  filterValue,
   onViewClick,
   onUpdateClick,
   extra,
@@ -75,7 +74,6 @@ const ListTable = ({
     onUpdateClick,
   });
   const dataSource = getData(type, list, {
-    filterValue: (filterValue || '').toLowerCase(),
     current: currentPage,
   });
 
@@ -103,7 +101,6 @@ const ListTable = ({
 
 ListTable.propTypes = {
   type: PropTypes.string.isRequired,
-  filterValue: PropTypes.string,
   getList: PropTypes.func.isRequired,
   getTotal: PropTypes.func,
   onViewClick: PropTypes.func,
@@ -115,7 +112,6 @@ ListTable.propTypes = {
 };
 
 ListTable.defaultProps = {
-  filterValue: null,
   getTotal: () => {},
   onViewClick: () => {},
   onUpdateClick: null,

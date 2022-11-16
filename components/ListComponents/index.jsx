@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import get from 'lodash/get';
 import { Tabs } from 'antd/lib';
 import { useRouter } from 'next/router';
 import { URL, NAV_TYPES } from 'util/constants';
-import ListTable from 'common-util/List/ListTable';
+import ListTable from 'common-util/List/ListTableCopy';
 import { useExtraTabContent } from 'common-util/List/ListTable/helpers';
 import { getMyListOnPagination } from 'common-util/ContractUtils/myList';
 import {
@@ -16,56 +16,146 @@ import {
 
 const { TabPane } = Tabs;
 
-const ListComponents = ({ account }) => {
+const ALL_COMPONENTS = 'all_components';
+const MY_COMPONENTS = 'my_components';
+
+const ListComponents = () => {
+  const account = useSelector((state) => get(state, 'setup.account'));
+  const [currentTab, setCurrentTab] = useState(ALL_COMPONENTS);
+
+  /**
+   * extra tab content & view click
+   */
   const router = useRouter();
   const { searchValue, extraTabContent, clearSearch } = useExtraTabContent({
     title: 'Components',
     onRegisterClick: () => router.push(URL.REGISTER_COMPONENT),
   });
-
   const onViewClick = (id) => router.push(`${URL.COMPONENTS}/${id}`);
 
-  // my components
-  const [myComponentsList, setMyComponentsList] = useState([]);
-  const getMyComponentsApi = async () => {
-    const e = await getComponentsByAccount(account);
-    setMyComponentsList(e);
-    return e;
-  };
+  /**
+   * filtered list
+   */
+  const [isLoading, setIsLoading] = useState(true);
+  const [total, setTotal] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [list, setList] = useState([]);
 
-  const getMyComponents = async (myComponentsTotal, nextPage) => getMyListOnPagination({
-    total: myComponentsTotal,
-    nextPage,
-    myList: myComponentsList,
-    getMyList: getMyComponentsApi,
-  });
+  // fetch total
+  useEffect(() => {
+    (async () => {
+      // All components
+      if (currentTab === ALL_COMPONENTS) {
+        try {
+          const totalTemp = await getTotalForAllComponents();
+          setTotal(Number(totalTemp));
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      // My components
+      if (currentTab === MY_COMPONENTS) {
+        try {
+          const totalTemp = await getTotalForMyComponents(account);
+          setTotal(Number(totalTemp));
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    })();
+  }, [account, currentTab]);
+
+  useEffect(() => {
+    (async () => {
+      if (total && currentPage && !searchValue) {
+        setIsLoading(true);
+        setList([]);
+
+        try {
+          // All components
+          if (currentTab === ALL_COMPONENTS) {
+            const everyComps = await getComponents(total, currentPage);
+            setList(everyComps);
+          }
+
+          /**
+           * My components
+           * - search by `account` as searchValue
+           * - API will be called only once & store the complete list
+           */
+          if (currentTab === MY_COMPONENTS) {
+            const e = await getComponentsByAccount(account);
+            setList(e);
+          }
+        } catch (e) {
+          console.error(e);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    })();
+  }, [account, total, currentPage]);
+
+  /**
+   * Search (All components, My Components)
+   * - no pagination as we won't know total beforehand as we have to
+   *   traverse the entire list
+   */
+  useEffect(() => {
+    (async () => {
+      if (searchValue) {
+        setIsLoading(true);
+        setList([]);
+
+        try {
+          const filteredList = await getComponentsByAccount(
+            searchValue,
+            currentTab === MY_COMPONENTS ? account : null,
+          );
+          setList(filteredList);
+        } catch (e) {
+          console.error(e);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    })();
+  }, [account, searchValue]);
+
+  const tableCommonProps = {
+    type: NAV_TYPES.COMPONENT,
+    isLoading,
+    total,
+    currentPage,
+    setCurrentPage,
+    onViewClick,
+    searchValue,
+  };
 
   return (
     <>
       <Tabs
         className="registry-tabs"
         type="card"
-        defaultActiveKey="all"
-        onChange={clearSearch}
+        activeKey={currentTab}
         tabBarExtraContent={extraTabContent}
+        onChange={(e) => {
+          clearSearch();
+          setCurrentTab(e);
+          setTotal(0);
+          setCurrentPage(1);
+          setIsLoading(true);
+        }}
       >
-        <TabPane tab="All" key="all">
-          <ListTable
-            type={NAV_TYPES.COMPONENT}
-            getList={getComponents}
-            filterValue={searchValue}
-            onViewClick={onViewClick}
-            getTotal={getTotalForAllComponents}
-          />
+        <TabPane tab="All" key={ALL_COMPONENTS}>
+          <ListTable {...tableCommonProps} list={list} />
         </TabPane>
 
-        <TabPane tab="My Components" key="my_components">
+        <TabPane tab="My Components" key={MY_COMPONENTS}>
           <ListTable
-            type={NAV_TYPES.COMPONENT}
-            getList={getMyComponents}
-            filterValue={searchValue}
-            onViewClick={onViewClick}
-            getTotal={() => getTotalForMyComponents(account)}
+            {...tableCommonProps}
+            list={getMyListOnPagination({ total, nextPage: currentPage, list })}
             isAccountRequired
           />
         </TabPane>
@@ -74,17 +164,4 @@ const ListComponents = ({ account }) => {
   );
 };
 
-ListComponents.propTypes = {
-  account: PropTypes.string,
-};
-
-ListComponents.defaultProps = {
-  account: null,
-};
-
-const mapStateToProps = (state) => {
-  const { account } = state.setup;
-  return { account };
-};
-
-export default connect(mapStateToProps, {})(ListComponents);
+export default ListComponents;
