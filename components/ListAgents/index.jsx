@@ -69,15 +69,16 @@ const ListAgents = () => {
     })();
   }, [account, currentTab, searchValue]);
 
+  // fetch the list (without search)
   useEffect(() => {
     (async () => {
       if (total && currentPage && !searchValue) {
         setIsLoading(true);
-        setList([]);
 
         try {
           // All agents
           if (currentTab === ALL_AGENTS) {
+            setList([]);
             const everyComps = await getAgents(total, currentPage);
             setList(everyComps);
           }
@@ -87,7 +88,7 @@ const ListAgents = () => {
            * - search by `account` as searchValue
            * - API will be called only once & store the complete list
            */
-          if (currentTab === MY_AGENTS) {
+          if (currentTab === MY_AGENTS && list.length === 0) {
             const e = await getFilteredAgents(account);
             setList(e);
           }
@@ -146,11 +147,15 @@ const ListAgents = () => {
         activeKey={currentTab}
         tabBarExtraContent={extraTabContent}
         onChange={(e) => {
-          clearSearch();
           setCurrentTab(e);
+
+          setList([]);
           setTotal(0);
           setCurrentPage(1);
           setIsLoading(true);
+
+          // clear the search
+          clearSearch();
         }}
       >
         <TabPane tab="All" key={ALL_AGENTS}>
