@@ -9,7 +9,7 @@ import { useExtraTabContent } from 'common-util/List/ListTable/helpers';
 import { getMyListOnPagination } from 'common-util/ContractUtils/myList';
 import {
   getComponents,
-  getComponentsByAccount,
+  getFilteredComponents,
   getTotalForAllComponents,
   getTotalForMyComponents,
 } from './utils';
@@ -44,27 +44,30 @@ const ListComponents = () => {
   // fetch total
   useEffect(() => {
     (async () => {
-      // All components
-      if (currentTab === ALL_COMPONENTS) {
+      if (searchValue === '') {
         try {
-          const totalTemp = await getTotalForAllComponents();
-          setTotal(Number(totalTemp));
-        } catch (e) {
-          console.error(e);
-        }
-      }
+          let totalTemp = null;
 
-      // My components
-      if (currentTab === MY_COMPONENTS) {
-        try {
-          const totalTemp = await getTotalForMyComponents(account);
+          // All components
+          if (currentTab === ALL_COMPONENTS) {
+            totalTemp = await getTotalForAllComponents();
+          }
+
+          // My components
+          if (currentTab === MY_COMPONENTS) {
+            totalTemp = await getTotalForMyComponents(account);
+          }
+
           setTotal(Number(totalTemp));
+          if (Number(totalTemp) === 0) {
+            setIsLoading(false);
+          }
         } catch (e) {
           console.error(e);
         }
       }
     })();
-  }, [account, currentTab]);
+  }, [account, currentTab, searchValue]);
 
   useEffect(() => {
     (async () => {
@@ -85,7 +88,7 @@ const ListComponents = () => {
            * - API will be called only once & store the complete list
            */
           if (currentTab === MY_COMPONENTS) {
-            const e = await getComponentsByAccount(account);
+            const e = await getFilteredComponents(account);
             setList(e);
           }
         } catch (e) {
@@ -109,11 +112,13 @@ const ListComponents = () => {
         setList([]);
 
         try {
-          const filteredList = await getComponentsByAccount(
+          const filteredList = await getFilteredComponents(
             searchValue,
             currentTab === MY_COMPONENTS ? account : null,
           );
           setList(filteredList);
+          setTotal(0); // total won't be used if search is used
+          setCurrentPage(1);
         } catch (e) {
           console.error(e);
         } finally {
@@ -155,7 +160,11 @@ const ListComponents = () => {
         <TabPane tab="My Components" key={MY_COMPONENTS}>
           <ListTable
             {...tableCommonProps}
-            list={getMyListOnPagination({ total, nextPage: currentPage, list })}
+            list={
+              searchValue
+                ? list
+                : getMyListOnPagination({ total, nextPage: currentPage, list })
+            }
             isAccountRequired
           />
         </TabPane>

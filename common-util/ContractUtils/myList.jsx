@@ -6,13 +6,9 @@ export const filterByOwner = (results = [], { searchValue, account }) => results
   const ownerL = (e.owner || '').trim().toLowerCase();
   const hashL = (e.unitHash || '').trim().toLowerCase();
 
-  /**
-     * for "my components/agents" search only by Account
-     */
+  // for "my components/agents" search only by Account
   if (account) {
-    return (
-      ownerL === account.trim().toLowerCase() && includes(hashL, search)
-    );
+    return ownerL === account.trim().toLowerCase() && includes(hashL, search);
   }
 
   return includes(ownerL, search) || includes(hashL, search);
@@ -45,7 +41,11 @@ export const getListByAccount = async ({
         }),
       );
 
-      resolve(filterByOwner(results, { searchValue, account }));
+      const filteredResults = filterByOwner(results, {
+        searchValue,
+        account,
+      });
+      resolve(filteredResults);
     });
   } catch (e) {
     console.error(e);

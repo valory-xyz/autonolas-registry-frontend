@@ -32,7 +32,7 @@ export const EllipsisMiddle = ({ suffixCount, children, ...rest }) => {
   return (
     <Text style={textStyle} {...rest}>
       {getTrimmedText(children, suffixCount)}
-      <Tooltip title="copy git url">
+      <Tooltip title="Copy">
         &nbsp;
         <Button
           // size="small"
@@ -221,7 +221,7 @@ export const useExtraTabContent = ({ title, onRegisterClick = () => {} }) => {
           value={value}
           onChange={(e) => setValue(e.target.value)}
         />
-        <Button ghost type="primary" onClick={() => setSearchValue(value)}>
+        <Button ghost type="primary" onClick={() => setSearchValue(value || '')}>
           Search
         </Button>
         <Button type="primary" onClick={onRegisterClick}>

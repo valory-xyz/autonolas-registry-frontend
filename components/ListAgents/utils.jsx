@@ -102,16 +102,17 @@ export const getAgents = (total, nextPage) => new Promise((resolve, reject) => {
   }
 });
 
-export const getAgentsByAccount = async (account) => {
+export const getFilteredAgents = async (searchValue, account) => {
   const contract = getAgentContract();
   const total = await getTotalForAllAgents();
   const { getUnit } = contract.methods;
 
   return getListByAccount({
-    account,
+    searchValue,
     total,
     getUnit,
     getOwner: getAgentOwner,
+    account,
   });
 };
 
