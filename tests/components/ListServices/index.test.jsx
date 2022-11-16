@@ -43,8 +43,8 @@ getServiceContract.mockImplementation(() => ({
 useRouter.mockImplementation(() => ({ push: jest.fn() }));
 
 // dummy responses mock
-const allServiceResponse = { id: 'all-service-1', state: '5' };
-const myServiceResponse = { id: 'my-service-1' };
+const allServiceResponse = { id: '1', state: '5' };
+const myServiceResponse = { id: '2' };
 
 describe('listServices/index.jsx', () => {
   getServices.mockImplementation(() => Promise.resolve([allServiceResponse]));

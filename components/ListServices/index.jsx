@@ -31,7 +31,7 @@ const ListServices = () => {
     title: 'Services',
     onRegisterClick: () => router.push(URL.REGISTER_SERVICE),
   });
-  const onViewClick = (id) => router.push(`${URL.COMPONENTS}/${id}`);
+  const onViewClick = (id) => router.push(`${URL.SERVICES}/${id}`);
 
   /**
    * filtered list
@@ -48,12 +48,12 @@ const ListServices = () => {
         try {
           let totalTemp = null;
 
-          // All components
+          // All services
           if (currentTab === ALL_SERVICES) {
             totalTemp = await getTotalForAllServices();
           }
 
-          // My components
+          // My services
           if (currentTab === MY_SERVICES) {
             totalTemp = await getTotalForMyServices(account);
           }
@@ -75,7 +75,7 @@ const ListServices = () => {
         setIsLoading(true);
 
         try {
-          // All components
+          // All services
           if (currentTab === ALL_SERVICES) {
             setList([]);
             const everyComps = await getServices(total, currentPage);
@@ -83,7 +83,7 @@ const ListServices = () => {
           }
 
           /**
-           * My components
+           * My services
            * - search by `account` as searchValue
            * - API will be called only once & store the complete list
            */
@@ -102,7 +102,7 @@ const ListServices = () => {
   }, [account, total, currentPage]);
 
   /**
-   * Search (All components, My Components)
+   * Search (All services, My Services)
    * - no pagination as we won't know total beforehand as we have to
    *   traverse the entire list
    */
