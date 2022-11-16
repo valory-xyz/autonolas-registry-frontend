@@ -26,7 +26,7 @@ jest.mock('common-util/List/IpfsHashGenerationModal/helpers', () => ({
 
 jest.mock('components/ListServices/utils', () => ({
   getServices: jest.fn(),
-  getServicesByAccount: jest.fn(),
+  getFilteredServices: jest.fn(),
   getServiceOwner: jest.fn(),
   getServiceDetails: jest.fn(),
 }));

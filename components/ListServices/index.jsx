@@ -9,7 +9,7 @@ import { useExtraTabContent } from 'common-util/List/ListTable/helpers';
 import { getMyListOnPagination } from 'common-util/ContractUtils/myList';
 import {
   getServices,
-  getServicesByAccount,
+  getFilteredServices,
   getTotalForAllServices,
   getTotalForMyServices,
 } from './utils';
@@ -32,7 +32,7 @@ const ListServices = ({ account }) => {
   // my services
   const [myServicesList, setMyServicesList] = useState([]);
   const getMyServicesApi = async () => {
-    const e = await getServicesByAccount(account);
+    const e = await getFilteredServices(account);
     setMyServicesList(e);
     return e;
   };
