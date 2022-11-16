@@ -1,62 +1,29 @@
-import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Table } from 'antd/lib';
-import { useSelector } from 'react-redux';
-import get from 'lodash/get';
 import { TOTAL_VIEW_COUNT } from 'util/constants';
 import { ListEmptyMessage } from 'common-util/List/ListCommon';
 import Loader from 'common-util/components/Loader';
 import { getData, getTableColumns } from './helpers';
 
 const ListTable = ({
+  isLoading,
   type,
-  getList,
-  getTotal,
+  searchValue,
+  list,
+  total,
+  currentPage,
+  setCurrentPage,
+  isAccountRequired,
   onViewClick,
   onUpdateClick,
   extra,
-  isAccountRequired,
 }) => {
-  const account = useSelector((state) => get(state, 'setup.account'));
-  const [isLoading, setIsLoading] = useState(true);
-  const [total, setTotal] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [list, setList] = useState([]);
+  /**
+   * no pagination on search as we won't know total beforehand
+   */
+  const isPaginationRequired = !searchValue;
+
   const { scrollX } = extra;
-  const canCallApi = isAccountRequired ? !!account : true;
-
-  // fetch the total first!
-  useEffect(() => {
-    (async () => {
-      if (canCallApi) {
-        try {
-          const totalTemp = await getTotal();
-          setTotal(Number(totalTemp));
-          if (Number(totalTemp) === 0) setIsLoading(false);
-        } catch (e) {
-          console.error(e);
-        }
-      }
-    })();
-  }, [account]);
-
-  useEffect(() => {
-    (async () => {
-      if (total && currentPage && canCallApi) {
-        setIsLoading(true);
-        setList([]);
-
-        try {
-          const everyComps = await getList(total, currentPage);
-          setList(everyComps);
-        } catch (e) {
-          console.error(e);
-        } finally {
-          setIsLoading(false);
-        }
-      }
-    })();
-  }, [account, total, currentPage]);
 
   if (isLoading) {
     return (
@@ -73,9 +40,7 @@ const ListTable = ({
     onViewClick,
     onUpdateClick,
   });
-  const dataSource = getData(type, list, {
-    current: currentPage,
-  });
+  const dataSource = getData(type, list, { current: currentPage });
 
   return (
     <>
@@ -85,12 +50,16 @@ const ListTable = ({
         <Table
           columns={columns}
           dataSource={dataSource}
-          pagination={{
-            total,
-            current: currentPage,
-            defaultPageSize: TOTAL_VIEW_COUNT,
-            onChange: (e) => setCurrentPage(e),
-          }}
+          pagination={
+            isPaginationRequired
+              ? {
+                total,
+                current: currentPage,
+                defaultPageSize: TOTAL_VIEW_COUNT,
+                onChange: (e) => setCurrentPage(e),
+              }
+              : false
+          }
           scroll={{ x: scrollX || 1200 }}
           rowKey={(record) => `${type}-row-${record.id}`}
         />
@@ -101,22 +70,30 @@ const ListTable = ({
 
 ListTable.propTypes = {
   type: PropTypes.string.isRequired,
-  getList: PropTypes.func.isRequired,
-  getTotal: PropTypes.func,
+  searchValue: PropTypes.string.isRequired,
+  isLoading: PropTypes.bool,
+  list: PropTypes.arrayOf(PropTypes.object),
+  total: PropTypes.number,
+  currentPage: PropTypes.number,
+  setCurrentPage: PropTypes.func,
+  isAccountRequired: PropTypes.bool,
   onViewClick: PropTypes.func,
   onUpdateClick: PropTypes.func,
-  isAccountRequired: PropTypes.bool,
   extra: PropTypes.shape({
     scrollX: PropTypes.number,
   }),
 };
 
 ListTable.defaultProps = {
-  getTotal: () => {},
+  isLoading: false,
+  list: [],
+  total: 0,
+  currentPage: 0,
+  setCurrentPage: () => {},
+  isAccountRequired: false,
   onViewClick: () => {},
   onUpdateClick: null,
   extra: {},
-  isAccountRequired: false,
 };
 
 export default ListTable;

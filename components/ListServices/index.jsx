@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import get from 'lodash/get';
 import { Tabs } from 'antd/lib';
 import { useRouter } from 'next/router';
 import { URL, NAV_TYPES } from 'util/constants';
@@ -16,55 +16,160 @@ import {
 
 const { TabPane } = Tabs;
 
-const ListServices = ({ account }) => {
+const ALL_SERVICES = 'all_services';
+const MY_SERVICES = 'my_services';
+
+const ListServices = () => {
+  const account = useSelector((state) => get(state, 'setup.account'));
+  const [currentTab, setCurrentTab] = useState(ALL_SERVICES);
+
+  /**
+   * extra tab content & view click
+   */
   const router = useRouter();
   const { searchValue, extraTabContent, clearSearch } = useExtraTabContent({
     title: 'Services',
     onRegisterClick: () => router.push(URL.REGISTER_SERVICE),
   });
+  const onViewClick = (id) => router.push(`${URL.COMPONENTS}/${id}`);
 
-  const commonProps = {
+  /**
+   * filtered list
+   */
+  const [isLoading, setIsLoading] = useState(true);
+  const [total, setTotal] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [list, setList] = useState([]);
+
+  // fetch total
+  useEffect(() => {
+    (async () => {
+      if (searchValue === '') {
+        try {
+          let totalTemp = null;
+
+          // All components
+          if (currentTab === ALL_SERVICES) {
+            totalTemp = await getTotalForAllServices();
+          }
+
+          // My components
+          if (currentTab === MY_SERVICES) {
+            totalTemp = await getTotalForMyServices(account);
+          }
+
+          setTotal(Number(totalTemp));
+          if (Number(totalTemp) === 0) {
+            setIsLoading(false);
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    })();
+  }, [account, currentTab, searchValue]);
+
+  useEffect(() => {
+    (async () => {
+      if (total && currentPage && !searchValue) {
+        setIsLoading(true);
+
+        try {
+          // All components
+          if (currentTab === ALL_SERVICES) {
+            setList([]);
+            const everyComps = await getServices(total, currentPage);
+            setList(everyComps);
+          }
+
+          /**
+           * My components
+           * - search by `account` as searchValue
+           * - API will be called only once & store the complete list
+           */
+          if (currentTab === MY_SERVICES && list.length === 0) {
+            setList([]);
+            const e = await getFilteredServices(account);
+            setList(e);
+          }
+        } catch (e) {
+          console.error(e);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    })();
+  }, [account, total, currentPage]);
+
+  /**
+   * Search (All components, My Components)
+   * - no pagination as we won't know total beforehand as we have to
+   *   traverse the entire list
+   */
+  useEffect(() => {
+    (async () => {
+      if (searchValue) {
+        setIsLoading(true);
+        setList([]);
+
+        try {
+          const filteredList = await getFilteredServices(
+            searchValue,
+            currentTab === MY_SERVICES ? account : null,
+          );
+          setList(filteredList);
+          setTotal(0); // total won't be used if search is used
+          setCurrentPage(1);
+        } catch (e) {
+          console.error(e);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    })();
+  }, [account, searchValue]);
+
+  const tableCommonProps = {
     type: NAV_TYPES.SERVICE,
-    filterValue: searchValue,
-    onViewClick: (id) => router.push(`${URL.SERVICES}/${id}`),
+    isLoading,
+    total,
+    currentPage,
+    setCurrentPage,
+    onViewClick,
+    searchValue,
   };
-
-  // my services
-  const [myServicesList, setMyServicesList] = useState([]);
-  const getMyServicesApi = async () => {
-    const e = await getFilteredServices(account);
-    setMyServicesList(e);
-    return e;
-  };
-
-  const getMyServices = async (myComponentsTotal, nextPage) => getMyListOnPagination({
-    total: myComponentsTotal,
-    nextPage,
-    myList: myServicesList,
-    getMyList: getMyServicesApi,
-  });
 
   return (
     <>
       <Tabs
         className="registry-tabs"
         type="card"
-        defaultActiveKey="all"
-        onChange={clearSearch}
+        activeKey={currentTab}
         tabBarExtraContent={extraTabContent}
+        onChange={(e) => {
+          setCurrentTab(e);
+
+          setList([]);
+          setTotal(0);
+          setCurrentPage(1);
+          setIsLoading(true);
+
+          // clear the search
+          clearSearch();
+        }}
       >
-        <TabPane tab="All" key="all">
-          <ListTable
-            {...commonProps}
-            getList={getServices}
-            getTotal={getTotalForAllServices}
-          />
+        <TabPane tab="All" key={ALL_SERVICES}>
+          <ListTable {...tableCommonProps} list={list} />
         </TabPane>
-        <TabPane tab="My Services" key="my_services">
+
+        <TabPane tab="My Services" key={MY_SERVICES}>
           <ListTable
-            {...commonProps}
-            getList={getMyServices}
-            getTotal={() => getTotalForMyServices(account)}
+            {...tableCommonProps}
+            list={
+              searchValue
+                ? list
+                : getMyListOnPagination({ total, nextPage: currentPage, list })
+            }
             onUpdateClick={(serviceId) => router.push(`${URL.UPDATE_SERVICE}/${serviceId}`)}
             isAccountRequired
           />
@@ -74,22 +179,4 @@ const ListServices = ({ account }) => {
   );
 };
 
-ListServices.propTypes = {
-  account: PropTypes.string,
-};
-
-ListServices.defaultProps = {
-  account: null,
-};
-
-const mapStateToProps = (state) => {
-  const { account } = state.setup;
-  return { account };
-};
-
-export default connect(mapStateToProps, {})(ListServices);
-
-/**
- * service-registry is used for readonly
- * otherwise use service-manager
- */
+export default ListServices;

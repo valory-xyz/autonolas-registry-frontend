@@ -35,7 +35,6 @@ export const EllipsisMiddle = ({ suffixCount, children, ...rest }) => {
       <Tooltip title="Copy">
         &nbsp;
         <Button
-          // size="small"
           onClick={() => navigator.clipboard.writeText(children)}
           icon={<CopyOutlined />}
         />
@@ -204,12 +203,9 @@ export const getData = (type, rawData, { current }) => {
  * tab content
  */
 export const useExtraTabContent = ({ title, onRegisterClick = () => {} }) => {
-  const [searchValue, setSearchValue] = useState('');
-  const [value, setValue] = useState('');
-  const clearSearch = () => {
-    setValue('');
-    setSearchValue('');
-  };
+  const [search, setSearch] = useState('');
+
+  const clearSearch = () => setSearch('');
 
   const extraTabContent = {
     left: <Title level={2}>{title}</Title>,
@@ -218,10 +214,10 @@ export const useExtraTabContent = ({ title, onRegisterClick = () => {} }) => {
         <Input
           prefix={<SearchOutlined className="site-form-item-icon" />}
           placeholder="Owner or Hash"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
         />
-        <Button ghost type="primary" onClick={() => setSearchValue(value || '')}>
+        <Button ghost type="primary" onClick={onRegisterClick}>
           Search
         </Button>
         <Button type="primary" onClick={onRegisterClick}>
@@ -231,5 +227,5 @@ export const useExtraTabContent = ({ title, onRegisterClick = () => {} }) => {
     ),
   };
 
-  return { searchValue, extraTabContent, clearSearch };
+  return { searchValue: search, extraTabContent, clearSearch };
 };

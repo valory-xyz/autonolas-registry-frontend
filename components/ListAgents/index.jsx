@@ -4,7 +4,7 @@ import get from 'lodash/get';
 import { Tabs } from 'antd/lib';
 import { useRouter } from 'next/router';
 import { URL, NAV_TYPES } from 'util/constants';
-import ListTable from 'common-util/List/ListTableCopy';
+import ListTable from 'common-util/List/ListTable';
 import { useExtraTabContent } from 'common-util/List/ListTable/helpers';
 import { getMyListOnPagination } from 'common-util/ContractUtils/myList';
 import {
