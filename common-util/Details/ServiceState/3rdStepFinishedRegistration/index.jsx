@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { ethers } from 'ethers';
 import { useSelector } from 'react-redux';
+import { ethers } from 'ethers';
 import PropTypes from 'prop-types';
 import get from 'lodash/get';
 import {
