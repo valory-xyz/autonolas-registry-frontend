@@ -59,7 +59,7 @@ export const ServiceState = ({
   }, [status]);
 
   /* ----- helper functions ----- */
-  const getButton = (button, message, isValid = isOwner) => {
+  const getButton = (button, isValid = isOwner, message) => {
     if (isValid) return button;
 
     return (
@@ -183,9 +183,14 @@ export const ServiceState = ({
           <Button onClick={handleStep1Registration} {...getOtherBtnProps(1)}>
             Activate Registration
           </Button>
-          <Button onClick={handleStep1Update} {...getOtherBtnProps(1)}>
-            Update
-          </Button>
+          {getButton(
+            <Button
+              onClick={handleStep1Update}
+              {...getOtherBtnProps(1, { isDisabled: !isOwner })}
+            >
+              Update
+            </Button>,
+          )}
         </Space>
       ),
     },
