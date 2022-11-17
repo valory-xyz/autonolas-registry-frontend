@@ -242,7 +242,7 @@ const RegisterForm = ({
         </Form.Item>
 
         <Form.Item
-          label="Cost of agent instance bond"
+          label="Cost of agent instance bond (wei)"
           name="bonds"
           rules={[
             {
@@ -257,7 +257,7 @@ const RegisterForm = ({
         <Form.Item
           label="Threshold"
           name="threshold"
-          tooltip="min should equal <= 2/3 No. of slots"
+          tooltip="minimum >= 2/3 of the slot No."
           rules={[
             {
               required: true,
