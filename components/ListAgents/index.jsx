@@ -48,12 +48,12 @@ const ListAgents = () => {
         try {
           let totalTemp = null;
 
-          // All components
+          // All agents
           if (currentTab === ALL_AGENTS) {
             totalTemp = await getTotalForAllAgents();
           }
 
-          // My components
+          // My agents
           if (currentTab === MY_AGENTS) {
             totalTemp = await getTotalForMyAgents(account);
           }
@@ -102,7 +102,7 @@ const ListAgents = () => {
   }, [account, total, currentPage]);
 
   /**
-   * Search (All agents, My Components)
+   * Search (All agents, My agents)
    * - no pagination as we won't know total beforehand as we have to
    *   traverse the entire list
    */
