@@ -5,6 +5,7 @@ import {
   COMPONENT_REGISTRY_CONTRACT,
   SERVICE_REGISTRY_CONTRACT,
   SERVICE_MANAGER_CONTRACT,
+  SIGN_MESSAGE_LIB_CONTRACT,
 } from 'common-util/AbiAndAddresses';
 import { STAGING_CHAIN_ID } from 'util/constants';
 
@@ -93,6 +94,16 @@ export const getServiceManagerContract = () => {
   return contract;
 };
 
+export const getSignMessageLibContract = (address) => {
+  const { web3 } = getWeb3Details();
+  const contract = new web3.eth.Contract(
+    SIGN_MESSAGE_LIB_CONTRACT.abi,
+    address,
+  );
+  return contract;
+};
+
+
 /**
  * Other details
  */
@@ -121,8 +132,14 @@ export const gnosisSafeMaster = {
   31337: '0x4826533B4897376654Bb4d4AD88B7faFD0C98528',
 };
 
+// TODO: duplicate, remove once tested
 export const rpcUrl = {
   1: 'https://mainnet.infura.io/v3/',
-  5: 'https://goerli.infura.io/v3/',
+  5: process.env.NEXT_PUBLIC_GOERLI_URL,
   31337: 'http://localhost:8545',
+};
+
+export const signMessageLibAddresses = {
+  1: '0xA65387F16B013cf2Af4605Ad8aA5ec25a2cbA3a2',
+  5: '0xA65387F16B013cf2Af4605Ad8aA5ec25a2cbA3a2',
 };

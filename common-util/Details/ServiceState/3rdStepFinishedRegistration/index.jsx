@@ -30,6 +30,7 @@ const StepThreePayload = ({
   handleTerminate,
   canShowMultisigSameAddress,
   getOtherBtnProps,
+  account,
 }) => {
   const chainId = useSelector((state) => get(state, 'setup.chainId'));
   const [form] = Form.useForm();
@@ -210,6 +211,7 @@ const StepThreePayload = ({
                 chainId,
                 handleStep3Deploy,
                 radioValue,
+                account,
               });
             }}
             {...getOtherBtnProps(STEP, { isDisabled: !radioValue })}
@@ -240,6 +242,7 @@ StepThreePayload.propTypes = {
   handleTerminate: PropTypes.func,
   canShowMultisigSameAddress: PropTypes.bool,
   getOtherBtnProps: PropTypes.func.isRequired,
+  account: PropTypes.string.isRequired,
 };
 
 StepThreePayload.defaultProps = {

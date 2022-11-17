@@ -217,6 +217,7 @@ export const ServiceState = ({
             get(details, 'multisig') !== `0x${'0'.repeat(40)}`
           }
           getOtherBtnProps={getOtherBtnProps}
+          account={account}
         />
       ),
     },
