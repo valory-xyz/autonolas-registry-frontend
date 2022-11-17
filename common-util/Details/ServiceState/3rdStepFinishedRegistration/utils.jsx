@@ -100,16 +100,20 @@ export const handleMultisigSubmit = async ({
   //
   try {
     const code = await provider.getCode(account);
+    // TODO: check if we are dealing with safe in future!
     if (code !== '0x') {
       // gnosis-safe
       console.log('GNOSIS-SAFE');
-      // Sign multisend message for the service owner multisig
-      // await safeContracts.executeContractCallWithSigners(serviceOwnerMultisig, signMessageLib, 'signMessage',
-      // [messageData], [serviceOwnerOwners[0], serviceOwnerOwners[1]], true);
-      // on the front-end something like:
-      // await signMessageLib
-      //   .connect(serviceOwnerMultisig)
-      //   .signMessage(messageData);
+
+      const serviceOwnerMultisigContract = new ethers.Contract(
+        account,
+        GNOSIS_SAFE_CONTRACT.abi,
+        ethers.getDefaultProvider(rpcUrl[chainId]),
+      );
+
+      const serviceOwnerThreshold = await serviceOwnerMultisigContract.methods
+        .getThreshold()
+        .call();
 
       // Create a message data from the multisend transaction
       const messageData = await multisigContract.encodeTransactionData(
@@ -128,44 +132,55 @@ export const handleMultisigSubmit = async ({
       const signMessageLibContract = getSignMessageLibContract(
         signMessageLibAddresses[chainId],
       );
-      console.log(signMessageLibContract);
 
       signMessageLibContract.methods
         .signMessage(messageData)
         .send({ from: account })
-        .once('transactionHash', (hash) => console.log('sign-message-1', hash))
-        .then((information) => {
-          console.log('sign-message-2', information);
-        })
+        .once('transactionHash', (hash) => console.log('sign-message-hash', hash)) // TODO: remove console
+        .then((information) => console.log('sign-message-response', information)) // TODO: remove console
         .catch((e) => {
           console.error(e);
         });
 
-      // // Get the signature line
-      // // Inspired by: https://github.com/safe-global/safe-contracts/pull/416/files
-      // // 12 bytes of padding + 20 bytes of address + 32 bytes of s + 1 byte of v
-      // const signatureLength = 65;
-      // // Calculate the s part length in hex with leading zeros padding to be 32 bytes in total
-      // const sPartPadded64 = (serviceOwnerThreshold * signatureLength).toString(16).padStart(64, '0'); // 65 in hex is 0x41
-      // const staticPart = `0x000000000000000000000000${serviceOwnerAddress.slice(2)}${sPartPadded64}00`; // r, s, v
-      // // Dynamic part consists of zero bytes of length equal to 65 bytes * threshold - first 65 initial ones + 32
-      // const dynamicPart = '00'.repeat(signatureLength * (serviceOwnerThreshold - 1) + 32);
-      // const signatureBytes = staticPart + dynamicPart;
+      // Get the signature line
+      // 12 bytes of padding + 20 bytes of address + 32 bytes of s + 1 byte of v
+      const signatureLength = 65;
+      // Calculate the s part length in hex with leading zeros padding to be 32 bytes in total
+      const sPartPadded64 = (serviceOwnerThreshold * signatureLength)
+        .toString(16)
+        .padStart(64, '0'); // 65 in hex is 0x41
+      const staticPart = `0x000000000000000000000000${account.slice(
+        2,
+      )}${sPartPadded64}00`; // r, s, v
+      // Dynamic part consists of zero bytes of length equal to 65 bytes * threshold - first 65 initial ones + 32
+      const dynamicPart = '00'.repeat(
+        signatureLength * (serviceOwnerThreshold - 1) + 32,
+      );
+      const signatureBytes = staticPart + dynamicPart;
 
-      // const safeExecData = gnosisSafe.interface.encodeFunctionData('execTransaction', [safeTx.to, safeTx.value,
-      //   safeTx.data, safeTx.operation, safeTx.safeTxGas, safeTx.baseGas, safeTx.gasPrice, safeTx.gasToken,
-      //   safeTx.refundReceiver, signatureBytes]);
+      const safeExecData = multisigContract.interface.encodeFunctionData(
+        'execTransaction',
+        [
+          safeTx.to,
+          safeTx.value,
+          safeTx.data,
+          safeTx.operation,
+          safeTx.safeTxGas,
+          safeTx.baseGas,
+          safeTx.gasPrice,
+          safeTx.gasToken,
+          safeTx.refundReceiver,
+          signatureBytes,
+        ],
+      );
 
-      // // Add the multisig address on top of the multisig exec transaction data
-      // const packedData = ethers.utils.solidityPack(['address', 'bytes'], [multisig.address, safeExecData]);
+      // Redeploy the service updating the multisig with new owners and threshold
+      const packedData = ethers.utils.solidityPack(
+        ['address', 'bytes'],
+        [multisig, safeExecData],
+      );
 
-      // // Redeploy the service updating the multisig with new owners and threshold
-      // await serviceRegistry.connect(serviceManager).deploy(serviceOwnerAddress, serviceId,
-      //   gnosisSafeSameAddressMultisig.address, packedData);
-
-      // // Check that the service is deployed
-      // const service = await serviceRegistry.getService(serviceId);
-      // expect(service.state).to.equal(4);
+      handleStep3Deploy(radioValue, packedData);
     } else {
       // metamask
       console.log('METAMASK');
