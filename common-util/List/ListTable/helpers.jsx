@@ -203,9 +203,12 @@ export const getData = (type, rawData, { current }) => {
  * tab content
  */
 export const useExtraTabContent = ({ title, onRegisterClick = () => {} }) => {
-  const [search, setSearch] = useState('');
-
-  const clearSearch = () => setSearch('');
+  const [searchValue, setSearchValue] = useState('');
+  const [value, setValue] = useState('');
+  const clearSearch = () => {
+    setValue('');
+    setSearchValue('');
+  };
 
   const extraTabContent = {
     left: <Title level={2}>{title}</Title>,
@@ -214,10 +217,10 @@ export const useExtraTabContent = ({ title, onRegisterClick = () => {} }) => {
         <Input
           prefix={<SearchOutlined className="site-form-item-icon" />}
           placeholder="Owner or Hash"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
         />
-        <Button ghost type="primary" onClick={onRegisterClick}>
+        <Button ghost type="primary" onClick={() => setSearchValue(value || '')}>
           Search
         </Button>
         <Button type="primary" onClick={onRegisterClick}>
@@ -227,5 +230,5 @@ export const useExtraTabContent = ({ title, onRegisterClick = () => {} }) => {
     ),
   };
 
-  return { searchValue: search, extraTabContent, clearSearch };
+  return { searchValue, extraTabContent, clearSearch };
 };
