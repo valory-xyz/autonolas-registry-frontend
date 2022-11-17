@@ -257,7 +257,7 @@ const RegisterForm = ({
         <Form.Item
           label="Threshold"
           name="threshold"
-          tooltip="minimum >= 2/3 of the slot No."
+          tooltip="Minimum >= 2/3 of the slot number"
           rules={[
             {
               required: true,
