@@ -156,3 +156,10 @@ export const signMessageLibAddresses = {
   1: '0xA65387F16B013cf2Af4605Ad8aA5ec25a2cbA3a2',
   5: '0xA65387F16B013cf2Af4605Ad8aA5ec25a2cbA3a2',
 };
+
+// TODO: duplicate, remove once tested
+export const rpcUrl = {
+  1: 'https://mainnet.infura.io/v3/',
+  5: process.env.NEXT_PUBLIC_GOERLI_URL,
+  31337: 'http://localhost:8545',
+};

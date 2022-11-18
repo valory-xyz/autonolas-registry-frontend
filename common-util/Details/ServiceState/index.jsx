@@ -7,6 +7,7 @@ import {
 import get from 'lodash/get';
 import kebabCase from 'lodash/kebabCase';
 import { URL } from 'util/constants';
+// import dynamic from 'next/dynamic';
 import {
   onActivateRegistration,
   getServiceTableDataSource,
@@ -17,9 +18,14 @@ import {
 } from './utils';
 import StepActiveRegistration from './2StepActiveRegistration';
 import StepFinishedRegistration from './3rdStepFinishedRegistration';
+
 import Deployed from './4thStepDeployed';
 import { InfoSubHeader } from '../styles';
 import { ServiceStateContainer } from './styles';
+
+// const StepFinishedRegistration = dynamic(() => import('./3rdStepFinishedRegistration'), {
+//   suspense: true, ssr: false,
+// });
 
 const { Step } = Steps;
 

@@ -2,12 +2,18 @@
 /* eslint-disable no-underscore-dangle */
 import { ethers } from 'ethers';
 import {
+  GNOSIS_SAFE_CONTRACT,
+  MULTI_SEND_CONTRACT,
+} from 'common-util/AbiAndAddresses';
+import {
+  rpcUrl,
   getSignMessageLibContract,
   getServiceOwnerMultisigContract,
   getMultiSendContract,
   safeMultiSend,
   signMessageLibAddresses,
 } from 'common-util/Contracts';
+// import { walletConnectInit } from './wallectConnector';
 
 const safeContracts = require('@gnosis.pm/safe-contracts');
 
@@ -36,7 +42,14 @@ export const handleMultisigSubmit = async ({
   radioValue,
   account,
 }) => {
-  const multisigContract = getServiceOwnerMultisigContract(multisig);
+  // const multisigContract = getServiceOwnerMultisigContract(multisig);
+
+  const multisigContract = new ethers.Contract(
+    multisig,
+    GNOSIS_SAFE_CONTRACT.abi,
+    ethers.getDefaultProvider(rpcUrl[chainId]),
+  );
+
   const nonce = await multisigContract.nonce();
 
   const callData = [];
@@ -70,7 +83,12 @@ export const handleMultisigSubmit = async ({
     }),
   );
 
-  const multiSendContract = getMultiSendContract(safeMultiSend[chainId][0]);
+  // const multiSendContract = getMultiSendContract(safeMultiSend[chainId][0]);
+  const multiSendContract = new ethers.Contract(
+    safeMultiSend[chainId][0],
+    MULTI_SEND_CONTRACT.abi,
+    ethers.getDefaultProvider(rpcUrl[chainId]),
+  );
 
   const safeTx = safeContracts.buildMultiSendSafeTx(
     multiSendContract,
@@ -92,6 +110,8 @@ export const handleMultisigSubmit = async ({
     if (code !== '0x') {
       // gnosis-safe
       console.log('GNOSIS-SAFE');
+
+      // const serviceOwnerMultisigContract = getServiceOwnerMultisigContract(account);
 
       const serviceOwnerMultisigContract = getServiceOwnerMultisigContract(account);
 
@@ -117,15 +137,71 @@ export const handleMultisigSubmit = async ({
         signMessageLibAddresses[chainId],
       );
 
-      signMessageLibContract.methods
-        .signMessage(messageData)
-        .send({ from: account })
-        .once('transactionHash', (hash) => console.log('sign-message-hash', hash)) // TODO: remove console
-        .then((information) => console.log('sign-message-response', information)) // TODO: remove console
-        .catch((e) => {
-          console.error(e);
-        });
+      // const opts = {
+      //   allowedDomains: [/gnosis-safe.io/],
+      //   debug: true,
+      // };
 
+      // const appsSdk = new SafeAppsSDK(opts);
+      // console.log(appsSdk);
+
+      // // const safe = appsSdk.safe.getInfo();
+      // const chain = await appsSdk.safe.getChainInfo();
+      // console.log(chain);
+
+      // txDataServiceMultisig.to = "0xA65387F16B013cf2Af4605Ad8aA5ec25a2cbA3a2";
+
+      // let encodedMessageData = ethers.utils._TypedDataEncoder.encode({ verifyingContract: multisig, chainId },
+      //   safeContracts.EIP712_SAFE_TX_TYPE, safeTx);
+
+      // signMessageLibContract.methods
+      //   .signMessage(messageData)
+      //   .send({ from: account })
+      //   .once('transactionHash', (hash) => console.log('sign-message-hash', hash)) // TODO: remove console
+      //   .then((information) => console.log('sign-message-response', information)) // TODO: remove console
+      //   .catch((e) => {
+      //     console.error(e);
+      //   });
+
+      // const abc = await connector.signTypedData(messageData);
+      // console.log(connector);
+
+
+      const walletProvider = new ethers.providers.Web3Provider(
+        window.MODAL_PROVIDER,
+      );
+      console.log(walletProvider);
+
+      const signer = walletProvider.getSigner();
+      console.log(signer);
+
+      const abcd = await signer._signTypedData(
+        { verifyingContract: multisig, chainId },
+        EIP712_SAFE_TX_TYPE,
+        safeTx,
+      );
+
+      console.log(abcd);
+
+      // const signatureBytes2 = await signer.sendTransaction(
+      //   {
+      //     to: '0xA65387F16B013cf2Af4605Ad8aA5ec25a2cbA3a2',
+      //     value: 0,
+      //     data: messageData,
+      //     // customData: {
+      //     //   operation: 1,
+      //     // },
+      //     gasLimit: 2500000,
+      //   },
+      // );
+
+      // console.log(signatureBytes2);
+
+      // // const abc = await window.WEB3_PROVIDER.eth.sendSignedTransaction(messageData);
+      // console.log(signer);
+
+
+      // walletConnectInit();
       // Get the signature line
       // 12 bytes of padding + 20 bytes of address + 32 bytes of s + 1 byte of v
       const signatureLength = 65;
