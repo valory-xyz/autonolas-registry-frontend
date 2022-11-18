@@ -2,12 +2,9 @@
 /* eslint-disable no-underscore-dangle */
 import { ethers } from 'ethers';
 import {
-  GNOSIS_SAFE_CONTRACT,
-  MULTI_SEND_CONTRACT,
-} from 'common-util/AbiAndAddresses';
-import {
   getSignMessageLibContract,
-  rpcUrl,
+  getServiceOwnerMultisigContract,
+  getMultiSendContract,
   safeMultiSend,
   signMessageLibAddresses,
 } from 'common-util/Contracts';
@@ -39,12 +36,7 @@ export const handleMultisigSubmit = async ({
   radioValue,
   account,
 }) => {
-  const multisigContract = new ethers.Contract(
-    multisig,
-    GNOSIS_SAFE_CONTRACT.abi,
-    ethers.getDefaultProvider(rpcUrl[chainId]),
-  );
-
+  const multisigContract = getServiceOwnerMultisigContract(multisig);
   const nonce = await multisigContract.nonce();
 
   const callData = [];
@@ -78,11 +70,7 @@ export const handleMultisigSubmit = async ({
     }),
   );
 
-  const multiSendContract = new ethers.Contract(
-    safeMultiSend[chainId][0],
-    MULTI_SEND_CONTRACT.abi,
-    ethers.getDefaultProvider(rpcUrl[chainId]),
-  );
+  const multiSendContract = getMultiSendContract(safeMultiSend[chainId][0]);
 
   const safeTx = safeContracts.buildMultiSendSafeTx(
     multiSendContract,
@@ -105,11 +93,7 @@ export const handleMultisigSubmit = async ({
       // gnosis-safe
       console.log('GNOSIS-SAFE');
 
-      const serviceOwnerMultisigContract = new ethers.Contract(
-        account,
-        GNOSIS_SAFE_CONTRACT.abi,
-        ethers.getDefaultProvider(rpcUrl[chainId]),
-      );
+      const serviceOwnerMultisigContract = getServiceOwnerMultisigContract(account);
 
       const serviceOwnerThreshold = await serviceOwnerMultisigContract.methods
         .getThreshold()

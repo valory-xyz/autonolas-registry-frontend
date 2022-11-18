@@ -6,6 +6,8 @@ import {
   SERVICE_REGISTRY_CONTRACT,
   SERVICE_MANAGER_CONTRACT,
   SIGN_MESSAGE_LIB_CONTRACT,
+  GNOSIS_SAFE_CONTRACT,
+  MULTI_SEND_CONTRACT,
 } from 'common-util/AbiAndAddresses';
 import { STAGING_CHAIN_ID } from 'util/constants';
 
@@ -103,6 +105,24 @@ export const getSignMessageLibContract = (address) => {
   return contract;
 };
 
+export const getServiceOwnerMultisigContract = (address) => {
+  const { web3 } = getWeb3Details();
+  const contract = new web3.eth.Contract(
+    GNOSIS_SAFE_CONTRACT.abi,
+    address,
+  );
+  return contract;
+};
+
+export const getMultiSendContract = (address) => {
+  const { web3 } = getWeb3Details();
+  const contract = new web3.eth.Contract(
+    MULTI_SEND_CONTRACT.abi,
+    address,
+  );
+  return contract;
+};
+
 
 /**
  * Other details
@@ -130,13 +150,6 @@ export const gnosisSafeMaster = {
   1: '0xd9Db270c1B5E3Bd161E8c8503c55cEABeE709552',
   5: '0xd9Db270c1B5E3Bd161E8c8503c55cEABeE709552',
   31337: '0x4826533B4897376654Bb4d4AD88B7faFD0C98528',
-};
-
-// TODO: duplicate, remove once tested
-export const rpcUrl = {
-  1: 'https://mainnet.infura.io/v3/',
-  5: process.env.NEXT_PUBLIC_GOERLI_URL,
-  31337: 'http://localhost:8545',
 };
 
 export const signMessageLibAddresses = {
