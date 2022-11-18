@@ -166,22 +166,23 @@ export const handleMultisigSubmit = async ({
       // const abc = await connector.signTypedData(messageData);
       // console.log(connector);
 
+      // ======================>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> MOHAN
+      // const walletProvider = new ethers.providers.Web3Provider(
+      //   window.MODAL_PROVIDER,
+      // );
+      // console.log(walletProvider);
 
-      const walletProvider = new ethers.providers.Web3Provider(
-        window.MODAL_PROVIDER,
-      );
-      console.log(walletProvider);
+      // const signer = walletProvider.getSigner();
+      // console.log(signer);
 
-      const signer = walletProvider.getSigner();
-      console.log(signer);
+      // const abcd = await signer._signTypedData(
+      //   { verifyingContract: multisig, chainId },
+      //   EIP712_SAFE_TX_TYPE,
+      //   safeTx,
+      // );
+      // ======================>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> DAS
 
-      const abcd = await signer._signTypedData(
-        { verifyingContract: multisig, chainId },
-        EIP712_SAFE_TX_TYPE,
-        safeTx,
-      );
-
-      console.log(abcd);
+      // console.log(abcd);
 
       // const signatureBytes2 = await signer.sendTransaction(
       //   {
@@ -218,6 +219,11 @@ export const handleMultisigSubmit = async ({
       );
       const signatureBytes = staticPart + dynamicPart;
 
+      console.log({
+        safeTx,
+        signatureBytes,
+        messageData,
+      });
       const safeExecData = multisigContract.interface.encodeFunctionData(
         'execTransaction',
         [
