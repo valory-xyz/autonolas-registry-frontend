@@ -43,7 +43,7 @@ export const handleMultisigSubmit = async ({
   radioValue,
   account,
 }) => {
-  // const multisigContract = getServiceOwnerMultisigContract(multisig);
+  const multisigContractWeb3 = getServiceOwnerMultisigContract(multisig);
 
   const multisigContract = new ethers.Contract(
     multisig,
@@ -199,19 +199,31 @@ export const handleMultisigSubmit = async ({
       };
 
       // const abcd = await walletConnector.unsafeSend(customRequest);
-      const abcd = await walletConnector.sendCustomRequest(customRequest);
-      console.log(abcd);
+//       const abcd = await walletConnector.sendCustomRequest(customRequest);
+//       console.log(abcd);
       // walletProvider.connection
 
       // const abcd = await walletProvider.send('eth_sendRawTransaction', safeTx);
       // console.log(abcd);
 
       // --------------------- GET SIGNER START ---------------------------
-      // const signer = walletProvider.getSigner();
-      // console.log(signer);
+      const signer = walletProvider.getSigner();
+      console.log(signer);
 
-      // const abcd = await signer.signMessage(messageData);
-      // const abcd = await signer.(safeTx);
+      ////////////////////////////// APPROVE HASH
+      const messageDataHash = ethers.utils.keccak256(messageData);
+      multisigContractWeb3.methods
+         .approveHash(messageDataHash)
+         .send({ from: account })
+         .once('transactionHash', (hash) => console.log('sign-message-hash', hash)) // TODO: remove console
+         .then((information) => console.log('sign-message-response', information)) // TODO: remove console
+         .catch((e) => {
+           console.error(e);
+         });
+      /////////////////////////////////////
+
+//       const abcd = await signer.signMessage(messageData);
+//       const abcd = await signer.(safeTx);
       // --------------------- GET SIGNER END ------------------------------
 
       // const abcd = await signer._signTypedData(
@@ -239,22 +251,8 @@ export const handleMultisigSubmit = async ({
       // // const abc = await window.WEB3_PROVIDER.eth.sendSignedTransaction(messageData);
       // console.log(signer);
 
-      // walletConnectInit();
-      // Get the signature line
-      // 12 bytes of padding + 20 bytes of address + 32 bytes of s + 1 byte of v
-      const signatureLength = 65;
-      // Calculate the s part length in hex with leading zeros padding to be 32 bytes in total
-      const sPartPadded64 = (serviceOwnerThreshold * signatureLength)
-        .toString(16)
-        .padStart(64, '0'); // 65 in hex is 0x41
-      const staticPart = `0x000000000000000000000000${account.slice(
-        2,
-      )}${sPartPadded64}00`; // r, s, v
-      // Dynamic part consists of zero bytes of length equal to 65 bytes * threshold - first 65 initial ones + 32
-      const dynamicPart = '00'.repeat(
-        signatureLength * (serviceOwnerThreshold - 1) + 32,
-      );
-      const signatureBytes = staticPart + dynamicPart;
+      // Get the signature bytes based on the account address, since it had its tx pre-approved
+      const signatureBytes = "0x000000000000000000000000" + account.slice(2) + "0000000000000000000000000000000000000000000000000000000000000000" + "01"
 
       console.log({
         safeTx,
