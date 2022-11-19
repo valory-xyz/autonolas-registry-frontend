@@ -252,7 +252,8 @@ export const handleMultisigSubmit = async ({
       // console.log(signer);
 
       // Get the signature bytes based on the account address, since it had its tx pre-approved
-      const signatureBytes = "0x000000000000000000000000" + account.slice(2) + "0000000000000000000000000000000000000000000000000000000000000000" + "01"
+      const signatureBytes = "0x000000000000000000000000" + account.slice(2) +
+        "0000000000000000000000000000000000000000000000000000000000000000" + "01";
 
       console.log({
         safeTx,
