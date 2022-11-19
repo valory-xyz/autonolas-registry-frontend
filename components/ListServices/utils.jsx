@@ -64,14 +64,17 @@ export const getTotalForAllServices = () => new Promise((resolve, reject) => {
     });
 });
 
-export const getServices = (total, nextPage) => new Promise((resolve, reject) => {
+export const getServices = (total, nextPage, fetchAll = false) => new Promise((resolve, reject) => {
   const contract = getServiceContract();
 
   try {
     const existsPromises = [];
 
-    const first = (nextPage - 1) * TOTAL_VIEW_COUNT + 1;
-    const last = Math.min(nextPage * TOTAL_VIEW_COUNT, total);
+    const first = fetchAll ? 1 : (nextPage - 1) * TOTAL_VIEW_COUNT + 1;
+    const last = fetchAll
+      ? total
+      : Math.min(nextPage * TOTAL_VIEW_COUNT, total);
+
     for (let i = first; i <= last; i += 1) {
       const result = contract.methods.exists(`${i}`).call();
       existsPromises.push(result);
@@ -81,7 +84,7 @@ export const getServices = (total, nextPage) => new Promise((resolve, reject) =>
       // filter services which don't exists (deleted or destroyed)
       const validTokenIds = [];
       existsResult.forEach((item, index) => {
-        const serviceId = `${index + 1}`;
+        const serviceId = `${first + index}`;
         if (item.status === 'fulfilled' && !!item.value) {
           validTokenIds.push(serviceId);
         }
@@ -92,7 +95,7 @@ export const getServices = (total, nextPage) => new Promise((resolve, reject) =>
         validTokenIds.map(async (id) => {
           const info = await getServiceDetails(id);
           const owner = await getServiceOwner(id);
-          return { ...info, owner };
+          return { ...info, id, owner };
         }),
       );
 
@@ -104,14 +107,15 @@ export const getServices = (total, nextPage) => new Promise((resolve, reject) =>
   }
 });
 
-export const getServicesByAccount = async (account) => {
+export const getFilteredServices = async (searchValue, account) => {
   const total = await getTotalForAllServices();
   const list = await getServices(
     total,
     Math.round(total / TOTAL_VIEW_COUNT + 1),
+    true,
   );
 
-  return new Promise((resolve) => resolve(filterByOwner(account, list)));
+  return new Promise((resolve) => resolve(filterByOwner(list, { searchValue, account })));
 };
 
 // for services, hash is hardcoded in frontend

@@ -2,7 +2,7 @@ import { getComponentContract } from 'common-util/Contracts';
 import {
   getComponentDetails,
   getComponents,
-  getComponentsByAccount,
+  getFilteredComponents,
 } from 'components/ListComponents/utils';
 import { dummyAddress } from '../../helpers';
 
@@ -28,7 +28,7 @@ describe('listComponents/utils.jsx', () => {
     expect(result).toMatchObject(COMPONENT_1);
   });
 
-  it('getComponentsByAccount: Promise resolved', async () => {
+  it('getFilteredComponents: Promise resolved', async () => {
     expect.hasAssertions();
 
     getComponentContract.mockImplementation(() => ({
@@ -48,7 +48,7 @@ describe('listComponents/utils.jsx', () => {
       },
     }));
 
-    const result = await getComponentsByAccount(dummyAddress);
+    const result = await getFilteredComponents(dummyAddress);
     expect(result).toMatchObject([COMPONENT_1]);
   });
 

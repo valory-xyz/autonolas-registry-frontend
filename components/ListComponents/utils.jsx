@@ -25,11 +25,11 @@ export const getComponentOwner = (id) => new Promise((resolve, reject) => {
 /**
  * helper to return the list of details (table in index page)
  */
-const getComponentsHelper = (promiseList, resolve) => {
+const getComponentsHelper = (startIndex, promiseList, resolve) => {
   Promise.all(promiseList).then(async (componentsList) => {
     const results = await Promise.all(
       componentsList.map(async (info, i) => {
-        const owner = await getComponentOwner(`${i + 1}`);
+        const owner = await getComponentOwner(`${startIndex + i}`);
         return { ...info, owner };
       }),
     );
@@ -80,16 +80,17 @@ export const getTotalForMyComponents = (account) => new Promise((resolve, reject
     });
 });
 
-export const getComponentsByAccount = async (account) => {
+export const getFilteredComponents = async (searchValue, account) => {
   const contract = getComponentContract();
   const total = await getTotalForAllComponents();
   const { getUnit } = contract.methods;
 
   return getListByAccount({
-    account,
+    searchValue,
     total,
     getUnit,
     getOwner: getComponentOwner,
+    account,
   });
 };
 
@@ -109,7 +110,7 @@ export const getComponents = (total, nextPage) => new Promise((resolve, reject) 
       allComponentsPromises.push(result);
     }
 
-    getComponentsHelper(allComponentsPromises, resolve);
+    getComponentsHelper(first, allComponentsPromises, resolve);
   } catch (e) {
     console.error(e);
     reject(e);

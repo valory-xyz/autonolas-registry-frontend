@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import ListServices from 'components/ListServices';
 import {
   getServices,
-  getServicesByAccount,
+  getFilteredServices,
   getTotalForAllServices,
   getTotalForMyServices,
 } from 'components/ListServices/utils';
@@ -20,7 +20,7 @@ jest.mock('next/router', () => ({
 
 jest.mock('components/ListServices/utils', () => ({
   getServices: jest.fn(),
-  getServicesByAccount: jest.fn(),
+  getFilteredServices: jest.fn(),
   getTotalForAllServices: jest.fn(),
   getTotalForMyServices: jest.fn(),
 }));
@@ -43,12 +43,12 @@ getServiceContract.mockImplementation(() => ({
 useRouter.mockImplementation(() => ({ push: jest.fn() }));
 
 // dummy responses mock
-const allServiceResponse = { id: 'all-service-1', state: '5' };
-const myServiceResponse = { id: 'my-service-1' };
+const allServiceResponse = { id: '1', state: '5' };
+const myServiceResponse = { id: '2' };
 
 describe('listServices/index.jsx', () => {
   getServices.mockImplementation(() => Promise.resolve([allServiceResponse]));
-  getServicesByAccount.mockImplementation(() => Promise.resolve([myServiceResponse]));
+  getFilteredServices.mockImplementation(() => Promise.resolve([myServiceResponse]));
   getTotalForAllServices.mockImplementation(() => Promise.resolve(1));
   getTotalForMyServices.mockImplementation(() => Promise.resolve(1));
 

@@ -12,10 +12,8 @@ export const CustomLayout = styled(Layout)`
         }
       }
       &:last-child {
-        .ant-input-affix-wrapper {
-          width: 200px;
-          margin-right: 12px;
-        }
+        gap: 12px;
+        display: flex;
       }
     }
     .ant-tabs-nav-wrap {

@@ -1,5 +1,5 @@
 import { getAgentContract } from 'common-util/Contracts';
-import { getAgents, getAgentsByAccount } from 'components/ListAgents/utils';
+import { getAgents, getFilteredAgents } from 'components/ListAgents/utils';
 import { dummyAddress } from '../../helpers';
 
 const AGENT_1 = { name: 'Agent One' };
@@ -9,7 +9,7 @@ jest.mock('common-util/Contracts', () => ({
 }));
 
 describe('listAgents/utils.jsx', () => {
-  it('getAgentsByAccount: Promise resolved', async () => {
+  it('getFilteredAgents: Promise resolved', async () => {
     expect.hasAssertions();
 
     getAgentContract.mockImplementation(() => ({
@@ -29,7 +29,7 @@ describe('listAgents/utils.jsx', () => {
       },
     }));
 
-    const result = await getAgentsByAccount(dummyAddress);
+    const result = await getFilteredAgents(dummyAddress);
     expect(result).toMatchObject([AGENT_1]);
   });
 

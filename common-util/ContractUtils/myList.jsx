@@ -1,14 +1,28 @@
 import { getFirstAndLastIndex } from 'common-util/functions';
+import includes from 'lodash/includes';
 
-export const filterByOwner = (account, results = []) => results.filter(
-  (e) => (e.owner || '').toLowerCase() === (account || '').toLowerCase(),
-);
+export const filterByOwner = (results = [], { searchValue, account }) => results.filter((e) => {
+  const search = (searchValue || '').trim().toLowerCase();
+  const ownerL = (e.owner || '').trim().toLowerCase();
+  const hashL = (e.unitHash || '').trim().toLowerCase();
+
+  // for "my components/agents" search only by Account
+  if (account) {
+    return ownerL === account.trim().toLowerCase() && includes(hashL, search);
+  }
+
+  return includes(ownerL, search) || includes(hashL, search);
+});
 
 /**
  * get all the list and filter by owner
  */
 export const getListByAccount = async ({
-  account, total, getUnit, getOwner,
+  searchValue,
+  total,
+  getUnit,
+  getOwner,
+  account,
 }) => new Promise((resolve, reject) => {
   try {
     const allListPromise = [];
@@ -21,12 +35,17 @@ export const getListByAccount = async ({
     Promise.all(allListPromise).then(async (componentsList) => {
       const results = await Promise.all(
         componentsList.map(async (info, i) => {
-          const owner = await getOwner(`${i + 1}`);
-          return { ...info, owner };
+          const id = `${i + 1}`;
+          const owner = await getOwner(id);
+          return { ...info, id, owner };
         }),
       );
 
-      resolve(filterByOwner(account, results));
+      const filteredResults = filterByOwner(results, {
+        searchValue,
+        account,
+      });
+      resolve(filteredResults);
     });
   } catch (e) {
     console.error(e);
@@ -37,18 +56,16 @@ export const getListByAccount = async ({
 /**
  * call API once and return based on pagination
  */
-export const getMyListOnPagination = async ({
-  total,
-  nextPage,
-  myList,
-  getMyList,
-}) => {
-  let e = myList;
-  if (myList.length === 0) {
-    e = await getMyList();
-  }
-
+export const getMyListOnPagination = ({ total, nextPage, list }) => {
   const { first, last } = getFirstAndLastIndex(total, nextPage);
-  const array = e.slice(first - 1, last);
-  return new Promise((resolve) => resolve(array));
+  const array = list.slice(first - 1, last);
+  return array;
+};
+
+/**
+ * call API once and return based on pagination
+ */
+export const getTotalOfFilteredList = async ({ list }) => {
+  const { length } = list || [];
+  return new Promise((resolve) => resolve(length));
 };

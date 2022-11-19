@@ -59,7 +59,7 @@ export const ServiceState = ({
   }, [status]);
 
   /* ----- helper functions ----- */
-  const getButton = (button, message, isValid = isOwner) => {
+  const getButton = (button, isValid = isOwner, message) => {
     if (isValid) return button;
 
     return (
@@ -162,15 +162,35 @@ export const ServiceState = ({
     }
   };
 
+  /**
+   *
+   * @param {number} step step to compare with current active service state
+   * @param {object} extra default values of each property
+   * @returns other props for button
+   */
+  const getOtherBtnProps = (step, extra) => {
+    const { isDisabled } = extra || {};
+    return {
+      disabled: currentStep + 1 !== step || !!isDisabled || !account,
+    };
+  };
+
   const steps = [
     {
       title: 'Pre-Registration',
       component: (
         <Space>
-          <Button onClick={handleStep1Registration}>
+          <Button onClick={handleStep1Registration} {...getOtherBtnProps(1)}>
             Activate Registration
           </Button>
-          <Button onClick={handleStep1Update}>Update</Button>
+          {getButton(
+            <Button
+              onClick={handleStep1Update}
+              {...getOtherBtnProps(1, { isDisabled: !isOwner })}
+            >
+              Update
+            </Button>,
+          )}
         </Space>
       ),
     },
@@ -183,6 +203,7 @@ export const ServiceState = ({
           setDataSource={setDataSource}
           handleStep2RegisterAgents={handleStep2RegisterAgents}
           handleTerminate={handleTerminate}
+          getOtherBtnProps={getOtherBtnProps}
         />
       ),
     },
@@ -200,6 +221,7 @@ export const ServiceState = ({
           canShowMultisigSameAddress={
             get(details, 'multisig') !== `0x${'0'.repeat(40)}`
           }
+          getOtherBtnProps={getOtherBtnProps}
         />
       ),
     },
@@ -210,7 +232,10 @@ export const ServiceState = ({
           serviceId={id}
           multisig={multisig}
           terminateButton={getButton(
-            <Button disabled={!isOwner} onClick={handleStep4Terminate}>
+            <Button
+              onClick={handleStep4Terminate}
+              {...getOtherBtnProps(4, { isDisabled: !isOwner })}
+            >
               Terminate
             </Button>,
           )}
@@ -220,7 +245,11 @@ export const ServiceState = ({
     {
       title: 'Terminated Bonded',
       // TODO: button to be disabled if not operator (needs more details)
-      component: <Button onClick={handleStep5Unbond}>Unbond</Button>,
+      component: (
+        <Button onClick={handleStep5Unbond} {...getOtherBtnProps(5)}>
+          Unbond
+        </Button>
+      ),
     },
   ];
 
@@ -264,9 +293,7 @@ ServiceState.propTypes = {
   account: PropTypes.string,
   id: PropTypes.string.isRequired,
   isOwner: PropTypes.bool,
-  details: PropTypes.arrayOf(
-    PropTypes.oneOfType([PropTypes.array, PropTypes.string]),
-  ),
+  details: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   updateDetails: PropTypes.func,
 };
 
