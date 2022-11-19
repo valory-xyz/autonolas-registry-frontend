@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import {
-  Input, Space, Button, Typography,
+  Input, Space, Button, Typography, Tooltip,
 } from 'antd/lib';
-import { SearchOutlined } from '@ant-design/icons';
+import { SearchOutlined, CopyOutlined } from '@ant-design/icons';
 import PropTypes from 'prop-types';
-import some from 'lodash/some';
-import includes from 'lodash/includes';
+
 import { NAV_TYPES, SERVICE_STATE, TOTAL_VIEW_COUNT } from 'util/constants';
 
 const { Text, Title } = Typography;
@@ -33,6 +32,13 @@ export const EllipsisMiddle = ({ suffixCount, children, ...rest }) => {
   return (
     <Text style={textStyle} {...rest}>
       {getTrimmedText(children, suffixCount)}
+      <Tooltip title="Copy">
+        &nbsp;
+        <Button
+          onClick={() => navigator.clipboard.writeText(children)}
+          icon={<CopyOutlined />}
+        />
+      </Tooltip>
     </Text>
   );
 };
@@ -144,7 +150,7 @@ export const getTableColumns = (type, { onViewClick, onUpdateClick }) => {
   return [];
 };
 
-export const getData = (type, rawData, { filterValue, current }) => {
+export const getData = (type, rawData, { current }) => {
   /**
    * @example
    * TOTAL_VIEW_COUNT = 10, current = 1
@@ -190,27 +196,19 @@ export const getData = (type, rawData, { filterValue, current }) => {
     }));
   }
 
-  /* Filtering based on search value */
-  // If no filterValue, return original data
-  if (!filterValue) return data;
-
-  // filter any substring in table
-  data = data.filter((item) => some(item, (eachProperty) => {
-    // eg. dependencies is an array
-    if (Array.isArray(eachProperty)) {
-      return includes(eachProperty.join(', ').toLowerCase(), filterValue);
-    }
-    return includes((eachProperty || '').toLowerCase(), filterValue);
-  }));
-
   return data;
 };
 
-//
+/**
+ * tab content
+ */
 export const useExtraTabContent = ({ title, onRegisterClick = () => {} }) => {
-  const [search, setSearch] = useState('');
-
-  const clearSearch = () => setSearch('');
+  const [searchValue, setSearchValue] = useState('');
+  const [value, setValue] = useState('');
+  const clearSearch = () => {
+    setValue('');
+    setSearchValue('');
+  };
 
   const extraTabContent = {
     left: <Title level={2}>{title}</Title>,
@@ -218,17 +216,19 @@ export const useExtraTabContent = ({ title, onRegisterClick = () => {} }) => {
       <>
         <Input
           prefix={<SearchOutlined className="site-form-item-icon" />}
-          placeholder="Search"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Owner or Hash"
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
         />
-
-        <Button ghost type="primary" onClick={onRegisterClick}>
+        <Button ghost type="primary" onClick={() => setSearchValue(value || '')}>
+          Search
+        </Button>
+        <Button type="primary" onClick={onRegisterClick}>
           Register
         </Button>
       </>
     ),
   };
 
-  return { searchValue: search, extraTabContent, clearSearch };
+  return { searchValue, extraTabContent, clearSearch };
 };
