@@ -176,6 +176,7 @@ export const handleMultisigSubmit = async ({
       const pro = walletProvider.provider;
       const walletConnector = new WalletConnect({
         bridge: pro.wc._bridge,
+        // bridge: 'https://safe-walletconnect.gnosis.io',
         session: pro.wc.session,
         storageId: pro.wc._sessionStorage.storageId,
         uri: pro.wc.uri,
@@ -184,18 +185,20 @@ export const handleMultisigSubmit = async ({
       console.log(walletConnector);
 
       const customRequest = {
-        id: 12374,
+        id: 1,
         jsonrpc: '2.0',
-        method: 'gs_multi_send',
+        method: 'eth_sendTransaction',
         params: [
           {
-            to: '0x05c85Ab5B09Eb8A55020d72daf6091E04e264af9',
-            value: '100000000000000000',
+            from: account,
+            to: "0xd46e8dd67c5d32be8058bb8eb970870f07244567",
+            data:
+              "0xd46e8dd67c5d32be8d46e8dd67c5d32be8058bb8eb970870f072445675058bb8eb970870f072445675",
           },
-
         ],
       };
 
+      // const abcd = await walletConnector.unsafeSend(customRequest);
       const abcd = await walletConnector.sendCustomRequest(customRequest);
       console.log(abcd);
       // walletProvider.connection
@@ -203,11 +206,13 @@ export const handleMultisigSubmit = async ({
       // const abcd = await walletProvider.send('eth_sendRawTransaction', safeTx);
       // console.log(abcd);
 
+      // --------------------- GET SIGNER START ---------------------------
       // const signer = walletProvider.getSigner();
       // console.log(signer);
 
       // const abcd = await signer.signMessage(messageData);
       // const abcd = await signer.(safeTx);
+      // --------------------- GET SIGNER END ------------------------------
 
       // const abcd = await signer._signTypedData(
       //   { verifyingContract: multisig, chainId },
