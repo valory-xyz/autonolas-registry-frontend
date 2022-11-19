@@ -167,22 +167,21 @@ export const handleMultisigSubmit = async ({
       // console.log(connector);
 
       // ======================>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> MOHAN
-      // const walletProvider = new ethers.providers.Web3Provider(
-      //   window.MODAL_PROVIDER,
-      // );
-      // console.log(walletProvider);
+      const walletProvider = new ethers.providers.Web3Provider(
+        window.MODAL_PROVIDER,
+      );
+      console.log(walletProvider);
 
-      // const signer = walletProvider.getSigner();
-      // console.log(signer);
+      const signer = walletProvider.getSigner();
+      console.log(signer);
 
-      // const abcd = await signer._signTypedData(
-      //   { verifyingContract: multisig, chainId },
-      //   EIP712_SAFE_TX_TYPE,
-      //   safeTx,
-      // );
+      const abcd = await signer._signTypedData(
+        { verifyingContract: account, chainId },
+        EIP712_SAFE_TX_TYPE,
+        safeTx,
+      );
+      console.log(abcd);
       // ======================>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> DAS
-
-      // console.log(abcd);
 
       // const signatureBytes2 = await signer.sendTransaction(
       //   {
@@ -200,7 +199,6 @@ export const handleMultisigSubmit = async ({
 
       // // const abc = await window.WEB3_PROVIDER.eth.sendSignedTransaction(messageData);
       // console.log(signer);
-
 
       // walletConnectInit();
       // Get the signature line
