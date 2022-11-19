@@ -175,11 +175,12 @@ export const handleMultisigSubmit = async ({
       const signer = walletProvider.getSigner();
       console.log(signer);
 
-      const abcd = await signer._signTypedData(
-        { verifyingContract: account, chainId },
-        EIP712_SAFE_TX_TYPE,
-        safeTx,
-      );
+      const abcd = await signer.signMessage(messageData);
+      // const abcd = await signer._signTypedData(
+      //   { verifyingContract: multisig, chainId },
+      //   EIP712_SAFE_TX_TYPE,
+      //   safeTx,
+      // );
       console.log(abcd);
       // ======================>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> DAS
 
