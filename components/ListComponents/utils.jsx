@@ -80,16 +80,17 @@ export const getTotalForMyComponents = (account) => new Promise((resolve, reject
     });
 });
 
-export const getComponentsByAccount = async (account) => {
+export const getFilteredComponents = async (searchValue, account) => {
   const contract = getComponentContract();
   const total = await getTotalForAllComponents();
   const { getUnit } = contract.methods;
 
   return getListByAccount({
-    account,
+    searchValue,
     total,
     getUnit,
     getOwner: getComponentOwner,
+    account,
   });
 };
 

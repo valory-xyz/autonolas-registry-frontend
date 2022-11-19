@@ -58,7 +58,7 @@ const GlobalStyle = createGlobalStyle`
   .ant-layout-header {
     display: flex;
     position: fixed;
-    z-index: 1;
+    z-index: 10;
     width: 100%;
     .ant-menu {
       flex: 1;
