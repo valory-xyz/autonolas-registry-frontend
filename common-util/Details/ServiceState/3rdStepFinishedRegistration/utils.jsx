@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 /* eslint-disable no-underscore-dangle */
+import WalletConnect from '@walletconnect/browser';
 import { ethers } from 'ethers';
 import {
   GNOSIS_SAFE_CONTRACT,
@@ -172,16 +173,48 @@ export const handleMultisigSubmit = async ({
       );
       console.log(walletProvider);
 
-      const signer = walletProvider.getSigner();
-      console.log(signer);
+      const pro = walletProvider.provider;
+      const walletConnector = new WalletConnect({
+        bridge: pro.wc._bridge,
+        session: pro.wc.session,
+        storageId: pro.wc._sessionStorage.storageId,
+        uri: pro.wc.uri,
+      });
 
-      const abcd = await signer.signMessage(messageData);
+      console.log(walletConnector);
+
+      const customRequest = {
+        id: 12374,
+        jsonrpc: '2.0',
+        method: 'gs_multi_send',
+        params: [
+          {
+            to: '0x05c85Ab5B09Eb8A55020d72daf6091E04e264af9',
+            value: '100000000000000000',
+          },
+
+        ],
+      };
+
+      const abcd = await walletConnector.sendCustomRequest(customRequest);
+      console.log(abcd);
+      // walletProvider.connection
+
+      // const abcd = await walletProvider.send('eth_sendRawTransaction', safeTx);
+      // console.log(abcd);
+
+      // const signer = walletProvider.getSigner();
+      // console.log(signer);
+
+      // const abcd = await signer.signMessage(messageData);
+      // const abcd = await signer.(safeTx);
+
       // const abcd = await signer._signTypedData(
       //   { verifyingContract: multisig, chainId },
       //   EIP712_SAFE_TX_TYPE,
       //   safeTx,
       // );
-      console.log(abcd);
+      // console.log(abcd);
       // ======================>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> DAS
 
       // const signatureBytes2 = await signer.sendTransaction(
