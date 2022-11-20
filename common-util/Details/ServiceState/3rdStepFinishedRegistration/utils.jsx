@@ -121,7 +121,7 @@ export const handleMultisigSubmit = async ({
         .call();
 
       // Create a message data from the multisend transaction
-      const messageData = await multisigContract.encodeTransactionData(
+      const messageHash = await multisigContract.getTransactionHash(
         safeTx.to,
         safeTx.value,
         safeTx.data,
@@ -211,9 +211,8 @@ export const handleMultisigSubmit = async ({
       console.log(signer);
 
       ////////////////////////////// APPROVE HASH
-      const messageDataHash = ethers.utils.keccak256(messageData);
       multisigContractWeb3.methods
-         .approveHash(messageDataHash)
+         .approveHash(messageHash)
          .send({ from: account })
          .once('transactionHash', (hash) => console.log('sign-message-hash', hash)) // TODO: remove console
          .then((information) => console.log('sign-message-response', information)) // TODO: remove console
@@ -255,11 +254,11 @@ export const handleMultisigSubmit = async ({
       const signatureBytes = "0x000000000000000000000000" + account.slice(2) +
         "0000000000000000000000000000000000000000000000000000000000000000" + "01";
 
-      console.log({
-        safeTx,
-        signatureBytes,
-        messageData,
-      });
+      // console.log({
+      //   safeTx,
+      //   signatureBytes,
+      //   messageData,
+      // });
       const safeExecData = multisigContract.interface.encodeFunctionData(
         'execTransaction',
         [
