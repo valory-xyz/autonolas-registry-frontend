@@ -100,13 +100,11 @@ export const handleMultisigSubmit = async ({
   );
   await provider.send('eth_requestAccounts', []);
 
-  //
   try {
     const code = await provider.getCode(account);
     // TODO: check if we are dealing with safe in future!
+    // gnosis-safe
     if (code !== '0x') {
-      // gnosis-safe
-
       // Create a message data from the multisend transaction
       const messageHash = await multisigContract.getTransactionHash(
         safeTx.to,
@@ -135,11 +133,6 @@ export const handleMultisigSubmit = async ({
           )}0000000000000000000000000000000000000000000000000000000000000000`
             + '01';
 
-          // console.log({
-          //   safeTx,
-          //   signatureBytes,
-          //   messageData,
-          // });
           const safeExecData = multisigContract.interface.encodeFunctionData(
             'execTransaction',
             [
@@ -168,36 +161,6 @@ export const handleMultisigSubmit = async ({
         .catch((e) => {
           console.error(e);
         });
-      // ///////////////////////////////////
-
-      //       const abcd = await signer.signMessage(messageData);
-      //       const abcd = await signer.(safeTx);
-      // --------------------- GET SIGNER END ------------------------------
-
-      // const abcd = await signer._signTypedData(
-      //   { verifyingContract: multisig, chainId },
-      //   EIP712_SAFE_TX_TYPE,
-      //   safeTx,
-      // );
-      // console.log(abcd);
-      // ======================>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> DAS
-
-      // const signatureBytes2 = await signer.sendTransaction(
-      //   {
-      //     to: '0xA65387F16B013cf2Af4605Ad8aA5ec25a2cbA3a2',
-      //     value: 0,
-      //     data: messageData,
-      //     // customData: {
-      //     //   operation: 1,
-      //     // },
-      //     gasLimit: 2500000,
-      //   },
-      // );
-
-      // console.log(signatureBytes2);
-
-      // // const abc = await window.WEB3_PROVIDER.eth.sendSignedTransaction(messageData);
-      // console.log(signer);
     } else {
       // metamask
       const signer = provider.getSigner();
