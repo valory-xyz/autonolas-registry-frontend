@@ -95,13 +95,14 @@ export const handleMultisigSubmit = async ({
 
   // signer
   const provider = new ethers.providers.Web3Provider(
-    window.web3.currentProvider,
+    window.MODAL_PROVIDER || window.web3.currentProvider,
     'any',
   );
+  const code = await provider.getCode(account);
+
   await provider.send('eth_requestAccounts', []);
 
   try {
-    const code = await provider.getCode(account);
     // TODO: check if we are dealing with safe in future!
     // gnosis-safe
     if (code !== '0x') {
