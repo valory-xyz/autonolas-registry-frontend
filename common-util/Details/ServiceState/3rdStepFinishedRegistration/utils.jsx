@@ -116,16 +116,22 @@ export const handleMultisigSubmit = async ({
       );
 
       const multisigContractWeb3 = getServiceOwnerMultisigContract(multisig);
+      let startingBlock = 0;
+      await provider.getBlockNumber()
+        .then((number) => {
+            startingBlock = number;
+        });
+
 
       // Check if the hash was already approved
-      await multisigContractWeb3.getPastEvents("ApproveHash",
+      await multisigContractWeb3.getPastEvents('ApproveHash',
         {
           filter: { approvedHash: messageHash, owner: account },
           fromBlock: 0,
-          toBlock: "latest",
+          toBlock: 'latest',
         },
         (err, events) => {
-          if (events.length > 0) {
+          if (events.length == 0) {
               // Get the signature bytes based on the account address, since it had its tx pre-approved
               const signatureBytes = `0x000000000000000000000000${account.slice(
                 2,
@@ -159,39 +165,45 @@ export const handleMultisigSubmit = async ({
               multisigContractWeb3.methods
                 .approveHash(messageHash)
                 .send({ from: account })
-                .on('transactionHash', async (hash) => {
-                  const transactionDetails = await poll(hash, chainId);
-                  console.log({ transactionDetails });
+                .on('transactionHash', async () => {
+                    await multisigContractWeb3.getPastEvents('ApproveHash', {
+                            fromBlock: startingBlock - 10,
+                            toBlock: 'latest'
+                            },
+                        (error, events) => {
+                          console.log("all events", events);
+                          if (events.length > 0) {
+                              // Get the signature bytes based on the account address, since it had its tx pre-approved
+                              const signatureBytes = `0x000000000000000000000000${account.slice(
+                                2,
+                              )}0000000000000000000000000000000000000000000000000000000000000000`
+                                + '01';
 
-                  // Get the signature bytes based on the account address, since it had its tx pre-approved
-                  const signatureBytes = `0x000000000000000000000000${account.slice(
-                    2,
-                  )}0000000000000000000000000000000000000000000000000000000000000000`
-                    + '01';
+                              const safeExecData = multisigContract.interface.encodeFunctionData(
+                                'execTransaction',
+                                [
+                                  safeTx.to,
+                                  safeTx.value,
+                                  safeTx.data,
+                                  safeTx.operation,
+                                  safeTx.safeTxGas,
+                                  safeTx.baseGas,
+                                  safeTx.gasPrice,
+                                  safeTx.gasToken,
+                                  safeTx.refundReceiver,
+                                  signatureBytes,
+                                ],
+                              );
 
-                  const safeExecData = multisigContract.interface.encodeFunctionData(
-                    'execTransaction',
-                    [
-                      safeTx.to,
-                      safeTx.value,
-                      safeTx.data,
-                      safeTx.operation,
-                      safeTx.safeTxGas,
-                      safeTx.baseGas,
-                      safeTx.gasPrice,
-                      safeTx.gasToken,
-                      safeTx.refundReceiver,
-                      signatureBytes,
-                    ],
-                  );
+                              // Redeploy the service updating the multisig with new owners and threshold
+                              const packedData = ethers.utils.solidityPack(
+                                ['address', 'bytes'],
+                                [multisig, safeExecData],
+                              );
 
-                  // Redeploy the service updating the multisig with new owners and threshold
-                  const packedData = ethers.utils.solidityPack(
-                    ['address', 'bytes'],
-                    [multisig, safeExecData],
-                  );
-
-                  handleStep3Deploy(radioValue, packedData);
+                              handleStep3Deploy(radioValue, packedData);
+                          }
+                  });
                 }) // TODO: remove console
                 .then((information) => console.log('sign-message-response', information)) // TODO: remove console
                 .catch((e) => {
