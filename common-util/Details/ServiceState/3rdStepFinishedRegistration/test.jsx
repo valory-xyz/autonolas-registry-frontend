@@ -1,11 +1,9 @@
 /* eslint-disable consistent-return */
 import { get } from 'lodash';
 
-export const fetchTransactionDetails = () => {};
-
 const getUrl = (hash, chainId) => {
-  if (chainId === 5) return `https://safe-transaction-goerli.safe.global/api/v1/multisig-transactions/${hash}`;
-  return `https://safe-transaction-mainnet.safe.global/api/v1/multisig-transactions/${hash}`;
+  if (chainId === 5) return `${process.env.NEXT_PUBLIC_GNOSIS_SAFE_API_GOERLI}/${hash}`;
+  return `${process.env.NEXT_PUBLIC_GNOSIS_SAFE_API_MAINNET}/${hash}`;
 };
 
 export async function poll(hash, chainId) {

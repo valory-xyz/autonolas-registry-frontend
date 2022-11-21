@@ -39,8 +39,6 @@ export const handleMultisigSubmit = async ({
   radioValue,
   account,
 }) => {
-  const multisigContractWeb3 = getServiceOwnerMultisigContract(multisig);
-
   const multisigContract = new ethers.Contract(
     multisig,
     GNOSIS_SAFE_CONTRACT.abi,
@@ -80,7 +78,6 @@ export const handleMultisigSubmit = async ({
     }),
   );
 
-  // const multiSendContract = getMultiSendContract(safeMultiSend[chainId][0]);
   const multiSendContract = new ethers.Contract(
     safeMultiSend[chainId][0],
     MULTI_SEND_CONTRACT.abi,
@@ -118,7 +115,7 @@ export const handleMultisigSubmit = async ({
         nonce,
       );
 
-      // //////////////////////////// APPROVE HASH
+      const multisigContractWeb3 = getServiceOwnerMultisigContract(multisig);
       multisigContractWeb3.methods
         .approveHash(messageHash)
         .send({ from: account })

@@ -32,9 +32,6 @@ const RegisterAgent = ({ account }) => {
           values.dependencies ? values.dependencies.split(', ') : [],
         )
         .send({ from: account })
-        .on('transactionHash', (hash) => console.log('sign-message-1', hash)) // TODO: remove console
-        .on('confirmation', (confirmationNumber, receipt) => console.log('sign-message-2', confirmationNumber, receipt)) // TODO: remove console
-        .on('receipt', (receipt) => console.log('sign-message-2', receipt)) // TODO: remove console
         .then((result) => {
           setInformation(result);
           notification.success({ message: 'Agent registered' });
