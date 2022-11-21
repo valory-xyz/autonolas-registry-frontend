@@ -131,7 +131,7 @@ export const handleMultisigSubmit = async ({
           toBlock: 'latest',
         },
         (err, events) => {
-          if (events.length == 0) {
+          if (events.length > 0) {
               // Get the signature bytes based on the account address, since it had its tx pre-approved
               const signatureBytes = `0x000000000000000000000000${account.slice(
                 2,
