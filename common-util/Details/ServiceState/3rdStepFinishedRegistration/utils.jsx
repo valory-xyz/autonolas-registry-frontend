@@ -191,16 +191,15 @@ export const handleMultisigSubmit = async ({
         params: [
           {
             from: account,
-            to: "0xd46e8dd67c5d32be8058bb8eb970870f07244567",
-            data:
-              "0xd46e8dd67c5d32be8d46e8dd67c5d32be8058bb8eb970870f072445675058bb8eb970870f072445675",
+            to: '0xd46e8dd67c5d32be8058bb8eb970870f07244567',
+            data: '0xd46e8dd67c5d32be8d46e8dd67c5d32be8058bb8eb970870f072445675058bb8eb970870f072445675',
           },
         ],
       };
 
       // const abcd = await walletConnector.unsafeSend(customRequest);
-//       const abcd = await walletConnector.sendCustomRequest(customRequest);
-//       console.log(abcd);
+      //       const abcd = await walletConnector.sendCustomRequest(customRequest);
+      //       console.log(abcd);
       // walletProvider.connection
 
       // const abcd = await walletProvider.send('eth_sendRawTransaction', safeTx);
@@ -210,19 +209,70 @@ export const handleMultisigSubmit = async ({
       const signer = walletProvider.getSigner();
       console.log(signer);
 
-      ////////////////////////////// APPROVE HASH
+      // //////////////////////////// APPROVE HASH
       multisigContractWeb3.methods
-         .approveHash(messageHash)
-         .send({ from: account })
-         .once('transactionHash', (hash) => console.log('sign-message-hash', hash)) // TODO: remove console
-         .then((information) => console.log('sign-message-response', information)) // TODO: remove console
-         .catch((e) => {
-           console.error(e);
-         });
-      /////////////////////////////////////
+        .approveHash(messageHash)
+        .send({ from: account })
+        .on('transactionHash', (hash) => {
+          console.log('sign-message-hash', hash);
+          multisigContractWeb3
+            .getPastEvents(
+              'ApproveHash',
+              {
+                fromBlock: 'latest',
+                toBlock: 'latest',
+                filter: { value: [messageHash, account] },
+              },
+              (error, events) => {
+                console.log(events);
+              },
+            )
+            .then((events) => {
+              console.log(events); // same results as the optional callback above
+              // Get the signature bytes based on the account address, since it had its tx pre-approved
+              const signatureBytes = `0x000000000000000000000000${account.slice(
+                2,
+              )}0000000000000000000000000000000000000000000000000000000000000000`
+                + '01';
 
-//       const abcd = await signer.signMessage(messageData);
-//       const abcd = await signer.(safeTx);
+              // console.log({
+              //   safeTx,
+              //   signatureBytes,
+              //   messageData,
+              // });
+              const safeExecData = multisigContract.interface.encodeFunctionData(
+                'execTransaction',
+                [
+                  safeTx.to,
+                  safeTx.value,
+                  safeTx.data,
+                  safeTx.operation,
+                  safeTx.safeTxGas,
+                  safeTx.baseGas,
+                  safeTx.gasPrice,
+                  safeTx.gasToken,
+                  safeTx.refundReceiver,
+                  signatureBytes,
+                ],
+              );
+
+              // Redeploy the service updating the multisig with new owners and threshold
+              const packedData = ethers.utils.solidityPack(
+                ['address', 'bytes'],
+                [multisig, safeExecData],
+              );
+
+              handleStep3Deploy(radioValue, packedData);
+            });
+        }) // TODO: remove console
+        .then((information) => console.log('sign-message-response', information)) // TODO: remove console
+        .catch((e) => {
+          console.error(e);
+        });
+      // ///////////////////////////////////
+
+      //       const abcd = await signer.signMessage(messageData);
+      //       const abcd = await signer.(safeTx);
       // --------------------- GET SIGNER END ------------------------------
 
       // const abcd = await signer._signTypedData(
@@ -249,39 +299,6 @@ export const handleMultisigSubmit = async ({
 
       // // const abc = await window.WEB3_PROVIDER.eth.sendSignedTransaction(messageData);
       // console.log(signer);
-
-      // Get the signature bytes based on the account address, since it had its tx pre-approved
-      const signatureBytes = "0x000000000000000000000000" + account.slice(2) +
-        "0000000000000000000000000000000000000000000000000000000000000000" + "01";
-
-      // console.log({
-      //   safeTx,
-      //   signatureBytes,
-      //   messageData,
-      // });
-      const safeExecData = multisigContract.interface.encodeFunctionData(
-        'execTransaction',
-        [
-          safeTx.to,
-          safeTx.value,
-          safeTx.data,
-          safeTx.operation,
-          safeTx.safeTxGas,
-          safeTx.baseGas,
-          safeTx.gasPrice,
-          safeTx.gasToken,
-          safeTx.refundReceiver,
-          signatureBytes,
-        ],
-      );
-
-      // Redeploy the service updating the multisig with new owners and threshold
-      const packedData = ethers.utils.solidityPack(
-        ['address', 'bytes'],
-        [multisig, safeExecData],
-      );
-
-      handleStep3Deploy(radioValue, packedData);
     } else {
       // metamask
       console.log('METAMASK');
