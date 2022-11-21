@@ -1,6 +1,5 @@
 /* eslint-disable max-len */
 /* eslint-disable no-underscore-dangle */
-import WalletConnect from '@walletconnect/browser';
 import { ethers } from 'ethers';
 import {
   GNOSIS_SAFE_CONTRACT,
@@ -8,13 +7,10 @@ import {
 } from 'common-util/AbiAndAddresses';
 import {
   rpcUrl,
-  getSignMessageLibContract,
   getServiceOwnerMultisigContract,
-  getMultiSendContract,
   safeMultiSend,
-  signMessageLibAddresses,
 } from 'common-util/Contracts';
-// import { walletConnectInit } from './wallectConnector';
+import { poll } from './test';
 
 const safeContracts = require('@gnosis.pm/safe-contracts');
 
@@ -110,15 +106,6 @@ export const handleMultisigSubmit = async ({
     // TODO: check if we are dealing with safe in future!
     if (code !== '0x') {
       // gnosis-safe
-      console.log('GNOSIS-SAFE');
-
-      // const serviceOwnerMultisigContract = getServiceOwnerMultisigContract(account);
-
-      const serviceOwnerMultisigContract = getServiceOwnerMultisigContract(account);
-
-      const serviceOwnerThreshold = await serviceOwnerMultisigContract.methods
-        .getThreshold()
-        .call();
 
       // Create a message data from the multisend transaction
       const messageHash = await multisigContract.getTransactionHash(
@@ -134,136 +121,48 @@ export const handleMultisigSubmit = async ({
         nonce,
       );
 
-      const signMessageLibContract = getSignMessageLibContract(
-        signMessageLibAddresses[chainId],
-      );
-
-      // const opts = {
-      //   allowedDomains: [/gnosis-safe.io/],
-      //   debug: true,
-      // };
-
-      // const appsSdk = new SafeAppsSDK(opts);
-      // console.log(appsSdk);
-
-      // // const safe = appsSdk.safe.getInfo();
-      // const chain = await appsSdk.safe.getChainInfo();
-      // console.log(chain);
-
-      // txDataServiceMultisig.to = "0xA65387F16B013cf2Af4605Ad8aA5ec25a2cbA3a2";
-
-      // let encodedMessageData = ethers.utils._TypedDataEncoder.encode({ verifyingContract: multisig, chainId },
-      //   safeContracts.EIP712_SAFE_TX_TYPE, safeTx);
-
-      // signMessageLibContract.methods
-      //   .signMessage(messageData)
-      //   .send({ from: account })
-      //   .once('transactionHash', (hash) => console.log('sign-message-hash', hash)) // TODO: remove console
-      //   .then((information) => console.log('sign-message-response', information)) // TODO: remove console
-      //   .catch((e) => {
-      //     console.error(e);
-      //   });
-
-      // const abc = await connector.signTypedData(messageData);
-      // console.log(connector);
-
-      // ======================>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> MOHAN
-      const walletProvider = new ethers.providers.Web3Provider(
-        window.MODAL_PROVIDER,
-      );
-      console.log(walletProvider);
-
-      const pro = walletProvider.provider;
-      const walletConnector = new WalletConnect({
-        bridge: pro.wc._bridge,
-        // bridge: 'https://safe-walletconnect.gnosis.io',
-        session: pro.wc.session,
-        storageId: pro.wc._sessionStorage.storageId,
-        uri: pro.wc.uri,
-      });
-
-      console.log(walletConnector);
-
-      const customRequest = {
-        id: 1,
-        jsonrpc: '2.0',
-        method: 'eth_sendTransaction',
-        params: [
-          {
-            from: account,
-            to: '0xd46e8dd67c5d32be8058bb8eb970870f07244567',
-            data: '0xd46e8dd67c5d32be8d46e8dd67c5d32be8058bb8eb970870f072445675058bb8eb970870f072445675',
-          },
-        ],
-      };
-
-      // const abcd = await walletConnector.unsafeSend(customRequest);
-      //       const abcd = await walletConnector.sendCustomRequest(customRequest);
-      //       console.log(abcd);
-      // walletProvider.connection
-
-      // const abcd = await walletProvider.send('eth_sendRawTransaction', safeTx);
-      // console.log(abcd);
-
-      // --------------------- GET SIGNER START ---------------------------
-      const signer = walletProvider.getSigner();
-      console.log(signer);
-
       // //////////////////////////// APPROVE HASH
       multisigContractWeb3.methods
         .approveHash(messageHash)
         .send({ from: account })
-        .on('transactionHash', (hash) => {
-          console.log('sign-message-hash', hash);
-          multisigContractWeb3
-            .getPastEvents(
-              'ApproveHash',
-              {
-                fromBlock: 'latest',
-                toBlock: 'latest',
-                filter: { value: [messageHash, account] },
-              },
-              (error, events) => {
-                console.log(events);
-              },
-            )
-            .then((events) => {
-              console.log(events); // same results as the optional callback above
-              // Get the signature bytes based on the account address, since it had its tx pre-approved
-              const signatureBytes = `0x000000000000000000000000${account.slice(
-                2,
-              )}0000000000000000000000000000000000000000000000000000000000000000`
-                + '01';
+        .on('transactionHash', async (hash) => {
+          const transactionDetails = await poll(hash, chainId);
+          console.log({ transactionDetails });
 
-              // console.log({
-              //   safeTx,
-              //   signatureBytes,
-              //   messageData,
-              // });
-              const safeExecData = multisigContract.interface.encodeFunctionData(
-                'execTransaction',
-                [
-                  safeTx.to,
-                  safeTx.value,
-                  safeTx.data,
-                  safeTx.operation,
-                  safeTx.safeTxGas,
-                  safeTx.baseGas,
-                  safeTx.gasPrice,
-                  safeTx.gasToken,
-                  safeTx.refundReceiver,
-                  signatureBytes,
-                ],
-              );
+          // Get the signature bytes based on the account address, since it had its tx pre-approved
+          const signatureBytes = `0x000000000000000000000000${account.slice(
+            2,
+          )}0000000000000000000000000000000000000000000000000000000000000000`
+            + '01';
 
-              // Redeploy the service updating the multisig with new owners and threshold
-              const packedData = ethers.utils.solidityPack(
-                ['address', 'bytes'],
-                [multisig, safeExecData],
-              );
+          // console.log({
+          //   safeTx,
+          //   signatureBytes,
+          //   messageData,
+          // });
+          const safeExecData = multisigContract.interface.encodeFunctionData(
+            'execTransaction',
+            [
+              safeTx.to,
+              safeTx.value,
+              safeTx.data,
+              safeTx.operation,
+              safeTx.safeTxGas,
+              safeTx.baseGas,
+              safeTx.gasPrice,
+              safeTx.gasToken,
+              safeTx.refundReceiver,
+              signatureBytes,
+            ],
+          );
 
-              handleStep3Deploy(radioValue, packedData);
-            });
+          // Redeploy the service updating the multisig with new owners and threshold
+          const packedData = ethers.utils.solidityPack(
+            ['address', 'bytes'],
+            [multisig, safeExecData],
+          );
+
+          handleStep3Deploy(radioValue, packedData);
         }) // TODO: remove console
         .then((information) => console.log('sign-message-response', information)) // TODO: remove console
         .catch((e) => {
@@ -301,8 +200,6 @@ export const handleMultisigSubmit = async ({
       // console.log(signer);
     } else {
       // metamask
-      console.log('METAMASK');
-
       const signer = provider.getSigner();
 
       // Get the signature of a multisend transaction

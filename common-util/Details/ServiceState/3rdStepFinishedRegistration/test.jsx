@@ -8,14 +8,18 @@ export const fetchTransactionDetails = () => {};
 
 // const web3 = new Web3(window.WEB3_PROVIDER || window.web3.currentProvider);
 
-export async function poll(hash) {
-  const url = `https://safe-transaction-goerli.safe.global/api/v1/multisig-transactions/${hash}`;
+const getUrl = (hash, chainId) => {
+  if (chainId === 5) return `https://safe-transaction-goerli.safe.global/api/v1/multisig-transactions/${hash}`;
+  return `https://safe-transaction-mainnet.safe.global/api/v1/multisig-transactions/${hash}`;
+};
 
+export async function poll(hash, chainId) {
   return new Promise((resolve, reject) => {
     const interval = setInterval(async () => {
       console.log('Attempting to get transaction receipt...');
+
       try {
-        const response = await fetch(url);
+        const response = await fetch(getUrl(hash, chainId));
         const json = await response.json();
         const isRight = get(json, 'isSuccessful');
 
