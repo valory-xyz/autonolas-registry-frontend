@@ -100,8 +100,6 @@ export const handleMultisigSubmit = async ({
   );
   const code = await provider.getCode(account);
 
-  await provider.send('eth_requestAccounts', []);
-
   try {
     // TODO: check if we are dealing with safe in future!
     // gnosis-safe

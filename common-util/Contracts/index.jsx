@@ -159,7 +159,7 @@ export const signMessageLibAddresses = {
 
 // TODO: duplicate, remove once tested
 export const rpcUrl = {
-  1: 'https://mainnet.infura.io/v3/',
+  1: process.env.NEXT_PUBLIC_MAINNET_URL,
   5: process.env.NEXT_PUBLIC_GOERLI_URL,
   31337: 'http://localhost:8545',
 };
