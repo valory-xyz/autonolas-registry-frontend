@@ -2,14 +2,14 @@
 import { get } from 'lodash';
 
 const getUrl = (hash, chainId) => {
-  if (chainId === 5) return `${process.env.NEXT_PUBLIC_GNOSIS_SAFE_API_GOERLI}/${hash}`;
+  if (chainId === 5) { return `${process.env.NEXT_PUBLIC_GNOSIS_SAFE_API_GOERLI}/${hash}`; }
   return `${process.env.NEXT_PUBLIC_GNOSIS_SAFE_API_MAINNET}/${hash}`;
 };
 
-export async function poll(hash, chainId) {
+export async function pollTransactionDetails(hash, chainId) {
   return new Promise((resolve, reject) => {
     const interval = setInterval(async () => {
-      console.log('Attempting to get transaction receipt...');
+      window.console.log('Attempting to get transaction receipt...');
 
       try {
         const response = await fetch(getUrl(hash, chainId));
@@ -17,6 +17,7 @@ export async function poll(hash, chainId) {
         const isRight = get(json, 'isSuccessful');
 
         if (isRight) {
+          window.console.log('Transaction details: ', json);
           clearInterval(interval);
           return resolve(json);
         }
