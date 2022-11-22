@@ -10,7 +10,7 @@ import {
   getServiceOwnerMultisigContract,
   safeMultiSend,
 } from 'common-util/Contracts';
-import { pollTransactionDetails } from './test';
+import { isHashApproved } from './helpers';
 
 const safeContracts = require('@gnosis.pm/safe-contracts');
 
@@ -117,7 +117,8 @@ export const handleMultisigSubmit = async ({
         nonce,
       );
 
-      const multisigContractWeb3 = getServiceOwnerMultisigContract(multisig);
+      const multisigContractServiceOwner = getServiceOwnerMultisigContract(multisig);
+      const startingBlock = await provider.getBlockNumber();
 
       // Get the signature bytes based on the account address, since it had its tx pre-approved
       const signatureBytes = `0x000000000000000000000000${account.slice(
@@ -147,10 +148,11 @@ export const handleMultisigSubmit = async ({
       );
 
       // Check if the hash was already approved
-      await multisigContractWeb3.getPastEvents(
+      const filterOption = { approvedHash: messageHash, owner: account };
+      await multisigContractServiceOwner.getPastEvents(
         'ApproveHash',
         {
-          filter: { approvedHash: messageHash, owner: account },
+          filter: filterOption,
           fromBlock: 0,
           toBlock: 'latest',
         },
@@ -159,12 +161,19 @@ export const handleMultisigSubmit = async ({
           if (events.length > 0) {
             handleStep3Deploy(radioValue, packedData);
           } else {
-            multisigContractWeb3.methods
+            multisigContractServiceOwner.methods
               .approveHash(messageHash)
               .send({ from: account })
               .on('transactionHash', async (hash) => {
-                // poll until has was approved, then call the deploy function
-                await pollTransactionDetails(hash, chainId);
+                window.console.log('safeTx', hash);
+
+                // TODO: use websocket based subscription to fetch real-time event
+                // await until the hash is approved & then deploy
+                await isHashApproved(
+                  multisigContractServiceOwner,
+                  startingBlock,
+                  filterOption,
+                );
                 handleStep3Deploy(radioValue, packedData);
               })
               .then((information) => window.console.log(information))
