@@ -14,7 +14,8 @@ import { isHashApproved } from './helpers';
 
 const safeContracts = require('@gnosis.pm/safe-contracts');
 
-const ZEROS = '0000000000000000000000000000000000000000000000000000000000000000';
+const ZEROS_24 = '0'.repeat(24).length;
+const ZEROS_64 = '0'.repeat(64).length;
 
 const EIP712_SAFE_TX_TYPE = {
   SafeTx: [
@@ -103,7 +104,7 @@ export const handleMultisigSubmit = async ({
     // TODO: check if we are dealing with safe in future!
     // gnosis-safe
     if (code !== '0x') {
-      // Create a message data from the multisend transaction
+      // Create a message hash from the multisend transaction
       const messageHash = await multisigContract.getTransactionHash(
         safeTx.to,
         safeTx.value,
@@ -121,9 +122,7 @@ export const handleMultisigSubmit = async ({
       const startingBlock = await provider.getBlockNumber();
 
       // Get the signature bytes based on the account address, since it had its tx pre-approved
-      const signatureBytes = `0x000000000000000000000000${account.slice(
-        2,
-      )}${ZEROS}01`;
+      const signatureBytes = `0x${ZEROS_24}${account.slice(2)}${ZEROS_64}01`;
 
       const safeExecData = multisigContract.interface.encodeFunctionData(
         'execTransaction',
