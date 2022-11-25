@@ -1,7 +1,7 @@
 import { getServiceContract } from 'common-util/Contracts';
 import {
   getServices,
-  getServicesByAccount,
+  getFilteredServices,
 } from 'components/ListServices/utils';
 import { dummyAddress } from '../../helpers';
 
@@ -12,7 +12,7 @@ jest.mock('common-util/Contracts', () => ({
 }));
 
 describe('listServices/utils.jsx', () => {
-  it('getServicesByAccount: Promise resolved', async () => {
+  it('getFilteredServices: Promise resolved', async () => {
     expect.hasAssertions();
 
     getServiceContract.mockImplementation(() => ({
@@ -38,7 +38,7 @@ describe('listServices/utils.jsx', () => {
       },
     }));
 
-    const result = await getServicesByAccount(dummyAddress);
+    const result = await getFilteredServices(dummyAddress);
     expect(result).toMatchObject([SERVICE_1]);
   });
 
