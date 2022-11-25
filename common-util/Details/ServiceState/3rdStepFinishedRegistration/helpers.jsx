@@ -1,5 +1,8 @@
 /* eslint-disable consistent-return */
 export const isHashApproved = (contract, startingBlock, op) => new Promise((resolve, reject) => {
+  /**
+   * poll until the hash has been approved before deploy
+   */
   const interval = setInterval(async () => {
     window.console.log('Attempting to getPastEvents...');
 

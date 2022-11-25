@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 /* eslint-disable no-underscore-dangle */
 import { ethers } from 'ethers';
 import {
@@ -102,7 +101,7 @@ export const handleMultisigSubmit = async ({
 
   try {
     // TODO: check if we are dealing with safe in future!
-    // gnosis-safe
+    // logic to deal with gnosis-safe
     if (code !== '0x') {
       // Create a message hash from the multisend transaction
       const messageHash = await multisigContract.getTransactionHash(
@@ -160,6 +159,7 @@ export const handleMultisigSubmit = async ({
           if (events.length > 0) {
             handleStep3Deploy(radioValue, packedData);
           } else {
+            // else wait until the hash is approved and then call deploy function
             multisigContractServiceOwner.methods
               .approveHash(messageHash)
               .send({ from: account })
@@ -183,7 +183,7 @@ export const handleMultisigSubmit = async ({
         },
       );
     } else {
-      // metamask
+      // logic to deal with metamask
       const signer = provider.getSigner();
 
       // Get the signature of a multisend transaction
