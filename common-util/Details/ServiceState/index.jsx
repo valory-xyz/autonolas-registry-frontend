@@ -60,8 +60,13 @@ export const ServiceState = ({
   }, [status]);
 
   /* ----- helper functions ----- */
-  const getButton = (button, isValid = isOwner, message) => {
-    if (isValid) return button;
+  const getButton = (button, otherArgs) => {
+    const { message, condition = isOwner, step } = otherArgs || {};
+
+    // if not the current step, just return the button without showing tooltip
+    if (step !== currentStep + 1) return button;
+
+    if (condition) return button;
 
     return (
       <Tooltip
@@ -181,9 +186,15 @@ export const ServiceState = ({
       title: 'Pre-Registration',
       component: (
         <Space>
-          <Button onClick={handleStep1Registration} {...getOtherBtnProps(1)}>
-            Activate Registration
-          </Button>
+          {getButton(
+            <Button
+              onClick={handleStep1Registration}
+              {...getOtherBtnProps(1, { isDisabled: !isOwner })}
+            >
+              Activate Registration
+            </Button>,
+            { step: 1 },
+          )}
           {getButton(
             <Button
               onClick={handleStep1Update}
@@ -191,6 +202,7 @@ export const ServiceState = ({
             >
               Update
             </Button>,
+            { step: 1 },
           )}
         </Space>
       ),
@@ -203,8 +215,16 @@ export const ServiceState = ({
           dataSource={dataSource}
           setDataSource={setDataSource}
           handleStep2RegisterAgents={handleStep2RegisterAgents}
-          handleTerminate={handleTerminate}
           getOtherBtnProps={getOtherBtnProps}
+          terminateButton={getButton(
+            <Button
+              onClick={handleTerminate}
+              {...getOtherBtnProps(2, { isDisabled: !isOwner })}
+            >
+              Terminate
+            </Button>,
+            { step: 2 },
+          )}
         />
       ),
     },
@@ -240,6 +260,7 @@ export const ServiceState = ({
             >
               Terminate
             </Button>,
+            { step: 4 },
           )}
         />
       ),

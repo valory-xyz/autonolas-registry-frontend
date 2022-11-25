@@ -14,8 +14,8 @@ const ActiveRegistration = ({
   dataSource,
   setDataSource,
   handleStep2RegisterAgents,
-  handleTerminate,
   getOtherBtnProps,
+  terminateButton,
 }) => {
   const [totalBond, setTotalBond] = useState(null);
 
@@ -57,9 +57,7 @@ const ActiveRegistration = ({
         Register Agents
       </Button>
       <Divider />
-      <Button onClick={handleTerminate} {...btnProps}>
-        Terminate
-      </Button>
+      {terminateButton}
     </div>
   );
 };
@@ -71,7 +69,7 @@ ActiveRegistration.propTypes = {
   ).isRequired,
   setDataSource: PropTypes.func.isRequired,
   handleStep2RegisterAgents: PropTypes.func.isRequired,
-  handleTerminate: PropTypes.func.isRequired,
+  terminateButton: PropTypes.element.isRequired,
   getOtherBtnProps: PropTypes.func.isRequired,
 };
 
