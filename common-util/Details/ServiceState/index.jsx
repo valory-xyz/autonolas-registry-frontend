@@ -17,6 +17,7 @@ import {
 } from './utils';
 import StepActiveRegistration from './2StepActiveRegistration';
 import StepFinishedRegistration from './3rdStepFinishedRegistration';
+
 import Deployed from './4thStepDeployed';
 import { InfoSubHeader } from '../styles';
 import { ServiceStateContainer } from './styles';
@@ -222,6 +223,7 @@ export const ServiceState = ({
             get(details, 'multisig') !== `0x${'0'.repeat(40)}`
           }
           getOtherBtnProps={getOtherBtnProps}
+          account={account}
         />
       ),
     },

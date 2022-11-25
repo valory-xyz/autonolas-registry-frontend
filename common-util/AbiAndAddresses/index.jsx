@@ -5,3 +5,4 @@ export * from './serviceManager';
 export * from './serviceRegistry';
 export * from './GnosisSafe';
 export * from './MultiSend';
+export * from './SignMessageLib';
