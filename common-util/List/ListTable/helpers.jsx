@@ -220,7 +220,11 @@ export const useExtraTabContent = ({ title, onRegisterClick = () => {} }) => {
           value={value}
           onChange={(e) => setValue(e.target.value)}
         />
-        <Button ghost type="primary" onClick={() => setSearchValue(value || '')}>
+        <Button
+          ghost
+          type="primary"
+          onClick={() => setSearchValue(value || '')}
+        >
           Search
         </Button>
         <Button type="primary" onClick={onRegisterClick}>
@@ -232,3 +236,7 @@ export const useExtraTabContent = ({ title, onRegisterClick = () => {} }) => {
 
   return { searchValue, extraTabContent, clearSearch };
 };
+
+export const getHash = (router) => router.asPath.split('#')[1] || '';
+
+export const isMyTab = (hash) => !!(hash || '').includes('my-');
