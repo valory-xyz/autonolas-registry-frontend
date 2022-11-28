@@ -218,15 +218,9 @@ export const ServiceState = ({
           setDataSource={setDataSource}
           handleStep2RegisterAgents={handleStep2RegisterAgents}
           getOtherBtnProps={getOtherBtnProps}
-          terminateButton={getButton(
-            <Button
-              onClick={handleTerminate}
-              {...getOtherBtnProps(2, { isDisabled: !isOwner })}
-            >
-              Terminate
-            </Button>,
-            { step: 2 },
-          )}
+          getButton={getButton}
+          isOwner={isOwner}
+          handleTerminate={handleTerminate}
         />
       ),
     },
@@ -245,8 +239,8 @@ export const ServiceState = ({
             get(details, 'multisig') !== `0x${'0'.repeat(40)}`
           }
           getOtherBtnProps={getOtherBtnProps}
-          getButton={getButton}
           account={account}
+          getButton={getButton}
           isOwner={isOwner}
         />
       ),
