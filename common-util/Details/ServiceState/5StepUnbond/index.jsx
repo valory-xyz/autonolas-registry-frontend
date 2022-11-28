@@ -8,21 +8,23 @@ const Unbond = ({ handleStep5Unbond, getButton, getOtherBtnProps }) => {
   const operators = useSelector((state) => get(state, 'service.serviceState.agentInstancesAndOperators'));
 
   /**
-   * if valid operator, then enable the button
+   * if valid operator (did in 2nd step), then enable the button
    * else the user should not be able to unbond it
    */
-  const isValid = operators.some((e) => (e.agentInstance || '').toLowerCase() === (account || '').toLowerCase());
+  const isValidOperator = operators.some(
+    (e) => (e.agentInstance || '').toLowerCase() === (account || '').toLowerCase(),
+  );
 
   return getButton(
     <Button
       onClick={handleStep5Unbond}
-      {...getOtherBtnProps(5, { isDisabled: !isValid })}
+      {...getOtherBtnProps(5, { isDisabled: !isValidOperator })}
     >
       Unbond
     </Button>,
     {
       step: 5,
-      condition: isValid,
+      condition: isValidOperator,
       message: 'Only operator can take this action',
     },
   );

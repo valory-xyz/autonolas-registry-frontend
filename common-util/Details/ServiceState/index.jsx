@@ -181,8 +181,6 @@ export const ServiceState = ({
     };
   };
 
-  // const isUnbondDisabled = () => {}
-
   const steps = [
     {
       title: 'Pre-Registration',
