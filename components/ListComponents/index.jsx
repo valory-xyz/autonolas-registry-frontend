@@ -49,6 +49,7 @@ const ListComponents = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [list, setList] = useState([]);
 
+  // update current tab based on the "hash" in the URL
   useEffect(() => {
     setCurrentTab(isMyTab(hash) ? MY_COMPONENTS : ALL_COMPONENTS);
   }, [router.asPath]);
@@ -169,6 +170,7 @@ const ListComponents = () => {
           // clear the search
           clearSearch();
 
+          // update the URL to keep track of my-components
           router.push(
             e === MY_COMPONENTS
               ? `${URL.COMPONENTS}#${MY_COMPONENTS}`
