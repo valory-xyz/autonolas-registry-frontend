@@ -17,8 +17,8 @@ import {
 } from './utils';
 import StepActiveRegistration from './2StepActiveRegistration';
 import StepFinishedRegistration from './3rdStepFinishedRegistration';
-
 import Deployed from './4thStepDeployed';
+import Unbond from './5StepUnbond';
 import { InfoSubHeader } from '../styles';
 import { ServiceStateContainer } from './styles';
 
@@ -271,12 +271,12 @@ export const ServiceState = ({
     },
     {
       title: 'Terminated Bonded',
-      //  unbond can be clicked only by the operator
-      // who registered agents (2nd step)
       component: (
-        <Button onClick={handleStep5Unbond} {...getOtherBtnProps(5)}>
-          Unbond
-        </Button>
+        <Unbond
+          handleStep5Unbond={handleStep5Unbond}
+          getOtherBtnProps={getOtherBtnProps}
+          getButton={getButton}
+        />
       ),
     },
   ];
