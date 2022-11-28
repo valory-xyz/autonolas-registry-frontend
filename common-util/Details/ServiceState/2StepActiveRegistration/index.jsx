@@ -53,6 +53,7 @@ const ActiveRegistration = ({
         &nbsp;ETH per agent instance
       </Text>
 
+      {/* "Register agents" can be clicked by anyone */}
       <Button onClick={handleStep2RegisterAgents} {...btnProps}>
         Register Agents
       </Button>

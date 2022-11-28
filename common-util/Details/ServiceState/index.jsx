@@ -181,6 +181,8 @@ export const ServiceState = ({
     };
   };
 
+  // const isUnbondDisabled = () => {}
+
   const steps = [
     {
       title: 'Pre-Registration',
@@ -243,7 +245,9 @@ export const ServiceState = ({
             get(details, 'multisig') !== `0x${'0'.repeat(40)}`
           }
           getOtherBtnProps={getOtherBtnProps}
+          getButton={getButton}
           account={account}
+          isOwner={isOwner}
         />
       ),
     },
@@ -267,7 +271,8 @@ export const ServiceState = ({
     },
     {
       title: 'Terminated Bonded',
-      // TODO: button to be disabled if not operator (needs more details)
+      //  unbond can be clicked only by the operator
+      // who registered agents (2nd step)
       component: (
         <Button onClick={handleStep5Unbond} {...getOtherBtnProps(5)}>
           Unbond

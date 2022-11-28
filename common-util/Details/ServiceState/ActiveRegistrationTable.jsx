@@ -71,6 +71,9 @@ const EditableCell = ({
   let childNode = children;
   const slots = get(record, 'availableSlots') || 0;
 
+  // if there are no slots, the input should be disabled
+  const isInputDisabled = isDisabled || !(slots);
+
   if (editable) {
     childNode = slots > 0 ? (
       <Form.Item
@@ -79,7 +82,7 @@ const EditableCell = ({
         rules={[{ required: true, message: `${title} is required.` }]}
       >
         <Input.TextArea
-          disabled={isDisabled}
+          disabled={isInputDisabled}
           ref={inputRef}
           onPressEnter={onSave}
           onBlur={onSave}
