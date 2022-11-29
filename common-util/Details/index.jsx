@@ -87,6 +87,26 @@ const Details = ({
     })();
   }, [account, id]);
 
+  /**
+   * get the details of the current page
+   */
+  // useEffect(() => {
+  //   (async () => {
+  //     setIsLoading(true);
+  //     setInfo([]);
+
+  //     try {
+  //       const temp = await getDetails();
+  //       setInfo(temp);
+  //     } catch (e) {
+  //       console.error(e);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   })();
+  // }, [account, id]);
+
+
   useEffect(() => {
     (async () => {
       if (tokenUri) {
@@ -214,3 +234,7 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, {})(Details);
+
+/**
+ * https://goerli.etherscan.io/tx/0xd38222160c962933cbdef990cabbae6ab68bb1977c9f49cd79f94e948b6f94d7
+ */
