@@ -22,6 +22,7 @@ import { handleMultisigSubmit } from './utils';
 const STEP = 3;
 
 const StepThreePayload = ({
+  isOwner,
   serviceId,
   owner: serviceOwner,
   threshold,
@@ -30,6 +31,7 @@ const StepThreePayload = ({
   handleTerminate,
   canShowMultisigSameAddress,
   getOtherBtnProps,
+  getButton,
   account,
 }) => {
   const chainId = useSelector((state) => get(state, 'setup.chainId'));
@@ -185,14 +187,17 @@ const StepThreePayload = ({
             <Input />
           </Form.Item>
 
-          <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              {...getOtherBtnProps(STEP, { isDisabled: !radioValue })}
-            >
-              Submit
-            </Button>
+          <Form.Item style={{ marginBottom: 8 }}>
+            {getButton(
+              <Button
+                type="primary"
+                htmlType="submit"
+                {...getOtherBtnProps(STEP, { isDisabled: !radioValue || !isOwner })}
+              >
+                Submit
+              </Button>,
+              { step: STEP },
+            )}
           </Form.Item>
         </Form>
       )}
@@ -200,46 +205,56 @@ const StepThreePayload = ({
       {/* submits the data for 2nd radio button (ie. 2nd multisig option) */}
       {radioValue !== isMultiSig && (
         <div className="mb-12 mt-8">
-          <Button
-            type="primary"
-            onClick={async () => {
-              await handleMultisigSubmit({
-                multisig,
-                threshold,
-                agentInstances,
-                serviceOwner,
-                chainId,
-                handleStep3Deploy,
-                radioValue,
-                account,
-              });
-            }}
-            {...getOtherBtnProps(STEP, { isDisabled: !radioValue })}
-          >
-            Submit
-          </Button>
+          {getButton(
+            <Button
+              type="primary"
+              onClick={async () => {
+                await handleMultisigSubmit({
+                  multisig,
+                  threshold,
+                  agentInstances,
+                  serviceOwner,
+                  chainId,
+                  handleStep3Deploy,
+                  radioValue,
+                  account,
+                });
+              }}
+              {...getOtherBtnProps(STEP, {
+                isDisabled: !radioValue || !isOwner,
+              })}
+            >
+              Submit
+            </Button>,
+            { step: STEP },
+          )}
         </div>
       )}
 
       <Divider className="m-0" />
-      <Button
-        onClick={handleTerminate}
-        className="terminate-btn"
-        {...btnProps}
-      >
-        Terminate
-      </Button>
+      {getButton(
+        <Button
+          onClick={handleTerminate}
+          className="terminate-btn"
+          {...getOtherBtnProps(STEP, { isDisabled: !isOwner })}
+        >
+          Terminate
+        </Button>,
+        { step: STEP },
+      )}
     </div>
   );
 };
 
 StepThreePayload.propTypes = {
+  isOwner: PropTypes.bool.isRequired,
   serviceId: PropTypes.string.isRequired,
   multisig: PropTypes.string.isRequired,
   owner: PropTypes.string.isRequired,
   threshold: PropTypes.string.isRequired,
   handleStep3Deploy: PropTypes.func,
   handleTerminate: PropTypes.func,
+  getButton: PropTypes.func.isRequired,
   canShowMultisigSameAddress: PropTypes.bool,
   getOtherBtnProps: PropTypes.func.isRequired,
   account: PropTypes.string.isRequired,

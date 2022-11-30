@@ -3,8 +3,9 @@ import {
 } from 'redux';
 import thunk from 'redux-thunk';
 import setup from './setup';
+import service from './service';
 
-const rootReducer = combineReducers({ setup });
+const rootReducer = combineReducers({ setup, service });
 
 const enhancers = [];
 const middleware = [thunk];

@@ -1,7 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Table, Space } from 'antd/lib';
+import get from 'lodash/get';
 import { Address } from 'common-util/styles';
+import { setAgentInstancesAndOperators } from 'store/service/state/actions';
 import { getAgentInstanceAndOperator } from '../utils';
 
 const columns = [
@@ -20,7 +23,8 @@ const columns = [
 ];
 
 const Deployed = ({ serviceId, multisig, terminateButton }) => {
-  const [data, setData] = useState([]);
+  const dispatch = useDispatch();
+  const data = useSelector((state) => get(state, 'service.serviceState.agentInstancesAndOperators'));
 
   useEffect(() => {
     let isMounted = true;
@@ -28,7 +32,7 @@ const Deployed = ({ serviceId, multisig, terminateButton }) => {
       if (serviceId) {
         const tempData = await getAgentInstanceAndOperator(serviceId);
         if (isMounted) {
-          setData(tempData);
+          dispatch(setAgentInstancesAndOperators(tempData));
         }
       }
     })();
