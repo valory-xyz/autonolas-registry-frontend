@@ -163,3 +163,8 @@ export const rpcUrl = {
   5: process.env.NEXT_PUBLIC_GOERLI_URL,
   31337: 'http://localhost:8545',
 };
+
+export const multisigExplanation = {
+  a: 'Creates a new service multisig with currently registered agent instances',
+  b: 'Updates an existent service multisig with currently registered agent instances. Please note that the only service multisig owner must be the current service owner address',
+};
