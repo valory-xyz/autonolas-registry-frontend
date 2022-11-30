@@ -93,6 +93,7 @@ const StepThreePayload = ({
         value={radioValue}
         onChange={(e) => setRadioValue(e.target.value)}
         disabled={btnProps.disabled}
+        className="mt-8"
       >
         {options.map((multisigAddress) => (
           <div className="mb-12" key={`mutisig-${multisigAddress}`}>
