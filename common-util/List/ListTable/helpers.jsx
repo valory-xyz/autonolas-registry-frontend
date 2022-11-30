@@ -220,7 +220,11 @@ export const useExtraTabContent = ({ title, onRegisterClick = () => {} }) => {
           value={value}
           onChange={(e) => setValue(e.target.value)}
         />
-        <Button ghost type="primary" onClick={() => setSearchValue(value || '')}>
+        <Button
+          ghost
+          type="primary"
+          onClick={() => setSearchValue(value || '')}
+        >
           Search
         </Button>
         <Button type="primary" onClick={onRegisterClick}>
@@ -232,3 +236,16 @@ export const useExtraTabContent = ({ title, onRegisterClick = () => {} }) => {
 
   return { searchValue, extraTabContent, clearSearch };
 };
+
+/**
+ * returns hash from the url
+ * @example
+ * input: router-path (for example, /components#my-components)
+ * output: my-components
+ */
+export const getHash = (router) => router?.asPath?.split('#')[1] || '';
+
+/**
+ * my-components/my-agents/my-serices has "my" in common hence returns
+ */
+export const isMyTab = (hash) => !!(hash || '').includes('my-');

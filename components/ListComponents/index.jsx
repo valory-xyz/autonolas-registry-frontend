@@ -5,7 +5,11 @@ import { Tabs } from 'antd/lib';
 import { useRouter } from 'next/router';
 import { URL, NAV_TYPES } from 'util/constants';
 import ListTable from 'common-util/List/ListTable';
-import { useExtraTabContent } from 'common-util/List/ListTable/helpers';
+import {
+  useExtraTabContent,
+  getHash,
+  isMyTab,
+} from 'common-util/List/ListTable/helpers';
 import { getMyListOnPagination } from 'common-util/ContractUtils/myList';
 import {
   getComponents,
@@ -16,17 +20,21 @@ import {
 
 const { TabPane } = Tabs;
 
-const ALL_COMPONENTS = 'all_components';
-const MY_COMPONENTS = 'my_components';
+const ALL_COMPONENTS = 'all-components';
+const MY_COMPONENTS = 'my-components';
 
 const ListComponents = () => {
+  const router = useRouter();
+  const hash = getHash(router);
+  const [currentTab, setCurrentTab] = useState(
+    isMyTab(hash) ? MY_COMPONENTS : ALL_COMPONENTS,
+  );
+
   const account = useSelector((state) => get(state, 'setup.account'));
-  const [currentTab, setCurrentTab] = useState(ALL_COMPONENTS);
 
   /**
    * extra tab content & view click
    */
-  const router = useRouter();
   const { searchValue, extraTabContent, clearSearch } = useExtraTabContent({
     title: 'Components',
     onRegisterClick: () => router.push(URL.REGISTER_COMPONENT),
@@ -40,6 +48,11 @@ const ListComponents = () => {
   const [total, setTotal] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [list, setList] = useState([]);
+
+  // update current tab based on the "hash" in the URL
+  useEffect(() => {
+    setCurrentTab(isMyTab(hash) ? MY_COMPONENTS : ALL_COMPONENTS);
+  }, [router.asPath]);
 
   // fetch total
   useEffect(() => {
@@ -156,6 +169,13 @@ const ListComponents = () => {
 
           // clear the search
           clearSearch();
+
+          // update the URL to keep track of my-components
+          router.push(
+            e === MY_COMPONENTS
+              ? `${URL.COMPONENTS}#${MY_COMPONENTS}`
+              : URL.COMPONENTS,
+          );
         }}
       >
         <TabPane tab="All" key={ALL_COMPONENTS}>
