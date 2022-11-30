@@ -22,7 +22,12 @@ const columns = [
   },
 ];
 
-const Deployed = ({ serviceId, multisig, terminateButton }) => {
+const Deployed = ({
+  serviceId,
+  multisig,
+  terminateButton,
+  isShowAgentInstanceVisible,
+}) => {
   const dispatch = useDispatch();
   const data = useSelector((state) => get(state, 'service.serviceState.agentInstancesAndOperators'));
 
@@ -45,13 +50,15 @@ const Deployed = ({ serviceId, multisig, terminateButton }) => {
   return (
     <div className="step-4-terminate">
       <Space direction="vertical" size={10}>
-        <Table
-          columns={columns}
-          dataSource={data}
-          pagination={false}
-          bordered
-          rowKey="id"
-        />
+        {isShowAgentInstanceVisible && (
+          <Table
+            columns={columns}
+            dataSource={data}
+            pagination={false}
+            bordered
+            rowKey="id"
+          />
+        )}
         <div>{`Safe contract address: ${multisig}`}</div>
         {terminateButton}
       </Space>
@@ -63,10 +70,12 @@ Deployed.propTypes = {
   serviceId: PropTypes.string,
   multisig: PropTypes.string.isRequired,
   terminateButton: PropTypes.element.isRequired,
+  isShowAgentInstanceVisible: PropTypes.bool,
 };
 
 Deployed.defaultProps = {
   serviceId: null,
+  isShowAgentInstanceVisible: false,
 };
 
 export default Deployed;

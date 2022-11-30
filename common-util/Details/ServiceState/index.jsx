@@ -248,6 +248,8 @@ export const ServiceState = ({
       component: (
         <Deployed
           serviceId={id}
+          // If in pre-registration step, don't show the table
+          isShowAgentInstanceVisible={currentStep !== 0}
           multisig={multisig}
           terminateButton={getButton(
             <Button

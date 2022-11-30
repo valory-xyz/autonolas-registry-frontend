@@ -79,4 +79,5 @@ export const RadioLabel = styled(Text)`
   background: rgba(150, 150, 150, 0.1);
   border: 1px solid rgba(100, 100, 100, 0.2);
   border-radius: 4px;
+  color: #00000087;
 `;
