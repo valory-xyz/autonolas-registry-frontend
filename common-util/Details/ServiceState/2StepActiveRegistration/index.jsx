@@ -34,7 +34,7 @@ const ActiveRegistration = ({
           }
         } catch (error) {
           window.console.log('Error while fetching bonds');
-          window.console.error(error);
+          console.error(error);
         }
       }
     })();
@@ -55,7 +55,7 @@ const ActiveRegistration = ({
         isDisabled={btnProps.disabled}
       />
       <Text type="secondary">
-        {`Adding instances will cause a bond of ${totalBond || 'NA'} ETH per agent instance`}
+        {`Adding instances will cause a bond of ${totalBond || '--'} ETH per agent instance`}
       </Text>
 
       {/* "Register agents" can be clicked by anyone */}
