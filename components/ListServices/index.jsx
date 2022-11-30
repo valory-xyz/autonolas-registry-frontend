@@ -30,7 +30,6 @@ const ListServices = () => {
     isMyTab(hash) ? MY_SERVICES : ALL_SERVICES,
   );
 
-
   const account = useSelector((state) => get(state, 'setup.account'));
 
   /**
@@ -53,6 +52,7 @@ const ListServices = () => {
   // update current tab based on the "hash" in the URL
   useEffect(() => {
     setCurrentTab(isMyTab(hash) ? MY_SERVICES : ALL_SERVICES);
+    setList([]);
   }, [router.asPath]);
 
   // fetch total
