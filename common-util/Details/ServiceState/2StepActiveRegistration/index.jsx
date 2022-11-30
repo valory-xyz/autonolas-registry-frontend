@@ -27,9 +27,14 @@ const ActiveRegistration = ({
     let isMounted = true;
     (async () => {
       if (serviceId) {
-        const response = await getBonds(serviceId);
-        if (isMounted) {
-          setTotalBond(convertToEth((response?.totalBonds || 0).toString()));
+        try {
+          const response = await getBonds(serviceId);
+          if (isMounted) {
+            setTotalBond(convertToEth((response?.totalBonds || 0).toString()));
+          }
+        } catch (error) {
+          window.console.log('Error while fetching bonds');
+          window.console.error(error);
         }
       }
     })();
@@ -50,9 +55,7 @@ const ActiveRegistration = ({
         isDisabled={btnProps.disabled}
       />
       <Text type="secondary">
-        Adding instances will cause a bond of&nbsp;
-        {totalBond}
-        &nbsp;ETH per agent instance
+        {`Adding instances will cause a bond of ${totalBond || 'NA'} ETH per agent instance`}
       </Text>
 
       {/* "Register agents" can be clicked by anyone */}
