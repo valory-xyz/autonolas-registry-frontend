@@ -7,8 +7,6 @@ import { useRouter } from 'next/router';
 import get from 'lodash/get';
 import { URL } from 'util/constants';
 
-const AGENT_ID_DATA_INDEX = 'agentId';
-
 const EditableContext = React.createContext(null);
 
 const EditableRow = ({ index, ...props }) => {
@@ -92,8 +90,8 @@ const ActiveRegistrationTable = ({ data, setDataSource, isDisabled }) => {
   const STEP_2_TABLE_COLUMNS = [
     {
       title: 'Agent ID',
-      dataIndex: AGENT_ID_DATA_INDEX,
-      key: AGENT_ID_DATA_INDEX,
+      dataIndex: 'agentId',
+      key: 'agentId',
       render: (text) => (
         <Button
           type="link"
