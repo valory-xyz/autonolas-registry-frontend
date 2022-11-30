@@ -243,7 +243,7 @@ export const useExtraTabContent = ({ title, onRegisterClick = () => {} }) => {
  * input: router-path (for example, /components#my-components)
  * output: my-components
  */
-export const getHash = (router) => router.asPath.split('#')[1] || '';
+export const getHash = (router) => router?.asPath?.split('#')[1] || '';
 
 /**
  * my-components/my-agents/my-serices has "my" in common hence returns
