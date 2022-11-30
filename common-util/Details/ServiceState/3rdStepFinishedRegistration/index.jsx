@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { ethers } from 'ethers';
 import {
-  Button, Divider, Radio, Typography, Form, Input,
+  Button, Divider, Radio, Form, Input,
 } from 'antd/lib';
 import PropTypes from 'prop-types';
 import get from 'lodash/get';
@@ -14,8 +14,6 @@ import {
 import { getServiceAgentInstances } from '../utils';
 import { handleMultisigSubmit } from './utils';
 import { RadioLabel } from '../styles';
-
-const { Text } = Typography;
 
 const STEP = 3;
 const OPTION_1 = 'Creates a new service multisig with currently registered agent instances';
@@ -91,12 +89,6 @@ const StepThreePayload = ({
 
   return (
     <div className="step-3-finished-registration ">
-      <div>
-        <Text disabled={btnProps.disabled}>
-          Choose multi-sig implementation:
-        </Text>
-      </div>
-
       <Radio.Group
         value={radioValue}
         onChange={(e) => setRadioValue(e.target.value)}
