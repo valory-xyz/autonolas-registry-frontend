@@ -16,15 +16,13 @@ const Unbond = ({ handleStep5Unbond, getButton, getOtherBtnProps }) => {
   );
 
   return getButton(
-    <Button
-      onClick={handleStep5Unbond}
-      {...getOtherBtnProps(5, { isDisabled: !isValidOperator })}
-    >
+    <Button onClick={handleStep5Unbond} {...getOtherBtnProps(5)}>
       Unbond
     </Button>,
     {
       step: 5,
-      condition: isValidOperator,
+      // TODO: only operator can do it (remove the true condition)
+      condition: true || isValidOperator,
       message: 'Only operator can take this action',
     },
   );
