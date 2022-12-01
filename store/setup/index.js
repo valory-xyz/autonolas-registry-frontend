@@ -12,7 +12,7 @@ const initialState = {
   isLoaded: false,
 };
 
-export default (state = initialState, action) => {
+const setup = (state = initialState, action) => {
   const { data } = action;
 
   switch (action.type) {
@@ -33,3 +33,5 @@ export default (state = initialState, action) => {
       return state;
   }
 };
+
+export default setup;

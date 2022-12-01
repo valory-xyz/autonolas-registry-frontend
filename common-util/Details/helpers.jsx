@@ -1,12 +1,8 @@
 /* eslint-disable react/prop-types */
-import { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { Table, Button, Typography } from 'antd/lib';
+import { Button, Typography } from 'antd/lib';
 import get from 'lodash/get';
 import { ArrowUpRight, Circle } from 'react-feather';
 import { GATEWAY_URL, NA, NAV_TYPES } from 'util/constants';
-import { convertToEth } from '../functions';
-import { getServiceTableDataSource } from './ServiceState/utils';
 import {
   SubTitle,
   Info,
@@ -17,66 +13,6 @@ import {
 } from './styles';
 
 const { Link, Text } = Typography;
-
-export const COLUMNS = [
-  {
-    title: 'Agent ID',
-    dataIndex: 'agentId',
-    key: 'agentId',
-  },
-  {
-    title: 'Slots',
-    dataIndex: 'agentNumSlots',
-    key: 'agentNumSlots',
-  },
-  {
-    title: 'Security Bond',
-    dataIndex: 'bonds',
-    key: 'bonds',
-  },
-];
-
-/**
- * helper function to generate table
- */
-export const ServiceMiniTable = ({ id, agentIds, onDependencyClick }) => {
-  const [source, setSource] = useState([]);
-
-  useEffect(() => {
-    (async () => {
-      if (id && (agentIds || []).length !== 0) {
-        const temp = await getServiceTableDataSource(id, agentIds || []);
-        setSource(temp);
-      }
-    })();
-  }, [id, agentIds]);
-
-  const data = source.map(({ agentId, bond, availableSlots }, index) => ({
-    id: `table-row-${index}`,
-    agentId: (
-      <Button type="link" onClick={() => onDependencyClick(agentId)}>
-        {agentId}
-      </Button>
-    ),
-    agentNumSlots: availableSlots,
-    bonds: convertToEth(bond),
-  }));
-
-  return (
-    <Table
-      dataSource={data}
-      columns={COLUMNS}
-      pagination={false}
-      rowKey={(record) => record.id}
-    />
-  );
-};
-
-ServiceMiniTable.propTypes = {
-  id: PropTypes.string.isRequired,
-  agentIds: PropTypes.arrayOf(PropTypes.string).isRequired,
-  onDependencyClick: PropTypes.func.isRequired,
-};
 
 const pattern = /https:\/\/localhost\/(agent|component|service)\/+/g;
 
@@ -95,7 +31,6 @@ export const NftImage = ({ hashDetails, type }) => (
 export const DetailsInfo = ({
   isOwner,
   type,
-  id,
   tokenUri,
   info,
   hashDetails,
@@ -191,7 +126,6 @@ export const DetailsInfo = ({
 
   const getServiceValues = () => {
     const serviceState = ['2', '3', '4'].includes(get(info, 'state'));
-    const agentIds = get(info, 'agentIds') || [];
 
     return [
       {
@@ -215,17 +149,6 @@ export const DetailsInfo = ({
         value: <NftImage hashDetails={hashDetails} type={type} />,
       },
       ...commonDetails,
-      {
-        type: 'table',
-        dataTestId: 'agent-id-table',
-        value: (
-          <ServiceMiniTable
-            id={id}
-            agentIds={agentIds}
-            onDependencyClick={onDependencyClick}
-          />
-        ),
-      },
       { title: 'Threshold', value: get(info, 'threshold', null) || NA },
     ];
   };

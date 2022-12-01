@@ -5,7 +5,11 @@ import { Tabs } from 'antd/lib';
 import { useRouter } from 'next/router';
 import { URL, NAV_TYPES } from 'util/constants';
 import ListTable from 'common-util/List/ListTable';
-import { useExtraTabContent } from 'common-util/List/ListTable/helpers';
+import {
+  useExtraTabContent,
+  getHash,
+  isMyTab,
+} from 'common-util/List/ListTable/helpers';
 import { getMyListOnPagination } from 'common-util/ContractUtils/myList';
 import {
   getServices,
@@ -16,17 +20,21 @@ import {
 
 const { TabPane } = Tabs;
 
-const ALL_SERVICES = 'all_services';
-const MY_SERVICES = 'my_services';
+const ALL_SERVICES = 'all-services';
+const MY_SERVICES = 'my-services';
 
 const ListServices = () => {
+  const router = useRouter();
+  const hash = getHash(router);
+  const [currentTab, setCurrentTab] = useState(
+    isMyTab(hash) ? MY_SERVICES : ALL_SERVICES,
+  );
+
   const account = useSelector((state) => get(state, 'setup.account'));
-  const [currentTab, setCurrentTab] = useState(ALL_SERVICES);
 
   /**
    * extra tab content & view click
    */
-  const router = useRouter();
   const { searchValue, extraTabContent, clearSearch } = useExtraTabContent({
     title: 'Services',
     onRegisterClick: () => router.push(URL.REGISTER_SERVICE),
@@ -40,6 +48,12 @@ const ListServices = () => {
   const [total, setTotal] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [list, setList] = useState([]);
+
+  // update current tab based on the "hash" in the URL
+  useEffect(() => {
+    setCurrentTab(isMyTab(hash) ? MY_SERVICES : ALL_SERVICES);
+    setList([]);
+  }, [router.asPath]);
 
   // fetch total
   useEffect(() => {
@@ -156,6 +170,11 @@ const ListServices = () => {
 
           // clear the search
           clearSearch();
+
+          // update the URL to keep track of my-services
+          router.push(
+            e === MY_SERVICES ? `${URL.SERVICES}#${MY_SERVICES}` : URL.SERVICES,
+          );
         }}
       >
         <TabPane tab="All" key={ALL_SERVICES}>

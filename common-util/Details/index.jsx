@@ -49,8 +49,7 @@ const Details = ({
       setHashes(hashesResponse);
     } catch (e) {
       console.error(e);
-    } finally {
-      setIsLoading(false);
+      throw e;
     }
   };
 
@@ -79,10 +78,10 @@ const Details = ({
         setTokenUri(tempTokenUri);
 
         await getUpdatedHashes();
+
+        setIsLoading(false);
       } catch (e) {
         console.error(e);
-      } finally {
-        setIsLoading(false);
       }
     })();
   }, [account, id]);
@@ -103,7 +102,7 @@ const Details = ({
   }, [tokenUri]);
 
   if (isLoading) {
-    return <Loader />;
+    return <Loader message="Details couldn’t be loaded" />;
   }
 
   const onUpdate = () => {
@@ -146,7 +145,6 @@ const Details = ({
           <DetailsInfo
             isOwner={isOwner}
             type={type}
-            id={id}
             tokenUri={tokenUri}
             hashes={hashes}
             info={info}
