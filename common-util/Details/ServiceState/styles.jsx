@@ -1,4 +1,7 @@
 import styled from 'styled-components';
+import { Typography } from 'antd/lib';
+
+const { Text } = Typography;
 
 export const ServiceStateContainer = styled.div`
   margin-top: 1rem;
@@ -61,7 +64,20 @@ export const ServiceStateContainer = styled.div`
     font-size: 16px;
   }
 
-  [data-theme="dark"] .editable-row:hover .editable-cell-value-wrap {
+  [data-theme='dark'] .editable-row:hover .editable-cell-value-wrap {
     border: 1px solid #434343;
   }
+`;
+
+export const RadioLabel = styled(Text)`
+  display: block;
+  margin-bottom: 4px;
+  padding: 4px 8px;
+  font-size: 16px;
+  line-height: normal;
+  border: 1px solid;
+  background: rgba(150, 150, 150, 0.1);
+  border: 1px solid rgba(100, 100, 100, 0.2);
+  border-radius: 4px;
+  color: #00000087;
 `;

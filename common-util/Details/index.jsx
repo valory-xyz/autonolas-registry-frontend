@@ -145,7 +145,6 @@ const Details = ({
           <DetailsInfo
             isOwner={isOwner}
             type={type}
-            id={id}
             tokenUri={tokenUri}
             hashes={hashes}
             info={info}

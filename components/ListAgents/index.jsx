@@ -52,6 +52,7 @@ const ListAgents = () => {
   // update current tab based on the "hash" in the URL
   useEffect(() => {
     setCurrentTab(isMyTab(hash) ? MY_AGENTS : ALL_AGENTS);
+    setList([]);
   }, [router.asPath]);
 
   // fetch total
