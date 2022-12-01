@@ -95,6 +95,7 @@ const Details = ({
           const json = await response.json();
           setHashDetails(json);
         } catch (e) {
+          window.console.log('Error fetching metadata from IPFS');
           console.error(e);
         }
       }

@@ -18,15 +18,25 @@ const pattern = /https:\/\/localhost\/(agent|component|service)\/+/g;
 
 export const getAutonolasTokenUri = (tokenUri) => (tokenUri || '').replace(pattern, GATEWAY_URL);
 
-export const NftImage = ({ hashDetails, type }) => (
-  <NftImageContainer
-    src={(get(hashDetails, 'image') || '').replace('ipfs://', GATEWAY_URL)}
-    alt="NFT"
-    width={type === NAV_TYPES.SERVICE ? 300 : 600}
-    height={type === NAV_TYPES.SERVICE ? 300 : 600}
-    data-testid="nft-image"
-  />
-);
+export const NftImage = ({ hashDetails, type }) => {
+  const imageUrl = (get(hashDetails, 'image') || '').replace(
+    'ipfs://',
+    GATEWAY_URL,
+  );
+
+  // if no image exists, don't show empty broken image
+  if (!imageUrl) return null;
+
+  return (
+    <NftImageContainer
+      src={imageUrl}
+      alt="NFT"
+      width={type === NAV_TYPES.SERVICE ? 300 : 600}
+      height={type === NAV_TYPES.SERVICE ? 300 : 600}
+      data-testid="nft-image"
+    />
+  );
+};
 
 export const DetailsInfo = ({
   isOwner,
@@ -74,23 +84,32 @@ export const DetailsInfo = ({
     </>
   );
 
-  const commonDetails = [
-    {
-      title: 'Description',
-      dataTestId: 'description',
-      value: get(hashDetails, 'description') || NA,
-    },
-    {
-      title: 'Version',
-      dataTestId: 'version',
-      value: get(hashDetails, 'attributes[0].value') || NA,
-    },
-    {
+  const getCommonDetails = () => {
+    const commonDetails = [];
+
+    if (hashDetails) {
+      commonDetails.push(
+        {
+          title: 'Description',
+          dataTestId: 'description',
+          value: get(hashDetails, 'description') || NA,
+        },
+        {
+          title: 'Version',
+          dataTestId: 'version',
+          value: get(hashDetails, 'attributes[0].value') || NA,
+        },
+      );
+    }
+
+    commonDetails.push({
       title: 'Owner Address',
       dataTestId: 'owner-address',
       value: detailsOwner || NA,
-    },
-  ];
+    });
+
+    return commonDetails;
+  };
 
   const getComponentAndAgentValues = () => {
     const dependencies = get(info, 'dependencies') || [];
@@ -104,7 +123,7 @@ export const DetailsInfo = ({
           </>
         ),
       },
-      ...commonDetails,
+      ...getCommonDetails(),
       {
         title: 'Component Dependencies',
         dataTestId: 'details-dependency',
@@ -148,7 +167,7 @@ export const DetailsInfo = ({
         dataTestId: 'service-nft-image',
         value: <NftImage hashDetails={hashDetails} type={type} />,
       },
-      ...commonDetails,
+      ...getCommonDetails(),
       { title: 'Threshold', value: get(info, 'threshold', null) || NA },
     ];
   };
