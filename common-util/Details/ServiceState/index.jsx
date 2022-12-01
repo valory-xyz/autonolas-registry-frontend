@@ -17,6 +17,7 @@ import {
 } from './utils';
 import StepActiveRegistration from './2StepActiveRegistration';
 import StepFinishedRegistration from './3rdStepFinishedRegistration';
+
 import Deployed from './4thStepDeployed';
 import Unbond from './5StepUnbond';
 import { InfoSubHeader } from '../styles';
