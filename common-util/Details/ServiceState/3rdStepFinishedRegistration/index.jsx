@@ -1,25 +1,23 @@
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { ethers } from 'ethers';
+import {
+  Button, Divider, Radio, Form, Input,
+} from 'antd/lib';
 import PropTypes from 'prop-types';
 import get from 'lodash/get';
-import {
-  Button,
-  Space,
-  Divider,
-  Radio,
-  Typography,
-  Form,
-  Input,
-} from 'antd/lib';
+
 import {
   multisigAddresses,
   multisigSameAddresses,
 } from 'common-util/Contracts';
 import { getServiceAgentInstances } from '../utils';
 import { handleMultisigSubmit } from './utils';
+import { RadioLabel } from '../styles';
 
 const STEP = 3;
+const OPTION_1 = 'Creates a new service multisig with currently registered agent instances';
+const OPTION_2 = 'Updates an existent service multisig with currently registered agent instances. Please note that the only service multisig owner must be the current service owner address';
 
 const StepThreePayload = ({
   isOwner,
@@ -90,23 +88,25 @@ const StepThreePayload = ({
   const btnProps = getOtherBtnProps(STEP);
 
   return (
-    <div className="step-3-finished-registration">
-      <div>
-        <Typography.Text>Choose multi-sig implementation:</Typography.Text>
-      </div>
-
+    <div className="step-3-finished-registration ">
       <Radio.Group
         value={radioValue}
         onChange={(e) => setRadioValue(e.target.value)}
         disabled={btnProps.disabled}
+        className="mt-8"
       >
-        <Space direction="vertical" size={10}>
-          {options.map((multisigAddress) => (
+        {options.map((multisigAddress) => (
+          <div className="mb-12" key={`mutisig-${multisigAddress}`}>
+            <RadioLabel disabled={btnProps.disabled}>
+              {multisigAddress === isMultiSig && OPTION_1}
+              {multisigAddress !== isMultiSig && OPTION_2}
+            </RadioLabel>
+
             <Radio key={multisigAddress} value={multisigAddress}>
               {multisigAddress}
             </Radio>
-          ))}
-        </Space>
+          </div>
+        ))}
       </Radio.Group>
 
       {/* form should be shown only if 1st radio button is selected
@@ -192,7 +192,9 @@ const StepThreePayload = ({
               <Button
                 type="primary"
                 htmlType="submit"
-                {...getOtherBtnProps(STEP, { isDisabled: !radioValue || !isOwner })}
+                {...getOtherBtnProps(STEP, {
+                  isDisabled: !radioValue || !isOwner,
+                })}
               >
                 Submit
               </Button>,
