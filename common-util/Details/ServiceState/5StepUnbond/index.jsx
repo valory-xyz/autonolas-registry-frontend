@@ -11,7 +11,7 @@ const Unbond = ({ handleStep5Unbond, getButton, getOtherBtnProps }) => {
    * if valid operator (did in 2nd step), then enable the button
    * else the user should not be able to unbond it
    */
-  const isValidOperator = operators.some(
+  const isValidOperator = (operators || []).some(
     (e) => (e.agentInstance || '').toLowerCase() === (account || '').toLowerCase(),
   );
 

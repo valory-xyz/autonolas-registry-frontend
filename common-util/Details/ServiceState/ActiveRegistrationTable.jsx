@@ -1,33 +1,11 @@
 /* eslint-disable react/prop-types */
 import React, { useContext, useRef } from 'react';
-import { Form, Input, Table } from 'antd/lib';
-import { get } from 'lodash';
-
-const STEP_2_TABLE_COLUMNS = [
-  {
-    title: 'Agent ID',
-    dataIndex: 'agentId',
-    key: 'agentId',
-  },
-  {
-    title: 'Available Slots',
-    dataIndex: 'availableSlots',
-    key: 'availableSlots',
-    width: 100,
-  },
-  {
-    title: 'Total Slots',
-    dataIndex: 'totalSlots',
-    key: 'totalSlots',
-  },
-  {
-    title: 'Agent Instance Addresses',
-    dataIndex: 'agentAddresses',
-    key: 'agentAddresses',
-    width: '40%',
-    editable: true,
-  },
-];
+import {
+  Form, Input, Table, Button,
+} from 'antd/lib';
+import { useRouter } from 'next/router';
+import get from 'lodash/get';
+import { URL } from 'util/constants';
 
 const EditableContext = React.createContext(null);
 
@@ -42,6 +20,9 @@ const EditableRow = ({ index, ...props }) => {
   );
 };
 
+/**
+ * Agent Instance Addresses (editable column)
+ */
 const EditableCell = ({
   title,
   editable,
@@ -72,7 +53,7 @@ const EditableCell = ({
   const slots = get(record, 'availableSlots') || 0;
 
   // if there are no slots, the input should be disabled
-  const isInputDisabled = isDisabled || !(slots);
+  const isInputDisabled = isDisabled || !slots;
 
   if (editable) {
     childNode = slots > 0 ? (
@@ -86,7 +67,9 @@ const EditableCell = ({
           ref={inputRef}
           onPressEnter={onSave}
           onBlur={onSave}
-          placeholder={[...new Array(slots)].map((_i, index) => `Address ${index + 1}`).join(', ')}
+          placeholder={[...new Array(slots)]
+            .map((_i, index) => `Address ${index + 1}`)
+            .join(', ')}
         />
       </Form.Item>
     ) : (
@@ -100,9 +83,44 @@ const EditableCell = ({
 };
 
 /**
- * Table
+ * Step 2 Table
  */
 const ActiveRegistrationTable = ({ data, setDataSource, isDisabled }) => {
+  const router = useRouter();
+  const STEP_2_TABLE_COLUMNS = [
+    {
+      title: 'Agent ID',
+      dataIndex: 'agentId',
+      key: 'agentId',
+      render: (text) => (
+        <Button
+          type="link"
+          onClick={() => router.push(`${URL.AGENTS}/${text}`)}
+        >
+          {text}
+        </Button>
+      ),
+    },
+    {
+      title: 'Available Slots',
+      dataIndex: 'availableSlots',
+      key: 'availableSlots',
+      width: 100,
+    },
+    {
+      title: 'Total Slots',
+      dataIndex: 'totalSlots',
+      key: 'totalSlots',
+    },
+    {
+      title: 'Agent Instance Addresses',
+      dataIndex: 'agentAddresses',
+      key: 'agentAddresses',
+      width: '40%',
+      editable: true,
+    },
+  ];
+
   const handleSave = (row) => {
     const newData = [...data];
     const index = newData.findIndex((item) => row.key === item.key);
