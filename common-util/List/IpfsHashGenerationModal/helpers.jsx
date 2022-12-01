@@ -14,6 +14,7 @@ const ipfs = create({
 export const getIpfsHashHelper = async (info, hashType) => {
   const updatedInfo = {
     ...info,
+    image: info.image || '',
     code_uri: `ipfs://${hashType}${info.code_uri}`,
     attributes: [
       {
