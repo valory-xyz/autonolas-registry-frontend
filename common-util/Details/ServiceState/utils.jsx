@@ -10,35 +10,41 @@ const notifyError = (message = 'Some error occured') => notification.error({ mes
 /* ----- helper functions ----- */
 
 // params.agentParams.slots[i] = total initial available Slots for the i-th service.agentIds;
-export const getBonds = async (id) => {
+export const getBonds = (id) => new Promise((resolve, reject) => {
   const serviceContract = getServiceContract();
-  const response = await serviceContract.methods.getAgentParams(id).call();
+  serviceContract.methods
+    .getAgentParams(id)
+    .call()
+    .then((response) => {
+      const bondsArray = [];
+      const slotsArray = [];
+      for (let i = 0; i < response.agentParams.length; i += 1) {
+        const { bond, slots } = response.agentParams[i];
+        slotsArray.push(slots);
+        bondsArray.push(bond);
+      }
 
-  const bondsArray = [];
-  const slotsArray = [];
-  for (let i = 0; i < response.agentParams.length; i += 1) {
-    const { bond, slots } = response.agentParams[i];
-    slotsArray.push(slots);
-    bondsArray.push(bond);
-  }
+      /**
+         * totalBonds is calculated for every slots
+         * agentParams = [{ slots: 2, bond: 2000 }, { slots: 3, bond: 4000 }]
+         * slotsArray = [2, 3]
+         * bondsArray = [2000, 4000]
+         *
+         * totalBonds = (2 * 2000) + (3 * 4000)
+         *            = 4000 + 12000
+         *            = 16000
+         */
+      let totalBonds = 0;
+      slotsArray.forEach((eachSlot, index) => {
+        totalBonds += Number(eachSlot) * Number(bondsArray[index]);
+      });
 
-  /**
-   * totalBonds is calculated for every slots
-   * agentParams = [{ slots: 2, bond: 2000 }, { slots: 3, bond: 4000 }]
-   * slotsArray = [2, 3]
-   * bondsArray = [2000, 4000]
-   *
-   * totalBonds = (2 * 2000) + (3 * 4000)
-   *            = 4000 + 12000
-   *            = 16000
-   */
-  let totalBonds = 0;
-  slotsArray.forEach((eachSlot, index) => {
-    totalBonds += Number(eachSlot) * Number(bondsArray[index]);
-  });
-
-  return { totalBonds, slots: slotsArray, bonds: bondsArray };
-};
+      resolve({ totalBonds, slots: slotsArray, bonds: bondsArray });
+    })
+    .catch((e) => {
+      reject(e);
+    });
+});
 
 /* ----- common functions ----- */
 export const onTerminate = (account, id) => new Promise((resolve, reject) => {
