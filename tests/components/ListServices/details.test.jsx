@@ -126,7 +126,6 @@ describe('listServices/details.jsx', () => {
         mockIpfs.attributes[0].value,
       );
       expect(getByTestId('owner-address').textContent).toBe(dummyDetails.owner);
-      expect(getByTestId('agent-id-table')).toBeInTheDocument();
       expect(getByText('Threshold')).toBeInTheDocument();
 
       // state (right-side content)
