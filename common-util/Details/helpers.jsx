@@ -1,15 +1,15 @@
 /* eslint-disable react/prop-types */
-import { Button, Typography } from 'antd/lib';
-import get from 'lodash/get';
+import { Button, Typography, Alert } from 'antd/lib';
 import { ArrowUpRight, Circle } from 'react-feather';
+import get from 'lodash/get';
 import { GATEWAY_URL, NA, NAV_TYPES } from 'util/constants';
+import { NftImage } from './NFTImage';
 import {
   SubTitle,
   Info,
   SectionContainer,
   EachSection,
   ServiceStatus,
-  NftImageContainer,
 } from './styles';
 
 const { Link, Text } = Typography;
@@ -18,22 +18,19 @@ const pattern = /https:\/\/localhost\/(agent|component|service)\/+/g;
 
 export const getAutonolasTokenUri = (tokenUri) => (tokenUri || '').replace(pattern, GATEWAY_URL);
 
-export const NftImage = ({ hashDetails, type }) => (
-  <NftImageContainer
-    src={(get(hashDetails, 'image') || '').replace('ipfs://', GATEWAY_URL)}
-    alt="NFT"
-    width={type === NAV_TYPES.SERVICE ? 300 : 600}
-    height={type === NAV_TYPES.SERVICE ? 300 : 600}
-    data-testid="nft-image"
-  />
-);
+export const HASH_DETAILS_STATE = {
+  IS_LOADING: 'IS_LOADING',
+  LOADED: 'LOADED',
+  FAILED: 'FAILED',
+};
 
 export const DetailsInfo = ({
   isOwner,
   type,
   tokenUri,
   info,
-  hashDetails,
+  metadata,
+  metadataState,
   detailsOwner,
   onUpdateHash,
   setIsModalVisible,
@@ -49,8 +46,9 @@ export const DetailsInfo = ({
     </>
   ) : null;
 
-  const viewHashAndCode = (
+  const viewHashAndCode = HASH_DETAILS_STATE.LOADED === metadataState ? (
     <>
+      {type === NAV_TYPES.SERVICE && <>&nbsp;•&nbsp;</>}
       <Link
         target="_blank"
         data-testid="view-hash-link"
@@ -59,11 +57,11 @@ export const DetailsInfo = ({
         View Hash&nbsp;
         <ArrowUpRight size={16} />
       </Link>
-      &nbsp;•&nbsp;
+        &nbsp;•&nbsp;
       <Link
         target="_blank"
         data-testid="view-code-link"
-        href={(get(hashDetails, 'code_uri') || '').replace(
+        href={(get(metadata, 'code_uri') || '').replace(
           'ipfs://',
           GATEWAY_URL,
         )}
@@ -72,25 +70,49 @@ export const DetailsInfo = ({
         <ArrowUpRight size={16} />
       </Link>
     </>
-  );
+  ) : null;
 
-  const commonDetails = [
-    {
-      title: 'Description',
-      dataTestId: 'description',
-      value: get(hashDetails, 'description') || NA,
-    },
-    {
-      title: 'Version',
-      dataTestId: 'version',
-      value: get(hashDetails, 'attributes[0].value') || NA,
-    },
-    {
+  const getCommonDetails = () => {
+    const commonDetails = [];
+
+    if (HASH_DETAILS_STATE.LOADED === metadataState) {
+      commonDetails.push(
+        {
+          title: 'Description',
+          dataTestId: 'description',
+          value: get(metadata, 'description') || NA,
+        },
+        {
+          title: 'Version',
+          dataTestId: 'version',
+          value: get(metadata, 'attributes[0].value') || NA,
+        },
+      );
+    }
+
+    // If metadata failed, that means it has been unpinned from IPFS
+    // and show an alert indicating the user
+    if (HASH_DETAILS_STATE.FAILED === metadataState) {
+      commonDetails.push({
+        dataTestId: 'metadata-failed-to-load',
+        value: (
+          <Alert
+            message="Metadata is unpinned from IPFS server"
+            type="warning"
+            showIcon
+          />
+        ),
+      });
+    }
+
+    commonDetails.push({
       title: 'Owner Address',
       dataTestId: 'owner-address',
       value: detailsOwner || NA,
-    },
-  ];
+    });
+
+    return commonDetails;
+  };
 
   const getComponentAndAgentValues = () => {
     const dependencies = get(info, 'dependencies') || [];
@@ -104,7 +126,7 @@ export const DetailsInfo = ({
           </>
         ),
       },
-      ...commonDetails,
+      ...getCommonDetails(),
       {
         title: 'Component Dependencies',
         dataTestId: 'details-dependency',
@@ -126,8 +148,7 @@ export const DetailsInfo = ({
 
   const getServiceValues = () => {
     const serviceState = ['2', '3', '4'].includes(get(info, 'state'));
-
-    return [
+    const serviceDetailsList = [
       {
         dataTestId: 'hashes-list',
         value: (
@@ -139,18 +160,26 @@ export const DetailsInfo = ({
               <Circle size={8} />
               <Text>{serviceState ? 'Active' : 'Inactive'}</Text>
             </ServiceStatus>
-            &nbsp;•&nbsp;
             {viewHashAndCode}
           </>
         ),
       },
-      {
-        dataTestId: 'service-nft-image',
-        value: <NftImage hashDetails={hashDetails} type={type} />,
-      },
-      ...commonDetails,
-      { title: 'Threshold', value: get(info, 'threshold', null) || NA },
     ];
+
+    // show NFT image only if metadata is available
+    if (HASH_DETAILS_STATE.LOADED === metadataState) {
+      serviceDetailsList.push({
+        dataTestId: 'service-nft-image',
+        value: <NftImage metadata={metadata} type={type} />,
+      });
+    }
+
+    serviceDetailsList.push(...getCommonDetails(), {
+      title: 'Threshold',
+      value: get(info, 'threshold', null) || NA,
+    });
+
+    return serviceDetailsList;
   };
 
   const details = type === NAV_TYPES.SERVICE

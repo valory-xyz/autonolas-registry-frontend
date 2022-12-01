@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Typography } from 'antd/lib';
+import { Typography, Image } from 'antd/lib';
 import { COLOR } from 'util/theme';
 
 export const DetailsTitle = styled(Typography.Title)`
@@ -47,7 +47,7 @@ export const EachSection = styled.div`
   padding-top: 1.25rem;
 `;
 
-export const NftImageContainer = styled.img`
+export const NftImageContainer = styled(Image)`
   border: 1px solid ${COLOR.BORDER_GREY};
 `;
 

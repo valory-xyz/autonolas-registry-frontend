@@ -9,8 +9,13 @@ import {
 import { NAV_TYPES } from 'util/constants';
 import Loader from 'common-util/components/Loader';
 import IpfsHashGenerationModal from '../List/IpfsHashGenerationModal';
+import { NftImage } from './NFTImage';
 import { ServiceState } from './ServiceState';
-import { getAutonolasTokenUri, DetailsInfo, NftImage } from './helpers';
+import {
+  getAutonolasTokenUri,
+  DetailsInfo,
+  HASH_DETAILS_STATE,
+} from './helpers';
 import { Header, DetailsTitle } from './styles';
 
 const { Text } = Typography;
@@ -39,7 +44,12 @@ const Details = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [detailsOwner, setDetailsOwner] = useState('');
   const [tokenUri, setTokenUri] = useState(null);
-  const [hashDetails, setHashDetails] = useState(null);
+
+  // metadata details
+  const [metadata, setMetadata] = useState(null);
+  const [metadataState, setMetadataState] = useState(
+    HASH_DETAILS_STATE.IS_LOADING,
+  );
 
   const isOwner = account.toLowerCase() === detailsOwner.toLowerCase();
 
@@ -89,12 +99,16 @@ const Details = ({
   useEffect(() => {
     (async () => {
       if (tokenUri) {
+        setMetadataState(HASH_DETAILS_STATE.IS_LOADING);
         try {
           const ipfsUrl = getAutonolasTokenUri(tokenUri);
           const response = await fetch(ipfsUrl);
           const json = await response.json();
-          setHashDetails(json);
+          setMetadata(json);
+          setMetadataState(HASH_DETAILS_STATE.LOADED);
         } catch (e) {
+          setMetadataState(HASH_DETAILS_STATE.FAILED);
+          window.console.log('Error fetching metadata from IPFS');
           console.error(e);
         }
       }
@@ -148,7 +162,8 @@ const Details = ({
             tokenUri={tokenUri}
             hashes={hashes}
             info={info}
-            hashDetails={hashDetails}
+            metadata={metadata}
+            metadataState={metadataState}
             detailsOwner={detailsOwner}
             onUpdateHash={onUpdateHash}
             setIsModalVisible={setIsModalVisible}
@@ -158,7 +173,7 @@ const Details = ({
 
         <Col className="gutter-row" span={12}>
           {type !== NAV_TYPES.SERVICE && (
-            <NftImage hashDetails={hashDetails} type={type} />
+            <NftImage metadata={metadata} type={type} />
           )}
 
           {type === NAV_TYPES.SERVICE && (
