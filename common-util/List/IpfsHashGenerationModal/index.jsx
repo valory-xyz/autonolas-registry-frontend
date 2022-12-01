@@ -192,7 +192,6 @@ const IpfsModal = ({
           label="NFT Image URL"
           name="image"
           extra="Represents your NFT on marketplaces such as OpenSea"
-          rules={[{ required: true, message: 'Input a URL pointing to an image' }]}
         >
           <Input />
         </Form.Item>

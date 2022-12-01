@@ -89,7 +89,8 @@ describe('listComponents/details.jsx', () => {
       expect(getByTestId('details-dependency')).toBeInTheDocument();
 
       // NFT image
-      expect(getByTestId('nft-image').getAttribute('src')).toBe(
+      const nftImage = getByTestId('nft-image').querySelector('.ant-image-img');
+      expect(nftImage.getAttribute('src')).toBe(
         `${GATEWAY_URL}${mockNftImageHash}`,
       );
     });
