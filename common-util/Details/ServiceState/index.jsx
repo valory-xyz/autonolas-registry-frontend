@@ -19,6 +19,7 @@ import StepActiveRegistration from './2StepActiveRegistration';
 import StepFinishedRegistration from './3rdStepFinishedRegistration';
 
 import Deployed from './4thStepDeployed';
+import Unbond from './5StepUnbond';
 import { InfoSubHeader } from '../styles';
 import { ServiceStateContainer } from './styles';
 
@@ -60,8 +61,13 @@ export const ServiceState = ({
   }, [status]);
 
   /* ----- helper functions ----- */
-  const getButton = (button, isValid = isOwner, message) => {
-    if (isValid) return button;
+  const getButton = (button, otherArgs) => {
+    const { message, condition = isOwner, step } = otherArgs || {};
+
+    // if not the current step, just return the button without showing tooltip
+    if (step !== currentStep + 1) return button;
+
+    if (condition) return button;
 
     return (
       <Tooltip
@@ -181,9 +187,15 @@ export const ServiceState = ({
       title: 'Pre-Registration',
       component: (
         <Space>
-          <Button onClick={handleStep1Registration} {...getOtherBtnProps(1)}>
-            Activate Registration
-          </Button>
+          {getButton(
+            <Button
+              onClick={handleStep1Registration}
+              {...getOtherBtnProps(1, { isDisabled: !isOwner })}
+            >
+              Activate Registration
+            </Button>,
+            { step: 1 },
+          )}
           {getButton(
             <Button
               onClick={handleStep1Update}
@@ -191,6 +203,7 @@ export const ServiceState = ({
             >
               Update
             </Button>,
+            { step: 1 },
           )}
         </Space>
       ),
@@ -203,8 +216,10 @@ export const ServiceState = ({
           dataSource={dataSource}
           setDataSource={setDataSource}
           handleStep2RegisterAgents={handleStep2RegisterAgents}
-          handleTerminate={handleTerminate}
           getOtherBtnProps={getOtherBtnProps}
+          getButton={getButton}
+          isOwner={isOwner}
+          handleTerminate={handleTerminate}
         />
       ),
     },
@@ -224,6 +239,8 @@ export const ServiceState = ({
           }
           getOtherBtnProps={getOtherBtnProps}
           account={account}
+          getButton={getButton}
+          isOwner={isOwner}
         />
       ),
     },
@@ -232,6 +249,8 @@ export const ServiceState = ({
       component: (
         <Deployed
           serviceId={id}
+          // If in pre-registration step, don't show the table
+          isShowAgentInstanceVisible={currentStep !== 0}
           multisig={multisig}
           terminateButton={getButton(
             <Button
@@ -240,17 +259,19 @@ export const ServiceState = ({
             >
               Terminate
             </Button>,
+            { step: 4 },
           )}
         />
       ),
     },
     {
       title: 'Terminated Bonded',
-      // TODO: button to be disabled if not operator (needs more details)
       component: (
-        <Button onClick={handleStep5Unbond} {...getOtherBtnProps(5)}>
-          Unbond
-        </Button>
+        <Unbond
+          handleStep5Unbond={handleStep5Unbond}
+          getOtherBtnProps={getOtherBtnProps}
+          getButton={getButton}
+        />
       ),
     },
   ];

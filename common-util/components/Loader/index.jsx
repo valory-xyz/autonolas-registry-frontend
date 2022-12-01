@@ -43,7 +43,7 @@ const Loader = ({ isAccountRequired, message }) => {
   if (seconds === 0) {
     return (
       <Container>
-        <p>{DEFAULT_MESSAGE}</p>
+        <p>{message || DEFAULT_MESSAGE}</p>
         <Button ghost type="primary" onClick={() => window.location.reload()}>
           Reload
         </Button>

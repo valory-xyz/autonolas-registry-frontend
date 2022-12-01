@@ -1,7 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Table, Space } from 'antd/lib';
+import get from 'lodash/get';
 import { Address } from 'common-util/styles';
+import { setAgentInstancesAndOperators } from 'store/service/state/actions';
 import { getAgentInstanceAndOperator } from '../utils';
 
 const columns = [
@@ -19,8 +22,14 @@ const columns = [
   },
 ];
 
-const Deployed = ({ serviceId, multisig, terminateButton }) => {
-  const [data, setData] = useState([]);
+const Deployed = ({
+  serviceId,
+  multisig,
+  terminateButton,
+  isShowAgentInstanceVisible,
+}) => {
+  const dispatch = useDispatch();
+  const data = useSelector((state) => get(state, 'service.serviceState.agentInstancesAndOperators'));
 
   useEffect(() => {
     let isMounted = true;
@@ -28,7 +37,7 @@ const Deployed = ({ serviceId, multisig, terminateButton }) => {
       if (serviceId) {
         const tempData = await getAgentInstanceAndOperator(serviceId);
         if (isMounted) {
-          setData(tempData);
+          dispatch(setAgentInstancesAndOperators(tempData));
         }
       }
     })();
@@ -41,13 +50,15 @@ const Deployed = ({ serviceId, multisig, terminateButton }) => {
   return (
     <div className="step-4-terminate">
       <Space direction="vertical" size={10}>
-        <Table
-          columns={columns}
-          dataSource={data}
-          pagination={false}
-          bordered
-          rowKey="id"
-        />
+        {isShowAgentInstanceVisible && (
+          <Table
+            columns={columns}
+            dataSource={data}
+            pagination={false}
+            bordered
+            rowKey="id"
+          />
+        )}
         <div>{`Safe contract address: ${multisig}`}</div>
         {terminateButton}
       </Space>
@@ -59,10 +70,12 @@ Deployed.propTypes = {
   serviceId: PropTypes.string,
   multisig: PropTypes.string.isRequired,
   terminateButton: PropTypes.element.isRequired,
+  isShowAgentInstanceVisible: PropTypes.bool,
 };
 
 Deployed.defaultProps = {
   serviceId: null,
+  isShowAgentInstanceVisible: false,
 };
 
 export default Deployed;

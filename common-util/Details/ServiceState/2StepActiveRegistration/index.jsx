@@ -14,8 +14,10 @@ const ActiveRegistration = ({
   dataSource,
   setDataSource,
   handleStep2RegisterAgents,
-  handleTerminate,
   getOtherBtnProps,
+  handleTerminate,
+  getButton,
+  isOwner,
 }) => {
   const [totalBond, setTotalBond] = useState(null);
 
@@ -25,9 +27,14 @@ const ActiveRegistration = ({
     let isMounted = true;
     (async () => {
       if (serviceId) {
-        const response = await getBonds(serviceId);
-        if (isMounted) {
-          setTotalBond(convertToEth((response?.totalBonds || 0).toString()));
+        try {
+          const response = await getBonds(serviceId);
+          if (isMounted) {
+            setTotalBond(convertToEth((response?.totalBonds || 0).toString()));
+          }
+        } catch (error) {
+          window.console.log('Error while fetching bonds');
+          console.error(error);
         }
       }
     })();
@@ -48,18 +55,23 @@ const ActiveRegistration = ({
         isDisabled={btnProps.disabled}
       />
       <Text type="secondary">
-        Adding instances will cause a bond of&nbsp;
-        {totalBond}
-        &nbsp;ETH per agent instance
+        {`Adding instances will cause a bond of ${totalBond || '--'} ETH per agent instance`}
       </Text>
 
+      {/* "Register agents" can be clicked by anyone */}
       <Button onClick={handleStep2RegisterAgents} {...btnProps}>
         Register Agents
       </Button>
       <Divider />
-      <Button onClick={handleTerminate} {...btnProps}>
-        Terminate
-      </Button>
+      {getButton(
+        <Button
+          onClick={handleTerminate}
+          {...getOtherBtnProps(2, { isDisabled: !isOwner })}
+        >
+          Terminate
+        </Button>,
+        { step: 2 },
+      )}
     </div>
   );
 };
@@ -71,8 +83,10 @@ ActiveRegistration.propTypes = {
   ).isRequired,
   setDataSource: PropTypes.func.isRequired,
   handleStep2RegisterAgents: PropTypes.func.isRequired,
-  handleTerminate: PropTypes.func.isRequired,
   getOtherBtnProps: PropTypes.func.isRequired,
+  handleTerminate: PropTypes.func.isRequired,
+  getButton: PropTypes.func.isRequired,
+  isOwner: PropTypes.bool.isRequired,
 };
 
 ActiveRegistration.defaultProps = {
