@@ -13,8 +13,8 @@ import { isHashApproved } from './helpers';
 
 const safeContracts = require('@gnosis.pm/safe-contracts');
 
-const ZEROS_24 = '0'.repeat(24).length;
-const ZEROS_64 = '0'.repeat(64).length;
+const ZEROS_24 = '0'.repeat(24);
+const ZEROS_64 = '0'.repeat(64);
 
 const EIP712_SAFE_TX_TYPE = {
   SafeTx: [
