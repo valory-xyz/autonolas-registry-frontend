@@ -13,8 +13,8 @@ import { isHashApproved } from './helpers';
 
 const safeContracts = require('@gnosis.pm/safe-contracts');
 
-const ZEROS_24 = '0'.repeat(24).length;
-const ZEROS_64 = '0'.repeat(64).length;
+const ZEROS_24 = '0'.repeat(24);
+const ZEROS_64 = '0'.repeat(64);
 
 const EIP712_SAFE_TX_TYPE = {
   SafeTx: [
@@ -159,7 +159,7 @@ export const handleMultisigSubmit = async ({
           if (events.length > 0) {
             handleStep3Deploy(radioValue, packedData);
           } else {
-            // else wait until the hash is approved and then call deploy function
+          // else wait until the hash is approved and then call deploy function
             multisigContractServiceOwner.methods
               .approveHash(messageHash)
               .send({ from: account })
