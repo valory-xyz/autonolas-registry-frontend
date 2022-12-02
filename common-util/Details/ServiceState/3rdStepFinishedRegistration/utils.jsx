@@ -159,7 +159,7 @@ export const handleMultisigSubmit = async ({
           if (events.length > 0) {
             handleStep3Deploy(radioValue, packedData);
           } else {
-          // else wait until the hash is approved and then call deploy function
+            // else wait until the hash is approved and then call deploy function
             multisigContractServiceOwner.methods
               .approveHash(messageHash)
               .send({ from: account })
