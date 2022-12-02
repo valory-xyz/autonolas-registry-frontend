@@ -1,3 +1,4 @@
+import { notification } from 'antd/lib';
 import { ethers } from 'ethers';
 import { TOTAL_VIEW_COUNT } from 'util/constants';
 
@@ -31,3 +32,7 @@ export const getFirstAndLastIndex = (total, nextPage) => {
   const last = Math.min(nextPage * TOTAL_VIEW_COUNT, total);
   return { first, last };
 };
+
+export const safeSendTransactionNotification = () => notification.success({
+  message: 'Please submit the transaction in your safe app.',
+});
