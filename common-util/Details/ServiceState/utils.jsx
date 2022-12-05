@@ -3,6 +3,7 @@ import {
   getServiceContract,
   getServiceManagerContract,
 } from 'common-util/Contracts';
+import { sendTransaction } from 'common-util/functions/sendTransaction';
 
 const notifySuccess = (message = 'Terminated Successfully') => notification.success({ message });
 const notifyError = (message = 'Some error occured') => notification.error({ message });
@@ -81,12 +82,32 @@ export const getServiceOwner = (id) => new Promise((resolve, reject) => {
 export const onActivateRegistration = (account, id, deposit) => new Promise((resolve, reject) => {
   const contract = getServiceManagerContract();
 
-  contract.methods
+  // contract.methods
+  //   .activateRegistration(id)
+  //   .send({ from: account, value: deposit })
+  //   .on('receipt', (receipt) => {
+  //     console.log(receipt);
+  //   })
+  //   .then((information) => {
+  //     notifySuccess('Activated Successfully');
+  //     resolve(information);
+  //   })
+  //   .catch((e) => {
+  //     reject(e);
+  //     notifyError();
+  //   });
+
+  const fn = contract.methods
     .activateRegistration(id)
-    .send({ from: account, value: deposit })
-    .then((information) => {
+    .send({ from: account, value: deposit });
+  console.log('101');
+
+  sendTransaction(fn, account)
+    .then((response) => {
+      console.log('150');
+      console.log('receipt 2 =====>');
       notifySuccess('Activated Successfully');
-      resolve(information);
+      resolve(response);
     })
     .catch((e) => {
       reject(e);
