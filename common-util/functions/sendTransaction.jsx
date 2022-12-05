@@ -2,13 +2,14 @@ import { ethers } from 'ethers';
 import { get } from 'lodash';
 import { safeSendTransactionNotification } from './index';
 
-
 const getUrl = (hash, chainId) => {
-  if (chainId === 5) { return `${process.env.NEXT_PUBLIC_GNOSIS_SAFE_API_GOERLI}/${hash}`; }
+  if (chainId === 5) {
+    return `${process.env.NEXT_PUBLIC_GNOSIS_SAFE_API_GOERLI}/${hash}`;
+  }
   return `${process.env.NEXT_PUBLIC_GNOSIS_SAFE_API_MAINNET}/${hash}`;
 };
 
-export async function pollTransactionDetails(hash, chainId) {
+async function pollTransactionDetails(hash, chainId) {
   return new Promise((resolve, reject) => {
     /* eslint-disable-next-line consistent-return */
     const interval = setInterval(async () => {
@@ -38,19 +39,9 @@ export async function pollTransactionDetails(hash, chainId) {
 export const sendTransaction = (
   sendFn,
   account,
-  extra,
-  // {
-  //   functionParams,
-  //   sendParams,
-  //   contract,
-  //   startingBlock,
-  //   eventFilters,
-  // }
+  // extra,
 ) => new Promise((resolve, reject) => {
-  const {
-    contract,
-    eventFilters,
-  } = extra;
+  // const { contract, eventFilters } = extra;
 
   const provider = new ethers.providers.Web3Provider(
     window.MODAL_PROVIDER || window.web3.currentProvider,
@@ -71,44 +62,31 @@ export const sendTransaction = (
            */
         safeSendTransactionNotification();
 
-        /**
-         * 1. check if gnosis-safe?
-         *    if yes => use `transactionHash`, get the hash
-         *    then poll until we get the blockNumber
-         *    then return the resolve with Output?
-         * 2. if not-gnosis-safe use the custom
-         */
-        /* eslint-disable-next-line consistent-return */
-        const interval = setInterval(async () => {
-          window.console.log('Attempting to getPastEvents...');
+        sendFn
+          .on('transactionHash', async (hash) => {
+            window.console.log('safeTx', hash);
 
-          try {
-            const filter = { owner: account, ...(eventFilters || {}) };
-            const startingBlock = await provider.getBlockNumber();
-
-            const pastEvents = await contract.getPastEvents('ApproveHash', {
-              filter,
-              fromBlock: startingBlock - 10,
-              toBlock: 'latest',
-            });
-            window.console.log('pastEvents:', pastEvents);
-
-            const hashApproved = pastEvents.length !== 0;
-            if (hashApproved) {
-              window.console.log('hashApproved');
-              clearInterval(interval);
-              return resolve();
-            }
-          } catch (error) {
-            clearInterval(interval);
-            return reject(error);
-          }
-        }, 5000);
+            /**
+               * use `transactionHash`, get the hash, then poll until
+               * it resolves with Output
+               */
+            const chainId = await window.WEB3_PROVIDER.eth.getChainId();
+            pollTransactionDetails(chainId, chainId)
+              .then((receipt) => {
+                resolve(receipt);
+              })
+              .catch((e) => {
+                console.error('Error on fetching transaction details');
+                reject(e);
+              });
+          })
+          .catch((e) => {
+            reject(e);
+          });
       } else {
         /**
-       * usual send function (right now supported by metamask)
-       */
-
+           * usual send function (right now supported by metamask)
+           */
 
         sendFn
           .then((receipt) => {
@@ -123,3 +101,19 @@ export const sendTransaction = (
       console.error('Error on fetching code');
     });
 });
+
+/**
+ * 1-1 oak
+ * David V will give the contract
+ * get the gas-cost before miniting - if possible
+ *
+ * To show badge
+ * see any badeges ? badge : else show button to mint
+ * => take the 1st badge =>
+ *
+ * style the sheet if possible
+ *
+ * on close, keep it in local-storage
+ *
+ * for responsinvess => just collapse to single column
+ */
