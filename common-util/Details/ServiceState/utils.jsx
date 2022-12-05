@@ -82,30 +82,12 @@ export const getServiceOwner = (id) => new Promise((resolve, reject) => {
 export const onActivateRegistration = (account, id, deposit) => new Promise((resolve, reject) => {
   const contract = getServiceManagerContract();
 
-  // contract.methods
-  //   .activateRegistration(id)
-  //   .send({ from: account, value: deposit })
-  //   .on('receipt', (receipt) => {
-  //     console.log(receipt);
-  //   })
-  //   .then((information) => {
-  //     notifySuccess('Activated Successfully');
-  //     resolve(information);
-  //   })
-  //   .catch((e) => {
-  //     reject(e);
-  //     notifyError();
-  //   });
-
   const fn = contract.methods
     .activateRegistration(id)
     .send({ from: account, value: deposit });
-  console.log('101');
 
   sendTransaction(fn, account)
     .then((response) => {
-      console.log('150');
-      console.log('receipt 2 =====>');
       notifySuccess('Activated Successfully');
       resolve(response);
     })

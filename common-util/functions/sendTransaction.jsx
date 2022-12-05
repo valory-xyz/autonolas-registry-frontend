@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { safeSendTransactionNotification, notifySuccess, notifyError } from '.';
+import { safeSendTransactionNotification } from './index';
 
 /**
  * poll until the hash has been approved before deploy
@@ -20,15 +20,10 @@ export const sendTransaction = (
     'any',
   );
 
-  console.log(provider);
-  console.log('105');
-
   provider
     .getCode(account)
     .then((code) => {
-      console.log('code: ', code);
       const isGnosisSafe = code !== '0x';
-      console.log('125');
 
       if (isGnosisSafe) {
         /**
@@ -39,11 +34,8 @@ export const sendTransaction = (
            */
         safeSendTransactionNotification();
       } else {
-        console.log('127');
         sendFn
           .then((receipt) => {
-            console.log('130');
-            console.log('receipt', receipt);
             resolve(receipt);
           })
           .catch((e) => {

@@ -39,7 +39,3 @@ export const getFirstAndLastIndex = (total, nextPage) => {
 export const safeSendTransactionNotification = () => notification.warning({
   message: 'Please submit the transaction in your safe app.',
 });
-
-export const notifySuccess = (message = 'Terminated Successfully') => notification.success({ message });
-
-export const notifyError = (message = 'Some error occured') => notification.error({ message });
