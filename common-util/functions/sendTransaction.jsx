@@ -13,7 +13,7 @@ async function pollTransactionDetails(hash, chainId) {
   return new Promise((resolve, reject) => {
     /* eslint-disable-next-line consistent-return */
     const interval = setInterval(async () => {
-      window.console.log('Attempting to get transaction receipt...');
+      window.console.log('Fetching transaction receipt...');
 
       try {
         const response = await fetch(getUrl(hash, chainId));
@@ -23,11 +23,11 @@ async function pollTransactionDetails(hash, chainId) {
         if (isSuccessful) {
           window.console.log('Transaction details: ', json);
           clearInterval(interval);
-          return resolve(json);
+          resolve(json);
         }
       } catch (error) {
         clearInterval(interval);
-        return reject(error);
+        reject(error);
       }
     }, 3000);
   });
@@ -44,7 +44,7 @@ export const sendTransaction = (
   // const { contract, eventFilters } = extra;
 
   const provider = new ethers.providers.Web3Provider(
-    window.MODAL_PROVIDER || window.web3.currentProvider,
+    window.MODAL_PROVIDER,
     'any',
   );
 
@@ -63,15 +63,15 @@ export const sendTransaction = (
         safeSendTransactionNotification();
 
         sendFn
-          .on('transactionHash', async (hash) => {
-            window.console.log('safeTx', hash);
+          .on('transactionHash', async (safeTx) => {
+            window.console.log('safeTx', safeTx);
 
             /**
                * use `transactionHash`, get the hash, then poll until
                * it resolves with Output
                */
             const chainId = await window.WEB3_PROVIDER.eth.getChainId();
-            pollTransactionDetails(chainId, chainId)
+            pollTransactionDetails(safeTx, chainId)
               .then((receipt) => {
                 resolve(receipt);
               })
@@ -85,7 +85,7 @@ export const sendTransaction = (
           });
       } else {
         /**
-           * usual send function (right now supported by metamask)
+           * usual send function
            */
 
         sendFn
@@ -101,19 +101,3 @@ export const sendTransaction = (
       console.error('Error on fetching code');
     });
 });
-
-/**
- * 1-1 oak
- * David V will give the contract
- * get the gas-cost before miniting - if possible
- *
- * To show badge
- * see any badeges ? badge : else show button to mint
- * => take the 1st badge =>
- *
- * style the sheet if possible
- *
- * on close, keep it in local-storage
- *
- * for responsinvess => just collapse to single column
- */
