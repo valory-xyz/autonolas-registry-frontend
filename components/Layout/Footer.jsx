@@ -53,7 +53,7 @@ const ContractInfo = () => {
     if ((pathname || '').includes('components')) {
       return {
         registryText: 'ComponentRegistry',
-        managerText: 'ComponentManager',
+        managerText: 'RegistriesManager',
         registry: addresses.componentRegistry,
         manager: addresses.registriesManager,
       };
@@ -61,8 +61,8 @@ const ContractInfo = () => {
 
     if ((pathname || '').includes('agents')) {
       return {
-        registryText: 'ComponentRegistry',
-        managerText: 'ComponentManager',
+        registryText: 'AgentRegistry',
+        managerText: 'RegistriesManager',
         registry: addresses.agentRegistry,
         manager: addresses.registriesManager,
       };
