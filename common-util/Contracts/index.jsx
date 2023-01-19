@@ -35,7 +35,7 @@ export const ADDRESSES = {
   },
 };
 
-const getWeb3Details = () => {
+export const getWeb3Details = () => {
   /**
    * provider = wallect-connect provider or currentProvider by metamask
    */
@@ -43,7 +43,7 @@ const getWeb3Details = () => {
 
   const chainId = Number(window.ethereum.chainId);
   const address = ADDRESSES[chainId || STAGING_CHAIN_ID]; // default fallback to be 31337
-  return { web3, address };
+  return { web3, address, chainId };
 };
 
 export const getComponentContract = () => {
