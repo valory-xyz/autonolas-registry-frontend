@@ -55,13 +55,25 @@ describe('layout/index.jsx', () => {
     });
   });
 
-  // eslint-disable-next-line jest/no-disabled-tests
-  it.skip('should render footer', async () => {
+  it('should render footer', async () => {
     expect.hasAssertions();
     const { container } = render(wrapProvider(<Layout />));
-    const footer = container.querySelector('.footer');
+
+    const footerComponentInfo = container.querySelector('.footer-left-content');
     await waitFor(async () => {
-      expect(footer.textContent).toContain('Valory');
+      expect(footerComponentInfo).toHaveTextContent('AgentRegistry');
+      expect(footerComponentInfo).toHaveTextContent('RegistriesManager');
+    });
+
+    // Valory to be visible in the center of the footer
+    const footerCenter = container.querySelector('.footer-center');
+    await waitFor(async () => {
+      expect(footerCenter.textContent).toContain('Valory');
+    });
+
+    const footerSocials = container.querySelector('.footer-right-content > div');
+    await waitFor(async () => {
+      expect(footerSocials).toHaveClass('socials');
     });
   });
 });
