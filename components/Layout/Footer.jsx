@@ -1,9 +1,10 @@
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 import get from 'lodash/get';
 import { Footer as CommonFooter } from '@autonolas/frontend-library';
-import { ADDRESSES } from 'common-util/Contracts';
+import { ADDRESSES, getWeb3Details } from 'common-util/Contracts';
 import { ContractsInfoContainer } from './styles';
 
 const SOCIALS = [
@@ -28,15 +29,31 @@ const SOCIALS = [
 const ContractInfo = () => {
   const chainId = useSelector((state) => get(state, 'setup.chainId'));
   const router = useRouter();
-  const { pathname } = router;
-  const addresses = ADDRESSES[chainId];
-  if (!chainId || !addresses) return <ContractsInfoContainer />;
 
+  const [addresChainId, setAddressChainId] = useState(chainId);
+  const { pathname } = router;
+
+  // if chainId changes, update the chainId required for address
+  useEffect(() => {
+    setAddressChainId(chainId);
+  }, [chainId]);
+
+  // if there are no chainId, try to fetch from web3Details (ie. WEB3_PROVIDER)
+  // else fallback to 1 (mainnet address)
+  useEffect(() => {
+    if (!addresChainId) {
+      setAddressChainId(getWeb3Details().chainId || 1);
+    }
+  }, []);
+
+  if (!addresChainId) return <ContractsInfoContainer />;
+
+  const addresses = ADDRESSES[addresChainId];
   const getCurrentPageAddresses = () => {
     if ((pathname || '').includes('components')) {
       return {
         registryText: 'ComponentRegistry',
-        managerText: 'ComponentManager',
+        managerText: 'RegistriesManager',
         registry: addresses.componentRegistry,
         manager: addresses.registriesManager,
       };
@@ -44,8 +61,8 @@ const ContractInfo = () => {
 
     if ((pathname || '').includes('agents')) {
       return {
-        registryText: 'ComponentRegistry',
-        managerText: 'ComponentManager',
+        registryText: 'AgentRegistry',
+        managerText: 'RegistriesManager',
         registry: addresses.agentRegistry,
         manager: addresses.registriesManager,
       };
@@ -69,7 +86,7 @@ const ContractInfo = () => {
   };
 
   const getEtherscanLink = (address) => {
-    if (chainId === 5) return `https://goerli.etherscan.io/address/${address}`;
+    if (addresChainId === 5) return `https://goerli.etherscan.io/address/${address}`;
     return `https://etherscan.io/address/${address}`;
   };
 
