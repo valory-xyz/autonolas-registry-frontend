@@ -9,7 +9,6 @@ import {
   GNOSIS_SAFE_CONTRACT,
   MULTI_SEND_CONTRACT,
 } from 'common-util/AbiAndAddresses';
-import { STAGING_CHAIN_ID } from 'util/constants';
 
 export const ADDRESSES = {
   1: {
@@ -37,12 +36,19 @@ export const ADDRESSES = {
 
 export const getWeb3Details = () => {
   /**
-   * provider = wallect-connect provider or currentProvider by metamask
+   * web3 provider =
+   * - wallect-connect provider or
+   * - currentProvider by metamask or
+   * - fallback to remote mainnet [remote node provider](https://web3js.readthedocs.io/en/v1.7.5/web3.html#example-remote-node-provider)
    */
-  const web3 = new Web3(window.WEB3_PROVIDER || window.web3?.currentProvider);
+  const web3 = new Web3(
+    window.WEB3_PROVIDER
+      || window.web3?.currentProvider
+      || process.env.NEXT_PUBLIC_MAINNET_URL,
+  );
 
-  const chainId = Number(window.ethereum?.chainId);
-  const address = ADDRESSES[chainId || STAGING_CHAIN_ID]; // default fallback to be 31337
+  const chainId = Number(window.ethereum?.chainId || 1); // default to mainnet
+  const address = ADDRESSES[chainId];
   return { web3, address, chainId };
 };
 
@@ -107,22 +113,15 @@ export const getSignMessageLibContract = (address) => {
 
 export const getServiceOwnerMultisigContract = (address) => {
   const { web3 } = getWeb3Details();
-  const contract = new web3.eth.Contract(
-    GNOSIS_SAFE_CONTRACT.abi,
-    address,
-  );
+  const contract = new web3.eth.Contract(GNOSIS_SAFE_CONTRACT.abi, address);
   return contract;
 };
 
 export const getMultiSendContract = (address) => {
   const { web3 } = getWeb3Details();
-  const contract = new web3.eth.Contract(
-    MULTI_SEND_CONTRACT.abi,
-    address,
-  );
+  const contract = new web3.eth.Contract(MULTI_SEND_CONTRACT.abi, address);
   return contract;
 };
-
 
 /**
  * Other details
