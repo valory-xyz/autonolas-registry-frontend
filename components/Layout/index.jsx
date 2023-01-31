@@ -10,7 +10,7 @@ import {
   CustomLayout, Logo, RightMenu, SupportOnlyDesktop,
 } from './styles';
 
-const LogoSvg = dynamic(() => import('common-util/svg/logo'));
+const LogoSvg = dynamic(() => import('common-util/svg/logo'), { ssr: false });
 
 const { Header, Content } = Layout;
 
