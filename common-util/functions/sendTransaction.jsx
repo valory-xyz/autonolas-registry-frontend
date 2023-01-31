@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { get } from 'lodash';
+import get from 'lodash/get';
 import { safeSendTransactionNotification } from './index';
 
 const getUrl = (hash, chainId) => {
@@ -9,6 +9,9 @@ const getUrl = (hash, chainId) => {
   return `${process.env.NEXT_PUBLIC_GNOSIS_SAFE_API_MAINNET}/${hash}`;
 };
 
+/**
+ * poll gnosis-safe API every 3 seconds
+ */
 async function pollTransactionDetails(hash, chainId) {
   return new Promise((resolve, reject) => {
     /* eslint-disable-next-line consistent-return */
@@ -38,11 +41,9 @@ async function pollTransactionDetails(hash, chainId) {
  */
 export const sendTransaction = (
   sendFn,
-  account,
+  account = window?.MODAL_PROVIDER?.accounts[0],
   // extra,
 ) => new Promise((resolve, reject) => {
-  // const { contract, eventFilters } = extra;
-
   const provider = new ethers.providers.Web3Provider(
     window.MODAL_PROVIDER,
     'any',
@@ -70,7 +71,7 @@ export const sendTransaction = (
                * use `transactionHash`, get the hash, then poll until
                * it resolves with Output
                */
-            const chainId = await window.WEB3_PROVIDER.eth.getChainId();
+            const chainId = (await window.WEB3_PROVIDER?.eth?.getChainId()) || 1;
             pollTransactionDetails(safeTx, chainId)
               .then((receipt) => {
                 resolve(receipt);
@@ -84,10 +85,7 @@ export const sendTransaction = (
             reject(e);
           });
       } else {
-        /**
-           * usual send function
-           */
-
+        // usual send function
         sendFn
           .then((receipt) => {
             resolve(receipt);

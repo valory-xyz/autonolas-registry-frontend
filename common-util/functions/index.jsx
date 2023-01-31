@@ -1,5 +1,5 @@
-import { notification } from 'antd/lib';
 import { ethers } from 'ethers';
+import { notification } from 'antd/lib';
 import { TOTAL_VIEW_COUNT } from 'util/constants';
 
 export const convertToEth = (value) => ethers.utils.formatEther(value);
@@ -33,9 +33,8 @@ export const getFirstAndLastIndex = (total, nextPage) => {
   return { first, last };
 };
 
-/**
- * nofitications
- */
+// Nofitications
+
 export const safeSendTransactionNotification = () => notification.warning({
   message: 'Please submit the transaction in your safe app.',
 });
