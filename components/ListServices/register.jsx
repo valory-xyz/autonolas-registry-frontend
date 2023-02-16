@@ -53,7 +53,7 @@ const RegisterService = ({ account }) => {
   return (
     <>
       <FormContainer>
-        <Title level={2}>Register Service</Title>
+        <Title level={2}>Mint Service</Title>
         <RegisterForm
           account={account}
           formInitialValues={{}}

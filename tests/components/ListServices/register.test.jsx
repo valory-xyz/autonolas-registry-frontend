@@ -36,7 +36,7 @@ describe('listServices/register.jsx', () => {
       wrapProvider(<RegisterService />),
     );
     // title
-    expect(getByText(/Register Service/i)).toBeInTheDocument();
+    expect(getByText(/Mint Service/i)).toBeInTheDocument();
 
     // get hash
     userEvent.click(getByTestId('generate-hash-file'));

@@ -154,7 +154,7 @@ const RegisterForm = ({
           </Form.Item>
         ) : (
           <RegisterFooter>
-            <p>To register, connect to wallet</p>
+            <p>To mint, connect to wallet</p>
             <WhiteButton onClick={handleCancel}>Cancel</WhiteButton>
           </RegisterFooter>
         )}

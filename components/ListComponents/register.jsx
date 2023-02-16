@@ -50,7 +50,7 @@ const RegisterComponent = ({ account }) => {
   return (
     <>
       <FormContainer>
-        <Title level={2}>Register Component</Title>
+        <Title level={2}>Mint Component</Title>
         <RegisterForm
           listType="component"
           handleSubmit={handleSubmit}

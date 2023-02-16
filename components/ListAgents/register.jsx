@@ -46,7 +46,7 @@ const RegisterAgent = ({ account }) => {
   return (
     <>
       <FormContainer>
-        <Title level={2}>Register Agent</Title>
+        <Title level={2}>Mint Agent</Title>
         <RegisterForm
           listType="agent"
           handleSubmit={handleSubmit}

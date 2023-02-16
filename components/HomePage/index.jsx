@@ -12,7 +12,7 @@ const IMG_PATH = 'images/homepage/';
 const LIST = [
   {
     type: 'services',
-    title: 'Service owners register and manage complete agent services',
+    title: 'Service owners mint and manage complete agent services',
     desc: 'They manage how the service is set up. Service owners define the business model of their services, and charge DAOs to use them.',
     link: URL.SERVICES,
   },
@@ -36,7 +36,7 @@ const HomePage = () => (
       <Row>
         <Col span={14} offset={2}>
           <Title className="hero-title">
-            Register and manage your services, agents and components
+            Mint and manage your services, agents and components
           </Title>
           <Text className="lead">
             The easiest way to interact with the Autonolas on-chain registry.

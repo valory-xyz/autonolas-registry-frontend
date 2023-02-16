@@ -18,7 +18,7 @@ jest.mock('common-util/List/IpfsHashGenerationModal/helpers', () => ({
 }));
 
 describe('listAgents/register.jsx', () => {
-  it('should submit the form & register the `Agent` successfully', async () => {
+  it('should submit the form & mint the `Agent` successfully', async () => {
     expect.hasAssertions();
 
     getMechMinterContract.mockImplementation(() => ({
@@ -34,7 +34,7 @@ describe('listAgents/register.jsx', () => {
     );
 
     // title
-    expect(getByText(/Register Agent/i)).toBeInTheDocument();
+    expect(getByText(/Mint Agent/i)).toBeInTheDocument();
 
     // get hash
     userEvent.click(getByRole('button', { name: 'Generate Hash & File' }));

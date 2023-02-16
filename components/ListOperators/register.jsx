@@ -13,9 +13,9 @@ const RegisterOperators = () => {
 
   return (
     <>
-      <Title level={2}>Register Operator</Title>
+      <Title level={2}>Mint Operator</Title>
       <RegisterFooter>
-        <p>To register, connect to wallet</p>
+        <p>To mint, connect to wallet</p>
         <Button type="primary" onClick={handleCancel}>
           Cancel
         </Button>

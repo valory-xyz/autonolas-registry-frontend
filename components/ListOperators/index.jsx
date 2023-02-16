@@ -27,7 +27,7 @@ const ListOperators = () => {
           type="primary"
           onClick={() => router.push(URL.REGISTER_OPERATOR)}
         >
-          Register
+          Mint
         </Button>
       </Header>
       <ListEmptyMessage type="operator" />
