@@ -34,7 +34,7 @@ const RegisterAgent = ({ account }) => {
         .send({ from: account })
         .then((result) => {
           setInformation(result);
-          notification.success({ message: 'Agent registered' });
+          notification.success({ message: 'Agent minted' });
         })
         .catch((e) => {
           setError(e);

@@ -23,10 +23,10 @@ describe('convertStringToArray()', () => {
 
 describe('<ListEmptyMessage />', () => {
   it.each([
-    { input: 'agent', output: /No agents registered/ },
-    { input: 'component', output: /No components registered/ },
-    { input: 'service', output: /No services registered/ },
-    { input: 'operator', output: /No operators registered/ },
+    { input: 'agent', output: /No agents minted/ },
+    { input: 'component', output: /No components minted/ },
+    { input: 'service', output: /No services minted/ },
+    { input: 'operator', output: /No operators minted/ },
     { input: null, output: /Please check type!/ },
   ])('expects valid type (input=$input)', ({ input, output }) => {
     expect.hasAssertions();
@@ -62,9 +62,9 @@ describe('<AlertSuccess />', () => {
       <AlertSuccess type={type} information={input} />,
     );
     if (type) {
-      expect(getByText(`${type} registered`)).toBeInTheDocument();
+      expect(getByText(`${type} minted`)).toBeInTheDocument();
     } else {
-      expect(getByText('Registered successfully')).toBeInTheDocument();
+      expect(getByText('Minted successfully')).toBeInTheDocument();
     }
   });
 

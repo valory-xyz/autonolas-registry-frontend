@@ -38,7 +38,7 @@ const RegisterComponent = ({ account }) => {
         .send({ from: account })
         .then((result) => {
           setInformation(result);
-          notification.success({ message: 'Component registered' });
+          notification.success({ message: 'Component minted' });
         })
         .catch((e) => {
           setError(e);

@@ -120,9 +120,9 @@ export const ListEmptyMessage = ({ type }) => {
   }
 
   return (
-    <EmptyMessage data-testid="not-registered-message">
+    <EmptyMessage data-testid="not-minted-message">
       <div className="empty-message-logo" />
-      <p>{`No ${currentType.text}s registered`}</p>
+      <p>{`No ${currentType.text}s minted`}</p>
     </EmptyMessage>
   );
 };
@@ -140,7 +140,7 @@ export const AlertSuccess = ({ type, information }) => {
   if (!information) return null;
   return (
     <Alert
-      message={type ? `${type} registered` : 'Registered successfully'}
+      message={type ? `${type} minted` : 'Minted successfully'}
       type="success"
       data-testid="alert-info-container"
       showIcon

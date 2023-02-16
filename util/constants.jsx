@@ -40,11 +40,11 @@ export const SERVICE_STATE = {
 };
 
 export const SERVICE_STATE_INFO = {
-  0: 'No service has been registered with a specified Id yet or the service is non-recoverable.',
+  0: 'No service has been minted with a specified Id yet or the service is non-recoverable.',
   1: 'Agent instance registration is not active yet.',
   2: 'Agent instance registration is ongoing.',
   3: 'Deadline for agent instance registration has passed.',
-  4: 'All the agent instances slots are registered.',
+  4: 'All the agent instances slots are minted.',
   5: 'Service is deployed and operates via created safe contract.',
   6: 'Some agents are bonded with stake.',
   7: 'All agents have left the service and recovered their stake.',

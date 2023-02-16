@@ -8,19 +8,19 @@ const getRejectedList = () => Promise.reject(new Error('Some error occured'));
 const getList = () => Promise.resolve([{ number: 'One' }, { number: 'Two' }]);
 
 describe('<ListCards />', () => {
-  it('should render a not-registered message if no account is passed', async () => {
+  it('should render a not-minted message if no account is passed', async () => {
     expect.hasAssertions();
     const { getByTestId } = render(
       wrapProvider(<ListCards type="agent" getList={getEmptyList} />, true),
     );
 
     await waitFor(() => {
-      const element = getByTestId('not-registered-message');
+      const element = getByTestId('not-minted-message');
       expect(element).toBeInTheDocument();
     });
   });
 
-  it('should render a not-registered message if list has an error', async () => {
+  it('should render a not-minted message if list has an error', async () => {
     expect.hasAssertions();
     const { getByTestId } = render(
       wrapProvider(<ListCards type="agent" getList={getRejectedList} />),
@@ -31,19 +31,19 @@ describe('<ListCards />', () => {
     jest.spyOn(console, 'error').mockImplementationOnce(() => {});
 
     await waitFor(() => {
-      const element = getByTestId('not-registered-message');
+      const element = getByTestId('not-minted-message');
       expect(element).toBeInTheDocument();
     });
   });
 
-  it('should render a not-registered message if list is empty', async () => {
+  it('should render a not-minted message if list is empty', async () => {
     expect.hasAssertions();
     const { queryByTestId } = render(
       wrapProvider(<ListCards type="agent" getList={getEmptyList} />),
     );
 
     await waitFor(() => {
-      const element = queryByTestId('not-registered-message');
+      const element = queryByTestId('not-minted-message');
       expect(element).toBeInTheDocument();
     });
   });
@@ -55,7 +55,7 @@ describe('<ListCards />', () => {
     );
 
     await waitFor(() => {
-      const element = queryByTestId('not-registered-message');
+      const element = queryByTestId('not-minted-message');
       expect(element).not.toBeInTheDocument();
       expect(queryByText(/One/)).toBeInTheDocument();
       expect(queryByText(/Two/)).toBeInTheDocument();

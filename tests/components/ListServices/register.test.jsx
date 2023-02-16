@@ -61,9 +61,9 @@ describe('listServices/register.jsx', () => {
 
     // await act(async () => {
     // TODO: antd form throws error on hash, check console, check console
-    // check if `Service registered` on `Submit` click
+    // check if `Service minted` on `Submit` click
     // expect(container.querySelector('.ant-alert-message').textContent).toBe(
-    //   'Service registered',
+    //   'Service minted',
     // );
     // });
   });

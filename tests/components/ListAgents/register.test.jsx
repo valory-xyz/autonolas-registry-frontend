@@ -61,9 +61,9 @@ describe('listAgents/register.jsx', () => {
 
     // await waitFor(async () => {
     // TODO: antd form throws error on hash, check console
-    // check if `Agent registered` on `Submit` click
+    // check if `Agent minted` on `Submit` click
     // expect(container.querySelector('.ant-alert-message').textContent).toBe(
-    //   'Agent registered',
+    //   'Agent minted',
     // );
     // });
   });

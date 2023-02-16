@@ -59,9 +59,9 @@ describe('listComponents/register.jsx', () => {
 
     // await waitFor(async () => {
     // TODO: antd form throws error on hash, check console
-    // check if `Component registered` on `Submit` click
+    // check if `Component minted` on `Submit` click
     // expect(container.querySelector('.ant-alert-message').textContent).toBe(
-    //   'Component registered',
+    //   'Component minted',
     // );
     // });
   });

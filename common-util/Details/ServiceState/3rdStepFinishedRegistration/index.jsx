@@ -16,8 +16,8 @@ import { handleMultisigSubmit } from './utils';
 import { RadioLabel } from '../styles';
 
 const STEP = 3;
-const OPTION_1 = 'Creates a new service multisig with currently registered agent instances';
-const OPTION_2 = 'Updates an existent service multisig with currently registered agent instances. Please note that the only service multisig owner must be the current service owner address';
+const OPTION_1 = 'Creates a new service multisig with currently minted agent instances';
+const OPTION_2 = 'Updates an existent service multisig with currently minted agent instances. Please note that the only service multisig owner must be the current service owner address';
 
 const StepThreePayload = ({
   isOwner,

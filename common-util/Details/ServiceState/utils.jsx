@@ -151,7 +151,7 @@ export const onStep2RegisterAgents = ({
         .send({ from: account, value: `${totalBonds}` })
         .then((information) => {
           resolve(information);
-          notifySuccess('Registered Successfully');
+          notifySuccess('Minted Successfully');
         })
         .catch((e) => {
           reject(e);
