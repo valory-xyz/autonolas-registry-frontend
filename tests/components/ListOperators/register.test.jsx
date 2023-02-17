@@ -17,7 +17,7 @@ describe('listOperators/register.jsx', () => {
     expect.hasAssertions();
     const { container } = render(wrapProvider(<RegisterOperator />));
     expect(container.querySelector('.ant-typography').textContent).toBe(
-      'Mint Operator',
+      'Register Operator',
     );
 
     userEvent.click(container.querySelector('.ant-btn'));

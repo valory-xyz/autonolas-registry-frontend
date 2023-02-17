@@ -82,7 +82,7 @@ DependencyLabel.defaultProps = { type: 'component' };
 
 export const RegisterMessage = ({ handleCancel }) => (
   <RegisterFooter>
-    <p>To mint, connect to wallet</p>
+    <p>To mint, connect your wallet</p>
     {handleCancel && <WhiteButton onClick={handleCancel}>Cancel</WhiteButton>}
   </RegisterFooter>
 );
