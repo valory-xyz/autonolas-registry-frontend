@@ -13,11 +13,11 @@ jest.mock('next/router', () => ({
 useRouter.mockImplementation(() => ({ push: jest.fn() }));
 
 describe('listOperators/index.jsx', () => {
-  it('should render `Mint` button', async () => {
+  it('should render `Register` button', async () => {
     expect.hasAssertions();
     const { getByRole } = render(wrapProvider(<ListOperators />));
 
-    expect(getByRole('button', { name: 'Mint' })).toBeInTheDocument();
+    expect(getByRole('button', { name: 'Register' })).toBeInTheDocument();
   });
 });
 
