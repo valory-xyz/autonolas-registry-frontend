@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { getMechMinterContract } from 'common-util/Contracts';
-import RegisterAgent from 'components/ListAgents/register';
+import MintAgent from 'components/ListAgents/mint';
 import { FORM_NAME } from 'common-util/List/RegisterForm';
 import { wrapProvider, dummyAddress, mockV1Hash } from '../../helpers';
 import { fillIpfsGenerationModal } from '../../helpers/prefillForm';
@@ -17,8 +17,8 @@ jest.mock('common-util/List/IpfsHashGenerationModal/helpers', () => ({
   getIpfsHashHelper: jest.fn(() => mockV1Hash),
 }));
 
-describe('listAgents/register.jsx', () => {
-  it('should submit the form & register the `Agent` successfully', async () => {
+describe('listAgents/mint.jsx', () => {
+  it('should submit the form & mint the `Agent` successfully', async () => {
     expect.hasAssertions();
 
     getMechMinterContract.mockImplementation(() => ({
@@ -30,11 +30,11 @@ describe('listAgents/register.jsx', () => {
     }));
 
     const { container, getByRole, getByText } = render(
-      wrapProvider(<RegisterAgent />),
+      wrapProvider(<MintAgent />),
     );
 
     // title
-    expect(getByText(/Register Agent/i)).toBeInTheDocument();
+    expect(getByText(/Mint Agent/i)).toBeInTheDocument();
 
     // get hash
     userEvent.click(getByRole('button', { name: 'Generate Hash & File' }));

@@ -1,3 +1,3 @@
-import RegisterAgent from 'components/ListAgents/register';
+import MintAgent from 'components/ListAgents/mint';
 
-export default RegisterAgent;
+export default MintAgent;
