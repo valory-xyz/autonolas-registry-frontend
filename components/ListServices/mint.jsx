@@ -15,7 +15,7 @@ import { getAgentParams } from './utils';
 
 const { Title } = Typography;
 
-const RegisterService = ({ account }) => {
+const MintService = ({ account }) => {
   const [error, setError] = useState(null);
   const [information, setInformation] = useState(null);
   const router = useRouter();
@@ -37,7 +37,7 @@ const RegisterService = ({ account }) => {
         .send({ from: account })
         .then((result) => {
           setInformation(result);
-          notification.success({ message: 'Service Created' });
+          notification.success({ message: 'Service minted' });
         })
         .catch((e) => {
           setError(e);
@@ -53,7 +53,7 @@ const RegisterService = ({ account }) => {
   return (
     <>
       <FormContainer>
-        <Title level={2}>Register Service</Title>
+        <Title level={2}>Mint Service</Title>
         <RegisterForm
           account={account}
           formInitialValues={{}}
@@ -68,11 +68,11 @@ const RegisterService = ({ account }) => {
   );
 };
 
-RegisterService.propTypes = {
+MintService.propTypes = {
   account: PropTypes.string,
 };
 
-RegisterService.defaultProps = {
+MintService.defaultProps = {
   account: null,
 };
 
@@ -81,4 +81,4 @@ const mapStateToProps = (state) => {
   return { account };
 };
 
-export default connect(mapStateToProps, {})(RegisterService);
+export default connect(mapStateToProps, {})(MintService);
