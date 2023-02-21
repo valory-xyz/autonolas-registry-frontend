@@ -228,7 +228,7 @@ export const useExtraTabContent = ({ title, onRegisterClick = () => {} }) => {
           Search
         </Button>
         <Button type="primary" onClick={onRegisterClick}>
-          Register
+          Mint
         </Button>
       </>
     ),

@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { getMechMinterContract } from 'common-util/Contracts';
-import RegisterComponent from 'components/ListComponents/register';
+import MintComponent from 'components/ListComponents/mint';
 import { FORM_NAME } from 'common-util/List/RegisterForm';
 import { wrapProvider, dummyAddress, mockV1Hash } from '../../helpers';
 import { fillIpfsGenerationModal } from '../../helpers/prefillForm';
@@ -30,11 +30,11 @@ describe('listComponents/register.jsx', () => {
     }));
 
     const { container, getByText, getByRole } = render(
-      wrapProvider(<RegisterComponent />),
+      wrapProvider(<MintComponent />),
     );
 
     // title
-    expect(getByText(/Register Component/i)).toBeInTheDocument();
+    expect(getByText(/Mint Component/i)).toBeInTheDocument();
 
     // get hash
     userEvent.click(getByRole('button', { name: 'Generate Hash & File' }));

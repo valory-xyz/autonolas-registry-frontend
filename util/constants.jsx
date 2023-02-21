@@ -17,7 +17,7 @@ export const URL = {
   OPERATORS: '/operators',
   SERVICES: '/services',
   REGISTER_AGENT: '/agents/register',
-  REGISTER_COMPONENT: '/components/register',
+  MINT_COMPONENT: '/components/mint',
   REGISTER_OPERATOR: '/operators/register',
   REGISTER_SERVICE: '/services/register',
   UPDATE_SERVICE: '/services/update',
