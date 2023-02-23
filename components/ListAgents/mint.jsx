@@ -10,7 +10,7 @@ import { FormContainer } from 'components/styles';
 
 const { Title } = Typography;
 
-const RegisterAgent = ({ account }) => {
+const MintAgent = ({ account }) => {
   const [error, setError] = useState(null);
   const [information, setInformation] = useState(null);
   const router = useRouter();
@@ -34,7 +34,7 @@ const RegisterAgent = ({ account }) => {
         .send({ from: account })
         .then((result) => {
           setInformation(result);
-          notification.success({ message: 'Agent registered' });
+          notification.success({ message: 'Agent minted' });
         })
         .catch((e) => {
           setError(e);
@@ -46,7 +46,7 @@ const RegisterAgent = ({ account }) => {
   return (
     <>
       <FormContainer>
-        <Title level={2}>Register Agent</Title>
+        <Title level={2}>Mint Agent</Title>
         <RegisterForm
           listType="agent"
           handleSubmit={handleSubmit}
@@ -59,11 +59,11 @@ const RegisterAgent = ({ account }) => {
   );
 };
 
-RegisterAgent.propTypes = {
+MintAgent.propTypes = {
   account: PropTypes.string,
 };
 
-RegisterAgent.defaultProps = {
+MintAgent.defaultProps = {
   account: null,
 };
 
@@ -72,4 +72,4 @@ const mapStateToProps = (state) => {
   return { account, balance };
 };
 
-export default connect(mapStateToProps, {})(RegisterAgent);
+export default connect(mapStateToProps, {})(MintAgent);

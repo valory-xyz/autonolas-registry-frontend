@@ -37,7 +37,7 @@ const ListAgents = () => {
    */
   const { searchValue, extraTabContent, clearSearch } = useExtraTabContent({
     title: 'Agents',
-    onRegisterClick: () => router.push(URL.REGISTER_AGENT),
+    onRegisterClick: () => router.push(URL.MINT_AGENT),
   });
   const onViewClick = (id) => router.push(`${URL.AGENTS}/${id}`);
 

@@ -1,3 +1,3 @@
-import MenuAgents from 'components/ListAgents';
+import ListAgents from 'components/ListAgents';
 
-export default MenuAgents;
+export default ListAgents;

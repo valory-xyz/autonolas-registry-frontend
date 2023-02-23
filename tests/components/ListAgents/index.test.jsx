@@ -36,7 +36,7 @@ describe('listAgents/index.jsx', () => {
   getTotalForAllAgents.mockImplementation(() => Promise.resolve(1));
   getTotalForMyAgents.mockImplementation(() => Promise.resolve(1));
 
-  it('should render tabs with `All Tab` as active tab & Register button', async () => {
+  it('should render tabs with `All Tab` as active tab & Mint button', async () => {
     expect.hasAssertions();
     const { container, getByRole } = render(wrapProvider(<ListAgents />));
 
@@ -53,11 +53,11 @@ describe('listAgents/index.jsx', () => {
     // it should be called once
     // expect(useRouter).toHaveBeenCalledTimes(1);
 
-    // Register button
-    expect(getByRole('button', { name: 'Register' })).toBeInTheDocument();
+    // Mint button
+    expect(getByRole('button', { name: 'Mint' })).toBeInTheDocument();
   });
 
-  it('should render tabs with `My Agents` as active tab & Register button', async () => {
+  it('should render tabs with `My Agents` as active tab & Mint button', async () => {
     expect.hasAssertions();
     const { container, getByRole } = render(wrapProvider(<ListAgents />));
 
@@ -69,7 +69,7 @@ describe('listAgents/index.jsx', () => {
       expect(container.querySelector(ACTIVE_TAB).textContent).toBe('My Agents');
     });
 
-    // Register button
-    expect(getByRole('button', { name: 'Register' })).toBeInTheDocument();
+    // Mint button
+    expect(getByRole('button', { name: 'Mint' })).toBeInTheDocument();
   });
 });
