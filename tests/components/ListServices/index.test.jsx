@@ -52,7 +52,7 @@ describe('listServices/index.jsx', () => {
   getTotalForAllServices.mockImplementation(() => Promise.resolve(1));
   getTotalForMyServices.mockImplementation(() => Promise.resolve(1));
 
-  it('should render tabs with `All Tab` as active tab & Register button', async () => {
+  it('should render tabs with `All Tab` as active tab & Mint button', async () => {
     expect.hasAssertions();
 
     const { container, getByRole } = render(wrapProvider(<ListServices />));
@@ -67,11 +67,11 @@ describe('listServices/index.jsx', () => {
       'Terminated Bonded',
     );
 
-    // Register button
-    expect(getByRole('button', { name: 'Register' })).toBeInTheDocument();
+    // Mint button
+    expect(getByRole('button', { name: 'Mint' })).toBeInTheDocument();
   });
 
-  it('should render tabs with `All Services` as active tab & Register button', async () => {
+  it('should render tabs with `All Services` as active tab & Mint button', async () => {
     expect.hasAssertions();
     const { container, getByRole } = render(wrapProvider(<ListServices />));
 
@@ -83,7 +83,7 @@ describe('listServices/index.jsx', () => {
       'My Services',
     ));
 
-    // Register button
-    expect(getByRole('button', { name: 'Register' })).toBeInTheDocument();
+    // Mint button
+    expect(getByRole('button', { name: 'Mint' })).toBeInTheDocument();
   });
 });

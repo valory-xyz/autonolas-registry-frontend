@@ -37,7 +37,7 @@ const ListServices = () => {
    */
   const { searchValue, extraTabContent, clearSearch } = useExtraTabContent({
     title: 'Services',
-    onRegisterClick: () => router.push(URL.REGISTER_SERVICE),
+    onRegisterClick: () => router.push(URL.MINT_SERVICE),
   });
   const onViewClick = (id) => router.push(`${URL.SERVICES}/${id}`);
 
