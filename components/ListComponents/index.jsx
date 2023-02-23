@@ -37,7 +37,7 @@ const ListComponents = () => {
    */
   const { searchValue, extraTabContent, clearSearch } = useExtraTabContent({
     title: 'Components',
-    onRegisterClick: () => router.push(URL.REGISTER_COMPONENT),
+    onRegisterClick: () => router.push(URL.MINT_COMPONENT),
   });
   const onViewClick = (id) => router.push(`${URL.COMPONENTS}/${id}`);
 

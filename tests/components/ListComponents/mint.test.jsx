@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { getMechMinterContract } from 'common-util/Contracts';
-import RegisterComponent from 'components/ListComponents/register';
+import MintComponent from 'components/ListComponents/mint';
 import { FORM_NAME } from 'common-util/List/RegisterForm';
 import { wrapProvider, dummyAddress, mockV1Hash } from '../../helpers';
 import { fillIpfsGenerationModal } from '../../helpers/prefillForm';
@@ -17,8 +17,8 @@ jest.mock('common-util/List/IpfsHashGenerationModal/helpers', () => ({
   getIpfsHashHelper: jest.fn(() => mockV1Hash),
 }));
 
-describe('listComponents/register.jsx', () => {
-  it('should submit the form & register the `Component` successfully', async () => {
+describe('listComponents/mint.jsx', () => {
+  it('should submit the form & mint the `Component` successfully', async () => {
     expect.hasAssertions();
 
     getMechMinterContract.mockImplementation(() => ({
@@ -30,11 +30,11 @@ describe('listComponents/register.jsx', () => {
     }));
 
     const { container, getByText, getByRole } = render(
-      wrapProvider(<RegisterComponent />),
+      wrapProvider(<MintComponent />),
     );
 
     // title
-    expect(getByText(/Register Component/i)).toBeInTheDocument();
+    expect(getByText(/Mint Component/i)).toBeInTheDocument();
 
     // get hash
     userEvent.click(getByRole('button', { name: 'Generate Hash & File' }));
@@ -59,9 +59,9 @@ describe('listComponents/register.jsx', () => {
 
     // await waitFor(async () => {
     // TODO: antd form throws error on hash, check console
-    // check if `Component registered` on `Submit` click
+    // check if `Component minted` on `Submit` click
     // expect(container.querySelector('.ant-alert-message').textContent).toBe(
-    //   'Component registered',
+    //   'Component minted',
     // );
     // });
   });

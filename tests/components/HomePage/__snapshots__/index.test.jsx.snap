@@ -17,7 +17,7 @@ exports[`<HomePage> should render homepage 1`] = `
           <h1
             class="ant-typography hero-title"
           >
-            Register and manage your services, agents and components
+            Mint and manage your services, agents and components
           </h1>
           <span
             class="ant-typography lead"
@@ -69,7 +69,7 @@ exports[`<HomePage> should render homepage 1`] = `
           <h5
             class="ant-typography"
           >
-            Service owners register and manage complete agent services
+            Service owners mint and manage complete agent services
           </h5>
           <span
             class="ant-typography description"

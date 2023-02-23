@@ -140,7 +140,7 @@ export const AlertSuccess = ({ type, information }) => {
   if (!information) return null;
   return (
     <Alert
-      message={type ? `${type} registered` : 'Registered successfully'}
+      message={type ? `${type} minted` : 'Minted successfully'}
       type="success"
       data-testid="alert-info-container"
       showIcon
