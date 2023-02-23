@@ -19,7 +19,7 @@ export const URL = {
   MINT_AGENT: '/agents/mint',
   MINT_COMPONENT: '/components/mint',
   REGISTER_OPERATOR: '/operators/register',
-  REGISTER_SERVICE: '/services/register',
+  MINT_SERVICE: '/services/mint',
   UPDATE_SERVICE: '/services/update',
 };
 
