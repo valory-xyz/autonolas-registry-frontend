@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { getServiceManagerContract } from 'common-util/Contracts';
-import RegisterService from 'components/ListServices/register';
+import MintService from 'components/ListServices/mint';
 import { FORM_NAME } from 'components/ListServices/RegisterForm';
 // import { act } from 'react-dom/test-utils';
 import { wrapProvider, dummyAddress, mockV1Hash } from '../../helpers';
@@ -26,17 +26,17 @@ getServiceManagerContract.mockImplementation(() => ({
   },
 }));
 
-describe('listServices/register.jsx', () => {
+describe('listServices/mint.jsx', () => {
   it('should submit the form successfully', async () => {
     expect.hasAssertions();
 
     const {
       container, getByText, getByRole, getByTestId,
     } = render(
-      wrapProvider(<RegisterService />),
+      wrapProvider(<MintService />),
     );
     // title
-    expect(getByText(/Register Service/i)).toBeInTheDocument();
+    expect(getByText(/Mint Service/i)).toBeInTheDocument();
 
     // get hash
     userEvent.click(getByTestId('generate-hash-file'));

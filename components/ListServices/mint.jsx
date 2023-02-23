@@ -1,40 +1,43 @@
 import { useState } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import { Typography, notification } from 'antd/lib';
-import RegisterForm from 'common-util/List/RegisterForm';
-import { AlertSuccess, AlertError } from 'common-util/List/ListCommon';
-import { getMechMinterContract } from 'common-util/Contracts';
+import {
+  convertStringToArray,
+  AlertSuccess,
+  AlertError,
+} from 'common-util/List/ListCommon';
+import { getServiceManagerContract } from 'common-util/Contracts';
 import { FormContainer } from 'components/styles';
+import RegisterForm from './RegisterForm';
+import { getAgentParams } from './utils';
 
 const { Title } = Typography;
 
-const RegisterAgent = ({ account }) => {
+const MintService = ({ account }) => {
   const [error, setError] = useState(null);
   const [information, setInformation] = useState(null);
   const router = useRouter();
-
-  const handleCancel = () => router.push('/agents');
 
   const handleSubmit = (values) => {
     if (account) {
       setError(null);
       setInformation(null);
 
-      const contract = getMechMinterContract();
-
+      const contract = getServiceManagerContract();
       contract.methods
         .create(
-          '1',
           values.owner_address,
           `0x${values.hash}`,
-          values.dependencies ? values.dependencies.split(', ') : [],
+          convertStringToArray(values.agent_ids),
+          getAgentParams(values),
+          values.threshold,
         )
         .send({ from: account })
         .then((result) => {
           setInformation(result);
-          notification.success({ message: 'Agent registered' });
+          notification.success({ message: 'Service minted' });
         })
         .catch((e) => {
           setError(e);
@@ -43,33 +46,39 @@ const RegisterAgent = ({ account }) => {
     }
   };
 
+  const handleCancel = () => {
+    router.push('/services');
+  };
+
   return (
     <>
       <FormContainer>
-        <Title level={2}>Register Agent</Title>
+        <Title level={2}>Mint Service</Title>
         <RegisterForm
-          listType="agent"
+          account={account}
+          formInitialValues={{}}
           handleSubmit={handleSubmit}
           handleCancel={handleCancel}
         />
       </FormContainer>
-      <AlertSuccess type="Agent" information={information} />
+
+      <AlertSuccess type="Service" information={information} />
       <AlertError error={error} />
     </>
   );
 };
 
-RegisterAgent.propTypes = {
+MintService.propTypes = {
   account: PropTypes.string,
 };
 
-RegisterAgent.defaultProps = {
+MintService.defaultProps = {
   account: null,
 };
 
 const mapStateToProps = (state) => {
-  const { account, balance } = state.setup;
-  return { account, balance };
+  const { account } = state.setup;
+  return { account };
 };
 
-export default connect(mapStateToProps, {})(RegisterAgent);
+export default connect(mapStateToProps, {})(MintService);
