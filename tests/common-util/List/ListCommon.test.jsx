@@ -62,9 +62,9 @@ describe('<AlertSuccess />', () => {
       <AlertSuccess type={type} information={input} />,
     );
     if (type) {
-      expect(getByText(`${type} registered`)).toBeInTheDocument();
+      expect(getByText(`${type} minted`)).toBeInTheDocument();
     } else {
-      expect(getByText('Registered successfully')).toBeInTheDocument();
+      expect(getByText('Minted successfully')).toBeInTheDocument();
     }
   });
 
