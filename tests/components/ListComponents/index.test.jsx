@@ -36,7 +36,7 @@ describe('listComponents/index.jsx', () => {
   getTotalForAllComponents.mockImplementation(() => Promise.resolve(1));
   getTotalForMyComponents.mockImplementation(() => Promise.resolve(1));
 
-  it('should render tabs with `All Tab` as active tab & Register button', async () => {
+  it('should render tabs with `All Tab` as active tab & Mint button', async () => {
     expect.hasAssertions();
 
     const { container, getByRole } = render(wrapProvider(<ListComponents />));
@@ -53,10 +53,10 @@ describe('listComponents/index.jsx', () => {
     // it should be called once
     // expect(useRouter).toHaveBeenCalledTimes(1);
 
-    expect(getByRole('button', { name: 'Register' })).toBeInTheDocument();
+    expect(getByRole('button', { name: 'Mint' })).toBeInTheDocument();
   });
 
-  it('should render tabs with `My Components` as active tab & Register button', async () => {
+  it('should render tabs with `My Components` as active tab & Mint button', async () => {
     expect.hasAssertions();
 
     const { container, getByRole } = render(wrapProvider(<ListComponents />));
@@ -69,7 +69,7 @@ describe('listComponents/index.jsx', () => {
       'My Components',
     ));
 
-    // Register button
-    expect(getByRole('button', { name: 'Register' })).toBeInTheDocument();
+    // Mint button
+    expect(getByRole('button', { name: 'Mint' })).toBeInTheDocument();
   });
 });

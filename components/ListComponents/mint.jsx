@@ -13,7 +13,7 @@ import { FormContainer } from 'components/styles';
 
 const { Title } = Typography;
 
-const RegisterComponent = ({ account }) => {
+const MintComponent = ({ account }) => {
   const [error, setError] = useState(null);
   const [information, setInformation] = useState(null);
   const router = useRouter();
@@ -38,7 +38,7 @@ const RegisterComponent = ({ account }) => {
         .send({ from: account })
         .then((result) => {
           setInformation(result);
-          notification.success({ message: 'Component registered' });
+          notification.success({ message: 'Component minted' });
         })
         .catch((e) => {
           setError(e);
@@ -50,7 +50,7 @@ const RegisterComponent = ({ account }) => {
   return (
     <>
       <FormContainer>
-        <Title level={2}>Register Component</Title>
+        <Title level={2}>Mint Component</Title>
         <RegisterForm
           listType="component"
           handleSubmit={handleSubmit}
@@ -63,11 +63,11 @@ const RegisterComponent = ({ account }) => {
   );
 };
 
-RegisterComponent.propTypes = {
+MintComponent.propTypes = {
   account: PropTypes.string,
 };
 
-RegisterComponent.defaultProps = {
+MintComponent.defaultProps = {
   account: null,
 };
 
@@ -76,4 +76,4 @@ const mapStateToProps = (state) => {
   return { account, balance };
 };
 
-export default connect(mapStateToProps, {})(RegisterComponent);
+export default connect(mapStateToProps, {})(MintComponent);
