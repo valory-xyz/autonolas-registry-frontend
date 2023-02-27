@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { COLOR } from 'util/theme';
 import { Typography } from 'antd/lib';
 
 const { Text } = Typography;
@@ -80,4 +81,11 @@ export const RadioLabel = styled(Text)`
   border: 1px solid rgba(100, 100, 100, 0.2);
   border-radius: 4px;
   color: #00000087;
+`;
+
+export const GenericLabel = styled.div`
+  color: ${COLOR.GREY_2};
+  font-size: 16px;
+  line-height: normal;
+  margin-bottom: 0.5rem;
 `;
