@@ -5,7 +5,6 @@ import {
   Button, Space, Steps, Tooltip, Image,
 } from 'antd/lib';
 import get from 'lodash/get';
-import kebabCase from 'lodash/kebabCase';
 import { URL } from 'util/constants';
 import {
   onActivateRegistration,
@@ -20,8 +19,9 @@ import StepFinishedRegistration from './3rdStepFinishedRegistration';
 
 import Deployed from './4thStepDeployed';
 import Unbond from './5StepUnbond';
+import { SERVICE_STATE_HELPER_LABELS } from './helpers';
 import { InfoSubHeader } from '../styles';
-import { ServiceStateContainer } from './styles';
+import { GenericLabel, ServiceStateContainer } from './styles';
 
 const { Step } = Steps;
 
@@ -184,6 +184,7 @@ export const ServiceState = ({
 
   const steps = [
     {
+      id: 'pre-registration',
       title: 'Pre-Registration',
       component: (
         <Space>
@@ -209,6 +210,7 @@ export const ServiceState = ({
       ),
     },
     {
+      id: 'active-registration',
       title: 'Active Registration',
       component: (
         <StepActiveRegistration
@@ -224,6 +226,7 @@ export const ServiceState = ({
       ),
     },
     {
+      id: 'finished-registration',
       title: 'Finished Registration',
       component: (
         <StepFinishedRegistration
@@ -245,6 +248,7 @@ export const ServiceState = ({
       ),
     },
     {
+      id: 'deployed',
       title: 'Deployed',
       component: (
         <Deployed
@@ -265,6 +269,7 @@ export const ServiceState = ({
       ),
     },
     {
+      id: 'terminated',
       title: 'Terminated Bonded',
       component: (
         <Unbond
@@ -304,8 +309,17 @@ export const ServiceState = ({
       )}
 
       <Steps direction="vertical" current={currentStep}>
-        {steps.map(({ title, component }) => (
-          <Step key={kebabCase(title)} title={title} description={component} />
+        {steps.map(({ id: key, title, component }) => (
+          <Step
+            key={key}
+            title={(
+              <>
+                {title}
+                <GenericLabel>{SERVICE_STATE_HELPER_LABELS[key]}</GenericLabel>
+              </>
+            )}
+            description={component}
+          />
         ))}
       </Steps>
     </ServiceStateContainer>
