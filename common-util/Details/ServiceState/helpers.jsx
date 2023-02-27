@@ -1,7 +1,7 @@
 export const SERVICE_STATE_HELPER_LABELS = {
   'pre-registration': 'The service has just been registered.',
   'active-registration':
-    'The service is waiting for agent operators to register their agent instances on the service.',
+    'The service is waiting for agent operators to register their agent instances.',
   'finished-registration':
     'All agent instance slots have been filled and waiting for the service owner to continue deploying the service.',
   deployed:
