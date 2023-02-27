@@ -1,5 +1,5 @@
 export const SERVICE_STATE_HELPER_LABELS = {
-  'pre-registration': 'The service has just been registered.',
+  'pre-registration': 'The service has just been minted.',
   'active-registration':
     'The service is waiting for agent operators to register their agent instances.',
   'finished-registration':
