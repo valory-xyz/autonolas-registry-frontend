@@ -202,8 +202,13 @@ export const handleMultisigSubmit = async ({
 
         // if less than 2, add chainId * 2 + 35
         if (value < 2) {
-          const newValue = value + (chainId * 2 + 35); // correct value updated by the ledger
+          // correct value updated by the ledger
+          const newValue = value + (chainId * 2 + 35);
+
+          // convert to hex (eg. 37 -> 25, 38 -> 26)
           const updatedLast2Char = newValue.toString(16);
+
+          // update the last 2 char
           const updatedSignatureBytes = signatureBytes.slice(0, -2) + updatedLast2Char;
           return updatedSignatureBytes;
         }
