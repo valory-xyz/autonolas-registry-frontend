@@ -132,11 +132,11 @@ describe('listServices/details.jsx', () => {
       const getTitle = (i) => container.querySelector(
         `.ant-steps-item:nth-child(${i}) .ant-steps-item-title`,
       );
-      expect(getTitle(1).textContent).toBe('Pre-Registration');
-      expect(getTitle(2).textContent).toBe('Active Registration');
-      expect(getTitle(3).textContent).toBe('Finished Registration');
-      expect(getTitle(4).textContent).toBe('Deployed');
-      expect(getTitle(5).textContent).toBe('Terminated Bonded');
+      expect(getTitle(1)).toHaveTextContent('Pre-Registration');
+      expect(getTitle(2)).toHaveTextContent('Active Registration');
+      expect(getTitle(3)).toHaveTextContent('Finished Registration');
+      expect(getTitle(4)).toHaveTextContent('Deployed');
+      expect(getTitle(5)).toHaveTextContent('Terminated Bonded');
     });
   });
 });

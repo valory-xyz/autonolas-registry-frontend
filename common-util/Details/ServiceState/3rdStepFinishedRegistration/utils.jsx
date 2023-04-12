@@ -186,12 +186,32 @@ export const handleMultisigSubmit = async ({
       // logic to deal with metamask
       const signer = provider.getSigner();
 
-      // Get the signature of a multisend transaction
-      const signatureBytes = await signer._signTypedData(
-        { verifyingContract: multisig, chainId },
-        EIP712_SAFE_TX_TYPE,
-        safeTx,
-      );
+      const getSignatureBytes = async () => {
+        // Get the signature of a multisend transaction
+        const signatureBytes = await signer._signTypedData(
+          { verifyingContract: multisig, chainId },
+          EIP712_SAFE_TX_TYPE,
+          safeTx,
+        );
+
+        // take last 2 characters
+        const last2Char = signatureBytes.slice(-2);
+
+        // check if the last2Char is less than 2
+        const value = parseInt(last2Char, 16);
+
+        // if less than 2, add chainId * 2 + 35
+        if (value < 2) {
+          const newValue = value + (chainId * 2 + 35); // correct value updated by the ledger
+          const updatedLast2Char = newValue.toString(16);
+          const updatedSignatureBytes = signatureBytes.slice(0, -2) + updatedLast2Char;
+          return updatedSignatureBytes;
+        }
+
+        return signatureBytes;
+      };
+
+      const signatureBytes = await getSignatureBytes();
 
       const safeExecData = multisigContract.interface.encodeFunctionData(
         'execTransaction',
