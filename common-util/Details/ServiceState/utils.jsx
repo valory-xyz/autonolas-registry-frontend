@@ -26,6 +26,18 @@ export const getBonds = (id) => new Promise((resolve, reject) => {
       }
 
       /**
+       * FOR AGENT ID
+       * 1. get the bond value
+       * 2. get the number of input addresses
+       * 3. multiply the number of past addresses with the bond value
+       *
+       * @example
+       * input: [agentId1 => 2 address, agentId2 => 3 address]
+       * bonds: [100, 200]
+       * output: 2 * 100 + 3 * 200 = 800
+       */
+
+      /**
          * totalBonds is calculated for every slots
          * agentParams = [{ slots: 2, bond: 2000 }, { slots: 3, bond: 4000 }]
          * slotsArray = [2, 3]
