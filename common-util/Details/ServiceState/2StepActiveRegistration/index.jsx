@@ -28,7 +28,7 @@ const ActiveRegistration = ({
     (async () => {
       if (serviceId) {
         try {
-          const response = await getBonds(serviceId);
+          const response = await getBonds(serviceId, dataSource);
           if (isMounted) {
             setTotalBond(convertToEth((response?.totalBonds || 0).toString()));
           }
@@ -42,7 +42,7 @@ const ActiveRegistration = ({
     return () => {
       isMounted = false;
     };
-  }, [serviceId]);
+  }, [serviceId, dataSource]);
 
   const btnProps = getOtherBtnProps(STEP);
 
