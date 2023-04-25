@@ -1,4 +1,5 @@
 import { notification } from 'antd/lib';
+import { compact } from 'lodash';
 import {
   getServiceContract,
   getServiceManagerContract,
@@ -11,7 +12,7 @@ const notifyError = (message = 'Some error occured') => notification.error({ mes
 /* ----- helper functions ----- */
 
 // params.agentParams.slots[i] = total initial available Slots for the i-th service.agentIds;
-export const getBonds = (id) => new Promise((resolve, reject) => {
+export const getBonds = (id, tableDataSource) => new Promise((resolve, reject) => {
   const serviceContract = getServiceContract();
   serviceContract.methods
     .getAgentParams(id)
@@ -20,27 +21,47 @@ export const getBonds = (id) => new Promise((resolve, reject) => {
       const bondsArray = [];
       const slotsArray = [];
       for (let i = 0; i < response.agentParams.length; i += 1) {
+        /**
+           * agentParams = [{ slots: 2, bond: 2000 }, { slots: 3, bond: 4000 }]
+           * slotsArray = [2, 3]
+           * bondsArray = [2000, 4000]
+           */
+
         const { bond, slots } = response.agentParams[i];
         slotsArray.push(slots);
         bondsArray.push(bond);
       }
 
       /**
-         * totalBonds is calculated for every slots
-         * agentParams = [{ slots: 2, bond: 2000 }, { slots: 3, bond: 4000 }]
-         * slotsArray = [2, 3]
-         * bondsArray = [2000, 4000]
+         * FOR AGENT ID
+         * 1. get the bond value
+         * 2. get the number of input addresses
+         * 3. multiply the number of past addresses with the bond value
          *
-         * totalBonds = (2 * 2000) + (3 * 4000)
-         *            = 4000 + 12000
-         *            = 16000
+         * @example
+         * input: [agentId1 => 2 address, agentId2 => 3 address]
+         * bonds: [100, 200]
+         * output: 2 * 100 + 3 * 200 = 800
          */
+
       let totalBonds = 0;
-      slotsArray.forEach((eachSlot, index) => {
-        totalBonds += Number(eachSlot) * Number(bondsArray[index]);
+      (tableDataSource || []).forEach((data) => {
+        const { agentAddresses, bond } = data;
+
+        /**
+           * get the number of addresses
+           * g1. ['0x123', '0x456'] => 2
+           * eg2. ['0x123', '0x456', ''] => 2 // empty string (falsy) is ignored
+           */
+        const numberOfAgentAddress = compact(
+          (agentAddresses || '').split(','),
+        ).length;
+
+        // multiply the number of addresses with the bond value of the agentId
+        totalBonds += numberOfAgentAddress * bond;
       });
 
-      resolve({ totalBonds, slots: slotsArray, bonds: bondsArray });
+      resolve({ slots: slotsArray, bonds: bondsArray, totalBonds });
     })
     .catch((e) => {
       reject(e);
@@ -141,10 +162,11 @@ export const onStep2RegisterAgents = ({
   serviceId,
   agentIds,
   agentInstances,
+  dataSource,
 }) => new Promise((resolve, reject) => {
   const contract = getServiceManagerContract();
 
-  getBonds(serviceId)
+  getBonds(serviceId, dataSource)
     .then(({ totalBonds }) => {
       contract.methods
         .registerAgents(serviceId, agentInstances, agentIds)
