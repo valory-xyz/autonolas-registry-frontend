@@ -55,7 +55,7 @@ const ActiveRegistration = ({
         isDisabled={btnProps.disabled}
       />
       <Text type="secondary">
-        {`Adding instances will cause a bond of ${totalBond || '--'} ETH per agent instance`}
+        {`Adding instances will cause a bond of ${totalBond || '--'} ETH`}
       </Text>
 
       {/* "Register agents" can be clicked by anyone */}
