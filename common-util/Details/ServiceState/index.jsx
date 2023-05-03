@@ -132,6 +132,7 @@ export const ServiceState = ({
         serviceId: id,
         agentIds: ids,
         agentInstances,
+        dataSource,
       });
       await updateDetails();
     } catch (e) {
