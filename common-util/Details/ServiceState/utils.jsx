@@ -12,6 +12,13 @@ const notifyError = (message = 'Some error occured') => notification.error({ mes
 /* ----- helper functions ----- */
 
 // params.agentParams.slots[i] = total initial available Slots for the i-th service.agentIds;
+
+/**
+ *
+ * @param {String} id serviceId
+ * @param {Array} tableDataSource dataSource of the table and it can be null or undefined
+ * @returns {Promise} { totalBonds, bondsArray, slotsArray }
+ */
 export const getBonds = (id, tableDataSource) => new Promise((resolve, reject) => {
   const serviceContract = getServiceContract();
   serviceContract.methods
