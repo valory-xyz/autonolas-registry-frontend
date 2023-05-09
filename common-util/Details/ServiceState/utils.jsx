@@ -175,6 +175,14 @@ export const onStep2RegisterAgents = ({
 
   getBonds(serviceId, dataSource)
     .then(({ totalBonds }) => {
+      console.log({
+        serviceId,
+        agentInstances,
+        agentIds,
+        account,
+        value: `${totalBonds}`,
+      });
+
       contract.methods
         .registerAgents(serviceId, agentInstances, agentIds)
         .send({ from: account, value: `${totalBonds}` })

@@ -106,26 +106,33 @@ export const ServiceState = ({
 
   /* ----- step 2 ----- */
   const handleStep2RegisterAgents = async () => {
-    const ids = [];
-    const instances = dataSource.map(
-      ({ agentAddresses, agentId, availableSlots }) => {
-        /**
-         * constructs agentIds:
-         * If there are 2 slots then agentInstances would need 2 addresses of instances
-         * ie. ids = [1, 1]
-         */
-        for (let i = 0; i < availableSlots; i += 1) {
-          ids.push(agentId);
-        }
-
-        return (agentAddresses || '').trim();
-      },
-    );
-    const agentInstances = (instances || [])
+    const trimArray = (string) => (string || [])
       .join()
       .split(',')
       .map((e) => e.trim());
 
+    const ids = [];
+    const instances = dataSource.map(({ agentAddresses, agentId }) => {
+      /**
+       * constructs agentIds:
+       * If there are 2 slots then agentInstances would need 2 addresses of instances
+       * ie. ids = [1, 1]
+       */
+      const address = (agentAddresses || '').trim();
+      for (let i = 0; i < trimArray([address]).length; i += 1) {
+        ids.push(agentId);
+      }
+
+      return address;
+    });
+    const agentInstances = trimArray(instances || []);
+    console.log({
+      account,
+      serviceId: id,
+      agentIds: ids,
+      agentInstances,
+      dataSource,
+    });
     try {
       await onStep2RegisterAgents({
         account,
