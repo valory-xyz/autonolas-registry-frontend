@@ -115,8 +115,10 @@ export const ServiceState = ({
     const instances = dataSource.map(({ agentAddresses, agentId }) => {
       /**
        * constructs agentIds:
-       * If there are 2 slots then agentInstances would need 2 addresses of instances
-       * ie. ids = [1, 1]
+       * If there are 2 addresses of instances, then the agentIds will be [1, 1]
+       * example: agentAddresses = ['0x123', '0x456']
+       * agentId = 1
+       * ids = [1, 1]
        */
       const address = (agentAddresses || '').trim();
       for (let i = 0; i < trimArray([address]).length; i += 1) {
@@ -126,13 +128,7 @@ export const ServiceState = ({
       return address;
     });
     const agentInstances = trimArray(instances || []);
-    console.log({
-      account,
-      serviceId: id,
-      agentIds: ids,
-      agentInstances,
-      dataSource,
-    });
+
     try {
       await onStep2RegisterAgents({
         account,
