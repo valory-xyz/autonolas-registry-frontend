@@ -18,6 +18,7 @@ export const ADDRESSES = {
     serviceManager: '0x38b062d11CD7596Ab5aDFe4d0e9F0dC3218E5389',
     serviceRegistry: '0x48b6af7B12C71f09e2fC8aF4855De4Ff54e775cA',
   },
+  // goerli
   5: {
     agentRegistry: '0xEB5638eefE289691EcE01943f768EDBF96258a80',
     componentRegistry: '0x7Fd1F4b764fA41d19fe3f63C85d12bf64d2bbf68',
@@ -25,6 +26,22 @@ export const ADDRESSES = {
     serviceManager: '0xcDdD9D9ABaB36fFa882530D69c73FeE5D4001C2d',
     serviceRegistry: '0x1cEe30D08943EB58EFF84DD1AB44a6ee6FEff63a',
   },
+  // gnosis
+  100: {
+    serviceRegistryAddress: '0x9338b5153AE39BB89f50468E608eD9d764B755fD',
+    serviceManagerAddress: '0xE3607b00E75f6405248323A9417ff6b39B244b50',
+  },
+  // polygon
+  137: {
+    serviceRegistryAddress: '0xE3607b00E75f6405248323A9417ff6b39B244b50',
+    serviceManagerAddress: '0x3C1fF68f5aa342D296d4DEe4Bb1cACCA912D95fE',
+  },
+  // polygon mumbai
+  80001: {
+    serviceRegistryAddress: '0xf805DfF246CC208CD2F08ffaD242b7C32bc93623',
+    serviceManagerAddress: '0x43d28764bB39936185c84906983fB57A8A905a4F',
+  },
+  // local
   31337: {
     agentRegistry: '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512',
     componentRegistry: '0x5FbDB2315678afecb367f032d93F642f64180aa3',
@@ -81,6 +98,13 @@ export const getMechMinterContract = () => {
   );
   return contract;
 };
+// TODO
+// 1. differentiate from service registry and service registry l2
+// 2. REmove agents and component navbar
+// 3. Write near "Canonical agent Ids" =>
+//     make sure your agent ID is already registered in the Agent Registry on ethereum
+// 4. Change the bottom navbar => for polgin it is "https://polygonscan.com/" & for gnosis
+//    it is "https://gnosisscan.io/"
 
 export const getServiceContract = () => {
   const { web3, address } = getWeb3Details();
@@ -130,30 +154,27 @@ export const getMultiSendContract = (address) => {
 export const multisigAddresses = {
   1: ['0x46C0D07F55d4F9B5Eed2Fc9680B5953e5fd7b461'],
   5: ['0x65dD51b02049ad1B6FF7fa9Ea3322E1D2CAb1176'],
+  100: ['0x3C1fF68f5aa342D296d4DEe4Bb1cACCA912D95fE'],
+  137: ['0x3d77596beb0f130a4415df3D2D8232B3d3D31e44'],
+  80001: ['0x9dEc6B62c197268242A768dc3b153AE7a2701396'],
   31337: ['0x0E801D84Fa97b50751Dbf25036d067dCf18858bF'],
 };
 
 export const multisigSameAddresses = {
   1: ['0x26Ea2dC7ce1b41d0AD0E0521535655d7a94b684c'],
   5: ['0x92499E80f50f06C4078794C179986907e7822Ea1'],
+  100: ['0x3d77596beb0f130a4415df3D2D8232B3d3D31e44'],
+  137: ['0x34C895f302D0b5cf52ec0Edd3945321EB0f83dd5'],
+  80001: ['0xB575dd20281c63288428DD58e5f579CC7d6aae4d'],
   31337: ['0x8f86403A4DE0BB5791fa46B8e795C547942fE4Cf'],
 };
 
 export const safeMultiSend = {
   1: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
   5: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
+  100: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
+  137: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
   31337: ['0x9d4454B023096f34B160D6B654540c56A1F81688'],
-};
-
-export const gnosisSafeMaster = {
-  1: '0xd9Db270c1B5E3Bd161E8c8503c55cEABeE709552',
-  5: '0xd9Db270c1B5E3Bd161E8c8503c55cEABeE709552',
-  31337: '0x4826533B4897376654Bb4d4AD88B7faFD0C98528',
-};
-
-export const signMessageLibAddresses = {
-  1: '0xA65387F16B013cf2Af4605Ad8aA5ec25a2cbA3a2',
-  5: '0xA65387F16B013cf2Af4605Ad8aA5ec25a2cbA3a2',
 };
 
 // TODO: duplicate, remove once tested
