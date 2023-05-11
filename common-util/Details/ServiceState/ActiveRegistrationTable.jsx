@@ -1,11 +1,13 @@
 /* eslint-disable react/prop-types */
 import React, { useContext, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Form, Input, Table, Button,
 } from 'antd/lib';
 import { useRouter } from 'next/router';
 import get from 'lodash/get';
 import { URL } from 'util/constants';
+import { isL1Network } from 'common-util/functions';
 
 const EditableContext = React.createContext(null);
 
@@ -86,6 +88,8 @@ const EditableCell = ({
  * Step 2 Table
  */
 const ActiveRegistrationTable = ({ data, setDataSource, isDisabled }) => {
+  const chainId = useSelector((state) => state?.setup?.chainId);
+
   const router = useRouter();
   const STEP_2_TABLE_COLUMNS = [
     {
@@ -95,6 +99,7 @@ const ActiveRegistrationTable = ({ data, setDataSource, isDisabled }) => {
       render: (text) => (
         <Button
           type="link"
+          disabled={!isL1Network(chainId)}
           onClick={() => router.push(`${URL.AGENTS}/${text}`)}
         >
           {text}
