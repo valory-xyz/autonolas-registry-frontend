@@ -8,7 +8,9 @@ import {
   SIGN_MESSAGE_LIB_CONTRACT,
   GNOSIS_SAFE_CONTRACT,
   MULTI_SEND_CONTRACT,
+  SERVICE_REGISTRY_L2,
 } from 'common-util/AbiAndAddresses';
+import { isGoerliOrMainnet } from 'common-util/functions';
 
 export const ADDRESSES = {
   1: {
@@ -107,10 +109,12 @@ export const getMechMinterContract = () => {
 //    it is "https://gnosisscan.io/"
 
 export const getServiceContract = () => {
-  const { web3, address } = getWeb3Details();
+  const { web3, address, chainId } = getWeb3Details();
   const { serviceRegistry } = address;
   const contract = new web3.eth.Contract(
-    SERVICE_REGISTRY_CONTRACT.abi,
+    isGoerliOrMainnet(chainId)
+      ? SERVICE_REGISTRY_CONTRACT.abi
+      : SERVICE_REGISTRY_L2.abi,
     serviceRegistry,
   );
   return contract;

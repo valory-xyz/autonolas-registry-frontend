@@ -4,6 +4,7 @@ import { Alert } from 'antd/lib';
 import bs58 from 'bs58';
 import { ExternalLink } from 'react-feather';
 import { EmptyMessage, RegisterFooter } from 'components/styles';
+import { isGoerliOrMainnet } from 'common-util/functions';
 import { WhiteButton } from '../components/Button';
 
 // constants
@@ -44,7 +45,7 @@ MyLink.propTypes = {
 
 export const commaMessage = 'Each comma must be followed by a space ("1, 2" not "1,2").';
 
-export const DependencyLabel = ({ type }) => {
+export const DependencyLabel = ({ type, chainId }) => {
   const dependencyHelperText = `Must be in ascending order – newest ${
     type === 'service' ? 'agents' : 'components'
   } last, oldest first. ${commaMessage}`;
@@ -53,6 +54,13 @@ export const DependencyLabel = ({ type }) => {
     <div className="label-helper-text">
       {type === 'service' ? (
         <>
+          {!isGoerliOrMainnet(chainId) && (
+            <>
+              (Make sure your agent ID is already registered in the Agent
+              Registry on ethereum)
+              <br />
+            </>
+          )}
           Comma-separated list of agent IDs which this service requires. Find
           IDs on&nbsp;
           <MyLink href="/agents">
@@ -77,8 +85,11 @@ export const DependencyLabel = ({ type }) => {
     </div>
   );
 };
-DependencyLabel.propTypes = { type: PropTypes.string };
-DependencyLabel.defaultProps = { type: 'component' };
+DependencyLabel.propTypes = {
+  type: PropTypes.string,
+  chainId: PropTypes.number,
+};
+DependencyLabel.defaultProps = { type: 'component', chainId: null };
 
 export const RegisterMessage = ({ handleCancel }) => (
   <RegisterFooter>

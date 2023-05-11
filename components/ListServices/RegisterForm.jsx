@@ -3,7 +3,7 @@ import Web3 from 'web3';
 import { useRouter } from 'next/router';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import get from 'lodash/get';
 import { Button, Form, Input } from 'antd/lib';
 import { WhiteButton } from 'common-util/components/Button';
@@ -16,13 +16,15 @@ import { RegisterFooter } from 'components/styles';
 export const FORM_NAME = 'serviceRegisterForm';
 
 const RegisterForm = ({
-  account,
   listType,
   isUpdateForm,
   formInitialValues,
   handleSubmit,
   handleCancel,
 }) => {
+  const account = useSelector((state) => state?.setup?.account);
+  const chainId = useSelector((state) => state?.setup?.chainId);
+
   const [form] = Form.useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [fields, setFields] = useState([]);
@@ -188,7 +190,7 @@ const RegisterForm = ({
           label={(
             <ComplexLabel>
               Canonical agent Ids
-              <DependencyLabel type="service" />
+              <DependencyLabel type="service" chainId={chainId} />
             </ComplexLabel>
           )}
           rules={[
@@ -294,7 +296,6 @@ const RegisterForm = ({
 
 RegisterForm.propTypes = {
   isUpdateForm: PropTypes.bool,
-  account: PropTypes.string,
   listType: PropTypes.string,
   formInitialValues: PropTypes.shape({
     owner: PropTypes.string,
@@ -312,14 +313,8 @@ RegisterForm.propTypes = {
 
 RegisterForm.defaultProps = {
   isUpdateForm: false,
-  account: null,
   listType: 'Service',
   formInitialValues: {},
 };
 
-const mapStateToProps = (state) => {
-  const { account } = state.setup;
-  return { account };
-};
-
-export default connect(mapStateToProps, {})(RegisterForm);
+export default RegisterForm;
