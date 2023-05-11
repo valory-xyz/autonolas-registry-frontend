@@ -4,7 +4,7 @@ import { Alert } from 'antd/lib';
 import bs58 from 'bs58';
 import { ExternalLink } from 'react-feather';
 import { EmptyMessage, RegisterFooter } from 'components/styles';
-import { isGoerliOrMainnet } from 'common-util/functions';
+import { isL1Network } from 'common-util/functions';
 import { WhiteButton } from '../components/Button';
 
 // constants
@@ -54,7 +54,7 @@ export const DependencyLabel = ({ type, chainId }) => {
     <div className="label-helper-text">
       {type === 'service' ? (
         <>
-          {!isGoerliOrMainnet(chainId) && (
+          {!isL1Network(chainId) && (
             <>
               (Make sure your agent ID is already registered in the Agent
               Registry on ethereum)

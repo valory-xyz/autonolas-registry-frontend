@@ -10,7 +10,7 @@ import {
   MULTI_SEND_CONTRACT,
   SERVICE_REGISTRY_L2,
 } from 'common-util/AbiAndAddresses';
-import { isGoerliOrMainnet } from 'common-util/functions';
+import { isL1Network } from 'common-util/functions';
 
 export const ADDRESSES = {
   1: {
@@ -105,7 +105,7 @@ export const getServiceContract = () => {
   const { web3, address, chainId } = getWeb3Details();
   const { serviceRegistry } = address;
   const contract = new web3.eth.Contract(
-    isGoerliOrMainnet(chainId)
+    isL1Network(chainId)
       ? SERVICE_REGISTRY_CONTRACT.abi
       : SERVICE_REGISTRY_L2.abi,
     serviceRegistry,

@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
 import useCheckMobileScreen from 'common-util/hooks/useCheckMobileScreen';
-import { isGoerliOrMainnet } from 'common-util/functions';
+import { isL1Network } from 'common-util/functions';
 import Login from '../Login';
 import Footer from './Footer';
 import {
@@ -65,7 +65,7 @@ const NavigationBar = ({ children }) => {
         {logo}
 
         <Menu theme="light" mode="horizontal" selectedKeys={[selectedMenu]}>
-          {isGoerliOrMainnet(chainId) && (
+          {isL1Network(chainId) && (
             <>
               <Menu.Item key="components" onClick={handleMenuItemClick}>
                 Components
