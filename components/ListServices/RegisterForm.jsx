@@ -16,6 +16,7 @@ import { RegisterFooter } from 'components/styles';
 export const FORM_NAME = 'serviceRegisterForm';
 
 const RegisterForm = ({
+  isLoading,
   account,
   listType,
   isUpdateForm,
@@ -270,7 +271,7 @@ const RegisterForm = ({
 
         {account ? (
           <Form.Item>
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" loading={isLoading}>
               Submit
             </Button>
           </Form.Item>
@@ -296,6 +297,7 @@ RegisterForm.propTypes = {
   isUpdateForm: PropTypes.bool,
   account: PropTypes.string,
   listType: PropTypes.string,
+  isLoading: PropTypes.bool,
   formInitialValues: PropTypes.shape({
     owner: PropTypes.string,
     name: PropTypes.string,
@@ -311,6 +313,7 @@ RegisterForm.propTypes = {
 };
 
 RegisterForm.defaultProps = {
+  isLoading: false,
   isUpdateForm: false,
   account: null,
   listType: 'Service',
