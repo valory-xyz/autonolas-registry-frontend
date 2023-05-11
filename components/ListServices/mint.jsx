@@ -16,12 +16,14 @@ import { getAgentParams } from './utils';
 const { Title } = Typography;
 
 const MintService = ({ account }) => {
+  const [isMinting, setIsMinting] = useState(false);
   const [error, setError] = useState(null);
   const [information, setInformation] = useState(null);
   const router = useRouter();
 
   const handleSubmit = (values) => {
     if (account) {
+      setIsMinting(true);
       setError(null);
       setInformation(null);
 
@@ -42,6 +44,9 @@ const MintService = ({ account }) => {
         .catch((e) => {
           setError(e);
           console.error(e);
+        })
+        .finally(() => {
+          setIsMinting(false);
         });
     }
   };
@@ -55,6 +60,7 @@ const MintService = ({ account }) => {
       <FormContainer>
         <Title level={2}>Mint Service</Title>
         <RegisterForm
+          isLoading={isMinting}
           account={account}
           formInitialValues={{}}
           handleSubmit={handleSubmit}
