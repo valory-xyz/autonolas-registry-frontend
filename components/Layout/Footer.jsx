@@ -5,6 +5,12 @@ import { useRouter } from 'next/router';
 import get from 'lodash/get';
 import { Footer as CommonFooter } from '@autonolas/frontend-library';
 import { ADDRESSES, getWeb3Details } from 'common-util/Contracts';
+import {
+  isGoerli,
+  isGnosis,
+  isPolygon,
+  isPolygonMumbai,
+} from 'common-util/functions';
 import { ContractsInfoContainer } from './styles';
 
 const SOCIALS = [
@@ -30,7 +36,7 @@ const ContractInfo = () => {
   const chainId = useSelector((state) => get(state, 'setup.chainId'));
   const router = useRouter();
 
-  const [addresChainId, setAddressChainId] = useState(chainId);
+  const [addressChainId, setAddressChainId] = useState(chainId);
   const { pathname } = router;
 
   // if chainId changes, update the chainId required for address
@@ -41,14 +47,14 @@ const ContractInfo = () => {
   // if there are no chainId, try to fetch from web3Details (ie. WEB3_PROVIDER)
   // else fallback to 1 (mainnet address)
   useEffect(() => {
-    if (!addresChainId) {
+    if (!addressChainId) {
       setAddressChainId(getWeb3Details().chainId || 1);
     }
   }, []);
 
-  if (!addresChainId) return <ContractsInfoContainer />;
+  if (!addressChainId) return <ContractsInfoContainer />;
 
-  const addresses = ADDRESSES[addresChainId];
+  const addresses = ADDRESSES[addressChainId];
   const getCurrentPageAddresses = () => {
     if ((pathname || '').includes('components')) {
       return {
@@ -86,7 +92,18 @@ const ContractInfo = () => {
   };
 
   const getEtherscanLink = (address) => {
-    if (addresChainId === 5) return `https://goerli.etherscan.io/address/${address}`;
+    if (isGoerli(addressChainId)) {
+      return `https://goerli.etherscan.io/address/${address}`;
+    }
+    if (isGnosis(addressChainId)) {
+      return `https://gnosisscan.io/address/${address}`;
+    }
+    if (isPolygon(addressChainId)) {
+      return `https://polygonscan.com/address/${address}`;
+    }
+    if (isPolygonMumbai(addressChainId)) {
+      return `https://mumbai.polygonscan.com/address/${address}`;
+    }
     return `https://etherscan.io/address/${address}`;
   };
 

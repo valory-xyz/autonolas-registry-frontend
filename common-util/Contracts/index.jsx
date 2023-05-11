@@ -30,18 +30,18 @@ export const ADDRESSES = {
   },
   // gnosis
   100: {
-    serviceRegistryAddress: '0x9338b5153AE39BB89f50468E608eD9d764B755fD',
-    serviceManagerAddress: '0xE3607b00E75f6405248323A9417ff6b39B244b50',
+    serviceManager: '0xE3607b00E75f6405248323A9417ff6b39B244b50',
+    serviceRegistry: '0x9338b5153AE39BB89f50468E608eD9d764B755fD',
   },
   // polygon
   137: {
-    serviceRegistryAddress: '0xE3607b00E75f6405248323A9417ff6b39B244b50',
-    serviceManagerAddress: '0x3C1fF68f5aa342D296d4DEe4Bb1cACCA912D95fE',
+    serviceManager: '0x3C1fF68f5aa342D296d4DEe4Bb1cACCA912D95fE',
+    serviceRegistry: '0xE3607b00E75f6405248323A9417ff6b39B244b50',
   },
   // polygon mumbai
   80001: {
-    serviceRegistryAddress: '0xf805DfF246CC208CD2F08ffaD242b7C32bc93623',
-    serviceManagerAddress: '0x43d28764bB39936185c84906983fB57A8A905a4F',
+    serviceManager: '0x43d28764bB39936185c84906983fB57A8A905a4F',
+    serviceRegistry: '0xf805DfF246CC208CD2F08ffaD242b7C32bc93623',
   },
   // local
   31337: {
@@ -100,13 +100,6 @@ export const getMechMinterContract = () => {
   );
   return contract;
 };
-// TODO
-// 1. differentiate from service registry and service registry l2
-// 2. REmove agents and component navbar
-// 3. Write near "Canonical agent Ids" =>
-//     make sure your agent ID is already registered in the Agent Registry on ethereum
-// 4. Change the bottom navbar => for polgin it is "https://polygonscan.com/" & for gnosis
-//    it is "https://gnosisscan.io/"
 
 export const getServiceContract = () => {
   const { web3, address, chainId } = getWeb3Details();

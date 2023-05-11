@@ -58,6 +58,8 @@ export const isGoerliOrMainnet = (chainId) => {
   );
 };
 
+export const isGoerli = (chainId) => getChainId(chainId) === 5;
+
 export const isGnosis = (chainId) => getChainId(chainId) === 100;
 
 export const isPolygon = (chainId) => getChainId(chainId) === 137;
