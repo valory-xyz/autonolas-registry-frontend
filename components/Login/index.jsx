@@ -8,6 +8,7 @@ import {
   setChainId as setChainIdFn,
   setErrorMessage as setErrorMessageFn,
 } from 'store/setup/actions';
+import { getSupportedNetworks } from 'commo-util/functions';
 
 const Container = styled.div``;
 
@@ -47,6 +48,7 @@ const Login = ({
         onConnect={onConnect}
         onDisconnect={onDisconnect}
         onError={onError}
+        supportedNetworks={getSupportedNetworks()}
       />
     </Container>
   );

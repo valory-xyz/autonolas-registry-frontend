@@ -2,6 +2,7 @@ import { ethers } from 'ethers';
 import { notification } from 'antd/lib';
 import { STAGING_CHAIN_ID } from '@autonolas/frontend-library';
 import { TOTAL_VIEW_COUNT } from 'util/constants';
+import { ADDRESSES } from 'common-util/Contracts';
 
 export const convertToEth = (value) => ethers.utils.formatEther(value);
 
@@ -65,3 +66,5 @@ export const isGnosis = (chainId) => getChainId(chainId) === 100;
 export const isPolygon = (chainId) => getChainId(chainId) === 137;
 
 export const isPolygonMumbai = (chainId) => getChainId(chainId) === 80001;
+
+export const getSupportedNetworks = () => Object.keys(ADDRESSES).map((e) => Number(e));
