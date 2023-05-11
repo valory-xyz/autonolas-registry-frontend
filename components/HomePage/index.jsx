@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import {
-  Button, Col, Row, Typography, Alert,
+  Button, Col, Row, Typography,
 } from 'antd/lib';
 import Link from 'next/link';
 import { URL } from 'util/constants';
@@ -34,7 +34,6 @@ const LIST = [
 
 const HomePage = () => {
   const chainId = useSelector((state) => state?.setup?.chainId);
-  const descList = isL1Network(chainId) ? LIST : LIST.slice(0, 1);
 
   return (
     <Container>
@@ -74,7 +73,7 @@ const HomePage = () => {
           How are Autonolas services architected?
         </Title>
 
-        {descList.map(({
+        {LIST.map(({
           title, desc, link, type,
         }) => (
           <Row
@@ -94,18 +93,22 @@ const HomePage = () => {
               <Title level={5}>{title}</Title>
               <Text className="description">{desc}</Text>
               <br />
-              <Link href={link}>{`View all ${type}`}</Link>
+              {type === 'services' ? (
+                <Link href={link}>{`View all ${type}`}</Link>
+              ) : (
+                <>
+                  {isL1Network(chainId) ? (
+                    <Link href={link}>{`View all ${type}`}</Link>
+                  ) : (
+                    <Text disabled>
+                      {`Switch network (to Ethereum or Goerli) to view ${type}`}
+                    </Text>
+                  )}
+                </>
+              )}
             </Col>
           </Row>
         ))}
-
-        {!isL1Network(chainId) && (
-          <Alert
-            message="Switch network (to Ethereum or Goerli) to view agents and components"
-            type="info"
-            showIcon
-          />
-        )}
       </ContentRow>
 
       <br />
