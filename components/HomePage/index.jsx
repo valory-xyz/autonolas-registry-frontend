@@ -101,7 +101,7 @@ const HomePage = () => {
 
         {!isL1Network(chainId) && (
           <Alert
-            message="View all components & agents link, switch network to see them."
+            message="Switch network (to Ethereum or Goerli) to view agents and components"
             type="info"
             showIcon
           />
