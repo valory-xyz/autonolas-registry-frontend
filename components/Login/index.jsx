@@ -8,7 +8,7 @@ import {
   setChainId as setChainIdFn,
   setErrorMessage as setErrorMessageFn,
 } from 'store/setup/actions';
-import { getSupportedNetworks } from 'commo-util/functions';
+import { getSupportedNetworks } from 'common-util/functions';
 
 const Container = styled.div``;
 
