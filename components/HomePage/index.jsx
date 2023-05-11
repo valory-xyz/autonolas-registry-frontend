@@ -42,9 +42,9 @@ const HomePage = () => {
         <Row>
           <Col span={14} offset={2}>
             <Title className="hero-title">
-              {` Mint and manage your services ${
+              {` Mint and manage your services${
                 isL1Network(chainId) ? ', agents and components' : ''
-              }.'`}
+              }.`}
             </Title>
             <Text className="lead">
               The easiest way to interact with the Autonolas on-chain registry.
