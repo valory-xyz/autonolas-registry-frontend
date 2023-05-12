@@ -38,6 +38,10 @@ export const ADDRESSES = {
     serviceManager: '0x3C1fF68f5aa342D296d4DEe4Bb1cACCA912D95fE',
     serviceRegistry: '0xE3607b00E75f6405248323A9417ff6b39B244b50',
   },
+  10200: {
+    serviceManager: '0x43d28764bB39936185c84906983fB57A8A905a4F',
+    serviceRegistry: '0xf805DfF246CC208CD2F08ffaD242b7C32bc93623',
+  },
   // polygon mumbai
   80001: {
     serviceManager: '0x43d28764bB39936185c84906983fB57A8A905a4F',
