@@ -1,8 +1,10 @@
-import { URL } from 'util/constants';
+import { useSelector } from 'react-redux';
 import {
   Button, Col, Row, Typography,
 } from 'antd/lib';
 import Link from 'next/link';
+import { URL } from 'util/constants';
+import { isL1Network } from 'common-util/functions';
 import { Container, HeaderRow, ContentRow } from './styles';
 
 const { Title, Text } = Typography;
@@ -30,68 +32,89 @@ const LIST = [
   },
 ];
 
-const HomePage = () => (
-  <Container>
-    <HeaderRow className="row-1">
-      <Row>
-        <Col span={14} offset={2}>
-          <Title className="hero-title">
-            Mint and manage your services, agents and components
-          </Title>
-          <Text className="lead">
-            The easiest way to interact with the Autonolas on-chain registry.
-          </Text>
-          <Link href={URL.COMPONENTS} passHref>
-            <Button type="primary" size="large">
-              Get started →
-            </Button>
-          </Link>
-        </Col>
-        <Col span={8}>
-          <div
-            className="header-image"
-            style={{
-              backgroundImage: `url(${IMG_PATH}autonomous-agent-service-architecture.svg)`,
-            }}
-          />
-        </Col>
-      </Row>
-    </HeaderRow>
+const HomePage = () => {
+  const chainId = useSelector((state) => state?.setup?.chainId);
 
-    <ContentRow className="row-2">
-      <Title level={3} className="title">
-        How are Autonolas services architected?
-      </Title>
-
-      {LIST.map(({
-        title, desc, link, type,
-      }) => (
-        <Row
-          className="each-service"
-          key={`each-service-${type}`}
-          align="middle"
-        >
-          <Col className="column column-1">
-            <img
-              src={`/${IMG_PATH}${type}.svg`}
-              className="each-service-image"
-              alt=""
+  return (
+    <Container>
+      <HeaderRow className="row-1">
+        <Row>
+          <Col span={14} offset={2}>
+            <Title className="hero-title">
+              {` Mint and manage your services${
+                isL1Network(chainId) ? ', agents and components' : ''
+              }.`}
+            </Title>
+            <Text className="lead">
+              The easiest way to interact with the Autonolas on-chain registry.
+            </Text>
+            <Link
+              href={isL1Network(chainId) ? URL.COMPONENTS : URL.SERVICES}
+              passHref
+            >
+              <Button type="primary" size="large">
+                Get started →
+              </Button>
+            </Link>
+          </Col>
+          <Col span={8}>
+            <div
+              className="header-image"
+              style={{
+                backgroundImage: `url(${IMG_PATH}autonomous-agent-service-architecture.svg)`,
+              }}
             />
           </Col>
-
-          <Col className="column column-2">
-            <Title level={5}>{title}</Title>
-            <Text className="description">{desc}</Text>
-            <br />
-            <Link href={link}>{`View all ${type}`}</Link>
-          </Col>
         </Row>
-      ))}
-    </ContentRow>
+      </HeaderRow>
 
-    <br />
-    <br />
-  </Container>
-);
+      <ContentRow className="row-2">
+        <Title level={3} className="title">
+          How are Autonolas services architected?
+        </Title>
+
+        {LIST.map(({
+          title, desc, link, type,
+        }) => (
+          <Row
+            className="each-service"
+            key={`each-service-${type}`}
+            align="middle"
+          >
+            <Col className="column column-1">
+              <img
+                src={`/${IMG_PATH}${type}.svg`}
+                className="each-service-image"
+                alt=""
+              />
+            </Col>
+
+            <Col className="column column-2">
+              <Title level={5}>{title}</Title>
+              <Text className="description">{desc}</Text>
+              <br />
+              {type === 'services' ? (
+                <Link href={link}>{`View all ${type}`}</Link>
+              ) : (
+                <>
+                  {isL1Network(chainId) ? (
+                    <Link href={link}>{`View all ${type}`}</Link>
+                  ) : (
+                    <Text disabled>
+                      {`Switch network (to Ethereum or Goerli) to view ${type}`}
+                    </Text>
+                  )}
+                </>
+              )}
+            </Col>
+          </Row>
+        ))}
+      </ContentRow>
+
+      <br />
+      <br />
+    </Container>
+  );
+};
 
 export default HomePage;

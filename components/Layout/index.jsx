@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Layout, Menu, Result } from 'antd/lib';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
 import useCheckMobileScreen from 'common-util/hooks/useCheckMobileScreen';
-import Footer from './Footer';
+import { isL1Network } from 'common-util/functions';
 import Login from '../Login';
+import Footer from './Footer';
 import {
   CustomLayout, Logo, RightMenu, SupportOnlyDesktop,
 } from './styles';
@@ -15,6 +17,8 @@ const LogoSvg = dynamic(() => import('common-util/svg/logo'), { ssr: false });
 const { Header, Content } = Layout;
 
 const NavigationBar = ({ children }) => {
+  const chainId = useSelector((state) => state?.setup?.chainId);
+
   const isMobile = useCheckMobileScreen();
   const router = useRouter();
   const [selectedMenu, setSelectedMenu] = useState([]);
@@ -61,12 +65,17 @@ const NavigationBar = ({ children }) => {
         {logo}
 
         <Menu theme="light" mode="horizontal" selectedKeys={[selectedMenu]}>
-          <Menu.Item key="components" onClick={handleMenuItemClick}>
-            Components
-          </Menu.Item>
-          <Menu.Item key="agents" onClick={handleMenuItemClick}>
-            Agents
-          </Menu.Item>
+          {isL1Network(chainId) && (
+            <>
+              <Menu.Item key="components" onClick={handleMenuItemClick}>
+                Components
+              </Menu.Item>
+              <Menu.Item key="agents" onClick={handleMenuItemClick}>
+                Agents
+              </Menu.Item>
+            </>
+          )}
+
           <Menu.Item key="services" onClick={handleMenuItemClick}>
             Services
           </Menu.Item>

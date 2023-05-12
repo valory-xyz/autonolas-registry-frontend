@@ -11,7 +11,7 @@ export const dummyHash = 'QmYuLhvusXYh2Pw5BqntNi9ZGg4Chcf1dhiuzxZesJCnK1';
 export const emptyStore = mockStore({});
 
 export const initStore = mockStore({
-  setup: { account: dummyAddress },
+  setup: { account: dummyAddress, chainId: 1 },
 });
 
 /**

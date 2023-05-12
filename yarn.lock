@@ -102,10 +102,10 @@
   resolved "https://registry.yarnpkg.com/@assemblyscript/loader/-/loader-0.9.4.tgz#a483c54c1253656bb33babd464e3154a173e1577"
   integrity sha512-HazVq9zwTVwGmqdwYzu7WyQ6FQVZ7SwET0KKQuKm55jD0IfUpZgN0OPIiZG3zV1iSrVYcN0bdwLRXI/VNCYsUA==
 
-"@autonolas/frontend-library@^0.3.3":
-  version "0.3.3"
-  resolved "https://registry.yarnpkg.com/@autonolas/frontend-library/-/frontend-library-0.3.3.tgz#a7379b8bae249e82fd0a1a0b6ea9f09d14f7f012"
-  integrity sha512-oRWYKi+9DtXSVVW8/EfMFwEarIP083FFDc4oMWM+nhCD5VEP8N4AFb8nX+LhU17j/C9llBJwGsIUCocM+6WiBw==
+"@autonolas/frontend-library@^0.3.9":
+  version "0.3.9"
+  resolved "https://registry.yarnpkg.com/@autonolas/frontend-library/-/frontend-library-0.3.9.tgz#edb619cb255f8e4a6fc208e830b89325d91a1de4"
+  integrity sha512-6m2UCANj2oUimEJRjih8daHdvOKbnBRxZIjtyvcOB5rgUGOsWfP4RYUbxYxkUXAW3sA0G0POHPikSQkdm/QTYw==
   dependencies:
     "@ant-design/icons" "^4.8.0"
     "@walletconnect/web3-provider" "^1.8.0"
