@@ -4,7 +4,7 @@ import {
   AGENT_REGISTRY_CONTRACT,
   COMPONENT_REGISTRY_CONTRACT,
   SERVICE_REGISTRY_CONTRACT,
-  SERVICE_MANAGER_CONTRACT,
+  SERVICE_MANAGER_TOKEN_CONTRACT,
   SIGN_MESSAGE_LIB_CONTRACT,
   GNOSIS_SAFE_CONTRACT,
   MULTI_SEND_CONTRACT,
@@ -122,7 +122,7 @@ export const getServiceManagerContract = () => {
   const { web3, address } = getWeb3Details();
   const { serviceManager } = address;
   const contract = new web3.eth.Contract(
-    SERVICE_MANAGER_CONTRACT.abi,
+    SERVICE_MANAGER_TOKEN_CONTRACT.abi,
     serviceManager,
   );
   return contract;

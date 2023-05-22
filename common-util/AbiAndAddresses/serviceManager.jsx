@@ -1,4 +1,4 @@
-export const SERVICE_MANAGER_CONTRACT = {
+export const SERVICE_MANAGER_TOKEN_CONTRACT = {
   _format: 'hh-sol-artifact-1',
   contractName: 'ServiceManagerToken',
   sourceName: 'contracts/ServiceManagerToken.sol',
