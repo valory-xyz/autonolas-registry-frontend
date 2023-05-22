@@ -1,13 +1,23 @@
 export const SERVICE_MANAGER_CONTRACT = {
   _format: 'hh-sol-artifact-1',
-  contractName: 'ServiceManager',
-  sourceName: 'lib/autonolas-registries/contracts/ServiceManager.sol',
+  contractName: 'ServiceManagerToken',
+  sourceName: 'contracts/ServiceManagerToken.sol',
   abi: [
     {
       inputs: [
         {
           internalType: 'address',
           name: '_serviceRegistry',
+          type: 'address',
+        },
+        {
+          internalType: 'address',
+          name: '_serviceRegistryTokenUtility',
+          type: 'address',
+        },
+        {
+          internalType: 'address',
+          name: '_operatorWhitelist',
           type: 'address',
         },
       ],
@@ -82,6 +92,48 @@ export const SERVICE_MANAGER_CONTRACT = {
     {
       inputs: [
         {
+          internalType: 'address',
+          name: 'operator',
+          type: 'address',
+        },
+        {
+          internalType: 'bytes32',
+          name: 'msgHash',
+          type: 'bytes32',
+        },
+        {
+          internalType: 'bytes',
+          name: 'signature',
+          type: 'bytes',
+        },
+      ],
+      name: 'HashNotApproved',
+      type: 'error',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: 'operator',
+          type: 'address',
+        },
+        {
+          internalType: 'bytes32',
+          name: 'msgHash',
+          type: 'bytes32',
+        },
+        {
+          internalType: 'bytes',
+          name: 'signature',
+          type: 'bytes',
+        },
+      ],
+      name: 'HashNotValidated',
+      type: 'error',
+    },
+    {
+      inputs: [
+        {
           internalType: 'uint256',
           name: 'sent',
           type: 'uint256',
@@ -119,6 +171,27 @@ export const SERVICE_MANAGER_CONTRACT = {
         },
       ],
       name: 'IncorrectRegistrationDepositValue',
+      type: 'error',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'bytes',
+          name: 'signature',
+          type: 'bytes',
+        },
+        {
+          internalType: 'uint256',
+          name: 'provided',
+          type: 'uint256',
+        },
+        {
+          internalType: 'uint256',
+          name: 'expected',
+          type: 'uint256',
+        },
+      ],
+      name: 'IncorrectSignatureLength',
       type: 'error',
     },
     {
@@ -305,6 +378,22 @@ export const SERVICE_MANAGER_CONTRACT = {
     {
       inputs: [
         {
+          internalType: 'address',
+          name: 'provided',
+          type: 'address',
+        },
+        {
+          internalType: 'address',
+          name: 'expected',
+          type: 'address',
+        },
+      ],
+      name: 'WrongOperatorAddress',
+      type: 'error',
+    },
+    {
+      inputs: [
+        {
           internalType: 'uint256',
           name: 'state',
           type: 'uint256',
@@ -346,6 +435,11 @@ export const SERVICE_MANAGER_CONTRACT = {
     },
     {
       inputs: [],
+      name: 'ZeroOperatorAddress',
+      type: 'error',
+    },
+    {
+      inputs: [],
       name: 'ZeroValue',
       type: 'error',
     },
@@ -360,6 +454,38 @@ export const SERVICE_MANAGER_CONTRACT = {
         },
       ],
       name: 'CreateMultisig',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
+          internalType: 'address',
+          name: 'operator',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          internalType: 'bytes32',
+          name: 'hash',
+          type: 'bytes32',
+        },
+      ],
+      name: 'OperatorHashApproved',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
+          internalType: 'address',
+          name: 'operatorWhitelist',
+          type: 'address',
+        },
+      ],
+      name: 'OperatorWhitelistUpdated',
       type: 'event',
     },
     {
@@ -402,6 +528,71 @@ export const SERVICE_MANAGER_CONTRACT = {
       type: 'event',
     },
     {
+      inputs: [],
+      name: 'BOND_WRAPPER',
+      outputs: [
+        {
+          internalType: 'uint96',
+          name: '',
+          type: 'uint96',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'DOMAIN_SEPARATOR_TYPE_HASH',
+      outputs: [
+        {
+          internalType: 'bytes32',
+          name: '',
+          type: 'bytes32',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'ETH_TOKEN_ADDRESS',
+      outputs: [
+        {
+          internalType: 'address',
+          name: '',
+          type: 'address',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'REGISTER_AGENTS_TYPE_HASH',
+      outputs: [
+        {
+          internalType: 'bytes32',
+          name: '',
+          type: 'bytes32',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'UNBOND_TYPE_HASH',
+      outputs: [
+        {
+          internalType: 'bytes32',
+          name: '',
+          type: 'bytes32',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
       inputs: [
         {
           internalType: 'uint256',
@@ -418,6 +609,19 @@ export const SERVICE_MANAGER_CONTRACT = {
         },
       ],
       stateMutability: 'payable',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'chainId',
+      outputs: [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      stateMutability: 'view',
       type: 'function',
     },
     {
@@ -438,6 +642,11 @@ export const SERVICE_MANAGER_CONTRACT = {
         {
           internalType: 'address',
           name: 'serviceOwner',
+          type: 'address',
+        },
+        {
+          internalType: 'address',
+          name: 'token',
           type: 'address',
         },
         {
@@ -477,7 +686,7 @@ export const SERVICE_MANAGER_CONTRACT = {
       outputs: [
         {
           internalType: 'uint256',
-          name: '',
+          name: 'serviceId',
           type: 'uint256',
         },
       ],
@@ -511,6 +720,296 @@ export const SERVICE_MANAGER_CONTRACT = {
         },
       ],
       stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'domainSeparator',
+      outputs: [
+        {
+          internalType: 'bytes32',
+          name: '',
+          type: 'bytes32',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'getDomainSeparator',
+      outputs: [
+        {
+          internalType: 'bytes32',
+          name: '',
+          type: 'bytes32',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: 'operator',
+          type: 'address',
+        },
+        {
+          internalType: 'uint256',
+          name: 'serviceId',
+          type: 'uint256',
+        },
+      ],
+      name: 'getOperatorRegisterAgentsNonce',
+      outputs: [
+        {
+          internalType: 'uint256',
+          name: 'nonce',
+          type: 'uint256',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: 'operator',
+          type: 'address',
+        },
+        {
+          internalType: 'uint256',
+          name: 'serviceId',
+          type: 'uint256',
+        },
+      ],
+      name: 'getOperatorUnbondNonce',
+      outputs: [
+        {
+          internalType: 'uint256',
+          name: 'nonce',
+          type: 'uint256',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: 'operator',
+          type: 'address',
+        },
+        {
+          internalType: 'address',
+          name: 'serviceOwner',
+          type: 'address',
+        },
+        {
+          internalType: 'uint256',
+          name: 'serviceId',
+          type: 'uint256',
+        },
+        {
+          internalType: 'address[]',
+          name: 'agentInstances',
+          type: 'address[]',
+        },
+        {
+          internalType: 'uint32[]',
+          name: 'agentIds',
+          type: 'uint32[]',
+        },
+        {
+          internalType: 'uint256',
+          name: 'nonce',
+          type: 'uint256',
+        },
+      ],
+      name: 'getRegisterAgentsHash',
+      outputs: [
+        {
+          internalType: 'bytes32',
+          name: '',
+          type: 'bytes32',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: 'operator',
+          type: 'address',
+        },
+        {
+          internalType: 'address',
+          name: 'serviceOwner',
+          type: 'address',
+        },
+        {
+          internalType: 'uint256',
+          name: 'serviceId',
+          type: 'uint256',
+        },
+        {
+          internalType: 'uint256',
+          name: 'nonce',
+          type: 'uint256',
+        },
+      ],
+      name: 'getUnbondHash',
+      outputs: [
+        {
+          internalType: 'bytes32',
+          name: '',
+          type: 'bytes32',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: 'operator',
+          type: 'address',
+        },
+        {
+          internalType: 'bytes32',
+          name: 'hash',
+          type: 'bytes32',
+        },
+      ],
+      name: 'isOperatorHashApproved',
+      outputs: [
+        {
+          internalType: 'bool',
+          name: '',
+          type: 'bool',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: '',
+          type: 'address',
+        },
+        {
+          internalType: 'bytes32',
+          name: '',
+          type: 'bytes32',
+        },
+      ],
+      name: 'mapOperatorApprovedHashes',
+      outputs: [
+        {
+          internalType: 'bool',
+          name: '',
+          type: 'bool',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      name: 'mapOperatorRegisterAgentsNonces',
+      outputs: [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      name: 'mapOperatorUnbondNonces',
+      outputs: [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'name',
+      outputs: [
+        {
+          internalType: 'string',
+          name: '',
+          type: 'string',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'nameHash',
+      outputs: [
+        {
+          internalType: 'bytes32',
+          name: '',
+          type: 'bytes32',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'bytes32',
+          name: 'hash',
+          type: 'bytes32',
+        },
+      ],
+      name: 'operatorApproveHash',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'operatorWhitelist',
+      outputs: [
+        {
+          internalType: 'address',
+          name: '',
+          type: 'address',
+        },
+      ],
+      stateMutability: 'view',
       type: 'function',
     },
     {
@@ -576,6 +1075,45 @@ export const SERVICE_MANAGER_CONTRACT = {
       type: 'function',
     },
     {
+      inputs: [
+        {
+          internalType: 'address',
+          name: 'operator',
+          type: 'address',
+        },
+        {
+          internalType: 'uint256',
+          name: 'serviceId',
+          type: 'uint256',
+        },
+        {
+          internalType: 'address[]',
+          name: 'agentInstances',
+          type: 'address[]',
+        },
+        {
+          internalType: 'uint32[]',
+          name: 'agentIds',
+          type: 'uint32[]',
+        },
+        {
+          internalType: 'bytes',
+          name: 'signature',
+          type: 'bytes',
+        },
+      ],
+      name: 'registerAgentsWithSignature',
+      outputs: [
+        {
+          internalType: 'bool',
+          name: 'success',
+          type: 'bool',
+        },
+      ],
+      stateMutability: 'payable',
+      type: 'function',
+    },
+    {
       inputs: [],
       name: 'serviceRegistry',
       outputs: [
@@ -586,6 +1124,32 @@ export const SERVICE_MANAGER_CONTRACT = {
         },
       ],
       stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'serviceRegistryTokenUtility',
+      outputs: [
+        {
+          internalType: 'address',
+          name: '',
+          type: 'address',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: 'newOperatorWhitelist',
+          type: 'address',
+        },
+      ],
+      name: 'setOperatorWhitelist',
+      outputs: [],
+      stateMutability: 'nonpayable',
       type: 'function',
     },
     {
@@ -637,6 +1201,40 @@ export const SERVICE_MANAGER_CONTRACT = {
       type: 'function',
     },
     {
+      inputs: [
+        {
+          internalType: 'address',
+          name: 'operator',
+          type: 'address',
+        },
+        {
+          internalType: 'uint256',
+          name: 'serviceId',
+          type: 'uint256',
+        },
+        {
+          internalType: 'bytes',
+          name: 'signature',
+          type: 'bytes',
+        },
+      ],
+      name: 'unbondWithSignature',
+      outputs: [
+        {
+          internalType: 'bool',
+          name: 'success',
+          type: 'bool',
+        },
+        {
+          internalType: 'uint256',
+          name: 'refund',
+          type: 'uint256',
+        },
+      ],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
       inputs: [],
       name: 'unpause',
       outputs: [],
@@ -645,6 +1243,11 @@ export const SERVICE_MANAGER_CONTRACT = {
     },
     {
       inputs: [
+        {
+          internalType: 'address',
+          name: 'token',
+          type: 'address',
+        },
         {
           internalType: 'bytes32',
           name: 'configHash',
@@ -687,11 +1290,37 @@ export const SERVICE_MANAGER_CONTRACT = {
       outputs: [
         {
           internalType: 'bool',
-          name: '',
+          name: 'success',
           type: 'bool',
         },
       ],
       stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'version',
+      outputs: [
+        {
+          internalType: 'string',
+          name: '',
+          type: 'string',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'versionHash',
+      outputs: [
+        {
+          internalType: 'bytes32',
+          name: '',
+          type: 'bytes32',
+        },
+      ],
+      stateMutability: 'view',
       type: 'function',
     },
   ],
