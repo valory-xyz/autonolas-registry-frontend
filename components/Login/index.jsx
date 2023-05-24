@@ -15,6 +15,7 @@ const Container = styled.div``;
 const rpc = {
   1: process.env.NEXT_PUBLIC_MAINNET_URL,
   5: process.env.NEXT_PUBLIC_GOERLI_URL,
+  100: process.env.NEXT_PUBLIC_GNOSIS_URL,
   31337: process.env.NEXT_PUBLIC_AUTONOLAS_URL,
 };
 
