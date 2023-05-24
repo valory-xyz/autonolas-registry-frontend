@@ -28,9 +28,11 @@ const MintService = ({ account }) => {
       setInformation(null);
 
       const contract = getServiceManagerContract();
+
       contract.methods
         .create(
           values.owner_address,
+          values.token,
           `0x${values.hash}`,
           convertStringToArray(values.agent_ids),
           getAgentParams(values),

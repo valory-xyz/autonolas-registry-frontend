@@ -56,3 +56,5 @@ export const GATEWAY_URL = 'https://gateway.autonolas.tech/ipfs/';
 
 // max componets/agents/service to be shown in a single view
 export const TOTAL_VIEW_COUNT = 10;
+
+export const DEFAULT_SERVICE_CREATION_ETH_TOKEN = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';

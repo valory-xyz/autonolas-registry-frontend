@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import get from 'lodash/get';
 import { Button, Form, Input } from 'antd/lib';
+import { DEFAULT_SERVICE_CREATION_ETH_TOKEN } from 'util/constants';
 import { WhiteButton } from 'common-util/components/Button';
 import { commaMessage, DependencyLabel } from 'common-util/List/ListCommon';
 import { FormItemHash } from 'common-util/List/RegisterForm/helpers';
@@ -144,6 +145,31 @@ const RegisterForm = ({
           className="mb-0"
         >
           <Input placeholder="0x862..." disabled={isUpdateForm} />
+        </Form.Item>
+
+        <Form.Item
+          label="ERC20 token address"
+          name="token"
+          tooltip="Generic ERC20 token address"
+          // dedicated address for standard ETH secured service creation
+          // user can change it if they want to use a different generic token
+          initialValue={DEFAULT_SERVICE_CREATION_ETH_TOKEN}
+          rules={[
+            {
+              required: true,
+              message: 'Please input the token address',
+            },
+            () => ({
+              validator(_, value) {
+                if (Web3.utils.isAddress(value)) return Promise.resolve();
+                return Promise.reject(
+                  new Error('Please input a valid address'),
+                );
+              },
+            }),
+          ]}
+        >
+          <Input />
         </Form.Item>
 
         <Form.Item className="mb-0">
