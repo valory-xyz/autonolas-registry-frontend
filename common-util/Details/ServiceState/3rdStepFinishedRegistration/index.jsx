@@ -223,7 +223,7 @@ const StepThreePayload = ({
                 });
               }}
               {...getOtherBtnProps(STEP, {
-                isDisabled: !radioValue || !isOwner,
+                isDisabled: !radioValue,
               })}
             >
               Submit
