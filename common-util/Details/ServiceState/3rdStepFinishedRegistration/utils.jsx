@@ -5,7 +5,7 @@ import {
   MULTI_SEND_CONTRACT,
 } from 'common-util/AbiAndAddresses';
 import {
-  rpcUrl,
+  rpc,
   getServiceOwnerMultisigContract,
   safeMultiSend,
 } from 'common-util/Contracts';
@@ -44,7 +44,7 @@ export const handleMultisigSubmit = async ({
   const multisigContract = new ethers.Contract(
     multisig,
     GNOSIS_SAFE_CONTRACT.abi,
-    ethers.getDefaultProvider(rpcUrl[chainId]),
+    ethers.getDefaultProvider(rpc[chainId]),
   );
 
   const nonce = await multisigContract.nonce();
@@ -83,7 +83,7 @@ export const handleMultisigSubmit = async ({
   const multiSendContract = new ethers.Contract(
     safeMultiSend[chainId][0],
     MULTI_SEND_CONTRACT.abi,
-    ethers.getDefaultProvider(rpcUrl[chainId]),
+    ethers.getDefaultProvider(rpc[chainId]),
   );
 
   const safeTx = safeContracts.buildMultiSendSafeTx(

@@ -181,9 +181,10 @@ export const safeMultiSend = {
   31337: ['0x9d4454B023096f34B160D6B654540c56A1F81688'],
 };
 
-// TODO: duplicate, remove once tested
-export const rpcUrl = {
+export const rpc = {
   1: process.env.NEXT_PUBLIC_MAINNET_URL,
   5: process.env.NEXT_PUBLIC_GOERLI_URL,
-  31337: 'http://localhost:8545',
+  100: process.env.NEXT_PUBLIC_GNOSIS_URL,
+  137: process.env.NEXT_PUBLIC_POLYGON_URL,
+  31337: process.env.NEXT_PUBLIC_AUTONOLAS_URL,
 };
