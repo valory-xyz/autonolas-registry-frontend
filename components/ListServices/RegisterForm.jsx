@@ -147,10 +147,22 @@ const RegisterForm = ({
           <Input placeholder="0x862..." disabled={isUpdateForm} />
         </Form.Item>
 
+        <Form.Item className="mb-0">
+          <Button
+            htmlType="button"
+            type="link"
+            onClick={prefillOwnerAddress}
+            className="pl-0"
+            disabled={!account}
+          >
+            Prefill Address
+          </Button>
+        </Form.Item>
+
         <Form.Item
           label="ERC20 token address"
           name="token"
-          tooltip="Generic ERC20 token address"
+          tooltip="Generic ERC20 token address to secure the service (ETH by default)"
           // dedicated address for standard ETH secured service creation
           // user can change it if they want to use a different generic token
           initialValue={DEFAULT_SERVICE_CREATION_ETH_TOKEN}
@@ -170,17 +182,6 @@ const RegisterForm = ({
           ]}
         >
           <Input />
-        </Form.Item>
-
-        <Form.Item className="mb-0">
-          <Button
-            htmlType="button"
-            type="link"
-            onClick={prefillOwnerAddress}
-            className="pl-0"
-          >
-            Prefill Address
-          </Button>
         </Form.Item>
 
         {isUpdateForm && (
