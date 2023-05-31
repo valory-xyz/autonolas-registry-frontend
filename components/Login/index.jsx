@@ -8,15 +8,10 @@ import {
   setChainId as setChainIdFn,
   setErrorMessage as setErrorMessageFn,
 } from 'store/setup/actions';
+import { rpc } from 'common-util/Contracts';
 import { getSupportedNetworks } from 'common-util/functions';
 
 const Container = styled.div``;
-
-const rpc = {
-  1: process.env.NEXT_PUBLIC_MAINNET_URL,
-  5: process.env.NEXT_PUBLIC_GOERLI_URL,
-  31337: process.env.NEXT_PUBLIC_AUTONOLAS_URL,
-};
 
 const Login = ({
   setUserAccount,
