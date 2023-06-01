@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Web3 from 'web3';
 import { useRouter } from 'next/router';
 import useDeepCompareEffect from 'use-deep-compare-effect';
@@ -21,6 +21,7 @@ const RegisterForm = ({
   listType,
   isUpdateForm,
   formInitialValues,
+  ethTokenAddress,
   handleSubmit,
   handleCancel,
 }) => {
@@ -32,6 +33,17 @@ const RegisterForm = ({
   const [fields, setFields] = useState([]);
   const router = useRouter();
   const id = get(router, 'query.id') || null;
+
+  useEffect(() => {
+    if (account && ethTokenAddress) {
+      setFields([
+        {
+          name: ['token'],
+          value: ethTokenAddress,
+        },
+      ]);
+    }
+  }, [account, ethTokenAddress]);
 
   const onGenerateHash = (generatedHash) => {
     setFields([
@@ -165,7 +177,7 @@ const RegisterForm = ({
           tooltip="Generic ERC20 token address to secure the service (ETH by default)"
           // dedicated address for standard ETH secured service creation
           // user can change it if they want to use a different generic token
-          initialValue={DEFAULT_SERVICE_CREATION_ETH_TOKEN}
+          initialValue={ethTokenAddress || DEFAULT_SERVICE_CREATION_ETH_TOKEN}
           rules={[
             {
               required: true,
@@ -338,6 +350,7 @@ RegisterForm.propTypes = {
   }),
   handleSubmit: PropTypes.func.isRequired,
   handleCancel: PropTypes.func.isRequired,
+  ethTokenAddress: PropTypes.string,
 };
 
 RegisterForm.defaultProps = {
@@ -345,6 +358,7 @@ RegisterForm.defaultProps = {
   isUpdateForm: false,
   listType: 'Service',
   formInitialValues: {},
+  ethTokenAddress: DEFAULT_SERVICE_CREATION_ETH_TOKEN,
 };
 
 export default RegisterForm;

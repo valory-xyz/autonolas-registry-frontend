@@ -62,7 +62,7 @@ const ActiveRegistration = ({
         {`Adding instances will cause a bond of ${
           isEthToken ? totalBondEthToken : totalBondNonEthToken
         } ETH`}
-        {!isEthToken && <>{` and ${totalBondEthToken}`}</>}
+        {!isEthToken && <>{` and ${totalBondEthToken} token`}</>}
       </Text>
 
       {/* "Register agents" can be clicked by anyone */}

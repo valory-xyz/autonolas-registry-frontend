@@ -1,5 +1,11 @@
-import { TOTAL_VIEW_COUNT } from 'util/constants';
-import { getServiceContract } from 'common-util/Contracts';
+import {
+  DEFAULT_SERVICE_CREATION_ETH_TOKEN,
+  TOTAL_VIEW_COUNT,
+} from 'util/constants';
+import {
+  getServiceContract,
+  getServiceRegistryTokenUtilityContract,
+} from 'common-util/Contracts';
 import { convertStringToArray } from 'common-util/List/ListCommon';
 import { filterByOwner } from 'common-util/ContractUtils/myList';
 
@@ -161,6 +167,25 @@ export const getTokenUri = (id) => new Promise((resolve, reject) => {
     })
     .catch((e) => {
       console.error(e);
+      reject(e);
+    });
+});
+
+export const getTokenAddressRequest = (id) => new Promise((resolve, reject) => {
+  const contract = getServiceRegistryTokenUtilityContract();
+
+  contract.methods
+    .mapServiceIdTokenDeposit(id)
+    .call()
+    .then((response) => {
+      resolve(
+        response.token === '0x0000000000000000000000000000000000000000'
+          ? DEFAULT_SERVICE_CREATION_ETH_TOKEN
+          : response.token,
+      );
+    })
+    .catch((e) => {
+      console.error('Error occured on getting token address');
       reject(e);
     });
 });

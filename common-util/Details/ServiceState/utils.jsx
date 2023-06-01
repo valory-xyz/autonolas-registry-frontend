@@ -10,7 +10,7 @@ import {
   getServiceRegistryTokenUtilityContract,
 } from 'common-util/Contracts';
 import { sendTransaction } from 'common-util/functions/sendTransaction';
-import { DEFAULT_SERVICE_CREATION_ETH_TOKEN } from 'util/constants';
+import { DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS } from 'util/constants';
 
 const notifySuccess = (message = 'Terminated Successfully') => notification.success({ message });
 const notifyError = (message = 'Some error occured') => notification.error({ message });
@@ -123,7 +123,7 @@ export const checkIfEth = (id) => new Promise((resolve, reject) => {
     .mapServiceIdTokenDeposit(id)
     .call()
     .then((response) => {
-      resolve(response.token === DEFAULT_SERVICE_CREATION_ETH_TOKEN);
+      resolve(response.token === DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS);
     })
     .catch((e) => {
       reject(e);
@@ -158,12 +158,12 @@ export const hasSufficientTokenRequest = ({ account, chainId, serviceId }) => ne
         })
         .catch((e) => {
           reject(e);
-          notifyError();
+          notifyError('Error occured on checking allowance');
         });
     })
     .catch((e) => {
       reject(e);
-      notifyError();
+      notifyError('Error occured on checking token');
     });
 });
 

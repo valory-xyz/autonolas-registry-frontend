@@ -10,6 +10,10 @@ import {
 } from 'common-util/List/ListCommon';
 import { getServiceManagerContract } from 'common-util/Contracts';
 import { FormContainer } from 'components/styles';
+import {
+  DEFAULT_SERVICE_CREATION_ETH_TOKEN,
+  DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS,
+} from 'util/constants';
 import RegisterForm from './RegisterForm';
 import { getAgentParams } from './utils';
 
@@ -32,7 +36,9 @@ const MintService = ({ account }) => {
       contract.methods
         .create(
           values.owner_address,
-          values.token,
+          values.token === DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS
+            ? DEFAULT_SERVICE_CREATION_ETH_TOKEN
+            : values.token,
           `0x${values.hash}`,
           convertStringToArray(values.agent_ids),
           getAgentParams(values),
