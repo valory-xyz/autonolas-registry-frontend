@@ -198,6 +198,34 @@ export const approveToken = ({ account, chainId, serviceId }) => new Promise((re
     });
 });
 
+export const mintTokenRequest = ({ account, serviceId }) => new Promise((resolve, reject) => {
+  const tokenUtilityContract = getServiceRegistryTokenUtilityContract();
+
+  tokenUtilityContract.methods
+    .mapServiceIdTokenDeposit(serviceId)
+    .call()
+    .then(({ token }) => {
+      const contract = getGenericErc20Contract(token);
+
+      const fn = contract.methods
+        .mint(account, ethers.utils.parseEther('1000'))
+        .send({ from: account });
+
+      sendTransaction(fn, account)
+        .then(() => {
+          resolve();
+        })
+        .catch((e) => {
+          reject(e);
+          notifyError();
+        });
+    })
+    .catch((e) => {
+      reject(e);
+      notifyError();
+    });
+});
+
 export const onActivateRegistration = (account, id, deposit) => new Promise((resolve, reject) => {
   const contract = getServiceManagerContract();
 

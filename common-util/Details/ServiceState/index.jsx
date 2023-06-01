@@ -7,6 +7,7 @@ import {
 } from 'antd/lib';
 import get from 'lodash/get';
 import { URL } from 'util/constants';
+import { isLocalNetwork } from 'common-util/functions';
 import {
   onActivateRegistration,
   getServiceTableDataSource,
@@ -17,6 +18,7 @@ import {
   checkIfEth,
   hasSufficientTokenRequest,
   approveToken,
+  mintTokenRequest,
 } from './utils';
 import StepActiveRegistration from './2StepActiveRegistration';
 import StepFinishedRegistration from './3rdStepFinishedRegistration';
@@ -117,6 +119,16 @@ export const ServiceState = ({
           });
         }
       }
+
+      // NOTE: just for testing, mint tokens for local network
+      if (isLocalNetwork(chainId)) {
+        // mint tokens
+        await mintTokenRequest({
+          account,
+          serviceId: id,
+        });
+      }
+
       await onActivateRegistration(account, id, securityDeposit);
       await updateDetails();
     } catch (e) {
