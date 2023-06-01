@@ -44,6 +44,7 @@ export const ServiceState = ({
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   const [dataSource, setDataSource] = useState([]);
+  const [isEthToken, setIsEthToken] = useState(false);
   const [isStateImageVisible, setIsStateImageVisible] = useState(false);
   const chainId = useSelector((state) => state?.setup?.chainId);
 
@@ -59,6 +60,11 @@ export const ServiceState = ({
       if (id && (agentIds || []).length !== 0) {
         const temp = await getServiceTableDataSource(id, agentIds || []);
         setDataSource(temp);
+      }
+
+      if (id) {
+        const isEth = await checkIfEth(id);
+        setIsEthToken(isEth);
       }
     })();
   }, [id, agentIds]);
@@ -129,7 +135,8 @@ export const ServiceState = ({
         });
       }
 
-      await onActivateRegistration(account, id, securityDeposit);
+      // any amount if not ETH token substitute with 1
+      await onActivateRegistration(account, id, isEth ? securityDeposit : '1');
       await updateDetails();
     } catch (e) {
       console.error(e);
@@ -166,12 +173,33 @@ export const ServiceState = ({
     const agentInstances = trimArray(instances || []);
 
     try {
+      const isEth = await checkIfEth(id);
+
+      // if not eth, check if the user has sufficient token balance
+      // and if not, approve the token
+      if (!isEth) {
+        const hasTokenBalance = await hasSufficientTokenRequest({
+          account,
+          chainId,
+          serviceId: id,
+        });
+
+        if (!hasTokenBalance) {
+          await approveToken({
+            account,
+            chainId,
+            serviceId: id,
+          });
+        }
+      }
+
       await onStep2RegisterAgents({
         account,
         serviceId: id,
         agentIds: ids,
         agentInstances,
         dataSource,
+        isEth,
       });
       await updateDetails();
     } catch (e) {
@@ -262,6 +290,7 @@ export const ServiceState = ({
           getButton={getButton}
           isOwner={isOwner}
           handleTerminate={handleTerminate}
+          isEthToken={isEthToken}
         />
       ),
     },

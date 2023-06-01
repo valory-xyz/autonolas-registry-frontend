@@ -57,7 +57,9 @@ export const getBonds = (id, tableDataSource) => new Promise((resolve, reject) =
          * output: 2 * 100 + 3 * 200 = 800
          */
 
-      let totalBonds = 0;
+      // totalBonds[0] = total bond in eth
+      // totalBonds[1] = total bond in non-eth
+      const totalBonds = [0, 0];
       (tableDataSource || []).forEach((data) => {
         const { agentAddresses, bond } = data;
 
@@ -71,7 +73,8 @@ export const getBonds = (id, tableDataSource) => new Promise((resolve, reject) =
         ).length;
 
         // multiply the number of addresses with the bond value of the agentId
-        totalBonds += numberOfAgentAddress * bond;
+        totalBonds[0] += numberOfAgentAddress * bond;
+        totalBonds[1] += numberOfAgentAddress;
       });
 
       resolve({ slots: slotsArray, bonds: bondsArray, totalBonds });
@@ -289,14 +292,18 @@ export const onStep2RegisterAgents = ({
   agentIds,
   agentInstances,
   dataSource,
+  isEth,
 }) => new Promise((resolve, reject) => {
   const contract = getServiceManagerContract();
 
-  getBonds(serviceId, dataSource)
+  getBonds(serviceId, dataSource, isEth)
     .then(({ totalBonds }) => {
       contract.methods
         .registerAgents(serviceId, agentInstances, agentIds)
-        .send({ from: account, value: `${totalBonds}` })
+        .send({
+          from: account,
+          value: `${isEth ? totalBonds[0] : totalBonds[1]}`,
+        })
         .then((information) => {
           resolve(information);
           notifySuccess('Registered Successfully');
