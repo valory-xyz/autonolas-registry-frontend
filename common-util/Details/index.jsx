@@ -157,6 +157,7 @@ const Details = ({
       <Row gutter={gt}>
         <Col className="gutter-row" span={12}>
           <DetailsInfo
+            id={id}
             isOwner={isOwner}
             type={type}
             tokenUri={tokenUri}
@@ -201,7 +202,11 @@ const Details = ({
 Details.propTypes = {
   account: PropTypes.string,
   id: PropTypes.string.isRequired,
-  type: PropTypes.string.isRequired,
+  type: PropTypes.oneOf([
+    NAV_TYPES.AGENT,
+    NAV_TYPES.COMPONENT,
+    NAV_TYPES.SERVICE,
+  ]).isRequired,
   getDetails: PropTypes.func.isRequired,
   getHashes: PropTypes.func,
   getTokenUri: PropTypes.func,

@@ -2,12 +2,10 @@ import {
   DEFAULT_SERVICE_CREATION_ETH_TOKEN,
   TOTAL_VIEW_COUNT,
 } from 'util/constants';
-import {
-  getServiceContract,
-  getServiceRegistryTokenUtilityContract,
-} from 'common-util/Contracts';
+import { getServiceContract } from 'common-util/Contracts';
 import { convertStringToArray } from 'common-util/List/ListCommon';
 import { filterByOwner } from 'common-util/ContractUtils/myList';
+import { getTokenDetailsRequest } from 'common-util/Details/ServiceState/utils';
 
 // --------- HELPER METHODS ---------
 export const getServiceOwner = (id) => new Promise((resolve, reject) => {
@@ -172,11 +170,7 @@ export const getTokenUri = (id) => new Promise((resolve, reject) => {
 });
 
 export const getTokenAddressRequest = (id) => new Promise((resolve, reject) => {
-  const contract = getServiceRegistryTokenUtilityContract();
-
-  contract.methods
-    .mapServiceIdTokenDeposit(id)
-    .call()
+  getTokenDetailsRequest(id)
     .then((response) => {
       resolve(
         response.token === '0x0000000000000000000000000000000000000000'

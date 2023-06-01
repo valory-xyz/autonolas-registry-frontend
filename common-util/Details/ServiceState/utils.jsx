@@ -115,19 +115,30 @@ export const getServiceOwner = (id) => new Promise((resolve, reject) => {
     });
 });
 
-/* ----- step 1 functions ----- */
-export const checkIfEth = (id) => new Promise((resolve, reject) => {
+export const getTokenDetailsRequest = (id) => new Promise((resolve, reject) => {
   const contract = getServiceRegistryTokenUtilityContract();
 
   contract.methods
     .mapServiceIdTokenDeposit(id)
     .call()
     .then((response) => {
+      resolve(response);
+    })
+    .catch((e) => {
+      reject(e);
+      notifyError('Error occured on getting token details');
+    });
+});
+
+/* ----- step 1 functions ----- */
+export const checkIfEth = (id) => new Promise((resolve, reject) => {
+  getTokenDetailsRequest(id)
+    .then((response) => {
       resolve(response.token === DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS);
     })
     .catch((e) => {
       reject(e);
-      notifyError();
+      notifyError('Error occured on checking token');
     });
 });
 
@@ -139,12 +150,7 @@ export const hasSufficientTokenRequest = ({ account, chainId, serviceId }) => ne
      * - fetch the token address from the serviceId
      * - fetch the allowance of the token using the token address
      */
-
-  const tokenUtilityContract = getServiceRegistryTokenUtilityContract();
-
-  tokenUtilityContract.methods
-    .mapServiceIdTokenDeposit(serviceId)
-    .call()
+  getTokenDetailsRequest(serviceId)
     .then(({ token }) => {
       const contract = getGenericErc20Contract(token);
 
@@ -171,11 +177,7 @@ export const hasSufficientTokenRequest = ({ account, chainId, serviceId }) => ne
  * Approves
  */
 export const approveToken = ({ account, chainId, serviceId }) => new Promise((resolve, reject) => {
-  const tokenUtilityContract = getServiceRegistryTokenUtilityContract();
-
-  tokenUtilityContract.methods
-    .mapServiceIdTokenDeposit(serviceId)
-    .call()
+  getTokenDetailsRequest(serviceId)
     .then(({ token }) => {
       const contract = getGenericErc20Contract(token);
 
@@ -201,12 +203,9 @@ export const approveToken = ({ account, chainId, serviceId }) => new Promise((re
     });
 });
 
+// NOTE: this function is used only for testing
 export const mintTokenRequest = ({ account, serviceId }) => new Promise((resolve, reject) => {
-  const tokenUtilityContract = getServiceRegistryTokenUtilityContract();
-
-  tokenUtilityContract.methods
-    .mapServiceIdTokenDeposit(serviceId)
-    .call()
+  getTokenDetailsRequest(serviceId)
     .then(({ token }) => {
       const contract = getGenericErc20Contract(token);
 
@@ -215,9 +214,7 @@ export const mintTokenRequest = ({ account, serviceId }) => new Promise((resolve
         .send({ from: account });
 
       sendTransaction(fn, account)
-        .then(() => {
-          resolve();
-        })
+        .then(() => resolve())
         .catch((e) => {
           reject(e);
           notifyError();
@@ -225,7 +222,6 @@ export const mintTokenRequest = ({ account, serviceId }) => new Promise((resolve
     })
     .catch((e) => {
       reject(e);
-      notifyError();
     });
 });
 

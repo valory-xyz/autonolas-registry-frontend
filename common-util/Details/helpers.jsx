@@ -1,8 +1,14 @@
 /* eslint-disable react/prop-types */
+import { useEffect, useState } from 'react';
 import { Button, Typography, Alert } from 'antd/lib';
 import { ArrowUpRight, Circle } from 'react-feather';
 import get from 'lodash/get';
-import { GATEWAY_URL, NA, NAV_TYPES } from 'util/constants';
+import {
+  DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS,
+  GATEWAY_URL,
+  NA,
+  NAV_TYPES,
+} from 'util/constants';
 import { NftImage } from './NFTImage';
 import {
   SubTitle,
@@ -11,6 +17,7 @@ import {
   EachSection,
   ServiceStatus,
 } from './styles';
+import { getTokenDetailsRequest } from './ServiceState/utils';
 
 const { Link, Text } = Typography;
 
@@ -25,6 +32,7 @@ export const HASH_DETAILS_STATE = {
 };
 
 export const DetailsInfo = ({
+  id,
   isOwner,
   type,
   tokenUri,
@@ -36,6 +44,21 @@ export const DetailsInfo = ({
   setIsModalVisible,
   onDependencyClick,
 }) => {
+  const [tokenAddress, setTokenAddress] = useState(null);
+
+  useEffect(() => {
+    const getData = async () => {
+      if (type === NAV_TYPES.SERVICE) {
+        const response = await getTokenDetailsRequest(id);
+        setTokenAddress(response.token);
+      }
+    };
+
+    if (id) {
+      getData();
+    }
+  }, [id]);
+
   const updateHashBtn = isOwner ? (
     <>
       {onUpdateHash && (
@@ -178,6 +201,14 @@ export const DetailsInfo = ({
       title: 'Threshold',
       value: get(info, 'threshold', null) || NA,
     });
+
+    // show token address only if it is not ETH
+    if (tokenAddress !== DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS) {
+      serviceDetailsList.push({
+        title: 'Token Address',
+        value: tokenAddress || NA,
+      });
+    }
 
     return serviceDetailsList;
   };

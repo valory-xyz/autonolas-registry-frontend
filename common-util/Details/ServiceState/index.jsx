@@ -106,11 +106,9 @@ export const ServiceState = ({
   /* ----- step 1 ----- */
   const handleStep1Registration = async () => {
     try {
-      const isEth = await checkIfEth(id);
-
       // if not eth, check if the user has sufficient token balance
       // and if not, approve the token
-      if (!isEth) {
+      if (!isEthToken) {
         const hasTokenBalance = await hasSufficientTokenRequest({
           account,
           chainId,
@@ -136,7 +134,11 @@ export const ServiceState = ({
       }
 
       // any amount if not ETH token substitute with 1
-      await onActivateRegistration(account, id, isEth ? securityDeposit : '1');
+      await onActivateRegistration(
+        account,
+        id,
+        isEthToken ? securityDeposit : '1',
+      );
       await updateDetails();
     } catch (e) {
       console.error(e);
@@ -173,11 +175,9 @@ export const ServiceState = ({
     const agentInstances = trimArray(instances || []);
 
     try {
-      const isEth = await checkIfEth(id);
-
       // if not eth, check if the user has sufficient token balance
       // and if not, approve the token
-      if (!isEth) {
+      if (!isEthToken) {
         const hasTokenBalance = await hasSufficientTokenRequest({
           account,
           chainId,
@@ -199,7 +199,7 @@ export const ServiceState = ({
         agentIds: ids,
         agentInstances,
         dataSource,
-        isEth,
+        isEth: isEthToken,
       });
       await updateDetails();
     } catch (e) {
