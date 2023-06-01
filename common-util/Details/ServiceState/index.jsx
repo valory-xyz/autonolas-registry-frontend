@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import {
@@ -13,6 +14,9 @@ import {
   onStep2RegisterAgents,
   onStep3Deploy,
   onStep5Unbond,
+  checkIfEth,
+  hasSufficientTokenRequest,
+  approveToken,
 } from './utils';
 import StepActiveRegistration from './2StepActiveRegistration';
 import StepFinishedRegistration from './3rdStepFinishedRegistration';
@@ -39,6 +43,7 @@ export const ServiceState = ({
   const [currentStep, setCurrentStep] = useState(1);
   const [dataSource, setDataSource] = useState([]);
   const [isStateImageVisible, setIsStateImageVisible] = useState(false);
+  const chainId = useSelector((state) => state?.setup?.chainId);
 
   const status = get(details, 'state');
   const agentIds = get(details, 'agentIds');
@@ -93,6 +98,25 @@ export const ServiceState = ({
   /* ----- step 1 ----- */
   const handleStep1Registration = async () => {
     try {
+      const isEth = await checkIfEth(id);
+
+      // if not eth, check if the user has sufficient token balance
+      // and if not, approve the token
+      if (!isEth) {
+        const hasTokenBalance = await hasSufficientTokenRequest({
+          account,
+          chainId,
+          serviceId: id,
+        });
+
+        if (!hasTokenBalance) {
+          await approveToken({
+            account,
+            chainId,
+            serviceId: id,
+          });
+        }
+      }
       await onActivateRegistration(account, id, securityDeposit);
       await updateDetails();
     } catch (e) {

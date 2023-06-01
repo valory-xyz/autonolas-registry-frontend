@@ -1,10 +1,16 @@
+/* eslint-disable max-len */
 import { notification } from 'antd/lib';
 import { compact } from 'lodash';
+import { ethers } from 'ethers';
 import {
+  ADDRESSES,
+  getGenericErc20Contract,
   getServiceContract,
   getServiceManagerContract,
+  getServiceRegistryTokenUtilityContract,
 } from 'common-util/Contracts';
 import { sendTransaction } from 'common-util/functions/sendTransaction';
+import { DEFAULT_SERVICE_CREATION_ETH_TOKEN } from 'util/constants';
 
 const notifySuccess = (message = 'Terminated Successfully') => notification.success({ message });
 const notifyError = (message = 'Some error occured') => notification.error({ message });
@@ -107,6 +113,91 @@ export const getServiceOwner = (id) => new Promise((resolve, reject) => {
 });
 
 /* ----- step 1 functions ----- */
+export const checkIfEth = (id) => new Promise((resolve, reject) => {
+  const contract = getServiceRegistryTokenUtilityContract();
+
+  contract.methods
+    .mapServiceIdTokenDeposit(id)
+    .call()
+    .then((response) => {
+      resolve(response.token === DEFAULT_SERVICE_CREATION_ETH_TOKEN);
+    })
+    .catch((e) => {
+      reject(e);
+      notifyError();
+    });
+});
+
+/**
+ * returns true if the user has sufficient token balance
+ */
+export const hasSufficientTokenRequest = ({ account, chainId, serviceId }) => new Promise((resolve, reject) => {
+  /**
+     * - fetch the token address from the serviceId
+     * - fetch the allowance of the token using the token address
+     */
+
+  const tokenUtilityContract = getServiceRegistryTokenUtilityContract();
+
+  tokenUtilityContract.methods
+    .mapServiceIdTokenDeposit(serviceId)
+    .call()
+    .then(({ token }) => {
+      const contract = getGenericErc20Contract(token);
+
+      contract.methods
+        .allowance(account, ADDRESSES[chainId].serviceRegistryTokenUtility)
+        .call()
+        .then((response) => {
+          resolve(
+            !(ethers.BigNumber.from(response) < ethers.constants.MaxUint256),
+          );
+        })
+        .catch((e) => {
+          reject(e);
+          notifyError();
+        });
+    })
+    .catch((e) => {
+      reject(e);
+      notifyError();
+    });
+});
+
+/**
+ * Approves
+ */
+export const approveToken = ({ account, chainId, serviceId }) => new Promise((resolve, reject) => {
+  const tokenUtilityContract = getServiceRegistryTokenUtilityContract();
+
+  tokenUtilityContract.methods
+    .mapServiceIdTokenDeposit(serviceId)
+    .call()
+    .then(({ token }) => {
+      const contract = getGenericErc20Contract(token);
+
+      const fn = contract.methods
+        .approve(
+          ADDRESSES[chainId].serviceRegistryTokenUtility,
+          ethers.constants.MaxUint256,
+        )
+        .send({ from: account });
+
+      sendTransaction(fn, account)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((e) => {
+          window.console.log('Error occured on approving');
+          reject(e);
+        });
+    })
+    .catch((e) => {
+      reject(e);
+      notifyError();
+    });
+});
+
 export const onActivateRegistration = (account, id, deposit) => new Promise((resolve, reject) => {
   const contract = getServiceManagerContract();
 
