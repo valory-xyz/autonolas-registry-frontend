@@ -68,8 +68,6 @@ export const getBonds = (id, tableDataSource) => new Promise((resolve, reject) =
          * output: 2 * 100 + 3 * 200 = 800
          */
 
-      // totalBonds[0] = total bond in eth
-      // totalBonds[1] = total bond in non-eth
       let totalBonds = 0;
       (tableDataSource || []).forEach((data) => {
         const { agentAddresses, bond } = data;

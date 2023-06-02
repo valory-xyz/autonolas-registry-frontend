@@ -113,10 +113,6 @@ const RegisterForm = ({
     window.console.log('Failed:', errorInfo);
   };
 
-  const prefillOwnerAddress = () => {
-    form.setFieldsValue({ owner_address: account });
-  };
-
   const hashValue = form.getFieldValue('hash');
 
   return (
@@ -138,6 +134,7 @@ const RegisterForm = ({
           label="Owner Address"
           name="owner_address"
           validateFirst
+          className="mb-0"
           rules={[
             {
               required: true,
@@ -154,7 +151,6 @@ const RegisterForm = ({
               },
             }),
           ]}
-          className="mb-0"
         >
           <Input placeholder="0x862..." disabled={isUpdateForm} />
         </Form.Item>
@@ -163,7 +159,7 @@ const RegisterForm = ({
           <Button
             htmlType="button"
             type="link"
-            onClick={prefillOwnerAddress}
+            onClick={() => form.setFieldsValue({ owner_address: account })}
             className="pl-0"
             disabled={!account}
           >
@@ -178,6 +174,7 @@ const RegisterForm = ({
           // dedicated address for standard ETH secured service creation
           // user can change it if they want to use a different generic token
           initialValue={ethTokenAddress || DEFAULT_SERVICE_CREATION_ETH_TOKEN}
+          className="mb-0"
           rules={[
             {
               required: true,
@@ -194,6 +191,18 @@ const RegisterForm = ({
           ]}
         >
           <Input />
+        </Form.Item>
+
+        <Form.Item className="mb-0">
+          <Button
+            htmlType="button"
+            type="link"
+            onClick={() => form.setFieldsValue({ token: DEFAULT_SERVICE_CREATION_ETH_TOKEN })}
+            className="pl-0"
+            disabled={!account}
+          >
+            Prefill Default Eth Address
+          </Button>
         </Form.Item>
 
         {isUpdateForm && (
