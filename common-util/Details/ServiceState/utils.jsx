@@ -190,7 +190,7 @@ const approveToken = ({ account, chainId, serviceId }) => new Promise((resolve, 
     })
     .catch((e) => {
       reject(e);
-      notifyError();
+      notifyError('Error occured on approving token');
     });
 });
 
@@ -213,6 +213,8 @@ export const checkAndApproveToken = ({ account, chainId, serviceId }) => new Pro
           .catch((e) => {
             reject(e);
           });
+      } else {
+        resolve();
       }
     })
     .catch((e) => {
