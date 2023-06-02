@@ -136,7 +136,7 @@ export const getTokenDetailsRequest = (id) => new Promise((resolve, reject) => {
     });
 });
 
-export const hasSufficientTokenRequest = ({ account, chainId, serviceId }) => new Promise((resolve, reject) => {
+const hasSufficientTokenRequest = ({ account, chainId, serviceId }) => new Promise((resolve, reject) => {
   /**
      * - fetch the token address from the serviceId
      * - fetch the allowance of the token using the token address
@@ -167,7 +167,7 @@ export const hasSufficientTokenRequest = ({ account, chainId, serviceId }) => ne
 /**
  * Approves
  */
-export const approveToken = ({ account, chainId, serviceId }) => new Promise((resolve, reject) => {
+const approveToken = ({ account, chainId, serviceId }) => new Promise((resolve, reject) => {
   getTokenDetailsRequest(serviceId)
     .then(({ token }) => {
       const contract = getGenericErc20Contract(token);
@@ -194,18 +194,18 @@ export const approveToken = ({ account, chainId, serviceId }) => new Promise((re
     });
 });
 
-export const checkAndApproveToken = ({ account, chainId, id }) => new Promise((resolve, reject) => {
+export const checkAndApproveToken = ({ account, chainId, serviceId }) => new Promise((resolve, reject) => {
   hasSufficientTokenRequest({
     account,
     chainId,
-    serviceId: id,
+    serviceId,
   })
     .then((hasTokenBalance) => {
       if (!hasTokenBalance) {
         approveToken({
           account,
           chainId,
-          serviceId: id,
+          serviceId,
         })
           .then((response) => {
             resolve(response);
@@ -324,10 +324,7 @@ export const onStep2RegisterAgents = ({
     .then(({ totalBonds }) => {
       contract.methods
         .registerAgents(serviceId, agentInstances, agentIds)
-        .send({
-          from: account,
-          value: totalBonds,
-        })
+        .send({ from: account, value: `${totalBonds}` })
         .then((information) => {
           resolve(information);
           notifySuccess('Registered Successfully');
@@ -442,7 +439,7 @@ export const checkIfServiceRequiresWhiltelisting = (serviceId) => new Promise((r
     })
     .catch((e) => {
       reject(e);
-      notifyError('Error occured on checking operator whitelist');
+      notifyError('Error occured on checking if service requires whitelisting');
     });
 });
 
@@ -461,7 +458,6 @@ export const checkIfServiceIsWhitelisted = (serviceId, operatorAddress) => new P
     });
 });
 
-// setOperatorsStatuses(serviceId, operatorAddresses, operatorStatuses, true)
 export const setOperatorsStatusesRequest = ({
   account,
   serviceId,
@@ -470,14 +466,16 @@ export const setOperatorsStatusesRequest = ({
 }) => new Promise((resolve, reject) => {
   const contract = getOperatorWhitelistContract();
 
-  contract.methods
+  const fn = contract.methods
     .setOperatorsStatuses(
       serviceId,
       operatorAddresses,
       operatorStatuses,
       true,
     )
-    .send({ from: account })
+    .send({ from: account });
+
+  sendTransaction(fn, account)
     .then((response) => {
       resolve(response);
     })
@@ -490,9 +488,11 @@ export const setOperatorsStatusesRequest = ({
 export const setOperatorsCheckRequest = ({ account, serviceId, isChecked }) => new Promise((resolve, reject) => {
   const contract = getOperatorWhitelistContract();
 
-  contract.methods
+  const fn = contract.methods
     .setOperatorsCheck(serviceId, isChecked)
-    .send({ from: account })
+    .send({ from: account });
+
+  sendTransaction(fn, account)
     .then((response) => {
       resolve(response);
     })
@@ -501,9 +501,3 @@ export const setOperatorsCheckRequest = ({ account, serviceId, isChecked }) => n
       notifyError('Error occured on checking operator whitelist');
     });
 });
-
-/**
- * TODO:
- * agentInstances can be empty even if agentInstances are added in step 2
- * - Even if 1 agentInstances is present, rest of the agentInstances can be empty
- */

@@ -119,12 +119,3 @@ ActiveRegistration.defaultProps = {
 };
 
 export default ActiveRegistration;
-
-//
-/**
- * service creation - add a button below ETH token "Prefill Eth Token" &
- * on click should prefill the token address starting with 0xEee....
- *
- * Deployed step (4th step) - no data is shown, fix it
- *
- */

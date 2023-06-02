@@ -16,9 +16,8 @@ import {
   onStep3Deploy,
   onStep5Unbond,
   checkIfEth,
-  hasSufficientTokenRequest,
-  approveToken,
   mintTokenRequest,
+  checkAndApproveToken,
 } from './utils';
 import StepActiveRegistration from './2StepActiveRegistration';
 import StepFinishedRegistration from './3rdStepFinishedRegistration';
@@ -110,24 +109,16 @@ export const ServiceState = ({
       // if not eth, check if the user has sufficient token balance
       // and if not, approve the token
       if (!isEthToken) {
-        const hasTokenBalance = await hasSufficientTokenRequest({
+        await checkAndApproveToken({
           account,
           chainId,
           serviceId: id,
         });
-
-        if (!hasTokenBalance) {
-          await approveToken({
-            account,
-            chainId,
-            serviceId: id,
-          });
-        }
       }
 
       // NOTE: just for testing, mint tokens for local network
       if (isLocalNetwork(chainId)) {
-        // mint tokens
+        // mint tokens before activating registration
         await mintTokenRequest({
           account,
           serviceId: id,
@@ -179,19 +170,11 @@ export const ServiceState = ({
       // if not eth, check if the user has sufficient token balance
       // and if not, approve the token
       if (!isEthToken) {
-        const hasTokenBalance = await hasSufficientTokenRequest({
+        await checkAndApproveToken({
           account,
           chainId,
           serviceId: id,
         });
-
-        if (!hasTokenBalance) {
-          await approveToken({
-            account,
-            chainId,
-            serviceId: id,
-          });
-        }
       }
 
       await onStep2RegisterAgents({
