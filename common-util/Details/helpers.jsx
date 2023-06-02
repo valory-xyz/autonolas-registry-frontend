@@ -1,9 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import {
-  Button, Typography, Alert, Input, Radio, Switch,
-} from 'antd/lib';
+import { Button, Typography, Alert } from 'antd/lib';
 import { ArrowUpRight, Circle } from 'react-feather';
 import get from 'lodash/get';
 import {
@@ -13,6 +10,8 @@ import {
   NAV_TYPES,
 } from 'util/constants';
 import { NftImage } from './NFTImage';
+import { SetOperatorStatus, OperatorWhitelist } from './ServiceDetailsHelper';
+import { getTokenDetailsRequest } from './ServiceState/utils';
 import {
   SubTitle,
   Info,
@@ -20,12 +19,6 @@ import {
   EachSection,
   ServiceStatus,
 } from './styles';
-import {
-  checkIfServiceIsWhitelisted,
-  checkIfServiceRequiresWhiltelisting,
-  getTokenDetailsRequest,
-  setOperatorsStatusesRequest, setOperatorsCheckRequest,
-} from './ServiceState/utils';
 
 const { Link, Text } = Typography;
 
@@ -52,32 +45,13 @@ export const DetailsInfo = ({
   setIsModalVisible,
   onDependencyClick,
 }) => {
-  const account = useSelector((state) => state?.setup?.account);
-
   const [tokenAddress, setTokenAddress] = useState(null);
-  const [isWhiteListed, setIsWhiteListed] = useState(false);
-  const [opertorAddress, setOperatorAddress] = useState(null);
-
-  // switch
-  const [switchOne, setSwitchOne] = useState(isWhiteListed);
-  useEffect(() => {
-    setSwitchOne(isWhiteListed);
-  }, [isWhiteListed]);
-
-
-  // convert this to be dynamic (ie. array on inputs and radio buttons)
-  const [operatorStatusAddress, setStatusAddress] = useState(null);
-  const [operatorStatusBool, setStatusBool] = useState('true');
 
   useEffect(() => {
     const getData = async () => {
       if (type === NAV_TYPES.SERVICE) {
         const response = await getTokenDetailsRequest(id);
         setTokenAddress(response.token);
-
-        // get operator whitelist
-        const whiteListRes = await checkIfServiceRequiresWhiltelisting(id);
-        setIsWhiteListed(whiteListRes);
       }
     };
 
@@ -240,95 +214,15 @@ export const DetailsInfo = ({
     // operator whitelisting is only available for service
     serviceDetailsList.push({
       title: 'Operator Whitelisting',
-      value: isWhiteListed ? (
-        <>
-          <Switch
-            disabled={!isOwner}
-            checked={switchOne}
-            checkedChildren="Enabled"
-            unCheckedChildren="Disabled"
-            onChange={async (checked) => {
-              setSwitchOne(checked);
-              console.log(checked);
-              if (!checked) {
-                setOperatorsCheckRequest({ account, serviceId: id, isChecked: false });
-              }
-            }}
-          />
-          <br />
-
-          {/* TODO add form label */}
-          <Text>Check if Operator Address is whitelisted?</Text>
-          <Input onChange={(e) => setOperatorAddress(e.target.value)} />
-          <br />
-          <Button
-            onClick={async () => {
-              const abcd = await checkIfServiceIsWhitelisted(
-                id,
-                opertorAddress,
-              );
-              console.log(opertorAddress, abcd);
-            }}
-          >
-            Check
-          </Button>
-        </>
-      ) : (
-        <>
-          <Switch
-            disabled={!isOwner}
-            checkedChildren="Enabled"
-            unCheckedChildren="Disabled"
-            onChange={async (checked) => {
-              setSwitchOne(checked);
-              console.log(checked);
-              if (checked) {
-                setOperatorsCheckRequest({ account, serviceId: id, isChecked: true });
-              }
-            }}
-          />
-        </>
-      ),
+      value: <OperatorWhitelist id={id} isOwner={isOwner} />,
     });
 
-    // if account is service owner
     if (isOwner) {
       serviceDetailsList.push({
         title: 'Set operators statuses',
-        value: (
-          // show an input and 2 radio buttons with true and false
-          // TODO: separate in 2 different arrays
-          <>
-            <Text>Operator Address and status</Text>
-            <Input onChange={(e) => setStatusAddress(e.target.value)} />
-            <Radio.Group
-              onChange={(e) => setStatusBool(e.target.value)}
-              value={operatorStatusBool}
-            >
-              <Radio value="true">True</Radio>
-              <Radio value="false">False</Radio>
-            </Radio.Group>
-            <br />
-            <Button
-              onClick={async () => {
-                const res = await setOperatorsStatusesRequest({
-                  account,
-                  serviceId: id,
-                  operatorAddresses: [operatorStatusAddress],
-                  operatorStatuses: [Boolean(operatorStatusBool)],
-                });
-                console.log(res);
-              }}
-            >
-              Submit
-            </Button>
-            <br />
-            <Text>By submitting will instantly enable whitelisting</Text>
-          </>
-        ),
+        value: <SetOperatorStatus id={id} />,
       });
     }
-
 
     return serviceDetailsList;
   };
