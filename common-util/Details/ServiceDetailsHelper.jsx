@@ -7,6 +7,7 @@ import {
   Input,
   notification,
   Switch,
+  Form,
 } from 'antd/lib';
 import { DynamicFieldsForm } from 'common-util/DynamicFieldsForm';
 import {
@@ -20,15 +21,15 @@ const { Text } = Typography;
 
 export const OperatorWhitelist = ({ isOwner, id }) => {
   const account = useSelector((state) => state?.setup?.account);
+  const [form] = Form.useForm();
 
   const [isCheckLoading, setIsCheckLoading] = useState(false);
   const [isWhiteListed, setIsWhiteListed] = useState(false);
-  const [opertorAddress, setOperatorAddress] = useState(null);
-  const [switchOne, setSwitchOne] = useState(isWhiteListed);
+  const [switchValue, setSwitchValue] = useState(isWhiteListed);
 
   // switch
   useEffect(() => {
-    setSwitchOne(isWhiteListed);
+    setSwitchValue(isWhiteListed);
   }, [isWhiteListed]);
 
   // get operator whitelist
@@ -43,15 +44,34 @@ export const OperatorWhitelist = ({ isOwner, id }) => {
     }
   }, [id]);
 
-  return isWhiteListed ? (
+  const onCheck = async (values) => {
+    try {
+      setIsCheckLoading(true);
+      const isValid = await checkIfServiceIsWhitelisted(
+        id,
+        values.operatorAddress,
+      );
+
+      const message = `Operator ${values.operatorAddress} is ${
+        isValid ? '' : 'not'
+      } whitelisted`;
+      notification.success({ message });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsCheckLoading(false);
+    }
+  };
+
+  return (
     <>
       <Switch
         disabled={!isOwner}
-        checked={switchOne}
+        checked={switchValue}
         checkedChildren="Enabled"
         unCheckedChildren="Disabled"
         onChange={async (checked) => {
-          setSwitchOne(checked);
+          setSwitchValue(checked);
           if (!checked) {
             await setOperatorsCheckRequest({
               account,
@@ -62,54 +82,38 @@ export const OperatorWhitelist = ({ isOwner, id }) => {
           }
         }}
       />
-      <br />
 
-      {/* TODO add form label */}
-      <Text>Check if Operator Address is whitelisted?</Text>
-      <Input onChange={(e) => setOperatorAddress(e.target.value)} />
-      <br />
-      <Button
-        loading={isCheckLoading}
-        onClick={async () => {
-          try {
-            setIsCheckLoading(true);
-            const isValid = await checkIfServiceIsWhitelisted(
-              id,
-              opertorAddress,
-            );
+      {isWhiteListed && (
+        <>
+          <br />
+          <Text>Check if Operator Address is whitelisted?</Text>
+          <Form
+            layout="inline"
+            form={form}
+            name="dynamic_form_complex"
+            onFinish={onCheck}
+            autoComplete="off"
+          >
+            <Form.Item
+              label="Operator Address"
+              name="operatorAddress"
+              rules={[{ required: true, message: 'Please input the address' }]}
+            >
+              <Input />
+            </Form.Item>
 
-            const message = `Operator ${opertorAddress} is ${
-              isValid ? '' : 'not'
-            } whitelisted`;
-            notification.success({ message });
-          } catch (error) {
-            console.error(error);
-          } finally {
-            setIsCheckLoading(false);
-          }
-        }}
-      >
-        Check
-      </Button>
-    </>
-  ) : (
-    <>
-      <Switch
-        disabled={!isOwner}
-        checkedChildren="Enabled"
-        unCheckedChildren="Disabled"
-        onChange={async (checked) => {
-          setSwitchOne(checked);
-          if (checked) {
-            await setOperatorsCheckRequest({
-              account,
-              serviceId: id,
-              isChecked: true,
-            });
-            await setOpWhitelist();
-          }
-        }}
-      />
+            <Form.Item>
+              <Button
+                htmlType="submit"
+                loading={isCheckLoading}
+                disabled={!account}
+              >
+                Check
+              </Button>
+            </Form.Item>
+          </Form>
+        </>
+      )}
     </>
   );
 };
@@ -144,7 +148,9 @@ export const SetOperatorStatus = ({ id }) => {
         onSubmit={onSubmit}
         submitButtonText="Submit"
       />
-      <Text type="secondary">By submitting will instantly enable whitelisting</Text>
+      <Text type="secondary">
+        By submitting will instantly enable whitelisting
+      </Text>
     </>
   );
 };
