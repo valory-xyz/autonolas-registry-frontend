@@ -11,11 +11,11 @@ import {
   SERVICE_REGISTRY_L2,
   SERVICE_REGISTRY_TOKEN_UTILITY_CONTRACT,
   GENERIC_ERC20_CONTRACT,
-  // OPERATOR_WHITELIST_CONTRACT,
+  OPERATOR_WHITELIST_CONTRACT,
 } from 'common-util/AbiAndAddresses';
 import { isL1Network } from 'common-util/functions';
 
-// get addresses from scripts/deployment folder
+// get addresses from scripts/deployment folder in autonolas-registries repo
 export const ADDRESSES = {
   1: {
     agentRegistry: '0x2F1f7D38e4772884b88f3eCd8B6b9faCdC319112',
@@ -76,7 +76,7 @@ export const ADDRESSES = {
     serviceRegistryTokenUtility: '0x809d550fca64d94Bd9F66E60752A544199cfAC3D',
     operatorWhitelist: '0x4c5859f0F772848b2D91F1D83E2Fe57935348029',
 
-    // used for testing
+    // used for testing - service creation/update token address
     ERC20Token: '0x5f3f1dBD7B74C6B46e8c44f98792A1dAf8d69154',
   },
 };
@@ -161,11 +161,21 @@ export const getServiceRegistryTokenUtilityContract = () => {
   return contract;
 };
 
-export const getGenericErc20Contract = (address) => {
+export const getOperatorWhitelistContract = () => {
+  const { web3, address } = getWeb3Details();
+  const { operatorWhitelist } = address;
+  const contract = new web3.eth.Contract(
+    OPERATOR_WHITELIST_CONTRACT.abi,
+    operatorWhitelist,
+  );
+  return contract;
+};
+
+export const getGenericErc20Contract = (tokenAddress) => {
   const { web3 } = getWeb3Details();
   const contract = new web3.eth.Contract(
     GENERIC_ERC20_CONTRACT.abi,
-    address,
+    tokenAddress,
   );
   return contract;
 };

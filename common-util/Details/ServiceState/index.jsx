@@ -62,6 +62,7 @@ export const ServiceState = ({
         setDataSource(temp);
       }
 
+      // if valid service id, check if it's an eth token
       if (id) {
         const isEth = await checkIfEth(id);
         setIsEthToken(isEth);
@@ -199,7 +200,6 @@ export const ServiceState = ({
         agentIds: ids,
         agentInstances,
         dataSource,
-        isEth: isEthToken,
       });
       await updateDetails();
     } catch (e) {

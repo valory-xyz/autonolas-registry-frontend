@@ -19,6 +19,16 @@ const notifyError = (message = 'Some error occured') => notification.error({ mes
 
 // params.agentParams.slots[i] = total initial available Slots for the i-th service.agentIds;
 
+export const getNumberOfAgentAddress = (agentAddresses) => {
+  /**
+   * get the number of addresses
+   * g1. ['0x123', '0x456'] => 2
+   * eg2. ['0x123', '0x456', ''] => 2 // empty string (falsy) is ignored
+   */
+  const addressCount = compact((agentAddresses || '').split(',')).length;
+  return addressCount;
+};
+
 /**
  *
  * @param {String} id serviceId
@@ -68,9 +78,7 @@ export const getBonds = (id, tableDataSource) => new Promise((resolve, reject) =
            * g1. ['0x123', '0x456'] => 2
            * eg2. ['0x123', '0x456', ''] => 2 // empty string (falsy) is ignored
            */
-        const numberOfAgentAddress = compact(
-          (agentAddresses || '').split(','),
-        ).length;
+        const numberOfAgentAddress = getNumberOfAgentAddress(agentAddresses);
 
         // multiply the number of addresses with the bond value of the agentId
         totalBonds[0] += numberOfAgentAddress * bond;
@@ -130,21 +138,6 @@ export const getTokenDetailsRequest = (id) => new Promise((resolve, reject) => {
     });
 });
 
-/* ----- step 1 functions ----- */
-export const checkIfEth = (id) => new Promise((resolve, reject) => {
-  getTokenDetailsRequest(id)
-    .then((response) => {
-      resolve(response.token === DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS);
-    })
-    .catch((e) => {
-      reject(e);
-      notifyError('Error occured on checking token');
-    });
-});
-
-/**
- * returns true if the user has sufficient token balance
- */
 export const hasSufficientTokenRequest = ({ account, chainId, serviceId }) => new Promise((resolve, reject) => {
   /**
      * - fetch the token address from the serviceId
@@ -202,6 +195,48 @@ export const approveToken = ({ account, chainId, serviceId }) => new Promise((re
       notifyError();
     });
 });
+
+export const checkAndApproveToken = ({ account, chainId, id }) => new Promise((resolve, reject) => {
+  hasSufficientTokenRequest({
+    account,
+    chainId,
+    serviceId: id,
+  })
+    .then((hasTokenBalance) => {
+      if (!hasTokenBalance) {
+        approveToken({
+          account,
+          chainId,
+          serviceId: id,
+        })
+          .then((response) => {
+            resolve(response);
+          })
+          .catch((e) => {
+            reject(e);
+          });
+      }
+    })
+    .catch((e) => {
+      reject(e);
+    });
+});
+
+/* ----- step 1 functions ----- */
+export const checkIfEth = (id) => new Promise((resolve, reject) => {
+  getTokenDetailsRequest(id)
+    .then((response) => {
+      resolve(response.token === DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS);
+    })
+    .catch((e) => {
+      reject(e);
+      notifyError('Error occured on checking token');
+    });
+});
+
+/**
+ * returns true if the user has sufficient token balance
+ */
 
 // NOTE: this function is used only for testing
 export const mintTokenRequest = ({ account, serviceId }) => new Promise((resolve, reject) => {
@@ -288,17 +323,16 @@ export const onStep2RegisterAgents = ({
   agentIds,
   agentInstances,
   dataSource,
-  isEth,
 }) => new Promise((resolve, reject) => {
   const contract = getServiceManagerContract();
 
-  getBonds(serviceId, dataSource, isEth)
+  getBonds(serviceId, dataSource)
     .then(({ totalBonds }) => {
       contract.methods
         .registerAgents(serviceId, agentInstances, agentIds)
         .send({
           from: account,
-          value: `${isEth ? totalBonds[0] : totalBonds[1]}`,
+          value: totalBonds[0],
         })
         .then((information) => {
           resolve(information);
@@ -313,6 +347,55 @@ export const onStep2RegisterAgents = ({
       notifyError();
     });
 });
+
+export const getTokenBondRequest = (id, source) => {
+  const contract = getServiceRegistryTokenUtilityContract();
+
+  return Promise.all(
+    (source || []).map(async ({ agentId }) => {
+      const bond = await contract.methods.getAgentBond(id, agentId).call();
+      return bond;
+    }),
+  );
+};
+
+// export const getTokenBondRequest = (id, agentIds) => new Promise((resolve, reject) => {
+//   const contract = getServiceRegistryTokenUtilityContract();
+
+//   contract.methods
+//     .getAgentInstances(id)
+//     .call()
+//     .then(async (response) => {
+//       console.log(response);
+//     // const data = await Promise.all(
+//     //   (response?.agentInstances || []).map(async (key, index) => {
+//     //     const operatorAddress = await contract.methods
+//     //       .mapAgentInstanceOperators(key)
+//     //       .call();
+//     //     return {
+//     //       id: `agent-instance-row-${index + 1}`,
+//     //       operatorAddress,
+//     //       agentInstance: key,
+//     //     };
+//     //   }),
+//     // );
+//     // resolve(data);
+//     })
+//     .catch((e) => {
+//       reject(e);
+//     });
+
+//   contract.methods
+//     .getAgentBond(id)
+//     .call()
+//     .then((response) => {
+//       resolve(response);
+//     })
+//     .catch((e) => {
+//       reject(e);
+//       notifyError('Error occured on getting token bond');
+//     });
+// });
 
 /* ----- step 3 functions ----- */
 export const getServiceAgentInstances = (id) => new Promise((resolve, reject) => {
@@ -388,3 +471,9 @@ export const onStep5Unbond = (account, id) => new Promise((resolve, reject) => {
       reject(e);
     });
 });
+
+/**
+ * TODO:
+ * agentInstances can be empty even if agentInstances are added in step 2
+ * - Even if 1 agentInstances is present, rest of the agentInstances can be empty
+ */
