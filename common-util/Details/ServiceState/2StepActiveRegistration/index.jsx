@@ -24,7 +24,7 @@ const ActiveRegistration = ({
   isOwner,
   isEthToken,
 }) => {
-  const [totalBonds, setTotalBond] = useState([]);
+  const [totalBonds, setTotalBond] = useState(null);
   const [ethTokenBonds, setEthTokenBonds] = useState([]);
 
   useEffect(() => {
@@ -57,7 +57,7 @@ const ActiveRegistration = ({
 
   const btnProps = getOtherBtnProps(STEP);
 
-  const totalBondEthToken = convertToEth((totalBonds[0] || 0).toString()) || '--';
+  const totalBondEthToken = convertToEth((totalBonds || 0).toString()) || '--';
 
   let totalTokenBonds = 0;
   ethTokenBonds.forEach((bond, index) => {
@@ -122,8 +122,6 @@ export default ActiveRegistration;
 
 //
 /**
- * TODO: revert totalBonds to original (from array to primitive)
- *
  * service creation - add a button below ETH token "Prefill Eth Token" &
  * on click should prefill the token address starting with 0xEee....
  *

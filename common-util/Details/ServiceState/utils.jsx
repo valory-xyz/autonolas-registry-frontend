@@ -70,7 +70,7 @@ export const getBonds = (id, tableDataSource) => new Promise((resolve, reject) =
 
       // totalBonds[0] = total bond in eth
       // totalBonds[1] = total bond in non-eth
-      const totalBonds = [0, 0];
+      let totalBonds = 0;
       (tableDataSource || []).forEach((data) => {
         const { agentAddresses, bond } = data;
 
@@ -82,8 +82,7 @@ export const getBonds = (id, tableDataSource) => new Promise((resolve, reject) =
         const numberOfAgentAddress = getNumberOfAgentAddress(agentAddresses);
 
         // multiply the number of addresses with the bond value of the agentId
-        totalBonds[0] += numberOfAgentAddress * bond;
-        totalBonds[1] += numberOfAgentAddress;
+        totalBonds += numberOfAgentAddress * bond;
       });
 
       resolve({ slots: slotsArray, bonds: bondsArray, totalBonds });
@@ -333,7 +332,7 @@ export const onStep2RegisterAgents = ({
         .registerAgents(serviceId, agentInstances, agentIds)
         .send({
           from: account,
-          value: totalBonds[0],
+          value: totalBonds,
         })
         .then((information) => {
           resolve(information);
