@@ -1,6 +1,7 @@
 import {
   DEFAULT_SERVICE_CREATION_ETH_TOKEN,
   TOTAL_VIEW_COUNT,
+  DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS,
 } from 'util/constants';
 import { getServiceContract } from 'common-util/Contracts';
 import { convertStringToArray } from 'common-util/List/ListCommon';
@@ -173,7 +174,7 @@ export const getTokenAddressRequest = (id) => new Promise((resolve, reject) => {
   getTokenDetailsRequest(id)
     .then((response) => {
       resolve(
-        response.token === '0x0000000000000000000000000000000000000000'
+        response.token === DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS
           ? DEFAULT_SERVICE_CREATION_ETH_TOKEN
           : response.token,
       );

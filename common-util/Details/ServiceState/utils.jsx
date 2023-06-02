@@ -234,10 +234,6 @@ export const checkIfEth = (id) => new Promise((resolve, reject) => {
     });
 });
 
-/**
- * returns true if the user has sufficient token balance
- */
-
 // NOTE: this function is used only for testing
 export const mintTokenRequest = ({ account, serviceId }) => new Promise((resolve, reject) => {
   getTokenDetailsRequest(serviceId)
@@ -359,44 +355,6 @@ export const getTokenBondRequest = (id, source) => {
   );
 };
 
-// export const getTokenBondRequest = (id, agentIds) => new Promise((resolve, reject) => {
-//   const contract = getServiceRegistryTokenUtilityContract();
-
-//   contract.methods
-//     .getAgentInstances(id)
-//     .call()
-//     .then(async (response) => {
-//       console.log(response);
-//     // const data = await Promise.all(
-//     //   (response?.agentInstances || []).map(async (key, index) => {
-//     //     const operatorAddress = await contract.methods
-//     //       .mapAgentInstanceOperators(key)
-//     //       .call();
-//     //     return {
-//     //       id: `agent-instance-row-${index + 1}`,
-//     //       operatorAddress,
-//     //       agentInstance: key,
-//     //     };
-//     //   }),
-//     // );
-//     // resolve(data);
-//     })
-//     .catch((e) => {
-//       reject(e);
-//     });
-
-//   contract.methods
-//     .getAgentBond(id)
-//     .call()
-//     .then((response) => {
-//       resolve(response);
-//     })
-//     .catch((e) => {
-//       reject(e);
-//       notifyError('Error occured on getting token bond');
-//     });
-// });
-
 /* ----- step 3 functions ----- */
 export const getServiceAgentInstances = (id) => new Promise((resolve, reject) => {
   const contract = getServiceContract();
@@ -497,7 +455,6 @@ export const checkIfServiceIsWhitelisted = (serviceId, operatorAddress) => new P
     .isOperatorWhitelisted(serviceId, operatorAddress)
     .call()
     .then((response) => {
-      console.log(response);
       resolve(response);
     })
     .catch((e) => {
@@ -524,7 +481,6 @@ export const setOperatorsStatusesRequest = ({
     )
     .send({ from: account })
     .then((response) => {
-      console.log(response);
       resolve(response);
     })
     .catch((e) => {
@@ -540,7 +496,6 @@ export const setOperatorsCheckRequest = ({ account, serviceId, isChecked }) => n
     .setOperatorsCheck(serviceId, isChecked)
     .send({ from: account })
     .then((response) => {
-      console.log(response);
       resolve(response);
     })
     .catch((e) => {
