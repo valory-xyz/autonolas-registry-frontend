@@ -15,7 +15,7 @@ import {
   getAutonolasTokenUri,
   DetailsInfo,
   HASH_DETAILS_STATE,
-} from './helpers';
+} from './DetailsInfo';
 import { Header, DetailsTitle } from './styles';
 
 const { Text } = Typography;

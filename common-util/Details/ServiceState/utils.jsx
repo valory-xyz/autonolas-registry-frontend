@@ -5,6 +5,7 @@ import { ethers } from 'ethers';
 import {
   ADDRESSES,
   getGenericErc20Contract,
+  getOperatorWhitelistContract,
   getServiceContract,
   getServiceManagerContract,
   getServiceRegistryTokenUtilityContract,
@@ -469,6 +470,83 @@ export const onStep5Unbond = (account, id) => new Promise((resolve, reject) => {
     .catch((e) => {
       notifyError();
       reject(e);
+    });
+});
+
+/* ----- operator whitelist functions ----- */
+export const checkIfServiceRequiresWhiltelisting = (serviceId) => new Promise((resolve, reject) => {
+  const contract = getOperatorWhitelistContract();
+
+  contract.methods
+    .mapServiceIdOperatorsCheck(serviceId)
+    .call()
+    .then((response) => {
+      // if true: it is whitelisted by default
+      // else we can whitelist using the input field
+      resolve(response);
+    })
+    .catch((e) => {
+      reject(e);
+      notifyError('Error occured on checking operator whitelist');
+    });
+});
+
+export const checkIfServiceIsWhitelisted = (serviceId, operatorAddress) => new Promise((resolve, reject) => {
+  const contract = getOperatorWhitelistContract();
+
+  contract.methods
+    .isOperatorWhitelisted(serviceId, operatorAddress)
+    .call()
+    .then((response) => {
+      console.log(response);
+      resolve(response);
+    })
+    .catch((e) => {
+      reject(e);
+      notifyError('Error occured on checking operator whitelist');
+    });
+});
+
+// setOperatorsStatuses(serviceId, operatorAddresses, operatorStatuses, true)
+export const setOperatorsStatusesRequest = ({
+  account,
+  serviceId,
+  operatorAddresses,
+  operatorStatuses,
+}) => new Promise((resolve, reject) => {
+  const contract = getOperatorWhitelistContract();
+
+  contract.methods
+    .setOperatorsStatuses(
+      serviceId,
+      operatorAddresses,
+      operatorStatuses,
+      true,
+    )
+    .send({ from: account })
+    .then((response) => {
+      console.log(response);
+      resolve(response);
+    })
+    .catch((e) => {
+      reject(e);
+      notifyError('Error occured on checking operator whitelist');
+    });
+});
+
+export const setOperatorsCheckRequest = ({ account, serviceId, isChecked }) => new Promise((resolve, reject) => {
+  const contract = getOperatorWhitelistContract();
+
+  contract.methods
+    .setOperatorsCheck(serviceId, isChecked)
+    .send({ from: account })
+    .then((response) => {
+      console.log(response);
+      resolve(response);
+    })
+    .catch((e) => {
+      reject(e);
+      notifyError('Error occured on checking operator whitelist');
     });
 });
 
