@@ -1,6 +1,9 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react';
-import { Button, Typography, Alert } from 'antd/lib';
+import { useSelector } from 'react-redux';
+import {
+  Button, Typography, Alert, Switch,
+} from 'antd/lib';
 import { ArrowUpRight, Circle } from 'react-feather';
 import get from 'lodash/get';
 import {
@@ -11,7 +14,11 @@ import {
 } from 'util/constants';
 import { NftImage } from './NFTImage';
 import { SetOperatorStatus, OperatorWhitelist } from './ServiceDetailsHelper';
-import { getTokenDetailsRequest } from './ServiceState/utils';
+import {
+  getTokenDetailsRequest,
+  setOperatorsCheckRequest,
+  checkIfServiceRequiresWhiltelisting,
+} from './ServiceState/utils';
 import {
   SubTitle,
   Info,
@@ -45,7 +52,15 @@ export const DetailsInfo = ({
   setIsModalVisible,
   onDependencyClick,
 }) => {
+  const account = useSelector((state) => state?.setup?.account);
   const [tokenAddress, setTokenAddress] = useState(null);
+
+  // switch state
+  const [isWhiteListed, setIsWhiteListed] = useState(false);
+  const [switchValue, setSwitchValue] = useState(isWhiteListed);
+  useEffect(() => {
+    setSwitchValue(isWhiteListed);
+  }, [isWhiteListed]);
 
   useEffect(() => {
     const getData = async () => {
@@ -95,6 +110,12 @@ export const DetailsInfo = ({
       </Link>
     </>
   ) : null;
+
+  // get operator whitelist
+  const setOpWhitelist = async () => {
+    const whiteListRes = await checkIfServiceRequiresWhiltelisting(id);
+    setIsWhiteListed(whiteListRes);
+  };
 
   const getCommonDetails = () => {
     const commonDetails = [];
@@ -213,8 +234,35 @@ export const DetailsInfo = ({
 
     // operator whitelisting is only available for service
     serviceDetailsList.push({
-      title: 'Operator Whitelisting',
-      value: <OperatorWhitelist id={id} isOwner={isOwner} />,
+      title: (
+        <>
+          Operator Whitelisting&nbsp;
+          <Switch
+            disabled={!isOwner}
+            checked={switchValue}
+            checkedChildren="Enabled"
+            unCheckedChildren="Disabled"
+            onChange={async (checked) => {
+              setSwitchValue(checked);
+              if (!checked) {
+                await setOperatorsCheckRequest({
+                  account,
+                  serviceId: id,
+                  isChecked: false,
+                });
+                await setOpWhitelist();
+              }
+            }}
+          />
+        </>
+      ),
+      value: (
+        <OperatorWhitelist
+          id={id}
+          setOpWhitelist={setOpWhitelist}
+          isWhiteListed={isWhiteListed}
+        />
+      ),
     });
 
     if (isOwner) {

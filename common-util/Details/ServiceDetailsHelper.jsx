@@ -2,41 +2,21 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
-  Button,
-  Typography,
-  Input,
-  notification,
-  Switch,
-  Form,
+  Button, Typography, Input, notification, Form,
 } from 'antd/lib';
 import { DynamicFieldsForm } from 'common-util/DynamicFieldsForm';
 import {
   checkIfServiceIsWhitelisted,
-  setOperatorsCheckRequest,
   setOperatorsStatusesRequest,
-  checkIfServiceRequiresWhiltelisting,
 } from './ServiceState/utils';
 
 const { Text } = Typography;
 
-export const OperatorWhitelist = ({ isOwner, id }) => {
+export const OperatorWhitelist = ({ isWhiteListed, setOpWhitelist, id }) => {
   const account = useSelector((state) => state?.setup?.account);
   const [form] = Form.useForm();
 
   const [isCheckLoading, setIsCheckLoading] = useState(false);
-  const [isWhiteListed, setIsWhiteListed] = useState(false);
-  const [switchValue, setSwitchValue] = useState(isWhiteListed);
-
-  // switch
-  useEffect(() => {
-    setSwitchValue(isWhiteListed);
-  }, [isWhiteListed]);
-
-  // get operator whitelist
-  const setOpWhitelist = async () => {
-    const whiteListRes = await checkIfServiceRequiresWhiltelisting(id);
-    setIsWhiteListed(whiteListRes);
-  };
 
   useEffect(() => {
     if (id) {
@@ -65,27 +45,8 @@ export const OperatorWhitelist = ({ isOwner, id }) => {
 
   return (
     <>
-      <Switch
-        disabled={!isOwner}
-        checked={switchValue}
-        checkedChildren="Enabled"
-        unCheckedChildren="Disabled"
-        onChange={async (checked) => {
-          setSwitchValue(checked);
-          if (!checked) {
-            await setOperatorsCheckRequest({
-              account,
-              serviceId: id,
-              isChecked: false,
-            });
-            await setOpWhitelist();
-          }
-        }}
-      />
-
       {isWhiteListed && (
         <>
-          <br />
           <Text>Check if Operator Address is whitelisted?</Text>
           <Form
             layout="inline"
