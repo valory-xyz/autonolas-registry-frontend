@@ -1,10 +1,17 @@
+/* eslint-disable max-len */
 import { notification } from 'antd/lib';
 import { compact } from 'lodash';
+import { ethers } from 'ethers';
 import {
+  ADDRESSES,
+  getGenericErc20Contract,
+  getOperatorWhitelistContract,
   getServiceContract,
   getServiceManagerContract,
+  getServiceRegistryTokenUtilityContract,
 } from 'common-util/Contracts';
 import { sendTransaction } from 'common-util/functions/sendTransaction';
+import { DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS } from 'util/constants';
 
 const notifySuccess = (message = 'Terminated Successfully') => notification.success({ message });
 const notifyError = (message = 'Some error occured') => notification.error({ message });
@@ -12,6 +19,16 @@ const notifyError = (message = 'Some error occured') => notification.error({ mes
 /* ----- helper functions ----- */
 
 // params.agentParams.slots[i] = total initial available Slots for the i-th service.agentIds;
+
+export const getNumberOfAgentAddress = (agentAddresses) => {
+  /**
+   * get the number of addresses
+   * g1. ['0x123', '0x456'] => 2
+   * eg2. ['0x123', '0x456', ''] => 2 // empty string (falsy) is ignored
+   */
+  const addressCount = compact((agentAddresses || '').split(',')).length;
+  return addressCount;
+};
 
 /**
  *
@@ -60,9 +77,7 @@ export const getBonds = (id, tableDataSource) => new Promise((resolve, reject) =
            * g1. ['0x123', '0x456'] => 2
            * eg2. ['0x123', '0x456', ''] => 2 // empty string (falsy) is ignored
            */
-        const numberOfAgentAddress = compact(
-          (agentAddresses || '').split(','),
-        ).length;
+        const numberOfAgentAddress = getNumberOfAgentAddress(agentAddresses);
 
         // multiply the number of addresses with the bond value of the agentId
         totalBonds += numberOfAgentAddress * bond;
@@ -106,7 +121,141 @@ export const getServiceOwner = (id) => new Promise((resolve, reject) => {
     });
 });
 
+export const getTokenDetailsRequest = (id) => new Promise((resolve, reject) => {
+  const contract = getServiceRegistryTokenUtilityContract();
+
+  contract.methods
+    .mapServiceIdTokenDeposit(id)
+    .call()
+    .then((response) => {
+      resolve(response);
+    })
+    .catch((e) => {
+      reject(e);
+      notifyError('Error occured on getting token details');
+    });
+});
+
+const hasSufficientTokenRequest = ({ account, chainId, serviceId }) => new Promise((resolve, reject) => {
+  /**
+     * - fetch the token address from the serviceId
+     * - fetch the allowance of the token using the token address
+     */
+  getTokenDetailsRequest(serviceId)
+    .then(({ token }) => {
+      const contract = getGenericErc20Contract(token);
+
+      contract.methods
+        .allowance(account, ADDRESSES[chainId].serviceRegistryTokenUtility)
+        .call()
+        .then((response) => {
+          resolve(
+            !(ethers.BigNumber.from(response) < ethers.constants.MaxUint256),
+          );
+        })
+        .catch((e) => {
+          reject(e);
+          notifyError('Error occured on checking allowance');
+        });
+    })
+    .catch((e) => {
+      reject(e);
+      notifyError('Error occured on checking token');
+    });
+});
+
+/**
+ * Approves
+ */
+const approveToken = ({ account, chainId, serviceId }) => new Promise((resolve, reject) => {
+  getTokenDetailsRequest(serviceId)
+    .then(({ token }) => {
+      const contract = getGenericErc20Contract(token);
+
+      const fn = contract.methods
+        .approve(
+          ADDRESSES[chainId].serviceRegistryTokenUtility,
+          ethers.constants.MaxUint256,
+        )
+        .send({ from: account });
+
+      sendTransaction(fn, account)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((e) => {
+          window.console.log('Error occured on approving');
+          reject(e);
+        });
+    })
+    .catch((e) => {
+      reject(e);
+      notifyError('Error occured on approving token');
+    });
+});
+
+export const checkAndApproveToken = ({ account, chainId, serviceId }) => new Promise((resolve, reject) => {
+  hasSufficientTokenRequest({
+    account,
+    chainId,
+    serviceId,
+  })
+    .then((hasTokenBalance) => {
+      if (!hasTokenBalance) {
+        approveToken({
+          account,
+          chainId,
+          serviceId,
+        })
+          .then((response) => {
+            resolve(response);
+          })
+          .catch((e) => {
+            reject(e);
+          });
+      } else {
+        resolve();
+      }
+    })
+    .catch((e) => {
+      reject(e);
+    });
+});
+
 /* ----- step 1 functions ----- */
+export const checkIfEth = (id) => new Promise((resolve, reject) => {
+  getTokenDetailsRequest(id)
+    .then((response) => {
+      resolve(response.token === DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS);
+    })
+    .catch((e) => {
+      reject(e);
+      notifyError('Error occured on checking token');
+    });
+});
+
+// NOTE: this function is used only for testing
+export const mintTokenRequest = ({ account, serviceId }) => new Promise((resolve, reject) => {
+  getTokenDetailsRequest(serviceId)
+    .then(({ token }) => {
+      const contract = getGenericErc20Contract(token);
+
+      const fn = contract.methods
+        .mint(account, ethers.utils.parseEther('1000'))
+        .send({ from: account });
+
+      sendTransaction(fn, account)
+        .then(() => resolve())
+        .catch((e) => {
+          reject(e);
+          notifyError();
+        });
+    })
+    .catch((e) => {
+      reject(e);
+    });
+});
+
 export const onActivateRegistration = (account, id, deposit) => new Promise((resolve, reject) => {
   const contract = getServiceManagerContract();
 
@@ -192,6 +341,17 @@ export const onStep2RegisterAgents = ({
     });
 });
 
+export const getTokenBondRequest = (id, source) => {
+  const contract = getServiceRegistryTokenUtilityContract();
+
+  return Promise.all(
+    (source || []).map(async ({ agentId }) => {
+      const bond = await contract.methods.getAgentBond(id, agentId).call();
+      return bond;
+    }),
+  );
+};
+
 /* ----- step 3 functions ----- */
 export const getServiceAgentInstances = (id) => new Promise((resolve, reject) => {
   const contract = getServiceContract();
@@ -264,5 +424,82 @@ export const onStep5Unbond = (account, id) => new Promise((resolve, reject) => {
     .catch((e) => {
       notifyError();
       reject(e);
+    });
+});
+
+/* ----- operator whitelist functions ----- */
+export const checkIfServiceRequiresWhiltelisting = (serviceId) => new Promise((resolve, reject) => {
+  const contract = getOperatorWhitelistContract();
+
+  contract.methods
+    .mapServiceIdOperatorsCheck(serviceId)
+    .call()
+    .then((response) => {
+      // if true: it is whitelisted by default
+      // else we can whitelist using the input field
+      resolve(response);
+    })
+    .catch((e) => {
+      reject(e);
+      notifyError('Error occured on checking if service requires whitelisting');
+    });
+});
+
+export const checkIfServiceIsWhitelisted = (serviceId, operatorAddress) => new Promise((resolve, reject) => {
+  const contract = getOperatorWhitelistContract();
+
+  contract.methods
+    .isOperatorWhitelisted(serviceId, operatorAddress)
+    .call()
+    .then((response) => {
+      resolve(response);
+    })
+    .catch((e) => {
+      reject(e);
+      notifyError('Error occured on checking operator whitelist');
+    });
+});
+
+export const setOperatorsStatusesRequest = ({
+  account,
+  serviceId,
+  operatorAddresses,
+  operatorStatuses,
+}) => new Promise((resolve, reject) => {
+  const contract = getOperatorWhitelistContract();
+
+  const fn = contract.methods
+    .setOperatorsStatuses(
+      serviceId,
+      operatorAddresses,
+      operatorStatuses,
+      true,
+    )
+    .send({ from: account });
+
+  sendTransaction(fn, account)
+    .then((response) => {
+      resolve(response);
+    })
+    .catch((e) => {
+      reject(e);
+      notifyError('Error occured on checking operator whitelist');
+    });
+});
+
+export const setOperatorsCheckRequest = ({ account, serviceId, isChecked }) => new Promise((resolve, reject) => {
+  const contract = getOperatorWhitelistContract();
+
+  const fn = contract.methods
+    .setOperatorsCheck(serviceId, isChecked)
+    .send({ from: account });
+
+  sendTransaction(fn, account)
+    .then((response) => {
+      resolve(response);
+    })
+    .catch((e) => {
+      reject(e);
+      notifyError('Error occured on checking operator whitelist');
     });
 });

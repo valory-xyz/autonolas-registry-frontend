@@ -7,3 +7,6 @@ export * from './serviceRegistryL2';
 export * from './GnosisSafe';
 export * from './MultiSend';
 export * from './SignMessageLib';
+export * from './serviceRegistryTokenUtility';
+export * from './operatorWhitelist';
+export * from './genericErc20';

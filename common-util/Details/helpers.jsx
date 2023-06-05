@@ -1,9 +1,24 @@
 /* eslint-disable react/prop-types */
-import { Button, Typography, Alert } from 'antd/lib';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import {
+  Button, Typography, Alert, Switch,
+} from 'antd/lib';
 import { ArrowUpRight, Circle } from 'react-feather';
 import get from 'lodash/get';
-import { GATEWAY_URL, NA, NAV_TYPES } from 'util/constants';
+import {
+  DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS,
+  GATEWAY_URL,
+  NA,
+  NAV_TYPES,
+} from 'util/constants';
 import { NftImage } from './NFTImage';
+import { SetOperatorStatus, OperatorWhitelist } from './ServiceDetailsHelper';
+import {
+  getTokenDetailsRequest,
+  setOperatorsCheckRequest,
+  checkIfServiceRequiresWhiltelisting,
+} from './ServiceState/utils';
 import {
   SubTitle,
   Info,
@@ -25,6 +40,7 @@ export const HASH_DETAILS_STATE = {
 };
 
 export const DetailsInfo = ({
+  id,
   isOwner,
   type,
   tokenUri,
@@ -36,6 +52,29 @@ export const DetailsInfo = ({
   setIsModalVisible,
   onDependencyClick,
 }) => {
+  const account = useSelector((state) => state?.setup?.account);
+  const [tokenAddress, setTokenAddress] = useState(null);
+
+  // switch state
+  const [isWhiteListed, setIsWhiteListed] = useState(false);
+  const [switchValue, setSwitchValue] = useState(isWhiteListed);
+  useEffect(() => {
+    setSwitchValue(isWhiteListed);
+  }, [isWhiteListed]);
+
+  useEffect(() => {
+    const getData = async () => {
+      if (type === NAV_TYPES.SERVICE) {
+        const response = await getTokenDetailsRequest(id);
+        setTokenAddress(response.token);
+      }
+    };
+
+    if (id) {
+      getData();
+    }
+  }, [id]);
+
   const updateHashBtn = isOwner ? (
     <>
       {onUpdateHash && (
@@ -71,6 +110,12 @@ export const DetailsInfo = ({
       </Link>
     </>
   ) : null;
+
+  // get operator whitelist
+  const setOpWhitelist = async () => {
+    const whiteListRes = await checkIfServiceRequiresWhiltelisting(id);
+    setIsWhiteListed(whiteListRes);
+  };
 
   const getCommonDetails = () => {
     const commonDetails = [];
@@ -178,6 +223,54 @@ export const DetailsInfo = ({
       title: 'Threshold',
       value: get(info, 'threshold', null) || NA,
     });
+
+    // show token address only if it is not ETH
+    if (tokenAddress !== DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS) {
+      serviceDetailsList.push({
+        title: 'Token Address',
+        value: tokenAddress || NA,
+      });
+    }
+
+    // operator whitelisting is only available for service
+    serviceDetailsList.push({
+      title: (
+        <>
+          Operator Whitelisting&nbsp;
+          <Switch
+            disabled={!isOwner}
+            checked={switchValue}
+            checkedChildren="Enabled"
+            unCheckedChildren="Disabled"
+            onChange={async (checked) => {
+              setSwitchValue(checked);
+              if (!checked) {
+                await setOperatorsCheckRequest({
+                  account,
+                  serviceId: id,
+                  isChecked: false,
+                });
+                await setOpWhitelist();
+              }
+            }}
+          />
+        </>
+      ),
+      value: (
+        <OperatorWhitelist
+          id={id}
+          setOpWhitelist={setOpWhitelist}
+          isWhiteListed={isWhiteListed}
+        />
+      ),
+    });
+
+    if (isOwner) {
+      serviceDetailsList.push({
+        title: 'Set operators statuses',
+        value: <SetOperatorStatus id={id} />,
+      });
+    }
 
     return serviceDetailsList;
   };

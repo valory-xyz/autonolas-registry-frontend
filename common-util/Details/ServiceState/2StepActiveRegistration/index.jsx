@@ -2,7 +2,11 @@ import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Divider, Typography } from 'antd/lib';
 import { convertToEth } from 'common-util/functions';
-import { getBonds } from '../utils';
+import {
+  getBonds,
+  getTokenBondRequest,
+  getNumberOfAgentAddress,
+} from '../utils';
 import ActiveRegistrationTable from '../ActiveRegistrationTable';
 
 const { Text } = Typography;
@@ -18,8 +22,10 @@ const ActiveRegistration = ({
   handleTerminate,
   getButton,
   isOwner,
+  isEthToken,
 }) => {
-  const [totalBond, setTotalBond] = useState(null);
+  const [totalBonds, setTotalBond] = useState(null);
+  const [ethTokenBonds, setEthTokenBonds] = useState([]);
 
   useEffect(() => {
     // react will throw an warning if we use setState after the component is unmounted,
@@ -30,12 +36,17 @@ const ActiveRegistration = ({
         try {
           const response = await getBonds(serviceId, dataSource);
           if (isMounted) {
-            setTotalBond(convertToEth((response?.totalBonds || 0).toString()));
+            setTotalBond(response.totalBonds);
           }
         } catch (error) {
           window.console.log('Error while fetching bonds');
           console.error(error);
         }
+      }
+
+      if (serviceId && !isEthToken) {
+        const response = await getTokenBondRequest(serviceId, dataSource);
+        setEthTokenBonds(response);
       }
     })();
 
@@ -46,6 +57,16 @@ const ActiveRegistration = ({
 
   const btnProps = getOtherBtnProps(STEP);
 
+  const totalBondEthToken = convertToEth((totalBonds || 0).toString()) || '--';
+
+  let totalTokenBonds = 0;
+  ethTokenBonds.forEach((bond, index) => {
+    const addressCount = getNumberOfAgentAddress(
+      dataSource[index].agentAddresses,
+    );
+    totalTokenBonds += addressCount * bond;
+  });
+
   return (
     <div className="step-2-active-registration">
       <ActiveRegistrationTable
@@ -55,7 +76,10 @@ const ActiveRegistration = ({
         isDisabled={btnProps.disabled}
       />
       <Text type="secondary">
-        {`Adding instances will cause a bond of ${totalBond || '--'} ETH`}
+        {`Adding instances will cause a bond of ${totalBondEthToken} ETH`}
+        {!isEthToken && (
+          <>{` and ${convertToEth((totalTokenBonds || 0).toString())} token`}</>
+        )}
       </Text>
 
       {/* "Register agents" can be clicked by anyone */}
@@ -87,6 +111,7 @@ ActiveRegistration.propTypes = {
   handleTerminate: PropTypes.func.isRequired,
   getButton: PropTypes.func.isRequired,
   isOwner: PropTypes.bool.isRequired,
+  isEthToken: PropTypes.bool.isRequired,
 };
 
 ActiveRegistration.defaultProps = {
