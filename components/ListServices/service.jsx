@@ -8,8 +8,16 @@ import Loader from 'common-util/components/Loader';
 import { convertStringToArray, AlertError } from 'common-util/List/ListCommon';
 import { getServiceManagerContract } from 'common-util/Contracts';
 import { FormContainer } from 'components/styles';
+import {
+  DEFAULT_SERVICE_CREATION_ETH_TOKEN,
+  DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS,
+} from 'util/constants';
 import RegisterForm from './RegisterForm';
-import { getAgentParams, getServiceDetails } from './utils';
+import {
+  getAgentParams,
+  getServiceDetails,
+  getTokenAddressRequest,
+} from './utils';
 
 const { Title } = Typography;
 
@@ -19,6 +27,7 @@ const Service = ({ account }) => {
   const [error, setError] = useState(null);
   const router = useRouter();
   const id = get(router, 'query.id') || null;
+  const [ethTokenAddress, setEthTokenAddress] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -29,6 +38,9 @@ const Service = ({ account }) => {
         const result = await getServiceDetails(id);
         setAllLoading(false);
         setServiceInfo(result);
+
+        const token = await getTokenAddressRequest(id);
+        setEthTokenAddress(token);
       }
     })();
   }, [account]);
@@ -38,9 +50,14 @@ const Service = ({ account }) => {
     if (account) {
       setError(null);
 
+      const token = values.token === DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS
+        ? DEFAULT_SERVICE_CREATION_ETH_TOKEN
+        : values.token;
+
       const contract = getServiceManagerContract();
       contract.methods
         .update(
+          token,
           `0x${values.hash}`,
           convertStringToArray(values.agent_ids),
           getAgentParams(values),
@@ -52,7 +69,6 @@ const Service = ({ account }) => {
           notification.success({ message: 'Service Updated' });
         })
         .catch((e) => {
-          setError(e);
           console.error(e);
         });
     }
@@ -73,6 +89,7 @@ const Service = ({ account }) => {
             formInitialValues={serviceInfo}
             handleSubmit={handleSubmit}
             handleCancel={handleCancel}
+            ethTokenAddress={ethTokenAddress}
           />
         </FormContainer>
       )}

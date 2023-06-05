@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Web3 from 'web3';
 import { useRouter } from 'next/router';
 import useDeepCompareEffect from 'use-deep-compare-effect';
@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import get from 'lodash/get';
 import { Button, Form, Input } from 'antd/lib';
+import { DEFAULT_SERVICE_CREATION_ETH_TOKEN } from 'util/constants';
 import { WhiteButton } from 'common-util/components/Button';
 import { commaMessage, DependencyLabel } from 'common-util/List/ListCommon';
 import { FormItemHash } from 'common-util/List/RegisterForm/helpers';
@@ -20,6 +21,7 @@ const RegisterForm = ({
   listType,
   isUpdateForm,
   formInitialValues,
+  ethTokenAddress,
   handleSubmit,
   handleCancel,
 }) => {
@@ -31,6 +33,17 @@ const RegisterForm = ({
   const [fields, setFields] = useState([]);
   const router = useRouter();
   const id = get(router, 'query.id') || null;
+
+  useEffect(() => {
+    if (account && ethTokenAddress) {
+      setFields([
+        {
+          name: ['token'],
+          value: ethTokenAddress,
+        },
+      ]);
+    }
+  }, [account, ethTokenAddress]);
 
   const onGenerateHash = (generatedHash) => {
     setFields([
@@ -100,10 +113,6 @@ const RegisterForm = ({
     window.console.log('Failed:', errorInfo);
   };
 
-  const prefillOwnerAddress = () => {
-    form.setFieldsValue({ owner_address: account });
-  };
-
   const hashValue = form.getFieldValue('hash');
 
   return (
@@ -125,6 +134,7 @@ const RegisterForm = ({
           label="Owner Address"
           name="owner_address"
           validateFirst
+          className="mb-0"
           rules={[
             {
               required: true,
@@ -141,7 +151,6 @@ const RegisterForm = ({
               },
             }),
           ]}
-          className="mb-0"
         >
           <Input placeholder="0x862..." disabled={isUpdateForm} />
         </Form.Item>
@@ -150,10 +159,49 @@ const RegisterForm = ({
           <Button
             htmlType="button"
             type="link"
-            onClick={prefillOwnerAddress}
+            onClick={() => form.setFieldsValue({ owner_address: account })}
             className="pl-0"
+            disabled={!account}
           >
             Prefill Address
+          </Button>
+        </Form.Item>
+
+        <Form.Item
+          label="ERC20 token address"
+          name="token"
+          tooltip="Generic ERC20 token address to secure the service (ETH by default)"
+          // dedicated address for standard ETH secured service creation
+          // user can change it if they want to use a different generic token
+          initialValue={ethTokenAddress || DEFAULT_SERVICE_CREATION_ETH_TOKEN}
+          className="mb-0"
+          rules={[
+            {
+              required: true,
+              message: 'Please input the token address',
+            },
+            () => ({
+              validator(_, value) {
+                if (Web3.utils.isAddress(value)) return Promise.resolve();
+                return Promise.reject(
+                  new Error('Please input a valid address'),
+                );
+              },
+            }),
+          ]}
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item className="mb-0">
+          <Button
+            htmlType="button"
+            type="link"
+            onClick={() => form.setFieldsValue({ token: DEFAULT_SERVICE_CREATION_ETH_TOKEN })}
+            className="pl-0"
+            disabled={!account}
+          >
+            Prefill Default Eth Address
           </Button>
         </Form.Item>
 
@@ -311,6 +359,7 @@ RegisterForm.propTypes = {
   }),
   handleSubmit: PropTypes.func.isRequired,
   handleCancel: PropTypes.func.isRequired,
+  ethTokenAddress: PropTypes.string,
 };
 
 RegisterForm.defaultProps = {
@@ -318,6 +367,7 @@ RegisterForm.defaultProps = {
   isUpdateForm: false,
   listType: 'Service',
   formInitialValues: {},
+  ethTokenAddress: DEFAULT_SERVICE_CREATION_ETH_TOKEN,
 };
 
 export default RegisterForm;

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import {
@@ -6,6 +7,7 @@ import {
 } from 'antd/lib';
 import get from 'lodash/get';
 import { URL } from 'util/constants';
+import { isLocalNetwork } from 'common-util/functions';
 import {
   onActivateRegistration,
   getServiceTableDataSource,
@@ -13,6 +15,9 @@ import {
   onStep2RegisterAgents,
   onStep3Deploy,
   onStep5Unbond,
+  checkIfEth,
+  mintTokenRequest,
+  checkAndApproveToken,
 } from './utils';
 import StepActiveRegistration from './2StepActiveRegistration';
 import StepFinishedRegistration from './3rdStepFinishedRegistration';
@@ -38,7 +43,9 @@ export const ServiceState = ({
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   const [dataSource, setDataSource] = useState([]);
+  const [isEthToken, setIsEthToken] = useState(false);
   const [isStateImageVisible, setIsStateImageVisible] = useState(false);
+  const chainId = useSelector((state) => state?.setup?.chainId);
 
   const status = get(details, 'state');
   const agentIds = get(details, 'agentIds');
@@ -52,6 +59,12 @@ export const ServiceState = ({
       if (id && (agentIds || []).length !== 0) {
         const temp = await getServiceTableDataSource(id, agentIds || []);
         setDataSource(temp);
+      }
+
+      // if valid service id, check if it's an eth token
+      if (id) {
+        const isEth = await checkIfEth(id);
+        setIsEthToken(isEth);
       }
     })();
   }, [id, agentIds]);
@@ -93,7 +106,31 @@ export const ServiceState = ({
   /* ----- step 1 ----- */
   const handleStep1Registration = async () => {
     try {
-      await onActivateRegistration(account, id, securityDeposit);
+      // if not eth, check if the user has sufficient token balance
+      // and if not, approve the token
+      if (!isEthToken) {
+        await checkAndApproveToken({
+          account,
+          chainId,
+          serviceId: id,
+        });
+      }
+
+      // NOTE: just for testing, mint tokens for local network
+      if (isLocalNetwork(chainId)) {
+        // mint tokens before activating registration
+        await mintTokenRequest({
+          account,
+          serviceId: id,
+        });
+      }
+
+      // any amount if not ETH token substitute with 1
+      await onActivateRegistration(
+        account,
+        id,
+        isEthToken ? securityDeposit : '1',
+      );
       await updateDetails();
     } catch (e) {
       console.error(e);
@@ -130,6 +167,16 @@ export const ServiceState = ({
     const agentInstances = trimArray(instances || []);
 
     try {
+      // if not eth, check if the user has sufficient token balance
+      // and if not, approve the token
+      if (!isEthToken) {
+        await checkAndApproveToken({
+          account,
+          chainId,
+          serviceId: id,
+        });
+      }
+
       await onStep2RegisterAgents({
         account,
         serviceId: id,
@@ -226,6 +273,7 @@ export const ServiceState = ({
           getButton={getButton}
           isOwner={isOwner}
           handleTerminate={handleTerminate}
+          isEthToken={isEthToken}
         />
       ),
     },

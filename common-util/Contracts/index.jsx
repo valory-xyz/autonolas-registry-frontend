@@ -4,29 +4,37 @@ import {
   AGENT_REGISTRY_CONTRACT,
   COMPONENT_REGISTRY_CONTRACT,
   SERVICE_REGISTRY_CONTRACT,
-  SERVICE_MANAGER_CONTRACT,
+  SERVICE_MANAGER_TOKEN_CONTRACT,
   SIGN_MESSAGE_LIB_CONTRACT,
   GNOSIS_SAFE_CONTRACT,
   MULTI_SEND_CONTRACT,
   SERVICE_REGISTRY_L2,
+  SERVICE_REGISTRY_TOKEN_UTILITY_CONTRACT,
+  GENERIC_ERC20_CONTRACT,
+  OPERATOR_WHITELIST_CONTRACT,
 } from 'common-util/AbiAndAddresses';
 import { isL1Network } from 'common-util/functions';
 
+// get addresses from scripts/deployment folder in autonolas-registries repo
 export const ADDRESSES = {
   1: {
     agentRegistry: '0x2F1f7D38e4772884b88f3eCd8B6b9faCdC319112',
     componentRegistry: '0x15bd56669F57192a97dF41A2aa8f4403e9491776',
     registriesManager: '0x9eC9156dEF5C613B2a7D4c46C383F9B58DfcD6fE',
-    serviceManager: '0x38b062d11CD7596Ab5aDFe4d0e9F0dC3218E5389',
+    serviceManager: '0x2EA682121f815FBcF86EA3F3CaFdd5d67F2dB143',
     serviceRegistry: '0x48b6af7B12C71f09e2fC8aF4855De4Ff54e775cA',
+    serviceRegistryTokenUtility: '0x3Fb926116D454b95c669B6Bf2E7c3bad8d19affA',
+    operatorWhitelist: '0x42042799B0DE38AdD2a70dc996f69f98E1a85260',
   },
   // goerli
   5: {
     agentRegistry: '0xEB5638eefE289691EcE01943f768EDBF96258a80',
     componentRegistry: '0x7Fd1F4b764fA41d19fe3f63C85d12bf64d2bbf68',
     registriesManager: '0x10c5525F77F13b28f42c5626240c001c2D57CAd4',
-    serviceManager: '0xcDdD9D9ABaB36fFa882530D69c73FeE5D4001C2d',
+    serviceManager: '0x1d333b46dB6e8FFd271b6C2D2B254868BD9A2dbd',
     serviceRegistry: '0x1cEe30D08943EB58EFF84DD1AB44a6ee6FEff63a',
+    serviceRegistryTokenUtility: '0x6d9b08701Af43D68D991c074A27E4d90Af7f2276',
+    operatorWhitelist: '0x0338893fB1A1D9Df03F72CC53D8f786487d3D03E',
   },
   // gnosis
   100: {
@@ -53,8 +61,23 @@ export const ADDRESSES = {
     agentRegistry: '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512',
     componentRegistry: '0x5FbDB2315678afecb367f032d93F642f64180aa3',
     registriesManager: '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0',
-    serviceManager: '0x70e0bA845a1A0F2DA3359C97E0285013525FFC49',
-    serviceRegistry: '0x998abeb3E57409262aE5b751f60747921B33613E',
+
+    // TODO: figure out after deployment
+    // serviceManager: '0x70e0bA845a1A0F2DA3359C97E0285013525FFC49',
+
+    // This will remain the same, uncomment once deployed
+    // serviceRegistry: '0x998abeb3E57409262aE5b751f60747921B33613E',
+
+    // This will remain the same, uncomment once deployed
+    serviceManager: '0x1291Be112d480055DaFd8a610b7d1e203891C274',
+
+    // TODO: figure out after deployment
+    serviceRegistry: '0x36C02dA8a0983159322a80FFE9F24b1acfF8B570',
+    serviceRegistryTokenUtility: '0x809d550fca64d94Bd9F66E60752A544199cfAC3D',
+    operatorWhitelist: '0x4c5859f0F772848b2D91F1D83E2Fe57935348029',
+
+    // used for testing - service creation/update token address
+    ERC20Token: '0x5f3f1dBD7B74C6B46e8c44f98792A1dAf8d69154',
   },
 };
 
@@ -122,8 +145,37 @@ export const getServiceManagerContract = () => {
   const { web3, address } = getWeb3Details();
   const { serviceManager } = address;
   const contract = new web3.eth.Contract(
-    SERVICE_MANAGER_CONTRACT.abi,
+    SERVICE_MANAGER_TOKEN_CONTRACT.abi,
     serviceManager,
+  );
+  return contract;
+};
+
+export const getServiceRegistryTokenUtilityContract = () => {
+  const { web3, address } = getWeb3Details();
+  const { serviceRegistryTokenUtility } = address;
+  const contract = new web3.eth.Contract(
+    SERVICE_REGISTRY_TOKEN_UTILITY_CONTRACT.abi,
+    serviceRegistryTokenUtility,
+  );
+  return contract;
+};
+
+export const getOperatorWhitelistContract = () => {
+  const { web3, address } = getWeb3Details();
+  const { operatorWhitelist } = address;
+  const contract = new web3.eth.Contract(
+    OPERATOR_WHITELIST_CONTRACT.abi,
+    operatorWhitelist,
+  );
+  return contract;
+};
+
+export const getGenericErc20Contract = (tokenAddress) => {
+  const { web3 } = getWeb3Details();
+  const contract = new web3.eth.Contract(
+    GENERIC_ERC20_CONTRACT.abi,
+    tokenAddress,
   );
   return contract;
 };

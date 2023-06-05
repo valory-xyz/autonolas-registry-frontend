@@ -1,23 +1,13 @@
-export const SERVICE_MANAGER_TOKEN_CONTRACT = {
+export const SERVICE_REGISTRY_TOKEN_UTILITY_CONTRACT = {
   _format: 'hh-sol-artifact-1',
-  contractName: 'ServiceManagerToken',
-  sourceName: 'contracts/ServiceManagerToken.sol',
+  contractName: 'ServiceRegistryTokenUtility',
+  sourceName: 'contracts/ServiceRegistryTokenUtility.sol',
   abi: [
     {
       inputs: [
         {
           internalType: 'address',
           name: '_serviceRegistry',
-          type: 'address',
-        },
-        {
-          internalType: 'address',
-          name: '_serviceRegistryTokenUtility',
-          type: 'address',
-        },
-        {
-          internalType: 'address',
-          name: '_operatorWhitelist',
           type: 'address',
         },
       ],
@@ -92,48 +82,6 @@ export const SERVICE_MANAGER_TOKEN_CONTRACT = {
     {
       inputs: [
         {
-          internalType: 'address',
-          name: 'operator',
-          type: 'address',
-        },
-        {
-          internalType: 'bytes32',
-          name: 'msgHash',
-          type: 'bytes32',
-        },
-        {
-          internalType: 'bytes',
-          name: 'signature',
-          type: 'bytes',
-        },
-      ],
-      name: 'HashNotApproved',
-      type: 'error',
-    },
-    {
-      inputs: [
-        {
-          internalType: 'address',
-          name: 'operator',
-          type: 'address',
-        },
-        {
-          internalType: 'bytes32',
-          name: 'msgHash',
-          type: 'bytes32',
-        },
-        {
-          internalType: 'bytes',
-          name: 'signature',
-          type: 'bytes',
-        },
-      ],
-      name: 'HashNotValidated',
-      type: 'error',
-    },
-    {
-      inputs: [
-        {
           internalType: 'uint256',
           name: 'sent',
           type: 'uint256',
@@ -171,27 +119,6 @@ export const SERVICE_MANAGER_TOKEN_CONTRACT = {
         },
       ],
       name: 'IncorrectRegistrationDepositValue',
-      type: 'error',
-    },
-    {
-      inputs: [
-        {
-          internalType: 'bytes',
-          name: 'signature',
-          type: 'bytes',
-        },
-        {
-          internalType: 'uint256',
-          name: 'provided',
-          type: 'uint256',
-        },
-        {
-          internalType: 'uint256',
-          name: 'expected',
-          type: 'uint256',
-        },
-      ],
-      name: 'IncorrectSignatureLength',
       type: 'error',
     },
     {
@@ -307,6 +234,17 @@ export const SERVICE_MANAGER_TOKEN_CONTRACT = {
           name: 'token',
           type: 'address',
         },
+      ],
+      name: 'TokenRejected',
+      type: 'error',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: 'token',
+          type: 'address',
+        },
         {
           internalType: 'address',
           name: 'from',
@@ -378,22 +316,6 @@ export const SERVICE_MANAGER_TOKEN_CONTRACT = {
     {
       inputs: [
         {
-          internalType: 'address',
-          name: 'provided',
-          type: 'address',
-        },
-        {
-          internalType: 'address',
-          name: 'expected',
-          type: 'address',
-        },
-      ],
-      name: 'WrongOperatorAddress',
-      type: 'error',
-    },
-    {
-      inputs: [
-        {
           internalType: 'uint256',
           name: 'state',
           type: 'uint256',
@@ -435,11 +357,6 @@ export const SERVICE_MANAGER_TOKEN_CONTRACT = {
     },
     {
       inputs: [],
-      name: 'ZeroOperatorAddress',
-      type: 'error',
-    },
-    {
-      inputs: [],
       name: 'ZeroValue',
       type: 'error',
     },
@@ -449,16 +366,35 @@ export const SERVICE_MANAGER_TOKEN_CONTRACT = {
         {
           indexed: true,
           internalType: 'address',
-          name: 'multisig',
+          name: 'drainer',
           type: 'address',
         },
       ],
-      name: 'CreateMultisig',
+      name: 'DrainerUpdated',
       type: 'event',
     },
     {
       anonymous: false,
       inputs: [
+        {
+          indexed: true,
+          internalType: 'address',
+          name: 'manager',
+          type: 'address',
+        },
+      ],
+      name: 'ManagerUpdated',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          internalType: 'uint256',
+          name: 'amount',
+          type: 'uint256',
+        },
         {
           indexed: true,
           internalType: 'address',
@@ -466,26 +402,13 @@ export const SERVICE_MANAGER_TOKEN_CONTRACT = {
           type: 'address',
         },
         {
-          indexed: false,
-          internalType: 'bytes32',
-          name: 'hash',
-          type: 'bytes32',
-        },
-      ],
-      name: 'OperatorHashApproved',
-      type: 'event',
-    },
-    {
-      anonymous: false,
-      inputs: [
-        {
           indexed: true,
-          internalType: 'address',
-          name: 'operatorWhitelist',
-          type: 'address',
+          internalType: 'uint256',
+          name: 'serviceId',
+          type: 'uint256',
         },
       ],
-      name: 'OperatorWhitelistUpdated',
+      name: 'OperatorTokenSlashed',
       type: 'event',
     },
     {
@@ -507,11 +430,23 @@ export const SERVICE_MANAGER_TOKEN_CONTRACT = {
         {
           indexed: true,
           internalType: 'address',
-          name: 'owner',
+          name: 'account',
           type: 'address',
         },
+        {
+          indexed: true,
+          internalType: 'address',
+          name: 'token',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          internalType: 'uint256',
+          name: 'amount',
+          type: 'uint256',
+        },
       ],
-      name: 'Pause',
+      name: 'TokenDeposit',
       type: 'event',
     },
     {
@@ -520,77 +455,49 @@ export const SERVICE_MANAGER_TOKEN_CONTRACT = {
         {
           indexed: true,
           internalType: 'address',
-          name: 'owner',
+          name: 'drainer',
           type: 'address',
         },
+        {
+          indexed: true,
+          internalType: 'address',
+          name: 'token',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          internalType: 'uint256',
+          name: 'amount',
+          type: 'uint256',
+        },
       ],
-      name: 'Unpause',
+      name: 'TokenDrain',
       type: 'event',
     },
     {
-      inputs: [],
-      name: 'BOND_WRAPPER',
-      outputs: [
+      anonymous: false,
+      inputs: [
         {
-          internalType: 'uint96',
-          name: '',
-          type: 'uint96',
-        },
-      ],
-      stateMutability: 'view',
-      type: 'function',
-    },
-    {
-      inputs: [],
-      name: 'DOMAIN_SEPARATOR_TYPE_HASH',
-      outputs: [
-        {
-          internalType: 'bytes32',
-          name: '',
-          type: 'bytes32',
-        },
-      ],
-      stateMutability: 'view',
-      type: 'function',
-    },
-    {
-      inputs: [],
-      name: 'ETH_TOKEN_ADDRESS',
-      outputs: [
-        {
+          indexed: true,
           internalType: 'address',
-          name: '',
+          name: 'account',
           type: 'address',
         },
-      ],
-      stateMutability: 'view',
-      type: 'function',
-    },
-    {
-      inputs: [],
-      name: 'REGISTER_AGENTS_TYPE_HASH',
-      outputs: [
         {
-          internalType: 'bytes32',
-          name: '',
-          type: 'bytes32',
+          indexed: true,
+          internalType: 'address',
+          name: 'token',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          internalType: 'uint256',
+          name: 'amount',
+          type: 'uint256',
         },
       ],
-      stateMutability: 'view',
-      type: 'function',
-    },
-    {
-      inputs: [],
-      name: 'UNBOND_TYPE_HASH',
-      outputs: [
-        {
-          internalType: 'bytes32',
-          name: '',
-          type: 'bytes32',
-        },
-      ],
-      stateMutability: 'view',
-      type: 'function',
+      name: 'TokenRefund',
+      type: 'event',
     },
     {
       inputs: [
@@ -600,28 +507,41 @@ export const SERVICE_MANAGER_TOKEN_CONTRACT = {
           type: 'uint256',
         },
       ],
-      name: 'activateRegistration',
+      name: 'activateRegistrationTokenDeposit',
       outputs: [
         {
           internalType: 'bool',
-          name: 'success',
+          name: 'isTokenSecured',
           type: 'bool',
         },
       ],
-      stateMutability: 'payable',
+      stateMutability: 'nonpayable',
       type: 'function',
     },
     {
-      inputs: [],
-      name: 'chainId',
-      outputs: [
+      inputs: [
         {
-          internalType: 'uint256',
-          name: '',
-          type: 'uint256',
+          internalType: 'address',
+          name: 'newDrainer',
+          type: 'address',
         },
       ],
-      stateMutability: 'view',
+      name: 'changeDrainer',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: 'newManager',
+          type: 'address',
+        },
+      ],
+      name: 'changeManager',
+      outputs: [],
+      stateMutability: 'nonpayable',
       type: 'function',
     },
     {
@@ -640,9 +560,9 @@ export const SERVICE_MANAGER_TOKEN_CONTRACT = {
     {
       inputs: [
         {
-          internalType: 'address',
-          name: 'serviceOwner',
-          type: 'address',
+          internalType: 'uint256',
+          name: 'serviceId',
+          type: 'uint256',
         },
         {
           internalType: 'address',
@@ -650,363 +570,209 @@ export const SERVICE_MANAGER_TOKEN_CONTRACT = {
           type: 'address',
         },
         {
-          internalType: 'bytes32',
-          name: 'configHash',
-          type: 'bytes32',
-        },
-        {
           internalType: 'uint32[]',
           name: 'agentIds',
           type: 'uint32[]',
         },
         {
-          components: [
-            {
-              internalType: 'uint32',
-              name: 'slots',
-              type: 'uint32',
-            },
-            {
-              internalType: 'uint96',
-              name: 'bond',
-              type: 'uint96',
-            },
-          ],
-          internalType: 'struct IService.AgentParams[]',
-          name: 'agentParams',
-          type: 'tuple[]',
-        },
-        {
-          internalType: 'uint32',
-          name: 'threshold',
-          type: 'uint32',
+          internalType: 'uint256[]',
+          name: 'bonds',
+          type: 'uint256[]',
         },
       ],
-      name: 'create',
-      outputs: [
-        {
-          internalType: 'uint256',
-          name: 'serviceId',
-          type: 'uint256',
-        },
-      ],
-      stateMutability: 'nonpayable',
-      type: 'function',
-    },
-    {
-      inputs: [
-        {
-          internalType: 'uint256',
-          name: 'serviceId',
-          type: 'uint256',
-        },
-        {
-          internalType: 'address',
-          name: 'multisigImplementation',
-          type: 'address',
-        },
-        {
-          internalType: 'bytes',
-          name: 'data',
-          type: 'bytes',
-        },
-      ],
-      name: 'deploy',
-      outputs: [
-        {
-          internalType: 'address',
-          name: 'multisig',
-          type: 'address',
-        },
-      ],
-      stateMutability: 'nonpayable',
-      type: 'function',
-    },
-    {
-      inputs: [],
-      name: 'domainSeparator',
-      outputs: [
-        {
-          internalType: 'bytes32',
-          name: '',
-          type: 'bytes32',
-        },
-      ],
-      stateMutability: 'view',
-      type: 'function',
-    },
-    {
-      inputs: [],
-      name: 'getDomainSeparator',
-      outputs: [
-        {
-          internalType: 'bytes32',
-          name: '',
-          type: 'bytes32',
-        },
-      ],
-      stateMutability: 'view',
-      type: 'function',
-    },
-    {
-      inputs: [
-        {
-          internalType: 'address',
-          name: 'operator',
-          type: 'address',
-        },
-        {
-          internalType: 'uint256',
-          name: 'serviceId',
-          type: 'uint256',
-        },
-      ],
-      name: 'getOperatorRegisterAgentsNonce',
-      outputs: [
-        {
-          internalType: 'uint256',
-          name: 'nonce',
-          type: 'uint256',
-        },
-      ],
-      stateMutability: 'view',
-      type: 'function',
-    },
-    {
-      inputs: [
-        {
-          internalType: 'address',
-          name: 'operator',
-          type: 'address',
-        },
-        {
-          internalType: 'uint256',
-          name: 'serviceId',
-          type: 'uint256',
-        },
-      ],
-      name: 'getOperatorUnbondNonce',
-      outputs: [
-        {
-          internalType: 'uint256',
-          name: 'nonce',
-          type: 'uint256',
-        },
-      ],
-      stateMutability: 'view',
-      type: 'function',
-    },
-    {
-      inputs: [
-        {
-          internalType: 'address',
-          name: 'operator',
-          type: 'address',
-        },
-        {
-          internalType: 'address',
-          name: 'serviceOwner',
-          type: 'address',
-        },
-        {
-          internalType: 'uint256',
-          name: 'serviceId',
-          type: 'uint256',
-        },
-        {
-          internalType: 'address[]',
-          name: 'agentInstances',
-          type: 'address[]',
-        },
-        {
-          internalType: 'uint32[]',
-          name: 'agentIds',
-          type: 'uint32[]',
-        },
-        {
-          internalType: 'uint256',
-          name: 'nonce',
-          type: 'uint256',
-        },
-      ],
-      name: 'getRegisterAgentsHash',
-      outputs: [
-        {
-          internalType: 'bytes32',
-          name: '',
-          type: 'bytes32',
-        },
-      ],
-      stateMutability: 'view',
-      type: 'function',
-    },
-    {
-      inputs: [
-        {
-          internalType: 'address',
-          name: 'operator',
-          type: 'address',
-        },
-        {
-          internalType: 'address',
-          name: 'serviceOwner',
-          type: 'address',
-        },
-        {
-          internalType: 'uint256',
-          name: 'serviceId',
-          type: 'uint256',
-        },
-        {
-          internalType: 'uint256',
-          name: 'nonce',
-          type: 'uint256',
-        },
-      ],
-      name: 'getUnbondHash',
-      outputs: [
-        {
-          internalType: 'bytes32',
-          name: '',
-          type: 'bytes32',
-        },
-      ],
-      stateMutability: 'view',
-      type: 'function',
-    },
-    {
-      inputs: [
-        {
-          internalType: 'address',
-          name: 'operator',
-          type: 'address',
-        },
-        {
-          internalType: 'bytes32',
-          name: 'hash',
-          type: 'bytes32',
-        },
-      ],
-      name: 'isOperatorHashApproved',
-      outputs: [
-        {
-          internalType: 'bool',
-          name: '',
-          type: 'bool',
-        },
-      ],
-      stateMutability: 'view',
-      type: 'function',
-    },
-    {
-      inputs: [
-        {
-          internalType: 'address',
-          name: '',
-          type: 'address',
-        },
-        {
-          internalType: 'bytes32',
-          name: '',
-          type: 'bytes32',
-        },
-      ],
-      name: 'mapOperatorApprovedHashes',
-      outputs: [
-        {
-          internalType: 'bool',
-          name: '',
-          type: 'bool',
-        },
-      ],
-      stateMutability: 'view',
-      type: 'function',
-    },
-    {
-      inputs: [
-        {
-          internalType: 'uint256',
-          name: '',
-          type: 'uint256',
-        },
-      ],
-      name: 'mapOperatorRegisterAgentsNonces',
-      outputs: [
-        {
-          internalType: 'uint256',
-          name: '',
-          type: 'uint256',
-        },
-      ],
-      stateMutability: 'view',
-      type: 'function',
-    },
-    {
-      inputs: [
-        {
-          internalType: 'uint256',
-          name: '',
-          type: 'uint256',
-        },
-      ],
-      name: 'mapOperatorUnbondNonces',
-      outputs: [
-        {
-          internalType: 'uint256',
-          name: '',
-          type: 'uint256',
-        },
-      ],
-      stateMutability: 'view',
-      type: 'function',
-    },
-    {
-      inputs: [],
-      name: 'name',
-      outputs: [
-        {
-          internalType: 'string',
-          name: '',
-          type: 'string',
-        },
-      ],
-      stateMutability: 'view',
-      type: 'function',
-    },
-    {
-      inputs: [],
-      name: 'nameHash',
-      outputs: [
-        {
-          internalType: 'bytes32',
-          name: '',
-          type: 'bytes32',
-        },
-      ],
-      stateMutability: 'view',
-      type: 'function',
-    },
-    {
-      inputs: [
-        {
-          internalType: 'bytes32',
-          name: 'hash',
-          type: 'bytes32',
-        },
-      ],
-      name: 'operatorApproveHash',
+      name: 'createWithToken',
       outputs: [],
       stateMutability: 'nonpayable',
       type: 'function',
     },
     {
+      inputs: [
+        {
+          internalType: 'address',
+          name: 'token',
+          type: 'address',
+        },
+      ],
+      name: 'drain',
+      outputs: [
+        {
+          internalType: 'uint256',
+          name: 'amount',
+          type: 'uint256',
+        },
+      ],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
       inputs: [],
-      name: 'operatorWhitelist',
+      name: 'drainer',
       outputs: [
         {
           internalType: 'address',
           name: '',
           type: 'address',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'uint256',
+          name: 'serviceId',
+          type: 'uint256',
+        },
+        {
+          internalType: 'uint256',
+          name: 'agentId',
+          type: 'uint256',
+        },
+      ],
+      name: 'getAgentBond',
+      outputs: [
+        {
+          internalType: 'uint256',
+          name: 'bond',
+          type: 'uint256',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: 'operator',
+          type: 'address',
+        },
+        {
+          internalType: 'uint256',
+          name: 'serviceId',
+          type: 'uint256',
+        },
+      ],
+      name: 'getOperatorBalance',
+      outputs: [
+        {
+          internalType: 'uint256',
+          name: 'balance',
+          type: 'uint256',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'uint256',
+          name: 'serviceId',
+          type: 'uint256',
+        },
+      ],
+      name: 'isTokenSecuredService',
+      outputs: [
+        {
+          internalType: 'bool',
+          name: '',
+          type: 'bool',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'manager',
+      outputs: [
+        {
+          internalType: 'address',
+          name: '',
+          type: 'address',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      name: 'mapOperatorAndServiceIdOperatorBalances',
+      outputs: [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      name: 'mapServiceAndAgentIdAgentBond',
+      outputs: [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      name: 'mapServiceIdTokenDeposit',
+      outputs: [
+        {
+          internalType: 'address',
+          name: 'token',
+          type: 'address',
+        },
+        {
+          internalType: 'uint96',
+          name: 'securityDeposit',
+          type: 'uint96',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: '',
+          type: 'address',
+        },
+      ],
+      name: 'mapSlashedFunds',
+      outputs: [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256',
         },
       ],
       stateMutability: 'view',
@@ -1026,55 +792,6 @@ export const SERVICE_MANAGER_TOKEN_CONTRACT = {
       type: 'function',
     },
     {
-      inputs: [],
-      name: 'pause',
-      outputs: [],
-      stateMutability: 'nonpayable',
-      type: 'function',
-    },
-    {
-      inputs: [],
-      name: 'paused',
-      outputs: [
-        {
-          internalType: 'bool',
-          name: '',
-          type: 'bool',
-        },
-      ],
-      stateMutability: 'view',
-      type: 'function',
-    },
-    {
-      inputs: [
-        {
-          internalType: 'uint256',
-          name: 'serviceId',
-          type: 'uint256',
-        },
-        {
-          internalType: 'address[]',
-          name: 'agentInstances',
-          type: 'address[]',
-        },
-        {
-          internalType: 'uint32[]',
-          name: 'agentIds',
-          type: 'uint32[]',
-        },
-      ],
-      name: 'registerAgents',
-      outputs: [
-        {
-          internalType: 'bool',
-          name: 'success',
-          type: 'bool',
-        },
-      ],
-      stateMutability: 'payable',
-      type: 'function',
-    },
-    {
       inputs: [
         {
           internalType: 'address',
@@ -1087,30 +804,33 @@ export const SERVICE_MANAGER_TOKEN_CONTRACT = {
           type: 'uint256',
         },
         {
-          internalType: 'address[]',
-          name: 'agentInstances',
-          type: 'address[]',
-        },
-        {
           internalType: 'uint32[]',
           name: 'agentIds',
           type: 'uint32[]',
         },
-        {
-          internalType: 'bytes',
-          name: 'signature',
-          type: 'bytes',
-        },
       ],
-      name: 'registerAgentsWithSignature',
+      name: 'registerAgentsTokenDeposit',
       outputs: [
         {
           internalType: 'bool',
-          name: 'success',
+          name: 'isTokenSecured',
           type: 'bool',
         },
       ],
-      stateMutability: 'payable',
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'uint256',
+          name: 'serviceId',
+          type: 'uint256',
+        },
+      ],
+      name: 'resetServiceToken',
+      outputs: [],
+      stateMutability: 'nonpayable',
       type: 'function',
     },
     {
@@ -1127,50 +847,29 @@ export const SERVICE_MANAGER_TOKEN_CONTRACT = {
       type: 'function',
     },
     {
-      inputs: [],
-      name: 'serviceRegistryTokenUtility',
-      outputs: [
-        {
-          internalType: 'address',
-          name: '',
-          type: 'address',
-        },
-      ],
-      stateMutability: 'view',
-      type: 'function',
-    },
-    {
       inputs: [
         {
-          internalType: 'address',
-          name: 'newOperatorWhitelist',
-          type: 'address',
+          internalType: 'address[]',
+          name: 'agentInstances',
+          type: 'address[]',
         },
-      ],
-      name: 'setOperatorWhitelist',
-      outputs: [],
-      stateMutability: 'nonpayable',
-      type: 'function',
-    },
-    {
-      inputs: [
+        {
+          internalType: 'uint256[]',
+          name: 'amounts',
+          type: 'uint256[]',
+        },
         {
           internalType: 'uint256',
           name: 'serviceId',
           type: 'uint256',
         },
       ],
-      name: 'terminate',
+      name: 'slash',
       outputs: [
         {
           internalType: 'bool',
           name: 'success',
           type: 'bool',
-        },
-        {
-          internalType: 'uint256',
-          name: 'refund',
-          type: 'uint256',
         },
       ],
       stateMutability: 'nonpayable',
@@ -1184,16 +883,11 @@ export const SERVICE_MANAGER_TOKEN_CONTRACT = {
           type: 'uint256',
         },
       ],
-      name: 'unbond',
+      name: 'terminateTokenRefund',
       outputs: [
         {
-          internalType: 'bool',
-          name: 'success',
-          type: 'bool',
-        },
-        {
           internalType: 'uint256',
-          name: 'refund',
+          name: 'securityRefund',
           type: 'uint256',
         },
       ],
@@ -1212,19 +906,9 @@ export const SERVICE_MANAGER_TOKEN_CONTRACT = {
           name: 'serviceId',
           type: 'uint256',
         },
-        {
-          internalType: 'bytes',
-          name: 'signature',
-          type: 'bytes',
-        },
       ],
-      name: 'unbondWithSignature',
+      name: 'unbondTokenRefund',
       outputs: [
-        {
-          internalType: 'bool',
-          name: 'success',
-          type: 'bool',
-        },
         {
           internalType: 'uint256',
           name: 'refund',
@@ -1232,95 +916,6 @@ export const SERVICE_MANAGER_TOKEN_CONTRACT = {
         },
       ],
       stateMutability: 'nonpayable',
-      type: 'function',
-    },
-    {
-      inputs: [],
-      name: 'unpause',
-      outputs: [],
-      stateMutability: 'nonpayable',
-      type: 'function',
-    },
-    {
-      inputs: [
-        {
-          internalType: 'address',
-          name: 'token',
-          type: 'address',
-        },
-        {
-          internalType: 'bytes32',
-          name: 'configHash',
-          type: 'bytes32',
-        },
-        {
-          internalType: 'uint32[]',
-          name: 'agentIds',
-          type: 'uint32[]',
-        },
-        {
-          components: [
-            {
-              internalType: 'uint32',
-              name: 'slots',
-              type: 'uint32',
-            },
-            {
-              internalType: 'uint96',
-              name: 'bond',
-              type: 'uint96',
-            },
-          ],
-          internalType: 'struct IService.AgentParams[]',
-          name: 'agentParams',
-          type: 'tuple[]',
-        },
-        {
-          internalType: 'uint32',
-          name: 'threshold',
-          type: 'uint32',
-        },
-        {
-          internalType: 'uint256',
-          name: 'serviceId',
-          type: 'uint256',
-        },
-      ],
-      name: 'update',
-      outputs: [
-        {
-          internalType: 'bool',
-          name: 'success',
-          type: 'bool',
-        },
-      ],
-      stateMutability: 'nonpayable',
-      type: 'function',
-    },
-    {
-      inputs: [],
-      name: 'version',
-      outputs: [
-        {
-          internalType: 'string',
-          name: '',
-          type: 'string',
-        },
-      ],
-      stateMutability: 'view',
-      type: 'function',
-    },
-    {
-      inputs: [],
-      name: 'versionHash',
-      outputs: [
-        {
-          internalType: 'bytes32',
-          name: '',
-          type: 'bytes32',
-        },
-      ],
-      stateMutability: 'view',
       type: 'function',
     },
   ],

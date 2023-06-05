@@ -1,7 +1,12 @@
-import { TOTAL_VIEW_COUNT } from 'util/constants';
+import {
+  DEFAULT_SERVICE_CREATION_ETH_TOKEN,
+  TOTAL_VIEW_COUNT,
+  DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS,
+} from 'util/constants';
 import { getServiceContract } from 'common-util/Contracts';
 import { convertStringToArray } from 'common-util/List/ListCommon';
 import { filterByOwner } from 'common-util/ContractUtils/myList';
+import { getTokenDetailsRequest } from 'common-util/Details/ServiceState/utils';
 
 // --------- HELPER METHODS ---------
 export const getServiceOwner = (id) => new Promise((resolve, reject) => {
@@ -161,6 +166,21 @@ export const getTokenUri = (id) => new Promise((resolve, reject) => {
     })
     .catch((e) => {
       console.error(e);
+      reject(e);
+    });
+});
+
+export const getTokenAddressRequest = (id) => new Promise((resolve, reject) => {
+  getTokenDetailsRequest(id)
+    .then((response) => {
+      resolve(
+        response.token === DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS
+          ? DEFAULT_SERVICE_CREATION_ETH_TOKEN
+          : response.token,
+      );
+    })
+    .catch((e) => {
+      console.error('Error occured on getting token address');
       reject(e);
     });
 });
