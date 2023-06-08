@@ -25,6 +25,11 @@ module.exports = {
   images: {
     unoptimized: true,
   },
+  async exportPathMap() {
+    return {
+      '/': { page: '/' },
+    };
+  },
   publicRuntimeConfig: {
     INFURA_PROJECT_ID: process.env.INFURA_PROJECT_ID,
     INFURA_PROJECT_SECRET: process.env.INFURA_PROJECT_ID,
