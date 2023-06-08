@@ -3,6 +3,7 @@
     "dev": "next",
     "build": "CI= next build",
     "start": "next start",
+    "export": "next export",
     "lint": "eslint ./",
     "test": "jest",
     "testw": "jest --watch",
