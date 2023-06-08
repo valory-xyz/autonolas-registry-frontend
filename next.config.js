@@ -16,7 +16,6 @@ module.exports = {
       config.resolve.alias['react-dom'] = path.resolve('./node_modules/react-dom');
       config.resolve.alias.antd = path.resolve('./node_modules/antd');
       config.resolve.alias['styled-components'] = path.resolve('./node_modules/styled-components');
-
       return config;
     },
   }),
