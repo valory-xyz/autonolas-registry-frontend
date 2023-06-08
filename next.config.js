@@ -4,7 +4,6 @@ const path = require('path');
 
 module.exports = {
   ...withAntdLess({
-    reactStrictMode: true,
     lessVarsFilePath: './styles/variables.less',
     lessVarsFilePathAppendToEndOfContent: false,
     cssLoaderOptions: {},
@@ -24,11 +23,6 @@ module.exports = {
   reactStrictMode: true,
   images: {
     unoptimized: true,
-  },
-  async exportPathMap() {
-    return {
-      '/': { page: '/' },
-    };
   },
   publicRuntimeConfig: {
     INFURA_PROJECT_ID: process.env.INFURA_PROJECT_ID,
