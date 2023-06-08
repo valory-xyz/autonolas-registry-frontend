@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
 import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 import get from 'lodash/get';
@@ -159,7 +158,7 @@ export const getSocials = () => (
           key={`social-${social.type}`}
           aria-label={`social-${social.type}`}
         >
-          <Image src={src} alt="" width={18} height={16} />
+          <img src={src} alt="" width={18} height={16} />
         </a>
       );
     })}
