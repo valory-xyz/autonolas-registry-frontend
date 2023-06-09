@@ -5,6 +5,7 @@ export const Container = styled.div``;
 export const HeaderRow = styled.div`
   margin-top: 4rem;
   height: 60vh;
+  min-height: 400px;
   .hero-title {
     max-width: 24ch;
   }

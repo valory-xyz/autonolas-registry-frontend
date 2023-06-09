@@ -5,6 +5,7 @@ import {
 import Link from 'next/link';
 import { URL } from 'util/constants';
 import { isL1Network } from 'common-util/functions';
+import BaseLink from 'common-util/BaseLink';
 import { Container, HeaderRow, ContentRow } from './styles';
 
 const { Title, Text } = Typography;
@@ -48,14 +49,14 @@ const HomePage = () => {
             <Text className="lead">
               The easiest way to interact with the Autonolas on-chain registry.
             </Text>
-            <Link
+            <BaseLink
               href={isL1Network(chainId) ? URL.COMPONENTS : URL.SERVICES}
               passHref
             >
               <Button type="primary" size="large">
                 Get started →
               </Button>
-            </Link>
+            </BaseLink>
           </Col>
           <Col span={8}>
             <div
