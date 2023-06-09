@@ -41,10 +41,15 @@ export const safeSendTransactionNotification = () => notification.warning({
 });
 
 const getChainId = (chainId = null) => {
-  if (typeof window === 'undefined') return null;
+  if (typeof window === 'undefined') return chainId;
   return Number(
     window?.MODAL_PROVIDER?.chainId || window?.ethereum?.chainId || chainId,
   );
+};
+
+export const isL1OnlyNetwork = (chainId) => {
+  const chain = getChainId(chainId);
+  return chain === 5 || chain === 1 || chain === STAGING_CHAIN_ID;
 };
 
 /**
@@ -54,9 +59,7 @@ export const isL1Network = (chainId) => {
   const chain = getChainId(chainId);
 
   // even if chainId is null, we still show everything as shown in goerli or mainnet
-  return (
-    chain === 5 || chain === 1 || chain === STAGING_CHAIN_ID || chainId === null
-  );
+  return isL1OnlyNetwork(chain) || chain === null;
 };
 
 export const isGoerli = (chainId) => getChainId(chainId) === 5;
