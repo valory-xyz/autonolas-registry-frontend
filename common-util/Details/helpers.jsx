@@ -230,7 +230,7 @@ export const DetailsInfo = ({
 
     // show token address only if it is not ETH
     if (
-      tokenAddress
+      isL1OnlyNetwork(chainId)
       && tokenAddress !== DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS
     ) {
       serviceDetailsList.push({
