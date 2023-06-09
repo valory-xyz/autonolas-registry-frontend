@@ -2,10 +2,9 @@ import { useSelector } from 'react-redux';
 import {
   Button, Col, Row, Typography,
 } from 'antd/lib';
-import Link from 'next/link';
+import BaseLink from 'common-util/BaseLink';
 import { URL } from 'util/constants';
 import { isL1Network } from 'common-util/functions';
-import BaseLink from 'common-util/BaseLink';
 import { Container, HeaderRow, ContentRow } from './styles';
 
 const { Title, Text } = Typography;
@@ -95,11 +94,11 @@ const HomePage = () => {
               <Text className="description">{desc}</Text>
               <br />
               {type === 'services' ? (
-                <Link href={link}>{`View all ${type}`}</Link>
+                <BaseLink href={link}>{`View all ${type}`}</BaseLink>
               ) : (
                 <>
                   {isL1Network(chainId) ? (
-                    <Link href={link}>{`View all ${type}`}</Link>
+                    <BaseLink href={link}>{`View all ${type}`}</BaseLink>
                   ) : (
                     <Text disabled>
                       {`Switch network (to Ethereum or Goerli) to view ${type}`}

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import Link from 'next/link';
+import BaseLink from 'common-util/BaseLink';
 import { Alert } from 'antd/lib';
 import bs58 from 'bs58';
 import { ExternalLink } from 'react-feather';
@@ -34,9 +34,9 @@ export const getIpfsHashFromBytes32 = (bytes32Hex) => {
 
 // ----------- components -----------
 export const MyLink = ({ children, href, ...linkProps }) => (
-  <Link {...linkProps} href={href}>
+  <BaseLink {...linkProps} href={href}>
     <a href={href}>{children}</a>
-  </Link>
+  </BaseLink>
 );
 MyLink.propTypes = {
   children: PropTypes.node.isRequired,
