@@ -19,7 +19,7 @@ module.exports = {
       return config;
     },
   }),
-  assetPrefix: process.env.NEXT_PUBLIC_FLEEK_IPFS_URL || undefined,
+  assetPrefix: './',
   trailingSlash: true,
   reactStrictMode: true,
   images: {
