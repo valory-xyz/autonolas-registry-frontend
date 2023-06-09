@@ -12,6 +12,7 @@ import {
   NA,
   NAV_TYPES,
 } from 'util/constants';
+import { isL1OnlyNetwork } from 'common-util/functions';
 import { NftImage } from './NFTImage';
 import { SetOperatorStatus, OperatorWhitelist } from './ServiceDetailsHelper';
 import {
@@ -52,6 +53,8 @@ export const DetailsInfo = ({
   setIsModalVisible,
   onDependencyClick,
 }) => {
+  const chainId = useSelector((state) => state?.setup?.chainId);
+
   const account = useSelector((state) => state?.setup?.account);
   const [tokenAddress, setTokenAddress] = useState(null);
 
@@ -62,6 +65,7 @@ export const DetailsInfo = ({
     setSwitchValue(isWhiteListed);
   }, [isWhiteListed]);
 
+  // get token address for service on load
   useEffect(() => {
     const getData = async () => {
       if (type === NAV_TYPES.SERVICE) {
@@ -70,9 +74,7 @@ export const DetailsInfo = ({
       }
     };
 
-    if (id) {
-      getData();
-    }
+    if (id && isL1OnlyNetwork(chainId)) getData();
   }, [id]);
 
   const updateHashBtn = isOwner ? (
@@ -113,8 +115,10 @@ export const DetailsInfo = ({
 
   // get operator whitelist
   const setOpWhitelist = async () => {
-    const whiteListRes = await checkIfServiceRequiresWhiltelisting(id);
-    setIsWhiteListed(whiteListRes);
+    if (isL1OnlyNetwork(chainId)) {
+      const whiteListRes = await checkIfServiceRequiresWhiltelisting(id);
+      setIsWhiteListed(whiteListRes);
+    }
   };
 
   const getCommonDetails = () => {
@@ -225,7 +229,10 @@ export const DetailsInfo = ({
     });
 
     // show token address only if it is not ETH
-    if (tokenAddress !== DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS) {
+    if (
+      isL1OnlyNetwork(chainId)
+      && tokenAddress !== DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS
+    ) {
       serviceDetailsList.push({
         title: 'Token Address',
         value: tokenAddress || NA,

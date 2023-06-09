@@ -7,7 +7,7 @@ import {
 } from 'antd/lib';
 import get from 'lodash/get';
 import { URL } from 'util/constants';
-import { isLocalNetwork } from 'common-util/functions';
+import { isL1OnlyNetwork, isLocalNetwork } from 'common-util/functions';
 import {
   onActivateRegistration,
   getServiceTableDataSource,
@@ -62,7 +62,7 @@ export const ServiceState = ({
       }
 
       // if valid service id, check if it's an eth token
-      if (id) {
+      if (id && isL1OnlyNetwork(chainId)) {
         const isEth = await checkIfEth(id);
         setIsEthToken(isEth);
       }

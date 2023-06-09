@@ -121,11 +121,11 @@ export const getServiceOwner = (id) => new Promise((resolve, reject) => {
     });
 });
 
-export const getTokenDetailsRequest = (id) => new Promise((resolve, reject) => {
+export const getTokenDetailsRequest = (serviceId) => new Promise((resolve, reject) => {
   const contract = getServiceRegistryTokenUtilityContract();
 
   contract.methods
-    .mapServiceIdTokenDeposit(id)
+    .mapServiceIdTokenDeposit(serviceId)
     .call()
     .then((response) => {
       resolve(response);
@@ -441,7 +441,9 @@ export const checkIfServiceRequiresWhiltelisting = (serviceId) => new Promise((r
     })
     .catch((e) => {
       reject(e);
-      notifyError('Error occured on checking if service requires whitelisting');
+      notifyError(
+        'Error occured on checking if service requires whitelisting',
+      );
     });
 });
 

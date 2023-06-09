@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Button, Divider, Typography } from 'antd/lib';
-import { convertToEth } from 'common-util/functions';
+import { convertToEth, isL1OnlyNetwork } from 'common-util/functions';
 import {
   getBonds,
   getTokenBondRequest,
@@ -24,6 +25,8 @@ const ActiveRegistration = ({
   isOwner,
   isEthToken,
 }) => {
+  const chainId = useSelector((state) => state?.setup?.chainId);
+
   const [totalBonds, setTotalBond] = useState(null);
   const [ethTokenBonds, setEthTokenBonds] = useState([]);
 
@@ -44,7 +47,7 @@ const ActiveRegistration = ({
         }
       }
 
-      if (serviceId && !isEthToken) {
+      if (serviceId && !isEthToken && isL1OnlyNetwork(chainId)) {
         const response = await getTokenBondRequest(serviceId, dataSource);
         setEthTokenBonds(response);
       }
