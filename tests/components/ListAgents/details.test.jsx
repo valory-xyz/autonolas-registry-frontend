@@ -56,6 +56,14 @@ const dummyIpfs = {
 const unmockedFetch = global.fetch;
 
 describe('listAgents/details.jsx', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    getAgentDetails.mockImplementation(() => Promise.resolve(dummyDetails));
+    getAgentHashes.mockImplementation(() => Promise.resolve(dummyHashes));
+    getAgentOwner.mockImplementation(() => Promise.resolve(dummyDetails.owner));
+    getTokenUri.mockImplementation(() => Promise.resolve(dummyDetails.tokenUrl));
+  });
+
   beforeAll(() => {
     global.fetch = () => Promise.resolve({
       json: () => Promise.resolve(dummyIpfs),
@@ -65,11 +73,6 @@ describe('listAgents/details.jsx', () => {
   afterAll(() => {
     global.fetch = unmockedFetch;
   });
-
-  getAgentDetails.mockImplementation(() => Promise.resolve(dummyDetails));
-  getAgentHashes.mockImplementation(() => Promise.resolve(dummyHashes));
-  getAgentOwner.mockImplementation(() => Promise.resolve(dummyDetails.owner));
-  getTokenUri.mockImplementation(() => Promise.resolve(dummyDetails.tokenUrl));
 
   it('should render agent details', async () => {
     expect.hasAssertions();
