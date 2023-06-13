@@ -1,3 +1,4 @@
+/* eslint-disable jest/require-hook */
 import '@testing-library/jest-dom/extend-expect';
 
 // https:// jestjs.io/docs/manual-mocks#mocking-methods-which-are-not-implemented-in-jsdom
