@@ -354,7 +354,7 @@ RegisterForm.propTypes = {
     configHash: PropTypes.string,
     agentIds: PropTypes.arrayOf(PropTypes.string),
     agentNumSlots: PropTypes.arrayOf(PropTypes.string),
-    agentParams: PropTypes.arrayOf(PropTypes.array),
+    agentParams: PropTypes.arrayOf(PropTypes.shape({})),
     threshold: PropTypes.string,
   }),
   handleSubmit: PropTypes.func.isRequired,
