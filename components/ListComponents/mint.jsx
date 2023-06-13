@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 import { Typography, notification } from 'antd/lib';
 import RegisterForm from 'common-util/List/RegisterForm';
@@ -10,7 +9,8 @@ import { FormContainer } from 'components/styles';
 
 const { Title } = Typography;
 
-const MintComponent = ({ account }) => {
+const MintComponent = () => {
+  const account = useSelector((state) => state?.setup?.account);
   const [isMinting, setIsMinting] = useState(false);
   const [error, setError] = useState(null);
   const [information, setInformation] = useState(null);
@@ -66,17 +66,4 @@ const MintComponent = ({ account }) => {
   );
 };
 
-MintComponent.propTypes = {
-  account: PropTypes.string,
-};
-
-MintComponent.defaultProps = {
-  account: null,
-};
-
-const mapStateToProps = (state) => {
-  const { account, balance } = state.setup;
-  return { account, balance };
-};
-
-export default connect(mapStateToProps, {})(MintComponent);
+export default MintComponent;

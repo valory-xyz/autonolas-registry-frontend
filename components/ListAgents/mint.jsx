@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 import { Typography, notification } from 'antd/lib';
 import RegisterForm from 'common-util/List/RegisterForm';
@@ -10,7 +9,9 @@ import { FormContainer } from 'components/styles';
 
 const { Title } = Typography;
 
-const MintAgent = ({ account }) => {
+const MintAgent = () => {
+  const account = useSelector((state) => state?.setup?.account);
+  const [isMinting, setIsMinting] = useState(false);
   const [error, setError] = useState(null);
   const [information, setInformation] = useState(null);
   const router = useRouter();
@@ -19,6 +20,7 @@ const MintAgent = ({ account }) => {
 
   const handleSubmit = (values) => {
     if (account) {
+      setIsMinting(true);
       setError(null);
       setInformation(null);
 
@@ -39,6 +41,9 @@ const MintAgent = ({ account }) => {
         .catch((e) => {
           setError(e);
           console.error(e);
+        })
+        .finally(() => {
+          setIsMinting(false);
         });
     }
   };
@@ -48,6 +53,7 @@ const MintAgent = ({ account }) => {
       <FormContainer>
         <Title level={2}>Mint Agent</Title>
         <RegisterForm
+          isLoading={isMinting}
           listType="agent"
           handleSubmit={handleSubmit}
           handleCancel={handleCancel}
@@ -59,17 +65,4 @@ const MintAgent = ({ account }) => {
   );
 };
 
-MintAgent.propTypes = {
-  account: PropTypes.string,
-};
-
-MintAgent.defaultProps = {
-  account: null,
-};
-
-const mapStateToProps = (state) => {
-  const { account, balance } = state.setup;
-  return { account, balance };
-};
-
-export default connect(mapStateToProps, {})(MintAgent);
+export default MintAgent;
