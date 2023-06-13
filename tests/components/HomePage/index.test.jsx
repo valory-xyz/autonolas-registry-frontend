@@ -9,10 +9,12 @@ jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
 
-useRouter.mockImplementation(() => ({ push: jest.fn() }));
-
-// test cases
 describe('<HomePage>', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    useRouter.mockImplementation(() => ({ push: jest.fn() }));
+  });
+
   it('should render homepage', async () => {
     expect.hasAssertions();
     const { container } = render(wrapProvider(<HomePage />));

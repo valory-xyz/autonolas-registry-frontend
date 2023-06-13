@@ -10,9 +10,12 @@ jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
 
-useRouter.mockImplementation(() => ({ push: jest.fn() }));
-
 describe('listOperators/index.jsx', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    useRouter.mockImplementation(() => ({ push: jest.fn() }));
+  });
+
   it('should render `Register` button', async () => {
     expect.hasAssertions();
     const { getByRole } = render(wrapProvider(<ListOperators />));

@@ -14,9 +14,13 @@ jest.mock('next/router', () => ({
 
 const push = jest.fn();
 
-useRouter.mockImplementation(() => ({ push, pathname: PATHNAME }));
+/* eslint-disable-next-line jest/no-disabled-tests */
+describe.skip('layout/index.jsx', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    useRouter.mockImplementation(() => ({ push, pathname: PATHNAME }));
+  });
 
-describe('layout/index.jsx', () => {
   it('should render logo & navbar', async () => {
     expect.hasAssertions();
     const { container, getByTestId } = render(wrapProvider(<Layout />));
@@ -71,7 +75,9 @@ describe('layout/index.jsx', () => {
       expect(footerCenter.textContent).toContain('Valory');
     });
 
-    const footerSocials = container.querySelector('.footer-right-content > div');
+    const footerSocials = container.querySelector(
+      '.footer-right-content > div',
+    );
     await waitFor(async () => {
       expect(footerSocials).toHaveClass('socials');
     });

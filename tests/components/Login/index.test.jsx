@@ -24,7 +24,7 @@ jest.mock('@web3-react/core', () => ({
   })),
 }));
 
-// eslint-disable-next-line jest/no-disabled-tests
+/* eslint-disable-next-line jest/no-disabled-tests */
 describe.skip('login/index.jsx', () => {
   beforeEach(() => {
     jest.clearAllMocks();

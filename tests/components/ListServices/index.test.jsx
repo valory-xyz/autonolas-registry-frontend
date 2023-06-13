@@ -32,25 +32,27 @@ jest.mock('common-util/Contracts', () => ({
 
 const SERVICE_1 = { name: 'Service One' };
 
-getServiceContract.mockImplementation(() => ({
-  methods: {
-    getService: jest.fn(() => ({
-      call: jest.fn(() => Promise.resolve(SERVICE_1)),
-    })),
-  },
-}));
-
-useRouter.mockImplementation(() => ({ push: jest.fn() }));
-
 // dummy responses mock
 const allServiceResponse = { id: '1', state: '5' };
 const myServiceResponse = { id: '2' };
 
 describe('listServices/index.jsx', () => {
-  getServices.mockImplementation(() => Promise.resolve([allServiceResponse]));
-  getFilteredServices.mockImplementation(() => Promise.resolve([myServiceResponse]));
-  getTotalForAllServices.mockImplementation(() => Promise.resolve(1));
-  getTotalForMyServices.mockImplementation(() => Promise.resolve(1));
+  beforeEach(() => {
+    jest.clearAllMocks();
+    useRouter.mockImplementation(() => ({ push: jest.fn() }));
+
+    getServiceContract.mockImplementation(() => ({
+      methods: {
+        getService: jest.fn(() => ({
+          call: jest.fn(() => Promise.resolve(SERVICE_1)),
+        })),
+      },
+    }));
+    getServices.mockImplementation(() => Promise.resolve([allServiceResponse]));
+    getFilteredServices.mockImplementation(() => Promise.resolve([myServiceResponse]));
+    getTotalForAllServices.mockImplementation(() => Promise.resolve(1));
+    getTotalForMyServices.mockImplementation(() => Promise.resolve(1));
+  });
 
   it('should render tabs with `All Tab` as active tab & Mint button', async () => {
     expect.hasAssertions();
