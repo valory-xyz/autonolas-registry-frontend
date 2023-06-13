@@ -1,21 +1,22 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import Web3 from 'web3';
 import { Button, Form, Input } from 'antd/lib';
-import get from 'lodash/get';
 import isNil from 'lodash/isNil';
 import { WhiteButton } from 'common-util/components/Button';
 import IpfsHashGenerationModal from '../IpfsHashGenerationModal';
 import { DependencyLabel } from '../ListCommon';
-import { RegisterFooter, ComplexLabel } from '../styles';
 import { FormItemHash } from './helpers';
+import { RegisterFooter, ComplexLabel } from '../styles';
 
 export const FORM_NAME = 'register_form';
 
 const RegisterForm = ({
-  account, listType, handleSubmit, handleCancel,
+  isLoading, listType, handleSubmit, handleCancel,
 }) => {
+  const account = useSelector((state) => state?.setup?.account);
+
   const [form] = Form.useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [fields, setFields] = useState([]);
@@ -148,7 +149,7 @@ const RegisterForm = ({
 
         {account ? (
           <Form.Item>
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" loading={isLoading}>
               Submit
             </Button>
           </Form.Item>
@@ -171,20 +172,15 @@ const RegisterForm = ({
 };
 
 RegisterForm.propTypes = {
-  account: PropTypes.string,
+  isLoading: PropTypes.bool,
   listType: PropTypes.string,
   handleSubmit: PropTypes.func.isRequired,
   handleCancel: PropTypes.func.isRequired,
 };
 
 RegisterForm.defaultProps = {
-  account: null,
+  isLoading: false,
   listType: '',
 };
 
-const mapStateToProps = (state) => {
-  const account = get(state, 'setup.account') || null;
-  return { account };
-};
-
-export default connect(mapStateToProps, {})(RegisterForm);
+export default RegisterForm;
