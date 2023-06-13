@@ -20,13 +20,14 @@ const Login = ({
 }) => {
   const { address } = useAccount();
   const { chain } = useNetwork();
-  const { data } = useBalance({ address });
+  const chainId = chain?.id;
+  const { data } = useBalance({ address, chainId: chain?.id });
 
   useEffect(() => {
     if (address) {
       setUserAccount(address);
       setUserBalance(data?.formatted);
-      setChainId(chain?.id);
+      setChainId(chainId);
     } else {
       setLogout();
     }
