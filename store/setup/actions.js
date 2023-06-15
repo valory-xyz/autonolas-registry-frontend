@@ -20,6 +20,11 @@ export const setChainId = (chainId) => ({
   data: { chainId },
 });
 
+export const setLogout = () => ({
+  type: syncTypes.SET_LOGOUT,
+  data: null,
+});
+
 export const setErrorMessage = (errorMessage) => ({
   type: syncTypes.SET_LOGIN_ERROR,
   data: { errorMessage },

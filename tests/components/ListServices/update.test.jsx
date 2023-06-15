@@ -46,33 +46,35 @@ const SERVICE_1 = {
     '0x1348530ee33734f1d85cf0cdab13181c8c18c051a589a185f52fc0c740a4d5fa',
 };
 
-getServiceContract.mockImplementation(() => ({
-  methods: {
-    getService: jest.fn(() => ({
-      call: jest.fn(() => Promise.resolve(SERVICE_1)),
-    })),
-  },
-}));
-
-getServiceManagerContract.mockImplementation(() => ({
-  methods: {
-    serviceUpdate: jest.fn(() => ({
-      send: jest.fn(() => Promise.resolve({})),
-    })),
-  },
-}));
-
-useRouter.mockImplementation(() => ({ push: jest.fn() }));
-
 // TODO: fix with antd form
 // eslint-disable-next-line jest/no-disabled-tests
 describe.skip('listServices/service.jsx', () => {
-  getServiceDetails.mockImplementation(() => Promise.resolve(SERVICE_1));
-  getServiceOwner.mockImplementation(() => Promise.resolve(dummyAddress));
-  useRouter.mockImplementation(() => ({
-    push: jest.fn(),
-    query: { id: 1 },
-  }));
+  beforeEach(() => {
+    jest.clearAllMocks();
+    getServiceContract.mockImplementation(() => ({
+      methods: {
+        getService: jest.fn(() => ({
+          call: jest.fn(() => Promise.resolve(SERVICE_1)),
+        })),
+      },
+    }));
+
+    getServiceManagerContract.mockImplementation(() => ({
+      methods: {
+        serviceUpdate: jest.fn(() => ({
+          send: jest.fn(() => Promise.resolve({})),
+        })),
+      },
+    }));
+
+    useRouter.mockImplementation(() => ({ push: jest.fn() }));
+    getServiceDetails.mockImplementation(() => Promise.resolve(SERVICE_1));
+    getServiceOwner.mockImplementation(() => Promise.resolve(dummyAddress));
+    useRouter.mockImplementation(() => ({
+      push: jest.fn(),
+      query: { id: 1 },
+    }));
+  });
 
   it('should update the service successfully', async () => {
     expect.hasAssertions();

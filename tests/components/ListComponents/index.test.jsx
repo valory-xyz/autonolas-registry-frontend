@@ -24,17 +24,19 @@ jest.mock('components/ListComponents/utils', () => ({
   getTotalForMyComponents: jest.fn(),
 }));
 
-useRouter.mockImplementation(() => ({ push: jest.fn() }));
-
 // dummy responses mock
 const allComponentResponse = { id: '1', dependencies: ['1'] };
 const myComponentResponse = { id: '2', dependencies: ['2'] };
 
 describe('listComponents/index.jsx', () => {
-  getComponents.mockImplementation(() => Promise.resolve([allComponentResponse]));
-  getFilteredComponents.mockImplementation(() => Promise.resolve([myComponentResponse]));
-  getTotalForAllComponents.mockImplementation(() => Promise.resolve(1));
-  getTotalForMyComponents.mockImplementation(() => Promise.resolve(1));
+  beforeEach(() => {
+    jest.clearAllMocks();
+    useRouter.mockImplementation(() => ({ push: jest.fn() }));
+    getComponents.mockImplementation(() => Promise.resolve([allComponentResponse]));
+    getFilteredComponents.mockImplementation(() => Promise.resolve([myComponentResponse]));
+    getTotalForAllComponents.mockImplementation(() => Promise.resolve(1));
+    getTotalForMyComponents.mockImplementation(() => Promise.resolve(1));
+  });
 
   it('should render tabs with `All Tab` as active tab & Mint button', async () => {
     expect.hasAssertions();

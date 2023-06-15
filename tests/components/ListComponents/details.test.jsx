@@ -49,6 +49,14 @@ const dummyHashes = {
 const unmockedFetch = global.fetch;
 
 describe('listComponents/details.jsx', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    getComponentDetails.mockImplementation(() => Promise.resolve(dummyDetails));
+    getComponentHashes.mockImplementation(() => Promise.resolve(dummyHashes));
+    getComponentOwner.mockImplementation(() => Promise.resolve(dummyDetails.owner));
+    getTokenUri.mockImplementation(() => Promise.resolve(dummyDetails.tokenUrl));
+  });
+
   beforeAll(() => {
     global.fetch = () => Promise.resolve({
       json: () => Promise.resolve(mockIpfs),
@@ -58,11 +66,6 @@ describe('listComponents/details.jsx', () => {
   afterAll(() => {
     global.fetch = unmockedFetch;
   });
-
-  getComponentDetails.mockImplementation(() => Promise.resolve(dummyDetails));
-  getComponentHashes.mockImplementation(() => Promise.resolve(dummyHashes));
-  getComponentOwner.mockImplementation(() => Promise.resolve(dummyDetails.owner));
-  getTokenUri.mockImplementation(() => Promise.resolve(dummyDetails.tokenUrl));
 
   it('should render component details', async () => {
     expect.hasAssertions();

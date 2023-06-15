@@ -1,19 +1,18 @@
 import { useState } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 import { Typography, notification } from 'antd/lib';
 import RegisterForm from 'common-util/List/RegisterForm';
-import {
-  AlertSuccess,
-  AlertError,
-} from 'common-util/List/ListCommon';
+import { AlertSuccess, AlertError } from 'common-util/List/ListCommon';
 import { getMechMinterContract } from 'common-util/Contracts';
+import { sendTransaction } from 'common-util/functions/sendTransaction';
 import { FormContainer } from 'components/styles';
 
 const { Title } = Typography;
 
-const MintComponent = ({ account }) => {
+const MintComponent = () => {
+  const account = useSelector((state) => state?.setup?.account);
+  const [isMinting, setIsMinting] = useState(false);
   const [error, setError] = useState(null);
   const [information, setInformation] = useState(null);
   const router = useRouter();
@@ -24,18 +23,21 @@ const MintComponent = ({ account }) => {
 
   const handleSubmit = async (values) => {
     if (account) {
+      setIsMinting(true);
       setError(null);
       setInformation(null);
       const contract = getMechMinterContract();
 
-      contract.methods
+      const fn = contract.methods
         .create(
           '0',
           values.owner_address,
           `0x${values.hash}`,
           values.dependencies ? values.dependencies.split(', ') : [],
         )
-        .send({ from: account })
+        .send({ from: account });
+
+      sendTransaction(fn, account)
         .then((result) => {
           setInformation(result);
           notification.success({ message: 'Component minted' });
@@ -43,6 +45,9 @@ const MintComponent = ({ account }) => {
         .catch((e) => {
           setError(e);
           console.error(e);
+        })
+        .finally(() => {
+          setIsMinting(false);
         });
     }
   };
@@ -52,6 +57,7 @@ const MintComponent = ({ account }) => {
       <FormContainer>
         <Title level={2}>Mint Component</Title>
         <RegisterForm
+          isLoading={isMinting}
           listType="component"
           handleSubmit={handleSubmit}
           handleCancel={handleCancel}
@@ -63,17 +69,4 @@ const MintComponent = ({ account }) => {
   );
 };
 
-MintComponent.propTypes = {
-  account: PropTypes.string,
-};
-
-MintComponent.defaultProps = {
-  account: null,
-};
-
-const mapStateToProps = (state) => {
-  const { account, balance } = state.setup;
-  return { account, balance };
-};
-
-export default connect(mapStateToProps, {})(MintComponent);
+export default MintComponent;

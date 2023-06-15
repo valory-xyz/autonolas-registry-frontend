@@ -10,9 +10,12 @@ jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
 
-useRouter.mockImplementation(() => ({ push: jest.fn() }));
-
 describe('listOperators/register.jsx', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    useRouter.mockImplementation(() => ({ push: jest.fn() }));
+  });
+
   it('works as expected (dummy)', async () => {
     expect.hasAssertions();
     const { container } = render(wrapProvider(<RegisterOperator />));

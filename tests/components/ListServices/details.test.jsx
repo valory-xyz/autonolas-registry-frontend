@@ -68,6 +68,33 @@ const dummyHashes = {
 const unmockedFetch = global.fetch;
 
 describe('listServices/details.jsx', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    getServiceDetails.mockImplementation(() => Promise.resolve(dummyDetails));
+    getServiceHashes.mockImplementation(() => Promise.resolve(dummyHashes));
+    getServiceOwner.mockImplementation(() => Promise.resolve(dummyAddress));
+    getTokenUri.mockImplementation(() => Promise.resolve(dummyDetails.tokenUrl));
+    getBonds.mockImplementation(() => Promise.resolve(['1']));
+    getServiceAgentInstances.mockImplementation(() => Promise.resolve(['1']));
+    getServiceTableDataSource.mockImplementation(() => Promise.resolve([
+      {
+        key: 1,
+        agentId: '1',
+        availableSlots: 1,
+        totalSlots: '1',
+        bond: 10000000000000,
+        agentAddresses: null,
+      },
+    ]));
+    getAgentInstanceAndOperator.mockImplementation(() => Promise.resolve([
+      {
+        id: 'agent-instance-row-1',
+        operatorAddress: 'operator_address_1',
+        agentInstance: 'agent_instance_1',
+      },
+    ]));
+  });
+
   beforeAll(() => {
     global.fetch = () => Promise.resolve({
       json: () => Promise.resolve(mockIpfs),
@@ -77,30 +104,6 @@ describe('listServices/details.jsx', () => {
   afterAll(() => {
     global.fetch = unmockedFetch;
   });
-
-  getServiceDetails.mockImplementation(() => Promise.resolve(dummyDetails));
-  getServiceHashes.mockImplementation(() => Promise.resolve(dummyHashes));
-  getServiceOwner.mockImplementation(() => Promise.resolve(dummyAddress));
-  getTokenUri.mockImplementation(() => Promise.resolve(dummyDetails.tokenUrl));
-  getBonds.mockImplementation(() => Promise.resolve(['1']));
-  getServiceAgentInstances.mockImplementation(() => Promise.resolve(['1']));
-  getServiceTableDataSource.mockImplementation(() => Promise.resolve([
-    {
-      key: 1,
-      agentId: '1',
-      availableSlots: 1,
-      totalSlots: '1',
-      bond: 10000000000000,
-      agentAddresses: null,
-    },
-  ]));
-  getAgentInstanceAndOperator.mockImplementation(() => Promise.resolve([
-    {
-      id: 'agent-instance-row-1',
-      operatorAddress: 'operator_address_1',
-      agentInstance: 'agent_instance_1',
-    },
-  ]));
 
   // eslint-disable-next-line jest/no-disabled-tests
   it.skip('should render service details', async () => {

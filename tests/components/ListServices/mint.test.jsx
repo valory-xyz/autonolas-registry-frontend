@@ -18,15 +18,18 @@ jest.mock('common-util/List/IpfsHashGenerationModal/helpers', () => ({
   getIpfsHashHelper: jest.fn(() => mockV1Hash),
 }));
 
-getServiceManagerContract.mockImplementation(() => ({
-  methods: {
-    create: jest.fn(() => ({
-      send: jest.fn(() => Promise.resolve(NEW_SERVICE)),
-    })),
-  },
-}));
-
 describe('listServices/mint.jsx', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    getServiceManagerContract.mockImplementation(() => ({
+      methods: {
+        create: jest.fn(() => ({
+          send: jest.fn(() => Promise.resolve(NEW_SERVICE)),
+        })),
+      },
+    }));
+  });
+
   it('should submit the form successfully', async () => {
     expect.hasAssertions();
 

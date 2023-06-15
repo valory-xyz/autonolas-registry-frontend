@@ -29,6 +29,16 @@ const setup = (state = initialState, action) => {
       return { ...state, ...action.data };
     }
 
+    case syncTypes.SET_LOGOUT: {
+      return {
+        ...state,
+        account: null,
+        balance: null,
+        errorMessage: null,
+        isVerified: false,
+      };
+    }
+
     default:
       return state;
   }
