@@ -106,7 +106,7 @@ export const ServiceState = ({
   /* ----- step 1 ----- */
   const handleStep1Registration = async () => {
     try {
-      // if not eth, check if the user has sufficient token balance
+      // if not ETH, check if the user has sufficient token balance
       // and if not, approve the token
       if (!isEthToken) {
         await checkAndApproveToken({
@@ -167,7 +167,7 @@ export const ServiceState = ({
     const agentInstances = trimArray(instances || []);
 
     try {
-      // if not eth, check if the user has sufficient token balance
+      // if not ETH, check if the user has sufficient token balance
       // and if not, approve the token
       if (!isEthToken) {
         await checkAndApproveToken({
