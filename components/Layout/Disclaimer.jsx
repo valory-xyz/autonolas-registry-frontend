@@ -49,14 +49,14 @@ export const Disclaimer = () => (
               applicable to you and not engage in any illegal activities;
             </li>
             <li>
-              that you are claiming Safe tokens to participate in the SafeDAO
-              governance process and that they do not represent consideration
-              for past or future services;
+              that you are claiming OLAS tokens to participate in the Autonolas
+              DAO governance process and that they do not represent
+              consideration for past or future services;
             </li>
             <li>
               that you, the country you are a resident of and your wallet
               address is not on any sanctions lists maintained by the United
-              Nations, Switzerland, the EU. UK or the US;
+              Nations, Switzerland, the EU, UK or the US;
             </li>
             <li>
               that you are responsible for any tax obligations arising out of
