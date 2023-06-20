@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import get from 'lodash/get';
 import { Footer as CommonFooter } from '@autonolas/frontend-library';
 import { ADDRESSES, getWeb3Details } from 'common-util/Contracts';
@@ -19,18 +20,13 @@ const SOCIALS = [
     url: 'https://www.autonolas.network',
   },
   {
-    type: 'medium',
-    url: 'https://autonolas.medium.com/',
-  },
-  {
     type: 'twitter',
     url: 'https://twitter.com/autonolas',
   },
-  {
-    type: 'github',
-    url: 'https://github.com/valory-xyz',
-  },
 ];
+
+// should not display contracts on homepage
+const PATHS_NOT_TO_SHOW = ['/', '/disclaimer'];
 
 const ContractInfo = () => {
   const chainId = useSelector((state) => get(state, 'setup.chainId'));
@@ -125,8 +121,7 @@ const ContractInfo = () => {
 
   return (
     <ContractsInfoContainer>
-      {/* should not display contracts on homepage */}
-      {pathname !== '/' && (
+      {!PATHS_NOT_TO_SHOW.includes(pathname) && (
         <>
           <img
             alt="Etherscan link"
@@ -167,7 +162,18 @@ export const getSocials = () => (
 );
 
 const Footer = () => (
-  <CommonFooter leftContent={<ContractInfo />} rightContent={getSocials()} />
+  <CommonFooter
+    leftContent={<ContractInfo />}
+    rightContent={getSocials()}
+    centerContent={(
+      <>
+        ©&nbsp;Autonolas DAO&nbsp;
+        {new Date().getFullYear()}
+        &nbsp;•&nbsp;
+        <Link href="/disclaimer">Disclaimer</Link>
+      </>
+    )}
+  />
 );
 
 export default Footer;
