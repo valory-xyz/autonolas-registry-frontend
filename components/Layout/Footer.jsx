@@ -24,6 +24,9 @@ const SOCIALS = [
   },
 ];
 
+// should not display contracts on homepage
+const PATHS_NOT_TO_SHOW = ['/', '/disclaimer'];
+
 const ContractInfo = () => {
   const chainId = useSelector((state) => get(state, 'setup.chainId'));
   const router = useRouter();
@@ -117,8 +120,7 @@ const ContractInfo = () => {
 
   return (
     <ContractsInfoContainer>
-      {/* should not display contracts on homepage */}
-      {pathname !== '/' && (
+      {!PATHS_NOT_TO_SHOW.includes(pathname) && (
         <>
           <img
             alt="Etherscan link"
