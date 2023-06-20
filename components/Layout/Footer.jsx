@@ -16,19 +16,11 @@ import { ContractsInfoContainer } from './styles';
 const SOCIALS = [
   {
     type: 'web',
-    url: 'https://www.autonolas.network',
-  },
-  {
-    type: 'medium',
-    url: 'https://autonolas.medium.com/',
+    url: 'https://www.olas.network',
   },
   {
     type: 'twitter',
     url: 'https://twitter.com/autonolas',
-  },
-  {
-    type: 'github',
-    url: 'https://github.com/valory-xyz',
   },
 ];
 
@@ -167,7 +159,16 @@ export const getSocials = () => (
 );
 
 const Footer = () => (
-  <CommonFooter leftContent={<ContractInfo />} rightContent={getSocials()} />
+  <CommonFooter
+    leftContent={<ContractInfo />}
+    rightContent={getSocials()}
+    centerContent={(
+      <>
+        ©&nbsp;Autonolas DAO&nbsp;
+        {new Date().getFullYear()}
+      </>
+    )}
+  />
 );
 
 export default Footer;
