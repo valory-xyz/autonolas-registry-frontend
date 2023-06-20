@@ -17,7 +17,7 @@ import { ContractsInfoContainer } from './styles';
 const SOCIALS = [
   {
     type: 'web',
-    url: 'https://www.olas.network',
+    url: 'https://www.autonolas.network',
   },
   {
     type: 'twitter',
