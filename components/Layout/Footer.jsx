@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import get from 'lodash/get';
 import { Footer as CommonFooter } from '@autonolas/frontend-library';
 import { ADDRESSES, getWeb3Details } from 'common-util/Contracts';
@@ -168,6 +169,8 @@ const Footer = () => (
       <>
         ©&nbsp;Autonolas DAO&nbsp;
         {new Date().getFullYear()}
+        &nbsp;•&nbsp;
+        <Link href="/disclaimer">Disclaimer</Link>
       </>
     )}
   />
