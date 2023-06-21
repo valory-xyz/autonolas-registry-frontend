@@ -1,13 +1,10 @@
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
 import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import get from 'lodash/get';
-import {
-  Footer as CommonFooter,
-  removeSubdomainFrom,
-} from '@autonolas/frontend-library';
+import { Footer as CommonFooter } from '@autonolas/frontend-library';
 import { ADDRESSES, getWeb3Details } from 'common-util/Contracts';
 import {
   isGoerli,
@@ -16,6 +13,8 @@ import {
   isPolygonMumbai,
 } from 'common-util/functions';
 import { ContractsInfoContainer } from './styles';
+
+const Socials = dynamic(() => import('./Socials'), { ssr: false });
 
 // should not display contracts on homepage
 const PATHS_NOT_TO_SHOW = ['/', '/disclaimer'];
@@ -129,44 +128,6 @@ const ContractInfo = () => {
         </>
       )}
     </ContractsInfoContainer>
-  );
-};
-
-export const Socials = () => {
-  const SOCIALS = [
-    {
-      type: 'web',
-      url: removeSubdomainFrom(),
-    },
-    {
-      type: 'github',
-      url: 'https://twitter.com/autonolas',
-    },
-    {
-      type: 'twitter',
-      url: 'https://twitter.com/autonolas',
-    },
-  ];
-
-  return (
-    <div className="socials">
-      {SOCIALS.map((social) => {
-        const src = `/images/${social.type}.svg`;
-
-        return (
-          <a
-            href={social.url}
-            className={social.type}
-            target="_blank"
-            rel="noopener noreferrer"
-            key={`social-${social.type}`}
-            aria-label={`social-${social.type}`}
-          >
-            <Image src={src} alt="" width={18} height={16} />
-          </a>
-        );
-      })}
-    </div>
   );
 };
 
