@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { removeSubdomainFrom } from '@autonolas/frontend-library';
 
 const Socials = () => {
-  const [url, setUrl] = useState('https://autonolas.network');
+  const [url, setUrl] = useState('https://orbis.network');
 
   useEffect(() => {
     const currentUrl = window.location.origin;

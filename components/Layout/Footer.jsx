@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
-import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import get from 'lodash/get';
 import { Footer as CommonFooter } from '@autonolas/frontend-library';
@@ -12,9 +11,8 @@ import {
   isPolygon,
   isPolygonMumbai,
 } from 'common-util/functions';
+import Socials from './Socials';
 import { ContractsInfoContainer } from './styles';
-
-const Socials = dynamic(() => import('./Socials'), { ssr: false });
 
 // should not display contracts on homepage
 const PATHS_NOT_TO_SHOW = ['/', '/disclaimer'];
