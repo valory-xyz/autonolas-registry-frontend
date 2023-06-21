@@ -1,10 +1,15 @@
-/* eslint-disable react/prop-types */
-
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import { useSelector } from 'react-redux';
 import { Menu } from 'antd/lib';
-import { useRouter } from 'next/router';
 import { isL1Network } from 'common-util/functions';
+
+const items = [
+  { label: 'Components', key: 'components' },
+  { label: 'Agents', key: 'agents' },
+];
+
+const serviceItem = [{ label: 'Services', key: 'services' }];
 
 const NavigationMenu = () => {
   const chainId = useSelector((state) => state?.setup?.chainId);
@@ -24,24 +29,6 @@ const NavigationMenu = () => {
     router.push(`/${key}`);
     setSelectedMenu(key);
   };
-
-  const items = [
-    {
-      label: 'Components',
-      key: 'components',
-    },
-    {
-      label: 'Agents',
-      key: 'agents',
-    },
-  ];
-
-  const serviceItem = [
-    {
-      label: 'Services',
-      key: 'services',
-    },
-  ];
 
   return (
     <Menu
