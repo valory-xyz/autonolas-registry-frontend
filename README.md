@@ -1,5 +1,5 @@
 # Autonolas Registry Frontend
-This repository contains the [Autonolas Registry](https://registry.autonolas.network/) frontend.
+This repository contains the [Autonolas Registry](https://registry.olas.network/) frontend.
 
 ## Tech Stack
 - web3.js
