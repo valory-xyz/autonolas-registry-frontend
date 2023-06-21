@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
 import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
@@ -12,18 +11,8 @@ import {
   isPolygon,
   isPolygonMumbai,
 } from 'common-util/functions';
+import Socials from './Socials';
 import { ContractsInfoContainer } from './styles';
-
-const SOCIALS = [
-  {
-    type: 'web',
-    url: 'https://www.autonolas.network',
-  },
-  {
-    type: 'twitter',
-    url: 'https://twitter.com/autonolas',
-  },
-];
 
 // should not display contracts on homepage
 const PATHS_NOT_TO_SHOW = ['/', '/disclaimer'];
@@ -140,31 +129,10 @@ const ContractInfo = () => {
   );
 };
 
-export const getSocials = () => (
-  <div className="socials">
-    {SOCIALS.map((social) => {
-      const src = `/images/${social.type}.svg`;
-
-      return (
-        <a
-          href={social.url}
-          className={social.type}
-          target="_blank"
-          rel="noopener noreferrer"
-          key={`social-${social.type}`}
-          aria-label={`social-${social.type}`}
-        >
-          <Image src={src} alt="" width={18} height={16} />
-        </a>
-      );
-    })}
-  </div>
-);
-
 const Footer = () => (
   <CommonFooter
     leftContent={<ContractInfo />}
-    rightContent={getSocials()}
+    rightContent={<Socials />}
     centerContent={(
       <>
         ©&nbsp;Autonolas DAO&nbsp;
