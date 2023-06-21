@@ -59,27 +59,43 @@ const NavigationBar = ({ children }) => {
     );
   }
 
+  const items = [
+    {
+      label: 'Components',
+      key: 'components',
+    },
+    {
+      label: 'Agents',
+      key: 'agents',
+    },
+  ];
+
+  const serviceItem = [
+    {
+      label: 'Services',
+      key: 'services',
+    },
+  ];
+
+  // {isL1Network(chainId) && (
+  //   <Menu.Item key="components" onClick={handleMenuItemClick}>
+  //     Components
+  //   </Menu.Item>
+  // )}
   return (
     <CustomLayout>
       <Header>
         {logo}
 
-        <Menu theme="light" mode="horizontal" selectedKeys={[selectedMenu]}>
-          {isL1Network(chainId) && (
-            <>
-              <Menu.Item key="components" onClick={handleMenuItemClick}>
-                Components
-              </Menu.Item>
-              <Menu.Item key="agents" onClick={handleMenuItemClick}>
-                Agents
-              </Menu.Item>
-            </>
-          )}
-
-          <Menu.Item key="services" onClick={handleMenuItemClick}>
-            Services
-          </Menu.Item>
-        </Menu>
+        <Menu
+          theme="light"
+          mode="horizontal"
+          selectedKeys={[selectedMenu]}
+          items={
+            isL1Network(chainId) ? [...items, ...serviceItem] : serviceItem
+          }
+          onClick={handleMenuItemClick}
+        />
 
         <RightMenu>
           <Login />
