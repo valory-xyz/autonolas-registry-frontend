@@ -1,10 +1,10 @@
 # Security Policy
 
-This document outlines security procedures and general policies for the `autonolas-protocol-frontend` project.
+This document outlines security procedures and general policies for the `autonolas-registry-frontend` project.
 
 ## Supported Versions
 
-The following table shows which versions of `autonolas-protocol-frontend` are currently being supported with security updates.
+The following table shows which versions of `autonolas-registry-frontend` are currently being supported with security updates.
 
 | Version | Supported          |
 | ------- | ------------------ |
@@ -12,7 +12,7 @@ The following table shows which versions of `autonolas-protocol-frontend` are cu
 
 ## Reporting a Vulnerability
 
-The `autonolas-protocol-frontend` team and community take all security bugs in `autonolas-protocol-frontend` seriously. Thank you for improving the security of `autonolas-protocol-frontend`. We appreciate your efforts and responsible disclosure and will make every effort to acknowledge your contributions.
+The `autonolas-registry-frontend` team and community take all security bugs in `autonolas-registry-frontend` seriously. Thank you for improving the security of `autonolas-registry-frontend`. We appreciate your efforts and responsible disclosure and will make every effort to acknowledge your contributions.
 
 Report security bugs by emailing `info@valory.xyz`.
 

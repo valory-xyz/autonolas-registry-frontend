@@ -28,7 +28,7 @@ class MyApp extends App {
       <>
         <GlobalStyle />
         <Head>
-          <title>Autonolas Protocol</title>
+          <title>Autonolas Registry</title>
           <meta
             name="description"
             content="View and manage components, agents and services via the Autonolas on-chain registry."
