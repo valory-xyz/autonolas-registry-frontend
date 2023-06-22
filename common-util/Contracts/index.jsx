@@ -3,17 +3,18 @@ import {
   REGISTRIES_MANAGER_CONTRACT,
   AGENT_REGISTRY_CONTRACT,
   COMPONENT_REGISTRY_CONTRACT,
+  SERVICE_MANAGER_CONTRACT_L2,
   SERVICE_REGISTRY_CONTRACT,
   SERVICE_MANAGER_TOKEN_CONTRACT,
+  SERVICE_REGISTRY_L2,
+  SERVICE_REGISTRY_TOKEN_UTILITY_CONTRACT,
   SIGN_MESSAGE_LIB_CONTRACT,
   GNOSIS_SAFE_CONTRACT,
   MULTI_SEND_CONTRACT,
-  SERVICE_REGISTRY_L2,
-  SERVICE_REGISTRY_TOKEN_UTILITY_CONTRACT,
   GENERIC_ERC20_CONTRACT,
   OPERATOR_WHITELIST_CONTRACT,
 } from 'common-util/AbiAndAddresses';
-import { isL1Network } from 'common-util/functions';
+import { isL1Network, getChainId } from 'common-util/functions';
 
 // get addresses from scripts/deployment folder in autonolas-registries repo
 export const ADDRESSES = {
@@ -94,7 +95,7 @@ export const getWeb3Details = () => {
       || process.env.NEXT_PUBLIC_MAINNET_URL,
   );
 
-  const chainId = Number(window.ethereum?.chainId || 1); // default to mainnet
+  const chainId = getChainId() || 1; // default to mainnet
   const address = ADDRESSES[chainId];
   return { web3, address, chainId };
 };
@@ -146,6 +147,16 @@ export const getServiceManagerContract = () => {
   const { serviceManager } = address;
   const contract = new web3.eth.Contract(
     SERVICE_MANAGER_TOKEN_CONTRACT.abi,
+    serviceManager,
+  );
+  return contract;
+};
+
+export const getServiceManagerL2Contract = () => {
+  const { web3, address } = getWeb3Details();
+  const { serviceManager } = address;
+  const contract = new web3.eth.Contract(
+    SERVICE_MANAGER_CONTRACT_L2.abi,
     serviceManager,
   );
   return contract;

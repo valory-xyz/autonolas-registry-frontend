@@ -28,7 +28,7 @@ export const safeSendTransactionNotification = () => notification.warning({
   message: 'Please submit the transaction in your safe app.',
 });
 
-const getChainId = (chainId = null) => {
+export const getChainId = (chainId = null) => {
   if (typeof window === 'undefined') return chainId;
   return Number(
     chainId || window?.MODAL_PROVIDER?.chainId || window?.ethereum?.chainId,

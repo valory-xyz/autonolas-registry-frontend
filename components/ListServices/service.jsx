@@ -1,17 +1,21 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { Typography, notification } from 'antd/lib';
 import get from 'lodash/get';
 import Loader from 'common-util/components/Loader';
 import { convertStringToArray, AlertError } from 'common-util/List/ListCommon';
-import { getServiceManagerContract } from 'common-util/Contracts';
+import {
+  getServiceManagerContract,
+  getServiceManagerL2Contract,
+} from 'common-util/Contracts';
 import { FormContainer } from 'components/styles';
 import {
   DEFAULT_SERVICE_CREATION_ETH_TOKEN,
   DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS,
 } from 'util/constants';
+import { isL1Network, isL1OnlyNetwork } from 'common-util/functions';
 import RegisterForm from './RegisterForm';
 import {
   getAgentParams,
@@ -22,12 +26,16 @@ import {
 const { Title } = Typography;
 
 const Service = ({ account }) => {
+  const router = useRouter();
+  const chainId = useSelector((state) => state?.setup?.chainId);
+
   const [isAllLoading, setAllLoading] = useState(false);
   const [serviceInfo, setServiceInfo] = useState({});
   const [error, setError] = useState(null);
-  const router = useRouter();
-  const id = get(router, 'query.id') || null;
   const [ethTokenAddress, setEthTokenAddress] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  const id = get(router, 'query.id') || null;
 
   useEffect(() => {
     (async () => {
@@ -39,8 +47,12 @@ const Service = ({ account }) => {
         setAllLoading(false);
         setServiceInfo(result);
 
-        const token = await getTokenAddressRequest(id);
-        setEthTokenAddress(token);
+        // get token address for L1 only network
+        // because L2 network do not have token address
+        if (isL1OnlyNetwork(chainId)) {
+          const token = await getTokenAddressRequest(id);
+          setEthTokenAddress(token);
+        }
       }
     })();
   }, [account]);
@@ -48,28 +60,41 @@ const Service = ({ account }) => {
   /* helper functions */
   const handleSubmit = (values) => {
     if (account) {
+      setIsUpdating(true);
       setError(null);
 
       const token = values.token === DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS
         ? DEFAULT_SERVICE_CREATION_ETH_TOKEN
         : values.token;
 
-      const contract = getServiceManagerContract();
+      const contract = isL1Network(chainId)
+        ? getServiceManagerContract()
+        : getServiceManagerL2Contract();
+
+      const commonParams = [
+        `0x${values.hash}`,
+        convertStringToArray(values.agent_ids),
+        getAgentParams(values),
+        values.threshold,
+        values.service_id,
+      ];
+
+      // token wil be passed only for L1
+      const params = isL1Network(chainId)
+        ? [token, ...commonParams]
+        : [...commonParams];
+
       contract.methods
-        .update(
-          token,
-          `0x${values.hash}`,
-          convertStringToArray(values.agent_ids),
-          getAgentParams(values),
-          values.threshold,
-          values.service_id,
-        )
+        .update(...params)
         .send({ from: account })
         .then(() => {
           notification.success({ message: 'Service Updated' });
         })
         .catch((e) => {
           console.error(e);
+        })
+        .finally(() => {
+          setIsUpdating(false);
         });
     }
   };
@@ -85,6 +110,7 @@ const Service = ({ account }) => {
         <FormContainer>
           <RegisterForm
             isUpdateForm
+            isLoading={isUpdating}
             account={account}
             formInitialValues={serviceInfo}
             handleSubmit={handleSubmit}
