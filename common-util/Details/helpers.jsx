@@ -228,6 +228,12 @@ export const DetailsInfo = ({
       value: get(info, 'threshold', null) || NA,
     });
 
+    console.log({
+      chainId,
+      tokenAddress,
+      isNotEq: tokenAddress !== DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS,
+    });
+
     // show token address only if it is not ETH
     if (
       isL1OnlyNetwork(chainId)
