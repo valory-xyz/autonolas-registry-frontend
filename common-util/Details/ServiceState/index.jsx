@@ -43,7 +43,7 @@ export const ServiceState = ({
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   const [dataSource, setDataSource] = useState([]);
-  const [isEthToken, setIsEthToken] = useState(false);
+  const [isEthToken, setIsEthToken] = useState(true); // by default, assume it's an eth token
   const [isStateImageVisible, setIsStateImageVisible] = useState(false);
   const chainId = useSelector((state) => state?.setup?.chainId);
 
