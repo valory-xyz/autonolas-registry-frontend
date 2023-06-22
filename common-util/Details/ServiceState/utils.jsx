@@ -270,7 +270,7 @@ export const onActivateRegistration = (account, id, deposit) => new Promise((res
     })
     .catch((e) => {
       reject(e);
-      notifyError();
+      notifyError('Error occured on activating registration');
     });
 });
 

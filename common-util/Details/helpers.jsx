@@ -12,7 +12,7 @@ import {
   NA,
   NAV_TYPES,
 } from 'util/constants';
-import { isL1OnlyNetwork } from 'common-util/functions';
+import { isL1OnlyNetwork, isL1Network } from 'common-util/functions';
 import { NftImage } from './NFTImage';
 import { SetOperatorStatus, OperatorWhitelist } from './ServiceDetailsHelper';
 import {
@@ -230,7 +230,7 @@ export const DetailsInfo = ({
 
     // show token address only if it is not ETH
     if (
-      isL1OnlyNetwork(chainId)
+      isL1Network(chainId)
       && tokenAddress !== DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS
     ) {
       serviceDetailsList.push({
@@ -239,44 +239,46 @@ export const DetailsInfo = ({
       });
     }
 
-    // operator whitelisting is only available for service
-    serviceDetailsList.push({
-      title: (
-        <>
-          Operator Whitelisting&nbsp;
-          <Switch
-            disabled={!isOwner}
-            checked={switchValue}
-            checkedChildren="Enabled"
-            unCheckedChildren="Disabled"
-            onChange={async (checked) => {
-              setSwitchValue(checked);
-              if (!checked) {
-                await setOperatorsCheckRequest({
-                  account,
-                  serviceId: id,
-                  isChecked: false,
-                });
-                await setOpWhitelist();
-              }
-            }}
-          />
-        </>
-      ),
-      value: (
-        <OperatorWhitelist
-          id={id}
-          setOpWhitelist={setOpWhitelist}
-          isWhiteListed={isWhiteListed}
-        />
-      ),
-    });
-
-    if (isOwner) {
+    // operator whitelisting is only available for service & L1 networks
+    if (isL1Network(chainId)) {
       serviceDetailsList.push({
-        title: 'Set operators statuses',
-        value: <SetOperatorStatus id={id} />,
+        title: (
+          <>
+            Operator Whitelisting&nbsp;
+            <Switch
+              disabled={!isOwner}
+              checked={switchValue}
+              checkedChildren="Enabled"
+              unCheckedChildren="Disabled"
+              onChange={async (checked) => {
+                setSwitchValue(checked);
+                if (!checked) {
+                  await setOperatorsCheckRequest({
+                    account,
+                    serviceId: id,
+                    isChecked: false,
+                  });
+                  await setOpWhitelist();
+                }
+              }}
+            />
+          </>
+        ),
+        value: (
+          <OperatorWhitelist
+            id={id}
+            setOpWhitelist={setOpWhitelist}
+            isWhiteListed={isWhiteListed}
+          />
+        ),
       });
+
+      if (isOwner) {
+        serviceDetailsList.push({
+          title: 'Set operators statuses',
+          value: <SetOperatorStatus id={id} />,
+        });
+      }
     }
 
     return serviceDetailsList;

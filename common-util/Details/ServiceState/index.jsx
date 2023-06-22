@@ -43,7 +43,7 @@ export const ServiceState = ({
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   const [dataSource, setDataSource] = useState([]);
-  const [isEthToken, setIsEthToken] = useState(false);
+  const [isEthToken, setIsEthToken] = useState(true); // by default, assume it's an eth token
   const [isStateImageVisible, setIsStateImageVisible] = useState(false);
   const chainId = useSelector((state) => state?.setup?.chainId);
 
@@ -62,12 +62,12 @@ export const ServiceState = ({
       }
 
       // if valid service id, check if it's an eth token
-      if (id && isL1OnlyNetwork(chainId)) {
+      if (id && chainId && isL1OnlyNetwork(chainId)) {
         const isEth = await checkIfEth(id);
         setIsEthToken(isEth);
       }
     })();
-  }, [id, agentIds]);
+  }, [id, agentIds, chainId]);
 
   useEffect(() => {
     setCurrentStep(Number(status) - 1);

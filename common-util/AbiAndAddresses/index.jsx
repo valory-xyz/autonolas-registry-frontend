@@ -2,6 +2,7 @@ export * from './agentRegistry';
 export * from './componentRegistry';
 export * from './registriesManager';
 export * from './serviceManager';
+export * from './serviceManagerL2';
 export * from './serviceRegistry';
 export * from './serviceRegistryL2';
 export * from './GnosisSafe';

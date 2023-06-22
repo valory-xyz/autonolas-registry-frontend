@@ -6,12 +6,14 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import get from 'lodash/get';
 import { Button, Form, Input } from 'antd/lib';
+
 import { DEFAULT_SERVICE_CREATION_ETH_TOKEN } from 'util/constants';
 import { WhiteButton } from 'common-util/components/Button';
 import { commaMessage, DependencyLabel } from 'common-util/List/ListCommon';
 import { FormItemHash } from 'common-util/List/RegisterForm/helpers';
 import IpfsHashGenerationModal from 'common-util/List/IpfsHashGenerationModal';
 import { ComplexLabel } from 'common-util/List/styles';
+import { isL1Network } from 'common-util/functions';
 import { RegisterFooter } from 'components/styles';
 
 export const FORM_NAME = 'serviceRegisterForm';
@@ -35,7 +37,7 @@ const RegisterForm = ({
   const id = get(router, 'query.id') || null;
 
   useEffect(() => {
-    if (account && ethTokenAddress) {
+    if (account && ethTokenAddress && isL1Network(chainId)) {
       setFields([
         {
           name: ['token'],
@@ -167,43 +169,51 @@ const RegisterForm = ({
           </Button>
         </Form.Item>
 
-        <Form.Item
-          label="ERC20 token address"
-          name="token"
-          tooltip="Generic ERC20 token address to secure the service (ETH by default)"
-          // dedicated address for standard ETH secured service creation
-          // user can change it if they want to use a different generic token
-          initialValue={ethTokenAddress || DEFAULT_SERVICE_CREATION_ETH_TOKEN}
-          className="mb-0"
-          rules={[
-            {
-              required: true,
-              message: 'Please input the token address',
-            },
-            () => ({
-              validator(_, value) {
-                if (Web3.utils.isAddress(value)) return Promise.resolve();
-                return Promise.reject(
-                  new Error('Please input a valid address'),
-                );
-              },
-            }),
-          ]}
-        >
-          <Input />
-        </Form.Item>
-
-        <Form.Item className="mb-0">
-          <Button
-            htmlType="button"
-            type="link"
-            onClick={() => form.setFieldsValue({ token: DEFAULT_SERVICE_CREATION_ETH_TOKEN })}
-            className="pl-0"
-            disabled={!account}
-          >
-            Prefill Default Eth Address
-          </Button>
-        </Form.Item>
+        {/* generic token visible only to L1 networks */}
+        {isL1Network(chainId) && (
+          <>
+            <Form.Item
+              label="ERC20 token address"
+              name="token"
+              tooltip="Generic ERC20 token address to secure the service (ETH by default)"
+              // dedicated address for standard ETH secured service creation
+              // user can change it if they want to use a different generic token
+              initialValue={
+                ethTokenAddress || DEFAULT_SERVICE_CREATION_ETH_TOKEN
+              }
+              className="mb-0"
+              rules={[
+                {
+                  required: true,
+                  message: 'Please input the token address',
+                },
+                () => ({
+                  validator(_, value) {
+                    if (Web3.utils.isAddress(value)) return Promise.resolve();
+                    return Promise.reject(
+                      new Error('Please input a valid address'),
+                    );
+                  },
+                }),
+              ]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item className="mb-0">
+              <Button
+                htmlType="button"
+                type="link"
+                onClick={() => form.setFieldsValue({
+                  token: DEFAULT_SERVICE_CREATION_ETH_TOKEN,
+                })}
+                className="pl-0"
+                disabled={!account}
+              >
+                Prefill Default Eth Address
+              </Button>
+            </Form.Item>
+          </>
+        )}
 
         {isUpdateForm && (
           <Form.Item
