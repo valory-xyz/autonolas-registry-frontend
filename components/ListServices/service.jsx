@@ -32,7 +32,7 @@ const Service = ({ account }) => {
   const [isAllLoading, setAllLoading] = useState(false);
   const [serviceInfo, setServiceInfo] = useState({});
   const [error, setError] = useState(null);
-  const [ethTokenAddress, setEthTokenAddress] = useState(false);
+  const [ethTokenAddress, setEthTokenAddress] = useState(null);
   const [isUpdating, setIsUpdating] = useState(false);
 
   const id = get(router, 'query.id') || null;

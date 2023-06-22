@@ -6,14 +6,15 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import get from 'lodash/get';
 import { Button, Form, Input } from 'antd/lib';
+
 import { DEFAULT_SERVICE_CREATION_ETH_TOKEN } from 'util/constants';
 import { WhiteButton } from 'common-util/components/Button';
 import { commaMessage, DependencyLabel } from 'common-util/List/ListCommon';
 import { FormItemHash } from 'common-util/List/RegisterForm/helpers';
 import IpfsHashGenerationModal from 'common-util/List/IpfsHashGenerationModal';
 import { ComplexLabel } from 'common-util/List/styles';
+import { isL1Network } from 'common-util/functions';
 import { RegisterFooter } from 'components/styles';
-import { isL1Network } from '@autonolas/frontend-library';
 
 export const FORM_NAME = 'serviceRegisterForm';
 
@@ -36,7 +37,7 @@ const RegisterForm = ({
   const id = get(router, 'query.id') || null;
 
   useEffect(() => {
-    if (account && ethTokenAddress) {
+    if (account && ethTokenAddress && isL1Network(chainId)) {
       setFields([
         {
           name: ['token'],

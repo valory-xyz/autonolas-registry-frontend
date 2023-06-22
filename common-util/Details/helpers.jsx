@@ -239,8 +239,8 @@ export const DetailsInfo = ({
       });
     }
 
+    // operator whitelisting is only available for service & L1 networks
     if (isL1Network(chainId)) {
-      // operator whitelisting is only available for service
       serviceDetailsList.push({
         title: (
           <>
