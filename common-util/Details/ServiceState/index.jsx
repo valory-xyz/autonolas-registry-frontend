@@ -62,12 +62,12 @@ export const ServiceState = ({
       }
 
       // if valid service id, check if it's an eth token
-      if (id && isL1OnlyNetwork(chainId)) {
+      if (id && chainId && isL1OnlyNetwork(chainId)) {
         const isEth = await checkIfEth(id);
         setIsEthToken(isEth);
       }
     })();
-  }, [id, agentIds]);
+  }, [id, agentIds, chainId]);
 
   useEffect(() => {
     setCurrentStep(Number(status) - 1);

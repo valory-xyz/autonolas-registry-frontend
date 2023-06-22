@@ -31,7 +31,7 @@ export const safeSendTransactionNotification = () => notification.warning({
 const getChainId = (chainId = null) => {
   if (typeof window === 'undefined') return chainId;
   return Number(
-    window?.MODAL_PROVIDER?.chainId || window?.ethereum?.chainId || chainId,
+    chainId || window?.MODAL_PROVIDER?.chainId || window?.ethereum?.chainId,
   );
 };
 
