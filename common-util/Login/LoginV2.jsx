@@ -2,8 +2,12 @@ import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Web3 from 'web3';
 import { Web3Modal, Web3Button, Web3NetworkSwitch } from '@web3modal/react';
-import { useAccount, useNetwork, useBalance } from 'wagmi';
+import {
+  useAccount, useNetwork, useBalance,
+} from 'wagmi';
 import { COLOR } from '@autonolas/frontend-library';
+// import { InjectedConnector } from 'wagmi/connectors/injected';
+// import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
 import { projectId, ethereumClient } from './config';
 import { LoginContainer } from './styles';
 
@@ -21,6 +25,7 @@ export const LoginV2 = ({
   const { connector } = useAccount({
     onConnect: ({ address: currentAddress }) => {
       if (onConnectCb) {
+        console.log('inside onConnect');
         onConnectCb({
           address: address || currentAddress,
           balance: data?.formatted,
@@ -33,12 +38,14 @@ export const LoginV2 = ({
     },
   });
 
-  useEffect(() => {
+  useEffect(async () => {
+    console.log('inside useEffect', connector);
     // This is the initial `provider` that is returned when
     // using web3Modal to connect. Can be MetaMask or WalletConnect.
     const modalProvider = connector?.options?.getProvider?.();
 
     if (modalProvider) {
+      console.log('inside useEffect provider');
       // We plug the initial `provider` and get back
       // a Web3Provider. This will add on methods and
       // event listeners such as `.on()` will be different.
@@ -49,6 +56,8 @@ export const LoginV2 = ({
       // *******************************************************
       window.MODAL_PROVIDER = modalProvider;
       window.WEB3_PROVIDER = wProvider;
+
+      // await wProvider.eth.getAccounts();
 
       if (modalProvider?.on) {
         // https://docs.ethers.io/v5/concepts/best-practices/#best-practices--network-changes

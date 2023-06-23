@@ -1,4 +1,5 @@
 import Web3 from 'web3';
+import { ethers } from 'ethers';
 import {
   REGISTRIES_MANAGER_CONTRACT,
   AGENT_REGISTRY_CONTRACT,
@@ -89,11 +90,13 @@ export const getWeb3Details = () => {
    * - currentProvider by metamask or
    * - fallback to remote mainnet [remote node provider](https://web3js.readthedocs.io/en/v1.7.5/web3.html#example-remote-node-provider)
    */
-  const web3 = new Web3(
-    window.WEB3_PROVIDER
-      || window.web3?.currentProvider
-      || process.env.NEXT_PUBLIC_MAINNET_URL,
-  );
+  // const web3 = new Web3(
+  //   window.MODAL_PROVIDER
+  //     || window.web3?.currentProvider
+  //     || process.env.NEXT_PUBLIC_MAINNET_URL,
+  // );
+
+  const web3 = new Web3(window.web3?.currentProvider);
 
   const chainId = getChainId() || 1; // default to mainnet
   const address = ADDRESSES[chainId];
@@ -120,13 +123,30 @@ export const getAgentContract = () => {
   return contract;
 };
 
-export const getMechMinterContract = () => {
+export const getMechMinterContract = (account) => {
   const { web3, address } = getWeb3Details();
   const { registriesManager } = address;
+
+  console.log({
+    web3,
+    address,
+    registriesManager,
+  });
+  // const provider = window.WEB3_PROVIDER.eth.currentProvider;
+  // console.log(web3.eth.Contract);
   const contract = new web3.eth.Contract(
     REGISTRIES_MANAGER_CONTRACT.abi,
     registriesManager,
   );
+
+  // ETHERS
+  // const provider = new ethers.getDefaultProvider(window.MODAL_PROVIDER);
+
+  // const contract = new ethers.Contract(
+  //   registriesManager,
+  //   REGISTRIES_MANAGER_CONTRACT.abi,
+  //   window.MODAL_PROVIDER,
+  // );
   return contract;
 };
 

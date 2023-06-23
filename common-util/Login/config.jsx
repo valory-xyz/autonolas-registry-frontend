@@ -12,6 +12,7 @@ import {
   polygonMumbai,
   gnosisChiado,
 } from 'wagmi/chains';
+// import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
 
 export const chains = [
   mainnet,
@@ -23,9 +24,33 @@ export const chains = [
 ];
 export const projectId = process.env.NEXT_PUBLIC_WALLET_PROJECT_ID;
 
-const { publicClient } = configureChains(chains, [
+const {
+  publicClient,
+  // webSocketPublicClient
+} = configureChains(chains, [
   w3mProvider({ projectId }),
 ]);
+
+// NOT USE
+// export const connector = new WalletConnectConnector({
+//   options: {
+//     qrcode: true,
+//     rpc: {
+//       1: process.env.NEXT_PUBLIC_MAINNET_URL,
+//       5: process.env.NEXT_PUBLIC_GOERLI_URL,
+//       100: process.env.NEXT_PUBLIC_GNOSIS_URL,
+//       137: process.env.NEXT_PUBLIC_POLYGON_URL,
+//       31337: process.env.NEXT_PUBLIC_AUTONOLAS_URL,
+//     },
+//   },
+// });
+
+// export const walletConnector = new WalletConnectConnector({
+//   options: {
+//     projectId: '...',
+//     isNewChainsStale: false,
+//   },
+// });
 
 export const wagmiConfig = createConfig({
   autoConnect: true,
@@ -34,6 +59,7 @@ export const wagmiConfig = createConfig({
     version: 2, // v2 of wallet connect
     chains,
   }),
+  // webSocketPublicClient,
   publicClient,
 });
 
