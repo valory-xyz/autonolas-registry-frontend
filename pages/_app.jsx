@@ -1,16 +1,22 @@
+/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable jest/require-hook */
 import App from 'next/app';
 import Head from 'next/head';
 import { createWrapper } from 'next-redux-wrapper';
 import PropTypes from 'prop-types';
 
-import { WagmiConfig } from 'wagmi';
+// web3 libraries
+import Web3 from 'web3';
+import { Web3ReactProvider } from '@web3-react/core';
+
+import { Web3DataProvider } from '@autonolas/frontend-library';
 import GlobalStyle from 'components/GlobalStyles';
 import Layout from 'components/Layout';
-import { wagmiConfig } from 'common-util/Login/config';
 import initStore from '../store';
 
-/* eslint-disable-next-line jest/require-hook */
 require('../styles/variables.less');
+
+const getLibrary = (provider) => new Web3(provider);
 
 class MyApp extends App {
   static async getInitialProps({ Component, ctx }) {
@@ -34,11 +40,13 @@ class MyApp extends App {
             content="View and manage components, agents and services via the Autonolas on-chain registry."
           />
         </Head>
-        <WagmiConfig config={wagmiConfig}>
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
-        </WagmiConfig>
+        <Web3DataProvider>
+          <Web3ReactProvider getLibrary={getLibrary}>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </Web3ReactProvider>
+        </Web3DataProvider>
       </>
     );
   }
