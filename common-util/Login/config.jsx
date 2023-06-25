@@ -3,6 +3,10 @@ import {
   w3mConnectors,
   w3mProvider,
 } from '@web3modal/ethereum';
+// import { infuraProvider } from 'wagmi/providers/infura';
+// import { alchemyProvider } from 'wagmi/providers/alchemy';
+import { rpc } from 'common-util/Contracts';
+
 import { configureChains, createConfig } from 'wagmi';
 import {
   mainnet,
@@ -12,7 +16,11 @@ import {
   polygonMumbai,
   gnosisChiado,
 } from 'wagmi/chains';
-// import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
+import { InjectedConnector } from 'wagmi/connectors/injected';
+import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
+import { publicProvider } from 'wagmi/providers/public';
+import { SafeConnector } from 'wagmi/connectors/safe';
+import { WalletConnectLegacyConnector } from 'wagmi/connectors/walletConnectLegacy';
 
 export const chains = [
   mainnet,
@@ -24,42 +32,48 @@ export const chains = [
 ];
 export const projectId = process.env.NEXT_PUBLIC_WALLET_PROJECT_ID;
 
-const {
-  publicClient,
-  // webSocketPublicClient
-} = configureChains(chains, [
-  w3mProvider({ projectId }),
+const { publicClient } = configureChains(chains, [
+  publicProvider(),
+  // w3mProvider({ projectId }),
+  // infuraProvider({ apiKey: 'a5184169a2dd4263b4c164a088353eec', weight: 1 }),
 ]);
-
-// NOT USE
-// export const connector = new WalletConnectConnector({
-//   options: {
-//     qrcode: true,
-//     rpc: {
-//       1: process.env.NEXT_PUBLIC_MAINNET_URL,
-//       5: process.env.NEXT_PUBLIC_GOERLI_URL,
-//       100: process.env.NEXT_PUBLIC_GNOSIS_URL,
-//       137: process.env.NEXT_PUBLIC_POLYGON_URL,
-//       31337: process.env.NEXT_PUBLIC_AUTONOLAS_URL,
-//     },
-//   },
-// });
-
-// export const walletConnector = new WalletConnectConnector({
-//   options: {
-//     projectId: '...',
-//     isNewChainsStale: false,
-//   },
-// });
 
 export const wagmiConfig = createConfig({
   autoConnect: true,
-  connectors: w3mConnectors({
-    projectId,
-    version: 2, // v2 of wallet connect
-    chains,
-  }),
-  // webSocketPublicClient,
+  logger: true,
+  // connectors: w3mConnectors({
+  //   projectId,
+  //   version: 2, // v2 of wallet connect
+  //   chains,
+  // }),
+  connectors: [
+    // new InjectedConnector({ chains }),
+    // new WalletConnectConnector({
+    //   chains,
+    //   options: {
+    //     projectId,
+    //   },
+    // }),
+    ...w3mConnectors({
+      projectId,
+      version: 2, // v2 of wallet connect
+      chains,
+    }),
+    new SafeConnector({
+      chains,
+      options: {
+        allowedDomains: [/gnosis-safe.io$/, /app.safe.global$/],
+        debug: false,
+      },
+    }),
+    // new WalletConnectLegacyConnector({
+    //   chains,
+    //   options: {
+    //     projectId,
+    //     rpc,
+    //   },
+    // }),
+  ],
   publicClient,
 });
 
