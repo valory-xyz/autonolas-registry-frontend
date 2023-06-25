@@ -1,5 +1,6 @@
 import { ethers } from 'ethers';
 import get from 'lodash/get';
+import { getMyProvider } from 'common-util/Contracts';
 import { safeSendTransactionNotification } from './index';
 
 const getUrl = (hash, chainId) => {
@@ -42,12 +43,8 @@ async function pollTransactionDetails(hash, chainId) {
 export const sendTransaction = (
   sendFn,
   account = window?.MODAL_PROVIDER?.accounts[0],
-  // extra,
 ) => new Promise((resolve, reject) => {
-  const provider = new ethers.providers.Web3Provider(
-    window.MODAL_PROVIDER,
-    'any',
-  );
+  const provider = new ethers.providers.Web3Provider(getMyProvider(), 'any');
 
   provider
     .getCode(account)
@@ -95,7 +92,8 @@ export const sendTransaction = (
           });
       }
     })
-    .catch(() => {
+    .catch((e) => {
       console.error('Error on fetching code');
+      reject(e);
     });
 });

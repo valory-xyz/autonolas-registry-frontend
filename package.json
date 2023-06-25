@@ -19,7 +19,7 @@
     "@zeit/next-less": "^1.0.1",
     "antd": "^4.12.3",
     "bs58": "^4.0.1",
-    "ethers": "^6.6.1",
+    "ethers": "^5.7.2",
     "ipfs": "^0.63.5",
     "ipfs-http-client": "^57.0.3",
     "ipfs-only-hash": "^4.0.0",

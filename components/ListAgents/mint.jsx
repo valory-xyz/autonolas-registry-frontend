@@ -20,17 +20,11 @@ const MintAgent = () => {
 
   const handleSubmit = async (values) => {
     if (account) {
-      // setIsMinting(true);
+      setIsMinting(true);
       setError(null);
       setInformation(null);
 
       const contract = getMechMinterContract(account);
-
-      // const accounts = await window?.ethereum.request({
-      //   method: 'eth_requestAccounts',
-      // });
-
-      console.log(contract);
 
       contract.methods
         .create(
