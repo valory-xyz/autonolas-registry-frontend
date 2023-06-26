@@ -15,8 +15,6 @@ export const LoginV2 = ({
   const { address } = useAccount();
   const { chain } = useNetwork();
   const { data } = useBalance({ address });
-  // const ancd = useConnect();
-  // console.log(ancd);
 
   const chainId = chain?.id;
 

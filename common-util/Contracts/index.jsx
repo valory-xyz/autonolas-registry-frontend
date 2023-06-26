@@ -94,11 +94,7 @@ export const getWeb3Details = () => {
    * - fallback to remote mainnet [remote node provider](https://web3js.readthedocs.io/en/v1.7.5/web3.html#example-remote-node-provider)
    */
   const web3 = new Web3(getMyProvider());
-
-  // const web3 = new Web3(window.web3?.currentProvider);
-
   const chainId = getChainId() || 1; // default to mainnet
-
   const address = ADDRESSES[chainId];
   return { web3, address, chainId };
 };
@@ -132,14 +128,6 @@ export const getMechMinterContract = () => {
     registriesManager,
   );
 
-  // ETHERS
-  // const provider = new ethers.getDefaultProvider(window.MODAL_PROVIDER);
-
-  // const contract = new ethers.Contract(
-  //   registriesManager,
-  //   REGISTRIES_MANAGER_CONTRACT.abi,
-  //   window.MODAL_PROVIDER,
-  // );
   return contract;
 };
 
