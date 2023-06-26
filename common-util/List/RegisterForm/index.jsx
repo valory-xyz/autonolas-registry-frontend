@@ -51,10 +51,7 @@ const RegisterForm = ({
       <Form
         form={form}
         name={FORM_NAME}
-        initialValues={{
-          remember: true,
-          hash: '714ef7dafa358c7152f6703dd764a1df40d369dcf53275dd2543b0fdbf207298',
-        }}
+        initialValues={{ remember: true }}
         fields={fields}
         layout="vertical"
         onFinish={onFinish}
