@@ -62,6 +62,7 @@ export const getTotalForAllServices = () => new Promise((resolve, reject) => {
     .totalSupply()
     .call()
     .then((response) => {
+      console.log({ totalSupply: response });
       resolve(response);
     })
     .catch((e) => {
@@ -76,16 +77,29 @@ export const getServices = (total, nextPage, fetchAll = false) => new Promise((r
     const existsPromises = [];
 
     const first = fetchAll ? 1 : (nextPage - 1) * TOTAL_VIEW_COUNT + 1;
-    const last = fetchAll
-      ? total
-      : Math.min(nextPage * TOTAL_VIEW_COUNT, total);
+    const last = 10;
+    // const last = fetchAll
+    //   ? total
+    //   : Math.min(nextPage * TOTAL_VIEW_COUNT, total);
 
     for (let i = first; i <= last; i += 1) {
       const result = contract.methods.exists(`${i}`).call();
       existsPromises.push(result);
     }
 
+    console.log({
+      first, last, total, existsPromises,
+    });
+
+    // Promise.race([
+    //   new Promise((_, r) => setTimeout(() => r(new Error('Timeout')), 10000)),
+    //   Promise.allSettled(existsPromises),
+    // ]).then(async (existsResult) => {
+    //   console.log({ existsResult });
+    // });
+
     Promise.allSettled(existsPromises).then(async (existsResult) => {
+      console.log({ existsResult });
       // filter services which don't exists (deleted or destroyed)
       const validTokenIds = [];
       existsResult.forEach((item, index) => {
@@ -95,14 +109,22 @@ export const getServices = (total, nextPage, fetchAll = false) => new Promise((r
         }
       });
 
+      console.log({ validTokenIds });
+
       // list of promises of valid service
       const results = await Promise.all(
         validTokenIds.map(async (id) => {
           const info = await getServiceDetails(id);
+          console.log(info);
+          // const info = {};
           const owner = await getServiceOwner(id);
+          console.log(owner);
+          // const owner = '0x000000';
           return { ...info, id, owner };
         }),
       );
+
+      console.log({ results });
 
       resolve(results);
     });

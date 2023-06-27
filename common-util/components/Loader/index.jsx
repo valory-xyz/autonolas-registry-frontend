@@ -13,7 +13,7 @@ const Container = styled.div`
   flex-direction: column;
 `;
 
-const TIMEOUT = 10;
+const TIMEOUT = 100;
 
 const DEFAULT_MESSAGE = 'Items couldn’t be loaded';
 
