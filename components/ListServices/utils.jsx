@@ -12,10 +12,12 @@ import { getTokenDetailsRequest } from 'common-util/Details/ServiceState/utils';
 export const getServiceOwner = (id) => new Promise((resolve, reject) => {
   const contract = getServiceContract();
 
+  console.log('inside service owner call', id);
   contract.methods
     .ownerOf(id)
     .call()
     .then((response) => {
+      console.log('service owner response', response);
       resolve(response);
     })
     .catch((e) => {
@@ -27,12 +29,14 @@ export const getServiceOwner = (id) => new Promise((resolve, reject) => {
 // --------- utils ---------
 export const getServiceDetails = (id) => new Promise((resolve, reject) => {
   const contract = getServiceContract();
+  console.log('inside service DETAILS call', id);
 
   contract.methods
     .getService(id)
     .call()
     .then(async (information) => {
       const owner = await getServiceOwner(id);
+      console.log('inside service DETAILS response', id);
       resolve({ ...information, owner });
     })
     .catch((e) => {
@@ -77,10 +81,10 @@ export const getServices = (total, nextPage, fetchAll = false) => new Promise((r
     const existsPromises = [];
 
     const first = fetchAll ? 1 : (nextPage - 1) * TOTAL_VIEW_COUNT + 1;
-    const last = 10;
-    // const last = fetchAll
-    //   ? total
-    //   : Math.min(nextPage * TOTAL_VIEW_COUNT, total);
+    // const last = 7;
+    const last = fetchAll
+      ? total
+      : Math.min(nextPage * TOTAL_VIEW_COUNT, total);
 
     for (let i = first; i <= last; i += 1) {
       const result = contract.methods.exists(`${i}`).call();
@@ -114,6 +118,7 @@ export const getServices = (total, nextPage, fetchAll = false) => new Promise((r
       // list of promises of valid service
       const results = await Promise.all(
         validTokenIds.map(async (id) => {
+          console.log('inside validTokenIds', id);
           const info = await getServiceDetails(id);
           console.log(info);
           // const info = {};

@@ -29,21 +29,29 @@ export const chains = [
 ];
 export const projectId = process.env.NEXT_PUBLIC_WALLET_PROJECT_ID;
 
-const { publicClient } = configureChains(chains, [
-  // infuraProvider({ apiKey: process.env.NEXT_PUBLIC_INFURA_API_KEY, weight: 1 }),
-  w3mProvider({ projectId, stallTimeout: 1000 }),
-  // jsonRpcProvider({
-  //   rpc: (chain) => {
-  //     console.log(chain, rpc[chain.id]);
-  //     return {
-  //       http: rpc[chain.id],
-  //     };
-  //   },
-  //   // stallTimeout: 1000,
-  // }),
-  // NEXT_PUBLIC_INFURA_API_KEY
-  // publicProvider(),
-]);
+const { publicClient } = configureChains(
+  chains,
+  [
+    // infuraProvider({ apiKey: process.env.NEXT_PUBLIC_INFURA_API_KEY, weight: 1 }),
+    jsonRpcProvider({
+      rpc: (chain) => {
+        console.log(chain);
+        console.log(rpc[chain.id], typeof rpc[chain.id]);
+        return {
+          http: rpc[chain.id],
+        };
+      },
+      stallTimeout: 25000,
+    }),
+    // w3mProvider({ projectId, stallTimeout: 1000 }),
+    // NEXT_PUBLIC_INFURA_API_KEY
+    // publicProvider(),
+  ],
+  {
+    rank: true,
+    // stallTimeout: 5000,
+  },
+);
 
 export const wagmiConfig = createConfig({
   autoConnect: true,

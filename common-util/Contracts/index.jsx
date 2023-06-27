@@ -249,6 +249,7 @@ export const rpc = {
   1: process.env.NEXT_PUBLIC_MAINNET_URL,
   5: process.env.NEXT_PUBLIC_GOERLI_URL,
   100: process.env.NEXT_PUBLIC_GNOSIS_URL,
+  // 100: 'https://rpc.gnosischain.com',
   137: process.env.NEXT_PUBLIC_POLYGON_URL,
   31337: process.env.NEXT_PUBLIC_AUTONOLAS_URL,
 };
