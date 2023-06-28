@@ -59,10 +59,6 @@ const ListServices = () => {
   useEffect(() => {
     (async () => {
       if (searchValue === '') {
-        console.log({
-          currentTab,
-          searchValue,
-        });
         try {
           let totalTemp = null;
 
