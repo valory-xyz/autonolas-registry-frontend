@@ -19,18 +19,17 @@ import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 import { publicProvider } from 'wagmi/providers/public';
 import { infuraProvider } from 'wagmi/providers/infura';
 
-export const chains = [
-  mainnet,
-  goerli,
-  gnosis,
-  // gnosisChiado,
-  polygon,
-  // polygonMumbai,
-];
 export const projectId = process.env.NEXT_PUBLIC_WALLET_PROJECT_ID;
 
-const { publicClient } = configureChains(
-  chains,
+const { publicClient, webSocketPublicClient, chains } = configureChains(
+  [
+    mainnet,
+    goerli,
+    gnosis,
+    // gnosisChiado,
+    polygon,
+  // polygonMumbai,
+  ],
   [
     // infuraProvider({ apiKey: process.env.NEXT_PUBLIC_INFURA_API_KEY, weight: 1 }),
     jsonRpcProvider({
@@ -41,35 +40,38 @@ const { publicClient } = configureChains(
           http: rpc[chain.id],
         };
       },
-      stallTimeout: 25000,
     }),
-    // w3mProvider({ projectId, stallTimeout: 1000 }),
+    w3mProvider({ projectId }),
     // NEXT_PUBLIC_INFURA_API_KEY
     // publicProvider(),
   ],
   {
-    rank: true,
+    // rank: true,
     // stallTimeout: 5000,
   },
 );
 
 export const wagmiConfig = createConfig({
   autoConnect: true,
+  logger: {
+    warn: null,
+  },
   connectors: [
     ...w3mConnectors({
       projectId,
       version: 2, // v2 of wallet connect
       chains,
     }),
-    // new SafeConnector({
-    //   chains,
-    //   options: {
-    //     allowedDomains: [/gnosis-safe.io$/, /app.safe.global$/],
-    //     debug: false,
-    //   },
-    // }),
+    new SafeConnector({
+      chains,
+      options: {
+        allowedDomains: [/gnosis-safe.io$/, /app.safe.global$/],
+        debug: false,
+      },
+    }),
   ],
   publicClient,
+  webSocketPublicClient,
 });
 
 export const ethereumClient = new EthereumClient(wagmiConfig, chains);
