@@ -13,24 +13,24 @@ const Container = styled.div`
   flex-direction: column;
 `;
 
-const TIMEOUT = 10;
+const TIMEOUT_IN_MINUTES = 100;
 
 const DEFAULT_MESSAGE = 'Items couldn’t be loaded';
 
 const Loader = ({ isAccountRequired, message }) => {
-  const [seconds, setSeconds] = useState(TIMEOUT);
+  const [minutes, setMinutes] = useState(TIMEOUT_IN_MINUTES);
   const account = useSelector((state) => get(state, 'setup.account'));
 
   useEffect(() => {
     let interval = null;
-    if (seconds > 0) {
+    if (minutes > 0) {
       interval = setInterval(() => {
-        setSeconds((s) => s - 1);
+        setMinutes((s) => s - 1);
       }, 1000);
     }
 
     return () => clearInterval(interval);
-  }, [seconds]);
+  }, [minutes]);
 
   if (isAccountRequired && !account) {
     return (
@@ -40,7 +40,7 @@ const Loader = ({ isAccountRequired, message }) => {
     );
   }
 
-  if (seconds === 0) {
+  if (minutes === 0) {
     return (
       <Container>
         <p>{message || DEFAULT_MESSAGE}</p>
