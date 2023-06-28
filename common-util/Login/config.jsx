@@ -3,8 +3,6 @@ import {
   w3mConnectors,
   w3mProvider,
 } from '@web3modal/ethereum';
-import { rpc } from 'common-util/Contracts';
-
 import { configureChains, createConfig } from 'wagmi';
 import {
   mainnet,
@@ -16,6 +14,7 @@ import {
 } from 'wagmi/chains';
 import { SafeConnector } from 'wagmi/connectors/safe';
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
+import { rpc } from 'common-util/Contracts';
 
 export const projectId = process.env.NEXT_PUBLIC_WALLET_PROJECT_ID;
 
@@ -33,9 +32,7 @@ const { publicClient, webSocketPublicClient, chains } = configureChains(
 
 export const wagmiConfig = createConfig({
   autoConnect: true,
-  logger: {
-    warn: null,
-  },
+  logger: { warn: null },
   connectors: [
     ...w3mConnectors({
       projectId,
