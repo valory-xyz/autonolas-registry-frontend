@@ -18,13 +18,13 @@ const MintAgent = () => {
 
   const handleCancel = () => router.push('/agents');
 
-  const handleSubmit = (values) => {
+  const handleSubmit = async (values) => {
     if (account) {
       setIsMinting(true);
       setError(null);
       setInformation(null);
 
-      const contract = getMechMinterContract();
+      const contract = getMechMinterContract(account);
 
       contract.methods
         .create(

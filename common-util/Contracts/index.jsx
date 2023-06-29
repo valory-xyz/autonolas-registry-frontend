@@ -82,6 +82,10 @@ export const ADDRESSES = {
   },
 };
 
+export const getMyProvider = () => window.MODAL_PROVIDER
+  || window.web3?.currentProvider
+  || process.env.NEXT_PUBLIC_MAINNET_URL;
+
 export const getWeb3Details = () => {
   /**
    * web3 provider =
@@ -89,12 +93,7 @@ export const getWeb3Details = () => {
    * - currentProvider by metamask or
    * - fallback to remote mainnet [remote node provider](https://web3js.readthedocs.io/en/v1.7.5/web3.html#example-remote-node-provider)
    */
-  const web3 = new Web3(
-    window.WEB3_PROVIDER
-      || window.web3?.currentProvider
-      || process.env.NEXT_PUBLIC_MAINNET_URL,
-  );
-
+  const web3 = new Web3(getMyProvider());
   const chainId = getChainId() || 1; // default to mainnet
   const address = ADDRESSES[chainId];
   return { web3, address, chainId };
@@ -123,10 +122,12 @@ export const getAgentContract = () => {
 export const getMechMinterContract = () => {
   const { web3, address } = getWeb3Details();
   const { registriesManager } = address;
+
   const contract = new web3.eth.Contract(
     REGISTRIES_MANAGER_CONTRACT.abi,
     registriesManager,
   );
+
   return contract;
 };
 

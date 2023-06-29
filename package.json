@@ -39,7 +39,7 @@
     "styled-components": "^5.0.1",
     "use-deep-compare-effect": "^1.8.1",
     "viem": "^0.3.35",
-    "wagmi": "^1.0.8",
+    "wagmi": "^1.2.1",
     "web3": "^1.7.3"
   },
   "devDependencies": {

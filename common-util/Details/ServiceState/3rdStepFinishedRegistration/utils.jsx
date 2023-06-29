@@ -8,6 +8,7 @@ import {
   rpc,
   getServiceOwnerMultisigContract,
   safeMultiSend,
+  getMyProvider,
 } from 'common-util/Contracts';
 import { isHashApproved } from './helpers';
 
@@ -93,10 +94,8 @@ export const handleMultisigSubmit = async ({
   );
 
   // signer
-  const provider = new ethers.providers.Web3Provider(
-    window.MODAL_PROVIDER || window.web3.currentProvider,
-    'any',
-  );
+  const provider = new ethers.providers.Web3Provider(getMyProvider(), 'any');
+
   const code = await provider.getCode(account);
 
   try {
