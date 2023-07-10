@@ -1,4 +1,4 @@
-import { getServiceContract } from 'common-util/Contracts';
+import { getServiceRegistryContract } from 'common-util/Contracts';
 import {
   getServices,
   getFilteredServices,
@@ -8,14 +8,14 @@ import { dummyAddress } from '../../helpers';
 const SERVICE_1 = { name: 'Service One' };
 
 jest.mock('common-util/Contracts', () => ({
-  getServiceContract: jest.fn(),
+  getServiceRegistryContract: jest.fn(),
 }));
 
 describe('listServices/utils.jsx', () => {
   it('getFilteredServices: Promise resolved', async () => {
     expect.hasAssertions();
 
-    getServiceContract.mockImplementation(() => ({
+    getServiceRegistryContract.mockImplementation(() => ({
       methods: {
         totalSupply: jest.fn(() => ({
           call: jest.fn(() => Promise.resolve(1)),
@@ -45,7 +45,7 @@ describe('listServices/utils.jsx', () => {
   it('getServices: Promise resolved', async () => {
     expect.hasAssertions();
 
-    getServiceContract.mockImplementation(() => ({
+    getServiceRegistryContract.mockImplementation(() => ({
       methods: {
         totalSupply: jest.fn(() => ({
           call: jest.fn(() => Promise.resolve(1)),

@@ -6,7 +6,7 @@ import {
   ADDRESSES,
   getGenericErc20Contract,
   getOperatorWhitelistContract,
-  getServiceContract,
+  getServiceRegistryContract,
   getServiceManagerContract,
   getServiceRegistryTokenUtilityContract,
 } from 'common-util/Contracts';
@@ -37,7 +37,7 @@ export const getNumberOfAgentAddress = (agentAddresses) => {
  * @returns {Promise} { totalBonds, bondsArray, slotsArray }
  */
 export const getBonds = (id, tableDataSource) => new Promise((resolve, reject) => {
-  const serviceContract = getServiceContract();
+  const serviceContract = getServiceRegistryContract();
   serviceContract.methods
     .getAgentParams(id)
     .call()
@@ -108,7 +108,7 @@ export const onTerminate = (account, id) => new Promise((resolve, reject) => {
 });
 
 export const getServiceOwner = (id) => new Promise((resolve, reject) => {
-  const contract = getServiceContract();
+  const contract = getServiceRegistryContract();
 
   contract.methods
     .ownerOf(id)
@@ -276,7 +276,7 @@ export const onActivateRegistration = (account, id, deposit) => new Promise((res
 
 /* ----- step 2 functions ----- */
 export const getServiceTableDataSource = async (id, agentIds) => new Promise((resolve, reject) => {
-  const contract = getServiceContract();
+  const contract = getServiceRegistryContract();
 
   getBonds(id)
     .then(async ({ slots, bonds }) => {
@@ -354,7 +354,7 @@ export const getTokenBondRequest = (id, source) => {
 
 /* ----- step 3 functions ----- */
 export const getServiceAgentInstances = (id) => new Promise((resolve, reject) => {
-  const contract = getServiceContract();
+  const contract = getServiceRegistryContract();
 
   contract.methods
     .getAgentInstances(id)
@@ -385,7 +385,7 @@ export const onStep3Deploy = (account, id, radioValue, payload = '0x') => new Pr
 
 /* ----- step 4 functions ----- */
 export const getAgentInstanceAndOperator = (id) => new Promise((resolve, reject) => {
-  const contract = getServiceContract();
+  const contract = getServiceRegistryContract();
 
   contract.methods
     .getAgentInstances(id)

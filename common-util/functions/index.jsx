@@ -50,6 +50,18 @@ export const isL1Network = (chainId) => {
   return isL1OnlyNetwork(chain) || chain === null;
 };
 
+export const isMainnetOrLocal = (chainId) => {
+  const chain = getChainId(chainId);
+  return chain === 1 || chain === STAGING_CHAIN_ID || chain === null;
+};
+
+export const isMainnetOrLocalOnly = (chainId) => {
+  const chain = getChainId(chainId);
+  return chain === 1 || chain === STAGING_CHAIN_ID;
+};
+
+export const isMainnet = (chainId) => getChainId(chainId) === 1;
+
 export const isGoerli = (chainId) => getChainId(chainId) === 5;
 
 export const isGnosis = (chainId) => getChainId(chainId) === 100;

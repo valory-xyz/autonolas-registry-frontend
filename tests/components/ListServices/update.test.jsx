@@ -6,7 +6,7 @@ import { act } from 'react-dom/test-utils';
 import Service from 'components/ListServices/service';
 import { FORM_NAME } from 'components/ListServices/RegisterForm';
 import {
-  getServiceContract,
+  getServiceRegistryContract,
   getServiceManagerContract,
 } from 'common-util/Contracts';
 import {
@@ -32,7 +32,7 @@ jest.mock('components/ListServices/utils', () => ({
 }));
 
 jest.mock('common-util/Contracts', () => ({
-  getServiceContract: jest.fn(),
+  getServiceRegistryContract: jest.fn(),
   getServiceManagerContract: jest.fn(),
 }));
 
@@ -51,7 +51,7 @@ const SERVICE_1 = {
 describe.skip('listServices/service.jsx', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    getServiceContract.mockImplementation(() => ({
+    getServiceRegistryContract.mockImplementation(() => ({
       methods: {
         getService: jest.fn(() => ({
           call: jest.fn(() => Promise.resolve(SERVICE_1)),

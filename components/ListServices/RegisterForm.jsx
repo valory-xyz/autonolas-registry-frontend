@@ -13,7 +13,7 @@ import { commaMessage, DependencyLabel } from 'common-util/List/ListCommon';
 import { FormItemHash } from 'common-util/List/RegisterForm/helpers';
 import IpfsHashGenerationModal from 'common-util/List/IpfsHashGenerationModal';
 import { ComplexLabel } from 'common-util/List/styles';
-import { isL1Network } from 'common-util/functions';
+import { isMainnetOrLocalOnly } from 'common-util/functions';
 import { RegisterFooter } from 'components/styles';
 
 export const FORM_NAME = 'serviceRegisterForm';
@@ -37,7 +37,7 @@ const RegisterForm = ({
   const id = get(router, 'query.id') || null;
 
   useEffect(() => {
-    if (account && ethTokenAddress && isL1Network(chainId)) {
+    if (account && ethTokenAddress && isMainnetOrLocalOnly(chainId)) {
       setFields([
         {
           name: ['token'],
@@ -170,7 +170,7 @@ const RegisterForm = ({
         </Form.Item>
 
         {/* generic token visible only to L1 networks */}
-        {isL1Network(chainId) && (
+        {isMainnetOrLocalOnly(chainId) && (
           <>
             <Form.Item
               label="ERC20 token address"

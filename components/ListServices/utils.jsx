@@ -3,14 +3,14 @@ import {
   TOTAL_VIEW_COUNT,
   DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS,
 } from 'util/constants';
-import { getServiceContract } from 'common-util/Contracts';
+import { getServiceRegistryContract } from 'common-util/Contracts';
 import { convertStringToArray } from 'common-util/List/ListCommon';
 import { filterByOwner } from 'common-util/ContractUtils/myList';
 import { getTokenDetailsRequest } from 'common-util/Details/ServiceState/utils';
 
 // --------- HELPER METHODS ---------
 export const getServiceOwner = (id) => new Promise((resolve, reject) => {
-  const contract = getServiceContract();
+  const contract = getServiceRegistryContract();
 
   contract.methods
     .ownerOf(id)
@@ -26,7 +26,7 @@ export const getServiceOwner = (id) => new Promise((resolve, reject) => {
 
 // --------- utils ---------
 export const getServiceDetails = (id) => new Promise((resolve, reject) => {
-  const contract = getServiceContract();
+  const contract = getServiceRegistryContract();
 
   contract.methods
     .getService(id)
@@ -41,7 +41,7 @@ export const getServiceDetails = (id) => new Promise((resolve, reject) => {
 });
 
 export const getTotalForMyServices = (account) => new Promise((resolve, reject) => {
-  const contract = getServiceContract();
+  const contract = getServiceRegistryContract();
   contract.methods
     .balanceOf(account)
     .call()
@@ -57,7 +57,7 @@ export const getTotalForMyServices = (account) => new Promise((resolve, reject) 
  * Function to return all services
  */
 export const getTotalForAllServices = () => new Promise((resolve, reject) => {
-  const contract = getServiceContract();
+  const contract = getServiceRegistryContract();
   contract.methods
     .totalSupply()
     .call()
@@ -70,7 +70,7 @@ export const getTotalForAllServices = () => new Promise((resolve, reject) => {
 });
 
 export const getServices = (total, nextPage, fetchAll = false) => new Promise((resolve, reject) => {
-  const contract = getServiceContract();
+  const contract = getServiceRegistryContract();
 
   try {
     const existsPromises = [];
@@ -141,7 +141,7 @@ export const getAgentParams = (values) => {
 };
 
 export const getServiceHashes = (id) => new Promise((resolve, reject) => {
-  const contract = getServiceContract();
+  const contract = getServiceRegistryContract();
 
   contract.methods
     .getPreviousHashes(id)
@@ -156,7 +156,7 @@ export const getServiceHashes = (id) => new Promise((resolve, reject) => {
 });
 
 export const getTokenUri = (id) => new Promise((resolve, reject) => {
-  const contract = getServiceContract();
+  const contract = getServiceRegistryContract();
 
   contract.methods
     .tokenURI(id)

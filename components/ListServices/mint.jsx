@@ -10,6 +10,7 @@ import {
 } from 'common-util/List/ListCommon';
 import {
   getServiceManagerContract,
+  getServiceManagerGoerliContract,
   getServiceManagerL2Contract,
 } from 'common-util/Contracts';
 import { FormContainer } from 'components/styles';
@@ -17,7 +18,8 @@ import {
   DEFAULT_SERVICE_CREATION_ETH_TOKEN,
   DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS,
 } from 'util/constants';
-import { isL1Network } from 'common-util/functions';
+import { isMainnetOrLocalOnly, isMainnet } from 'common-util/functions';
+import { isGoerli } from '@autonolas/frontend-library';
 import RegisterForm from './RegisterForm';
 import { getAgentParams } from './utils';
 
@@ -37,9 +39,11 @@ const MintService = ({ account }) => {
       setError(null);
       setInformation(null);
 
-      const contract = isL1Network(chainId)
-        ? getServiceManagerContract()
-        : getServiceManagerL2Contract();
+      const getContract = () => {
+        if (isMainnet(chainId)) return getServiceManagerContract();
+        if (isGoerli(chainId)) return getServiceManagerGoerliContract();
+        return getServiceManagerL2Contract();
+      };
 
       const commonParams = [
         `0x${values.hash}`,
@@ -48,7 +52,7 @@ const MintService = ({ account }) => {
         values.threshold,
       ];
 
-      const params = isL1Network(chainId)
+      const params = isMainnetOrLocalOnly(chainId)
         ? [
           values.owner_address,
           values.token === DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS
@@ -58,8 +62,8 @@ const MintService = ({ account }) => {
         ]
         : [values.owner_address, ...commonParams];
 
-      contract.methods
-        .create(...params)
+      getContract()
+        .methods.create(...params)
         .send({ from: account })
         .then((result) => {
           setInformation(result);

@@ -9,7 +9,7 @@ import {
   getTotalForMyServices,
 } from 'components/ListServices/utils';
 import { useRouter } from 'next/router';
-import { getServiceContract } from 'common-util/Contracts';
+import { getServiceRegistryContract } from 'common-util/Contracts';
 import { wrapProvider, ACTIVE_TAB, getTableTd } from '../../helpers';
 
 // mocks for router & smart-contract functions
@@ -26,7 +26,7 @@ jest.mock('components/ListServices/utils', () => ({
 }));
 
 jest.mock('common-util/Contracts', () => ({
-  getServiceContract: jest.fn(),
+  getServiceRegistryContract: jest.fn(),
   getServiceManagerContract: jest.fn(),
 }));
 
@@ -41,7 +41,7 @@ describe('listServices/index.jsx', () => {
     jest.clearAllMocks();
     useRouter.mockImplementation(() => ({ push: jest.fn() }));
 
-    getServiceContract.mockImplementation(() => ({
+    getServiceRegistryContract.mockImplementation(() => ({
       methods: {
         getService: jest.fn(() => ({
           call: jest.fn(() => Promise.resolve(SERVICE_1)),
