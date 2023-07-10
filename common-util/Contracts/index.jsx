@@ -15,6 +15,7 @@ import {
   OPERATOR_WHITELIST_CONTRACT,
 } from 'common-util/AbiAndAddresses';
 import { isL1Network, getChainId } from 'common-util/functions';
+import { LOCAL_FORK_ID } from 'util/constants';
 
 // get addresses from scripts/deployment folder in autonolas-registries repo
 export const ADDRESSES = {
@@ -80,7 +81,7 @@ export const ADDRESSES = {
     // used for testing - service creation/update token address
     ERC20Token: '0x5f3f1dBD7B74C6B46e8c44f98792A1dAf8d69154',
   },
-  100000: {
+  [LOCAL_FORK_ID]: {
     agentRegistry: '0x2F1f7D38e4772884b88f3eCd8B6b9faCdC319112',
     componentRegistry: '0x15bd56669F57192a97dF41A2aa8f4403e9491776',
     registriesManager: '0x9eC9156dEF5C613B2a7D4c46C383F9B58DfcD6fE',
@@ -234,7 +235,7 @@ export const multisigAddresses = {
   10200: ['0xeB49bE5DF00F74bd240DE4535DDe6Bc89CEfb994'],
   80001: ['0x9dEc6B62c197268242A768dc3b153AE7a2701396'],
   31337: ['0x0E801D84Fa97b50751Dbf25036d067dCf18858bF'],
-  100000: ['0x46C0D07F55d4F9B5Eed2Fc9680B5953e5fd7b461'],
+  [LOCAL_FORK_ID]: ['0x46C0D07F55d4F9B5Eed2Fc9680B5953e5fd7b461'],
 };
 
 export const multisigSameAddresses = {
@@ -245,7 +246,7 @@ export const multisigSameAddresses = {
   10200: ['0x5BA58970c2Ae16Cf6218783018100aF2dCcFc915'],
   80001: ['0xB575dd20281c63288428DD58e5f579CC7d6aae4d'],
   31337: ['0x8f86403A4DE0BB5791fa46B8e795C547942fE4Cf'],
-  100000: ['0x26Ea2dC7ce1b41d0AD0E0521535655d7a94b684c'],
+  [LOCAL_FORK_ID]: ['0x26Ea2dC7ce1b41d0AD0E0521535655d7a94b684c'],
 };
 
 export const safeMultiSend = {
@@ -254,7 +255,7 @@ export const safeMultiSend = {
   100: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
   137: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
   31337: ['0x9d4454B023096f34B160D6B654540c56A1F81688'],
-  100000: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
+  [LOCAL_FORK_ID]: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
 };
 
 export const rpc = {
@@ -263,5 +264,5 @@ export const rpc = {
   100: process.env.NEXT_PUBLIC_GNOSIS_URL,
   137: process.env.NEXT_PUBLIC_POLYGON_URL,
   31337: process.env.NEXT_PUBLIC_AUTONOLAS_URL,
-  100000: "http://localhost:8545",
+  [LOCAL_FORK_ID]: 'http://localhost:8545',
 };
