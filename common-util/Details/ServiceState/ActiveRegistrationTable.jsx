@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useContext, useRef } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Form, Input, Table, Button,
@@ -38,9 +38,16 @@ const EditableCell = ({
   const form = useContext(EditableContext);
   const inputRef = useRef(null);
 
-  if (record) {
-    form.setFieldsValue({ [dataIndex]: record[dataIndex] });
-  }
+  // console.log(form.getFieldValue(dataIndex));
+  // console.log({ record, dataIndex });
+
+  useEffect(() => {
+    if (record) {
+      form.setFieldsValue({ [dataIndex]: record[dataIndex] });
+    } else {
+      form.setFieldsValue({ [dataIndex]: null });
+    }
+  }, [record]);
 
   const onSave = async () => {
     try {
@@ -67,15 +74,17 @@ const EditableCell = ({
         <Input.TextArea
           disabled={isInputDisabled}
           ref={inputRef}
-          onPressEnter={onSave}
-          onBlur={onSave}
+          onChange={onSave}
           placeholder={[...new Array(slots)]
             .map((_i, index) => `Address ${index + 1}`)
             .join(', ')}
         />
       </Form.Item>
     ) : (
-      <div className="editable-cell-value-wrap" style={{ paddingRight: 24 }}>
+      <div
+        className="editable-cell-value-wrap"
+        style={{ paddingRight: 24, minHeight: 50 }}
+      >
         {children}
       </div>
     );
