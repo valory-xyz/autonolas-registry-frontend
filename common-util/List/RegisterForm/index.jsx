@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import Web3 from 'web3';
 import { Button, Form, Input } from 'antd/lib';
 import isNil from 'lodash/isNil';
 import { WhiteButton } from 'common-util/components/Button';
+import { isValidAddress } from 'common-util/functions';
 import IpfsHashGenerationModal from '../IpfsHashGenerationModal';
 import { DependencyLabel } from '../ListCommon';
 import { FormItemHash } from './helpers';
@@ -69,7 +69,7 @@ const RegisterForm = ({
             },
             () => ({
               validator(_, value) {
-                if (Web3.utils.isAddress(value)) return Promise.resolve();
+                if (isValidAddress(value)) return Promise.resolve();
                 return Promise.reject(
                   new Error(
                     `Please input a valid address of the ${listType} Owner`,
