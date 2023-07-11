@@ -30,8 +30,6 @@ const NavigationMenu = () => {
     setSelectedMenu(key);
   };
 
-  console.log({ chainId, isL1Network: isL1Network(chainId) });
-
   return (
     <Menu
       theme="light"
