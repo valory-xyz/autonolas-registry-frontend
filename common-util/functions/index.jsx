@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import { notification } from 'antd/lib';
 import { STAGING_CHAIN_ID } from '@autonolas/frontend-library';
-import { TOTAL_VIEW_COUNT } from 'util/constants';
+import { TOTAL_VIEW_COUNT, LOCAL_FORK_ID } from 'util/constants';
 import { ADDRESSES } from 'common-util/Contracts';
 
 export const convertToEth = (value) => ethers.utils.formatEther(value);
@@ -37,7 +37,12 @@ export const getChainId = (chainId = null) => {
 
 export const isL1OnlyNetwork = (chainId) => {
   const chain = getChainId(chainId);
-  return chain === 5 || chain === 1 || chain === STAGING_CHAIN_ID;
+  return (
+    chain === 5
+    || chain === 1
+    || chain === STAGING_CHAIN_ID
+    || chain === LOCAL_FORK_ID
+  );
 };
 
 /**
