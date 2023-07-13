@@ -1,13 +1,25 @@
 /* eslint-disable react/prop-types */
-import React, { useContext, useRef } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Form, Input, Table, Button,
 } from 'antd/lib';
 import { useRouter } from 'next/router';
+import styled from 'styled-components';
 import get from 'lodash/get';
 import { URL } from 'util/constants';
-import { isL1Network } from 'common-util/functions';
+import { isL1Network, isValidAddress } from 'common-util/functions';
+
+const TableContainer = styled.div`
+  .ant-form-item-explain-error {
+    font-size: 15px;
+  }
+
+  /* show only 1 error if there are multiple */
+  .ant-form-item-explain-error:not(:first-child) {
+    display: none;
+  }
+`;
 
 const EditableContext = React.createContext(null);
 
@@ -33,20 +45,27 @@ const EditableCell = ({
   record,
   handleSave,
   isDisabled,
+  setIsValidAgentAddress,
   ...restProps
 }) => {
   const form = useContext(EditableContext);
   const inputRef = useRef(null);
 
-  if (record) {
-    form.setFieldsValue({ [dataIndex]: record[dataIndex] });
-  }
+  useEffect(() => {
+    if (record) {
+      form.setFieldsValue({ [dataIndex]: record[dataIndex] });
+    } else {
+      form.setFieldsValue({ [dataIndex]: null });
+    }
+  }, [record]);
 
   const onSave = async () => {
     try {
       const values = await form.validateFields();
       handleSave({ ...record, ...values });
+      setIsValidAgentAddress(true);
     } catch (info) {
+      setIsValidAgentAddress(false);
       window.console.log('Save failed:', info);
     }
   };
@@ -62,20 +81,48 @@ const EditableCell = ({
       <Form.Item
         style={{ margin: 0 }}
         name={dataIndex}
-        rules={[{ required: true, message: `${title} is required.` }]}
+        rules={[
+          {
+            required: true,
+            message: `${title} is required.`,
+          },
+          () => ({
+            validator(_, value) {
+              // array of addresses. Eg. ['0x123', '0x456']
+              const addressList = value?.split(',').map((v) => v.trim());
+
+              // check if all addresses are valid
+              const areAllAddressesValid = addressList?.every((address) => isValidAddress(address));
+
+              // check if there are any duplicate addresses
+              const uniqueAddresses = [...new Set(addressList)];
+              if (uniqueAddresses.length !== addressList.length) {
+                return Promise.reject(
+                  new Error('Please enter unique addresses.'),
+                );
+              }
+
+              return areAllAddressesValid
+                ? Promise.resolve()
+                : Promise.reject(new Error('Please enter valid addresses.'));
+            },
+          }),
+        ]}
       >
         <Input.TextArea
           disabled={isInputDisabled}
           ref={inputRef}
-          onPressEnter={onSave}
-          onBlur={onSave}
+          onChange={onSave}
           placeholder={[...new Array(slots)]
             .map((_i, index) => `Address ${index + 1}`)
             .join(', ')}
         />
       </Form.Item>
     ) : (
-      <div className="editable-cell-value-wrap" style={{ paddingRight: 24 }}>
+      <div
+        className="editable-cell-value-wrap"
+        style={{ paddingRight: 24, minHeight: 64 }}
+      >
         {children}
       </div>
     );
@@ -87,7 +134,12 @@ const EditableCell = ({
 /**
  * Step 2 Table
  */
-const ActiveRegistrationTable = ({ data, setDataSource, isDisabled }) => {
+const ActiveRegistrationTable = ({
+  data,
+  setDataSource,
+  isDisabled,
+  setIsValidAgentAddress,
+}) => {
   const chainId = useSelector((state) => state?.setup?.chainId);
 
   const router = useRouter();
@@ -96,6 +148,7 @@ const ActiveRegistrationTable = ({ data, setDataSource, isDisabled }) => {
       title: 'Agent ID',
       dataIndex: 'agentId',
       key: 'agentId',
+      width: 60,
       render: (text) => (
         <Button
           type="link"
@@ -116,6 +169,7 @@ const ActiveRegistrationTable = ({ data, setDataSource, isDisabled }) => {
       title: 'Total Slots',
       dataIndex: 'totalSlots',
       key: 'totalSlots',
+      width: 80,
     },
     {
       title: 'Agent Instance Addresses',
@@ -150,14 +204,15 @@ const ActiveRegistrationTable = ({ data, setDataSource, isDisabled }) => {
         editable: c.editable,
         dataIndex: c.dataIndex,
         title: c.title,
-        handleSave,
         isDisabled,
+        handleSave,
+        setIsValidAgentAddress,
       }),
     };
   });
 
   return (
-    <div>
+    <TableContainer>
       <Table
         components={components}
         rowClassName={() => 'editable-row'}
@@ -166,7 +221,7 @@ const ActiveRegistrationTable = ({ data, setDataSource, isDisabled }) => {
         columns={columns}
         pagination={false}
       />
-    </div>
+    </TableContainer>
   );
 };
 

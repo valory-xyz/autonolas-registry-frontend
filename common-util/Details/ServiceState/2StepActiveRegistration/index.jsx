@@ -29,6 +29,7 @@ const ActiveRegistration = ({
 
   const [totalBonds, setTotalBond] = useState(null);
   const [ethTokenBonds, setEthTokenBonds] = useState([]);
+  const [isValidAgentAddress, setIsValidAgentAddress] = useState(false);
 
   useEffect(() => {
     // react will throw an warning if we use setState after the component is unmounted,
@@ -77,6 +78,7 @@ const ActiveRegistration = ({
         setDataSource={setDataSource}
         bordered
         isDisabled={btnProps.disabled}
+        setIsValidAgentAddress={setIsValidAgentAddress}
       />
       <Text type="secondary">
         {`Adding instances will cause a bond of ${totalBondEthToken} ETH`}
@@ -86,7 +88,11 @@ const ActiveRegistration = ({
       </Text>
 
       {/* "Register agents" can be clicked by anyone */}
-      <Button onClick={handleStep2RegisterAgents} {...btnProps}>
+      <Button
+        onClick={handleStep2RegisterAgents}
+        {...btnProps}
+        disabled={btnProps.disabled || !isValidAgentAddress}
+      >
         Register Agents
       </Button>
       <Divider />
