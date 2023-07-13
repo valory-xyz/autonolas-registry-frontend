@@ -5,6 +5,7 @@ import {
   Button, Typography, Input, notification, Form,
 } from 'antd/lib';
 import { DynamicFieldsForm } from 'common-util/DynamicFieldsForm';
+import { isValidAddress } from 'common-util/functions';
 import {
   checkIfServiceIsWhitelisted,
   setOperatorsStatusesRequest,
@@ -19,9 +20,11 @@ export const OperatorWhitelist = ({ isWhiteListed, setOpWhitelist, id }) => {
   const [isCheckLoading, setIsCheckLoading] = useState(false);
 
   useEffect(() => {
-    if (id) {
-      setOpWhitelist();
-    }
+    const getData = async () => {
+      await setOpWhitelist(id);
+    };
+
+    if (id) getData();
   }, [id]);
 
   const onCheck = async (values) => {
@@ -33,9 +36,13 @@ export const OperatorWhitelist = ({ isWhiteListed, setOpWhitelist, id }) => {
       );
 
       const message = `Operator ${values.operatorAddress} is ${
-        isValid ? '' : 'not'
+        isValid ? '' : 'NOT'
       } whitelisted`;
-      notification.success({ message });
+      if (isValid) {
+        notification.success({ message });
+      } else {
+        notification.warn({ message });
+      }
     } catch (error) {
       console.error(error);
     } finally {
@@ -58,7 +65,19 @@ export const OperatorWhitelist = ({ isWhiteListed, setOpWhitelist, id }) => {
             <Form.Item
               label="Operator Address"
               name="operatorAddress"
-              rules={[{ required: true, message: 'Please input the address' }]}
+              rules={[
+                { required: true, message: 'Please input the address' },
+
+                () => ({
+                  validator(_, value) {
+                    return isValidAddress(value)
+                      ? Promise.resolve()
+                      : Promise.reject(
+                        new Error('Please enter valid addresses.'),
+                      );
+                  },
+                }),
+              ]}
             >
               <Input />
             </Form.Item>

@@ -65,12 +65,20 @@ export const DetailsInfo = ({
     setSwitchValue(isWhiteListed);
   }, [isWhiteListed]);
 
+  // get operator whitelist
+  const setOpWhitelist = async () => {
+    const whiteListRes = await checkIfServiceRequiresWhiltelisting(id);
+    setIsWhiteListed(whiteListRes);
+  };
+
   // get token address for service on load
   useEffect(() => {
     const getData = async () => {
       if (type === NAV_TYPES.SERVICE) {
         const response = await getTokenDetailsRequest(id);
         setTokenAddress(response.token);
+
+        await setOpWhitelist(id);
       }
     };
 
@@ -112,14 +120,6 @@ export const DetailsInfo = ({
       </Link>
     </>
   ) : null;
-
-  // get operator whitelist
-  const setOpWhitelist = async () => {
-    if (isL1OnlyNetwork(chainId)) {
-      const whiteListRes = await checkIfServiceRequiresWhiltelisting(id);
-      setIsWhiteListed(whiteListRes);
-    }
-  };
 
   const getCommonDetails = () => {
     const commonDetails = [];
@@ -240,7 +240,7 @@ export const DetailsInfo = ({
     }
 
     // operator whitelisting is only available for service & L1 networks
-    if (isL1Network(chainId)) {
+    if (isL1OnlyNetwork(chainId)) {
       serviceDetailsList.push({
         title: (
           <>
