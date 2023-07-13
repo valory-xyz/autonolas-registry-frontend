@@ -5,7 +5,7 @@ import {
   Button, Typography, Input, notification, Form,
 } from 'antd/lib';
 import { DynamicFieldsForm } from 'common-util/DynamicFieldsForm';
-import { isValidAddress } from 'common-util/functions';
+import { addressValidator } from 'common-util/functions';
 import {
   checkIfServiceIsWhitelisted,
   setOperatorsStatusesRequest,
@@ -58,25 +58,16 @@ export const OperatorWhitelist = ({ isWhiteListed, setOpWhitelist, id }) => {
           <Form
             layout="inline"
             form={form}
-            name="dynamic_form_complex"
-            onFinish={onCheck}
+            name="operator_address_form"
             autoComplete="off"
+            onFinish={onCheck}
           >
             <Form.Item
               label="Operator Address"
               name="operatorAddress"
               rules={[
                 { required: true, message: 'Please input the address' },
-
-                () => ({
-                  validator(_, value) {
-                    return isValidAddress(value)
-                      ? Promise.resolve()
-                      : Promise.reject(
-                        new Error('Please enter valid addresses.'),
-                      );
-                  },
-                }),
+                addressValidator,
               ]}
             >
               <Input />
@@ -109,7 +100,7 @@ export const SetOperatorStatus = ({ id }) => {
         account,
         serviceId: id,
         operatorAddresses: values.operatorAddress,
-        operatorStatuses: values.status.map((e) => Boolean(e)),
+        operatorStatuses: values.status.map((e) => e === 'true'),
       });
       notification.success({
         message: 'Operator status updated',

@@ -80,4 +80,7 @@ export const SectionContainer = styled.div`
       border-bottom-color: ${COLOR.BORDER_GREY};
     }
   }
+  .ant-form-item-label > label {
+    left: -4px
+  }
 `;
