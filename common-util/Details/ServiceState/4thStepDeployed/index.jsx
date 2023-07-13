@@ -35,7 +35,8 @@ const Deployed = ({
   useEffect(() => {
     let isMounted = true;
     (async () => {
-      if (serviceId || currentStep === 4) {
+      // fetch agent instances and operators if service state is moved to step 4
+      if (serviceId || currentStep === 3) {
         const tempData = await getAgentInstanceAndOperator(serviceId);
         if (isMounted) {
           dispatch(setAgentInstancesAndOperators(tempData));

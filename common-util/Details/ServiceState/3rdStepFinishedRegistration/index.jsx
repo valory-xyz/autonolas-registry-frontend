@@ -88,7 +88,7 @@ const StepThreePayload = ({
   const btnProps = getOtherBtnProps(STEP);
 
   return (
-    <div className="step-3-finished-registration ">
+    <div className="step-3-finished-registration">
       <Radio.Group
         value={radioValue}
         onChange={(e) => setRadioValue(e.target.value)}
