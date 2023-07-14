@@ -90,6 +90,14 @@ export const ADDRESSES = {
     serviceRegistryTokenUtility: '0x3Fb926116D454b95c669B6Bf2E7c3bad8d19affA',
     operatorWhitelist: '0x42042799B0DE38AdD2a70dc996f69f98E1a85260',
   },
+  [LOCAL_FORK_ID_POLYGON]: {
+    serviceManager: '0x3C1fF68f5aa342D296d4DEe4Bb1cACCA912D95fE',
+    serviceRegistry: '0xE3607b00E75f6405248323A9417ff6b39B244b50',
+  },
+  [LOCAL_FORK_ID_GNOSIS]: {
+    serviceManager: '0xE3607b00E75f6405248323A9417ff6b39B244b50',
+    serviceRegistry: '0x9338b5153AE39BB89f50468E608eD9d764B755fD',
+  },
 };
 
 export const getMyProvider = () => window.MODAL_PROVIDER
