@@ -89,7 +89,7 @@ export const OperatorWhitelist = ({ isWhiteListed, setOpWhitelist, id }) => {
   );
 };
 
-export const SetOperatorStatus = ({ id }) => {
+export const SetOperatorStatus = ({ id, setOpWhitelist }) => {
   const account = useSelector((state) => state?.setup?.account);
   const [isSubmitLoading, setIsSubmitLoading] = useState(false);
 
@@ -102,6 +102,7 @@ export const SetOperatorStatus = ({ id }) => {
         operatorAddresses: values.operatorAddress,
         operatorStatuses: values.status.map((e) => e === 'true'),
       });
+      await setOpWhitelist();
       notification.success({
         message: 'Operator status updated',
       });

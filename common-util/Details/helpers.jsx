@@ -251,15 +251,18 @@ export const DetailsInfo = ({
               checkedChildren="Enabled"
               unCheckedChildren="Disabled"
               onChange={async (checked) => {
-                setSwitchValue(checked);
-                if (!checked) {
+                try {
                   await setOperatorsCheckRequest({
                     account,
                     serviceId: id,
-                    isChecked: false,
+                    isChecked: checked,
                   });
-                  await setOpWhitelist();
+                  setSwitchValue(checked);
+                } catch (error) {
+                  console.error(error);
                 }
+
+                await setOpWhitelist();
               }}
             />
           </>
@@ -276,7 +279,7 @@ export const DetailsInfo = ({
       if (isOwner) {
         serviceDetailsList.push({
           title: 'Set operators statuses',
-          value: <SetOperatorStatus id={id} />,
+          value: <SetOperatorStatus id={id} setOpWhitelist={setOpWhitelist} />,
         });
       }
     }
