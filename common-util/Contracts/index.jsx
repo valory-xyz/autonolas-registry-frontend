@@ -15,19 +15,35 @@ import {
   OPERATOR_WHITELIST_CONTRACT,
 } from 'common-util/AbiAndAddresses';
 import { isL1Network, getChainId } from 'common-util/functions';
-import { LOCAL_FORK_ID } from 'util/constants';
+import {
+  LOCAL_FORK_ID,
+  LOCAL_FORK_ID_POLYGON,
+  LOCAL_FORK_ID_GNOSIS,
+} from 'util/constants';
+
+const MAINNET_ADDRESSES = {
+  agentRegistry: '0x2F1f7D38e4772884b88f3eCd8B6b9faCdC319112',
+  componentRegistry: '0x15bd56669F57192a97dF41A2aa8f4403e9491776',
+  registriesManager: '0x9eC9156dEF5C613B2a7D4c46C383F9B58DfcD6fE',
+  serviceManager: '0x2EA682121f815FBcF86EA3F3CaFdd5d67F2dB143',
+  serviceRegistry: '0x48b6af7B12C71f09e2fC8aF4855De4Ff54e775cA',
+  serviceRegistryTokenUtility: '0x3Fb926116D454b95c669B6Bf2E7c3bad8d19affA',
+  operatorWhitelist: '0x42042799B0DE38AdD2a70dc996f69f98E1a85260',
+};
+
+const GNOSIS_ADDRESSES = {
+  serviceManager: '0xE3607b00E75f6405248323A9417ff6b39B244b50',
+  serviceRegistry: '0x9338b5153AE39BB89f50468E608eD9d764B755fD',
+};
+
+const POLYGON_ADDRESSES = {
+  serviceManager: '0x3C1fF68f5aa342D296d4DEe4Bb1cACCA912D95fE',
+  serviceRegistry: '0xE3607b00E75f6405248323A9417ff6b39B244b50',
+};
 
 // get addresses from scripts/deployment folder in autonolas-registries repo
 export const ADDRESSES = {
-  1: {
-    agentRegistry: '0x2F1f7D38e4772884b88f3eCd8B6b9faCdC319112',
-    componentRegistry: '0x15bd56669F57192a97dF41A2aa8f4403e9491776',
-    registriesManager: '0x9eC9156dEF5C613B2a7D4c46C383F9B58DfcD6fE',
-    serviceManager: '0x2EA682121f815FBcF86EA3F3CaFdd5d67F2dB143',
-    serviceRegistry: '0x48b6af7B12C71f09e2fC8aF4855De4Ff54e775cA',
-    serviceRegistryTokenUtility: '0x3Fb926116D454b95c669B6Bf2E7c3bad8d19affA',
-    operatorWhitelist: '0x42042799B0DE38AdD2a70dc996f69f98E1a85260',
-  },
+  1: MAINNET_ADDRESSES,
   // goerli
   5: {
     agentRegistry: '0xEB5638eefE289691EcE01943f768EDBF96258a80',
@@ -39,15 +55,9 @@ export const ADDRESSES = {
     operatorWhitelist: '0x0338893fB1A1D9Df03F72CC53D8f786487d3D03E',
   },
   // gnosis
-  100: {
-    serviceManager: '0xE3607b00E75f6405248323A9417ff6b39B244b50',
-    serviceRegistry: '0x9338b5153AE39BB89f50468E608eD9d764B755fD',
-  },
+  100: GNOSIS_ADDRESSES,
   // polygon
-  137: {
-    serviceManager: '0x3C1fF68f5aa342D296d4DEe4Bb1cACCA912D95fE',
-    serviceRegistry: '0xE3607b00E75f6405248323A9417ff6b39B244b50',
-  },
+  137: POLYGON_ADDRESSES,
   // chiado
   10200: {
     serviceManager: '0x29086141ecdc310058fc23273F8ef7881d20C2f7',
@@ -81,23 +91,9 @@ export const ADDRESSES = {
     // used for testing - service creation/update token address
     ERC20Token: '0x5f3f1dBD7B74C6B46e8c44f98792A1dAf8d69154',
   },
-  [LOCAL_FORK_ID]: {
-    agentRegistry: '0x2F1f7D38e4772884b88f3eCd8B6b9faCdC319112',
-    componentRegistry: '0x15bd56669F57192a97dF41A2aa8f4403e9491776',
-    registriesManager: '0x9eC9156dEF5C613B2a7D4c46C383F9B58DfcD6fE',
-    serviceManager: '0x2EA682121f815FBcF86EA3F3CaFdd5d67F2dB143',
-    serviceRegistry: '0x48b6af7B12C71f09e2fC8aF4855De4Ff54e775cA',
-    serviceRegistryTokenUtility: '0x3Fb926116D454b95c669B6Bf2E7c3bad8d19affA',
-    operatorWhitelist: '0x42042799B0DE38AdD2a70dc996f69f98E1a85260',
-  },
-  [LOCAL_FORK_ID_POLYGON]: {
-    serviceManager: '0x3C1fF68f5aa342D296d4DEe4Bb1cACCA912D95fE',
-    serviceRegistry: '0xE3607b00E75f6405248323A9417ff6b39B244b50',
-  },
-  [LOCAL_FORK_ID_GNOSIS]: {
-    serviceManager: '0xE3607b00E75f6405248323A9417ff6b39B244b50',
-    serviceRegistry: '0x9338b5153AE39BB89f50468E608eD9d764B755fD',
-  },
+  [LOCAL_FORK_ID]: MAINNET_ADDRESSES,
+  [LOCAL_FORK_ID_POLYGON]: POLYGON_ADDRESSES,
+  [LOCAL_FORK_ID_GNOSIS]: GNOSIS_ADDRESSES,
 };
 
 export const getMyProvider = () => window.MODAL_PROVIDER
@@ -244,6 +240,8 @@ export const multisigAddresses = {
   80001: ['0x9dEc6B62c197268242A768dc3b153AE7a2701396'],
   31337: ['0x0E801D84Fa97b50751Dbf25036d067dCf18858bF'],
   [LOCAL_FORK_ID]: ['0x46C0D07F55d4F9B5Eed2Fc9680B5953e5fd7b461'],
+  [LOCAL_FORK_ID_GNOSIS]: ['0x3C1fF68f5aa342D296d4DEe4Bb1cACCA912D95fE'],
+  [LOCAL_FORK_ID_POLYGON]: ['0x3d77596beb0f130a4415df3D2D8232B3d3D31e44'],
 };
 
 export const multisigSameAddresses = {
@@ -255,6 +253,8 @@ export const multisigSameAddresses = {
   80001: ['0xB575dd20281c63288428DD58e5f579CC7d6aae4d'],
   31337: ['0x8f86403A4DE0BB5791fa46B8e795C547942fE4Cf'],
   [LOCAL_FORK_ID]: ['0x26Ea2dC7ce1b41d0AD0E0521535655d7a94b684c'],
+  [LOCAL_FORK_ID_GNOSIS]: ['0x3d77596beb0f130a4415df3D2D8232B3d3D31e44'],
+  [LOCAL_FORK_ID_POLYGON]: ['0x34C895f302D0b5cf52ec0Edd3945321EB0f83dd5'],
 };
 
 export const safeMultiSend = {
@@ -264,6 +264,8 @@ export const safeMultiSend = {
   137: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
   31337: ['0x9d4454B023096f34B160D6B654540c56A1F81688'],
   [LOCAL_FORK_ID]: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
+  [LOCAL_FORK_ID_GNOSIS]: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
+  [LOCAL_FORK_ID_POLYGON]: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
 };
 
 export const rpc = {
@@ -273,4 +275,6 @@ export const rpc = {
   137: process.env.NEXT_PUBLIC_POLYGON_URL,
   31337: process.env.NEXT_PUBLIC_AUTONOLAS_URL,
   [LOCAL_FORK_ID]: 'http://localhost:8545',
+  [LOCAL_FORK_ID_GNOSIS]: 'http://localhost:8545',
+  [LOCAL_FORK_ID_POLYGON]: 'http://localhost:8545',
 };
