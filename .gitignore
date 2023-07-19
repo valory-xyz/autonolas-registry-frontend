@@ -3,3 +3,4 @@ coverage
 .next
 .DS_Store
 .env
+ganache_data

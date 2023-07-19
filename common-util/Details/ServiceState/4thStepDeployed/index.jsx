@@ -27,6 +27,7 @@ const Deployed = ({
   multisig,
   terminateButton,
   isShowAgentInstanceVisible,
+  currentStep,
 }) => {
   const dispatch = useDispatch();
   const data = useSelector((state) => get(state, 'service.serviceState.agentInstancesAndOperators'));
@@ -34,7 +35,8 @@ const Deployed = ({
   useEffect(() => {
     let isMounted = true;
     (async () => {
-      if (serviceId) {
+      // fetch agent instances and operators if service state is moved to step 4
+      if (serviceId || currentStep === 3) {
         const tempData = await getAgentInstanceAndOperator(serviceId);
         if (isMounted) {
           dispatch(setAgentInstancesAndOperators(tempData));
@@ -45,7 +47,7 @@ const Deployed = ({
     return () => {
       isMounted = false;
     };
-  }, [serviceId]);
+  }, [serviceId, currentStep]);
 
   return (
     <div className="step-4-terminate">
@@ -71,6 +73,7 @@ Deployed.propTypes = {
   multisig: PropTypes.string.isRequired,
   terminateButton: PropTypes.element.isRequired,
   isShowAgentInstanceVisible: PropTypes.bool,
+  currentStep: PropTypes.number.isRequired,
 };
 
 Deployed.defaultProps = {
