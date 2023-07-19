@@ -5,6 +5,7 @@ import {
   Button, Typography, Input, notification, Form,
 } from 'antd/lib';
 import { DynamicFieldsForm } from 'common-util/DynamicFieldsForm';
+import { addressValidator } from 'common-util/functions';
 import {
   checkIfServiceIsWhitelisted,
   setOperatorsStatusesRequest,
@@ -19,9 +20,11 @@ export const OperatorWhitelist = ({ isWhiteListed, setOpWhitelist, id }) => {
   const [isCheckLoading, setIsCheckLoading] = useState(false);
 
   useEffect(() => {
-    if (id) {
-      setOpWhitelist();
-    }
+    const getData = async () => {
+      await setOpWhitelist(id);
+    };
+
+    if (id) getData();
   }, [id]);
 
   const onCheck = async (values) => {
@@ -33,9 +36,13 @@ export const OperatorWhitelist = ({ isWhiteListed, setOpWhitelist, id }) => {
       );
 
       const message = `Operator ${values.operatorAddress} is ${
-        isValid ? '' : 'not'
+        isValid ? '' : 'NOT'
       } whitelisted`;
-      notification.success({ message });
+      if (isValid) {
+        notification.success({ message });
+      } else {
+        notification.warn({ message });
+      }
     } catch (error) {
       console.error(error);
     } finally {
@@ -51,14 +58,17 @@ export const OperatorWhitelist = ({ isWhiteListed, setOpWhitelist, id }) => {
           <Form
             layout="inline"
             form={form}
-            name="dynamic_form_complex"
-            onFinish={onCheck}
+            name="operator_address_form"
             autoComplete="off"
+            onFinish={onCheck}
           >
             <Form.Item
               label="Operator Address"
               name="operatorAddress"
-              rules={[{ required: true, message: 'Please input the address' }]}
+              rules={[
+                { required: true, message: 'Please input the address' },
+                addressValidator,
+              ]}
             >
               <Input />
             </Form.Item>
@@ -79,7 +89,7 @@ export const OperatorWhitelist = ({ isWhiteListed, setOpWhitelist, id }) => {
   );
 };
 
-export const SetOperatorStatus = ({ id }) => {
+export const SetOperatorStatus = ({ id, setOpWhitelist }) => {
   const account = useSelector((state) => state?.setup?.account);
   const [isSubmitLoading, setIsSubmitLoading] = useState(false);
 
@@ -90,8 +100,9 @@ export const SetOperatorStatus = ({ id }) => {
         account,
         serviceId: id,
         operatorAddresses: values.operatorAddress,
-        operatorStatuses: values.status.map((e) => Boolean(e)),
+        operatorStatuses: values.status.map((e) => e === 'true'),
       });
+      await setOpWhitelist();
       notification.success({
         message: 'Operator status updated',
       });

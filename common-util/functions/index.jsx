@@ -68,3 +68,13 @@ export const getSupportedNetworks = () => Object.keys(ADDRESSES).map((e) => Numb
 export const isLocalNetwork = (chainId) => getChainId(chainId) === 31337;
 
 export const isValidAddress = (address) => ethers.utils.isAddress(address);
+
+export const addressValidator = () => ({
+  validator(_, value) {
+    return isValidAddress(value)
+      ? Promise.resolve()
+      : Promise.reject(
+        new Error('Please enter valid addresses.'),
+      );
+  },
+});

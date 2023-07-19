@@ -3,6 +3,7 @@ import {
   Button, Form, Input, Space, Radio,
 } from 'antd/lib';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import { addressValidator } from 'common-util/functions';
 
 export const FormList = ({ inputOneLabel, inputTwoLabel, buttonText }) => (
   <Form.List
@@ -34,6 +35,7 @@ export const FormList = ({ inputOneLabel, inputTwoLabel, buttonText }) => (
                   name={[field.name, 'operatorAddress']}
                   rules={[
                     { required: true, message: `Please add ${inputOneLabel}` },
+                    addressValidator,
                   ]}
                 >
                   <Input className="mr-32" placeholder="Address" />
