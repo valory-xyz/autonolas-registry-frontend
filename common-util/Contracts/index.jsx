@@ -17,8 +17,8 @@ import {
 import { isL1Network, getChainId } from 'common-util/functions';
 import {
   LOCAL_FORK_ID,
-  LOCAL_FORK_ID_POLYGON,
   LOCAL_FORK_ID_GNOSIS,
+  LOCAL_FORK_ID_POLYGON,
 } from 'util/constants';
 
 const MAINNET_ADDRESSES = {
@@ -92,8 +92,8 @@ export const ADDRESSES = {
     ERC20Token: '0x5f3f1dBD7B74C6B46e8c44f98792A1dAf8d69154',
   },
   [LOCAL_FORK_ID]: MAINNET_ADDRESSES,
-  [LOCAL_FORK_ID_POLYGON]: POLYGON_ADDRESSES,
   [LOCAL_FORK_ID_GNOSIS]: GNOSIS_ADDRESSES,
+  [LOCAL_FORK_ID_POLYGON]: POLYGON_ADDRESSES,
 };
 
 export const getMyProvider = () => window.MODAL_PROVIDER
