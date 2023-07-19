@@ -308,6 +308,7 @@ export const ServiceState = ({
           // If in pre-registration step, don't show the table
           isShowAgentInstanceVisible={currentStep !== 0}
           multisig={multisig}
+          currentStep={currentStep}
           terminateButton={getButton(
             <Button
               onClick={handleStep4Terminate}
