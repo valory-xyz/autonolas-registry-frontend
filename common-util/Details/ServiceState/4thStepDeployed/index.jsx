@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Table, Space } from 'antd/lib';
 import get from 'lodash/get';
-import { Address } from 'common-util/styles';
+import { AddressLink } from '@autonolas/frontend-library';
 import { setAgentInstancesAndOperators } from 'store/service/state/actions';
 import { getAgentInstanceAndOperator } from '../utils';
 
@@ -12,13 +12,13 @@ const columns = [
     title: 'Agent Instances',
     dataIndex: 'agentInstance',
     key: 'agentInstance',
-    render: (text) => <Address width={260}>{text}</Address>,
+    render: (text) => <AddressLink text={text} suffixCount={10} />,
   },
   {
     title: 'Operators',
     dataIndex: 'operatorAddress',
     key: 'operatorAddress',
-    render: (text) => <Address width={260}>{text}</Address>,
+    render: (text) => <AddressLink text={text} suffixCount={10} />,
   },
 ];
 
