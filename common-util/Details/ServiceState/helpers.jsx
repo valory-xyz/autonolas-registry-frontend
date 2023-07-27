@@ -7,5 +7,5 @@ export const SERVICE_STATE_HELPER_LABELS = {
   deployed:
     'The service is in default operational state. Agent operators can turn on their agent instances at this point.',
   terminated:
-    'The service has been terminated by the service owner. Waiting for the service owner to unbond all registered agents.',
+    'The service has been terminated by the service owner. Waiting for the operators to unbond all registered agents.',
 };
