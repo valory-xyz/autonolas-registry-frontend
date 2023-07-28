@@ -24,7 +24,7 @@ const NavigationBar = ({ children }) => {
   const path = router?.pathname || '';
 
   useEffect(() => {
-    if (chainId && isL1Network(chainId)) {
+    if (chainId && !isL1Network(chainId)) {
       // redirect to services page if user is on components or agents page
       // and chainId is gnosis
       if (path.includes('/components') || path.includes('/agents')) {
