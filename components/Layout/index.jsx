@@ -21,15 +21,13 @@ const NavigationBar = ({ children }) => {
   const isMobile = useCheckMobileScreen();
   const router = useRouter();
   const chainId = useSelector((state) => state?.setup?.chainId);
+  const path = router?.pathname || '';
 
   useEffect(() => {
     if (chainId && isGnosis(chainId)) {
       // redirect to services page if user is on components or agents page
       // and chainId is gnosis
-      if (
-        router.pathname?.includes('/components')
-        || router.pathname?.includes('/agents')
-      ) {
+      if (path.includes('/components') || path.includes('/agents')) {
         router.push('/services');
       }
     }
