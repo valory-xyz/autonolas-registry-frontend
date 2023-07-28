@@ -1,11 +1,11 @@
-import { Layout, Result } from 'antd/lib';
+import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
+import PropTypes from 'prop-types';
+import { Layout, Result } from 'antd/lib';
 import useCheckMobileScreen from 'common-util/hooks/useCheckMobileScreen';
-import { useEffect } from 'react';
-import { isGnosis } from '@autonolas/frontend-library';
+import { isL1Network } from 'common-util/functions';
 import Login from '../Login';
 import Footer from './Footer';
 import {
@@ -24,7 +24,7 @@ const NavigationBar = ({ children }) => {
   const path = router?.pathname || '';
 
   useEffect(() => {
-    if (chainId && isGnosis(chainId)) {
+    if (chainId && isL1Network(chainId)) {
       // redirect to services page if user is on components or agents page
       // and chainId is gnosis
       if (path.includes('/components') || path.includes('/agents')) {
