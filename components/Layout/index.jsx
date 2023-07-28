@@ -1,8 +1,11 @@
-import { Layout, Result } from 'antd/lib';
-import PropTypes from 'prop-types';
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
+import PropTypes from 'prop-types';
+import { Layout, Result } from 'antd/lib';
 import useCheckMobileScreen from 'common-util/hooks/useCheckMobileScreen';
+import { isL1Network } from 'common-util/functions';
 import Login from '../Login';
 import Footer from './Footer';
 import {
@@ -17,6 +20,18 @@ const { Header, Content } = Layout;
 const NavigationBar = ({ children }) => {
   const isMobile = useCheckMobileScreen();
   const router = useRouter();
+  const chainId = useSelector((state) => state?.setup?.chainId);
+  const path = router?.pathname || '';
+
+  useEffect(() => {
+    if (chainId && !isL1Network(chainId)) {
+      // redirect to services page if user is on components or agents page
+      // and chainId is gnosis
+      if (path.includes('/components') || path.includes('/agents')) {
+        router.push('/services');
+      }
+    }
+  }, [chainId]);
 
   const logo = (
     <Logo onClick={() => router.push('/')} data-testid="protocol-logo">
