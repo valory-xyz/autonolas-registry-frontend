@@ -34,6 +34,11 @@ export const notifyError = (message = 'Some error occured') => notification.erro
 // functions
 export const getChainId = (chainId = null) => {
   if (typeof window === 'undefined') return chainId;
+  console.log({
+    chainId,
+    mc: window?.MODAL_PROVIDER?.chainId,
+    ethereum: window?.ethereum?.chainId,
+  });
   return Number(
     chainId || window?.MODAL_PROVIDER?.chainId || window?.ethereum?.chainId,
   );
