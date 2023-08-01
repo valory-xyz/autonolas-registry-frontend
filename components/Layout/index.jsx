@@ -66,7 +66,9 @@ const NavigationBar = ({ children }) => {
       </Header>
 
       <Content className="site-layout">
-        <div className="site-layout-background">{children}</div>
+        <div className="site-layout-background">
+          {chainId && <>{children}</>}
+        </div>
       </Content>
 
       <Footer />

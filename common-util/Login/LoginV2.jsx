@@ -4,6 +4,8 @@ import Web3 from 'web3';
 import { Web3Modal, Web3Button, Web3NetworkSwitch } from '@web3modal/react';
 import { useAccount, useNetwork, useBalance } from 'wagmi';
 import { COLOR } from '@autonolas/frontend-library';
+import { useDispatch } from 'react-redux';
+import { setChainId } from 'store/setup/actions';
 import { projectId, ethereumClient } from './config';
 import { LoginContainer } from './styles';
 
@@ -12,6 +14,7 @@ export const LoginV2 = ({
   onDisconnect: onDisconnectCb,
   theme = 'light',
 }) => {
+  const dispatch = useDispatch();
   const { address } = useAccount();
   const { chain } = useNetwork();
   const { data } = useBalance({ address });
@@ -19,6 +22,11 @@ export const LoginV2 = ({
   const chainId = chain?.id;
 
   console.log('login-chainId', { address, chainId });
+
+  useEffect(() => {
+    console.log('chainId inside useEffect', { address, chainId });
+    dispatch(chainId === undefined ? setChainId(1) : setChainId(chainId));
+  }, [chainId]);
 
   const { connector } = useAccount({
     onConnect: ({ address: currentAddress }) => {
