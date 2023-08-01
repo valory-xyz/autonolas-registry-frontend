@@ -18,6 +18,8 @@ export const LoginV2 = ({
 
   const chainId = chain?.id;
 
+  console.log('login-chainId', { address, chainId });
+
   const { connector } = useAccount({
     onConnect: ({ address: currentAddress }) => {
       if (onConnectCb) {
