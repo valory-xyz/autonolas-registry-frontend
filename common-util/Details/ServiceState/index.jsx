@@ -149,7 +149,14 @@ export const ServiceState = ({
       .map((e) => e.trim());
 
     const ids = [];
-    const instances = dataSource.map(({ agentAddresses, agentId }) => {
+    console.log('dataSource', dataSource);
+
+    // filter out instances that are empty
+    const filteredDataSource = dataSource.filter(
+      ({ agentAddresses }) => !!agentAddresses,
+    );
+
+    const instances = filteredDataSource.map(({ agentAddresses, agentId }) => {
       /**
        * constructs agentIds:
        * If there are 2 addresses of instances, then the agentIds will be [1, 1]
@@ -164,7 +171,9 @@ export const ServiceState = ({
 
       return address;
     });
+
     const agentInstances = trimArray(instances || []);
+    console.log('agentInstances', agentInstances);
 
     try {
       // if not eth, check if the user has sufficient token balance
