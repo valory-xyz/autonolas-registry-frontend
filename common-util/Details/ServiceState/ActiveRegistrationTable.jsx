@@ -83,8 +83,6 @@ const EditableCell = ({
     (agentInstance) => !!agentInstance?.agentAddresses,
   );
 
-  console.log({ agentInstances, hasAtleastOneAgentInstanceAddress });
-
   if (editable) {
     childNode = slots > 0 ? (
       <Form.Item
@@ -97,7 +95,8 @@ const EditableCell = ({
           },
           () => ({
             validator(_, value) {
-              // if no value is present, and there is atleast one agent instance address,
+              // even if one agent instance address is present,
+              // resolve if the value is empty
               if (hasAtleastOneAgentInstanceAddress && !value) {
                 return Promise.resolve();
               }

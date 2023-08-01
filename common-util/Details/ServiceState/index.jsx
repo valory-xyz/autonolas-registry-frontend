@@ -149,7 +149,6 @@ export const ServiceState = ({
       .map((e) => e.trim());
 
     const ids = [];
-    console.log('dataSource', dataSource);
 
     // filter out instances that are empty
     const filteredDataSource = dataSource.filter(
@@ -171,9 +170,7 @@ export const ServiceState = ({
 
       return address;
     });
-
     const agentInstances = trimArray(instances || []);
-    console.log('agentInstances', agentInstances);
 
     try {
       // if not eth, check if the user has sufficient token balance
