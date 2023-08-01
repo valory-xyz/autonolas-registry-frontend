@@ -11,6 +11,7 @@ import {
   isMyTab,
 } from 'common-util/List/ListTable/helpers';
 import { getMyListOnPagination } from 'common-util/ContractUtils/myList';
+import { useNetwork } from 'wagmi';
 import {
   getServices,
   getFilteredServices,
@@ -31,6 +32,7 @@ const ListServices = () => {
   );
 
   const account = useSelector((state) => get(state, 'setup.account'));
+  const chainId = useNetwork()?.chain?.id;
 
   /**
    * extra tab content & view click
@@ -56,38 +58,37 @@ const ListServices = () => {
   }, [router.asPath]);
 
   // fetch total
-  useEffect(() => {
-    (async () => {
-      if (searchValue === '') {
-        console.log({
-          currentTab,
-          account,
-          searchValue,
-        });
-        try {
-          let totalTemp = null;
+  useEffect(async () => {
+    if (chainId && searchValue === '') {
+      console.log({
+        currentTab,
+        account,
+        searchValue,
+        chainId,
+      });
+      try {
+        let totalTemp = null;
 
-          // All services
-          if (currentTab === ALL_SERVICES) {
-            totalTemp = await getTotalForAllServices();
-          }
-
-          // My services
-          if (currentTab === MY_SERVICES) {
-            totalTemp = await getTotalForMyServices(account);
-          }
-
-          setTotal(Number(totalTemp));
-          if (Number(totalTemp) === 0) {
-            setIsLoading(false);
-          }
-        } catch (e) {
-          console.log('error in fetching total');
-          console.error(e);
+        // All services
+        if (currentTab === ALL_SERVICES) {
+          totalTemp = await getTotalForAllServices();
         }
+
+        // My services
+        if (currentTab === MY_SERVICES) {
+          totalTemp = await getTotalForMyServices(account);
+        }
+
+        setTotal(Number(totalTemp));
+        if (Number(totalTemp) === 0) {
+          setIsLoading(false);
+        }
+      } catch (e) {
+        console.log('error in fetching total');
+        console.error(e);
       }
-    })();
-  }, [account, currentTab, searchValue]);
+    }
+  }, [account, chainId, currentTab, searchValue]);
 
   useEffect(() => {
     (async () => {
