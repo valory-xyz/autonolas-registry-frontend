@@ -59,6 +59,11 @@ const ListServices = () => {
   useEffect(() => {
     (async () => {
       if (searchValue === '') {
+        console.log({
+          currentTab,
+          account,
+          searchValue,
+        });
         try {
           let totalTemp = null;
 
@@ -77,6 +82,7 @@ const ListServices = () => {
             setIsLoading(false);
           }
         } catch (e) {
+          console.log('error in fetching total');
           console.error(e);
         }
       }

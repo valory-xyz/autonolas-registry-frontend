@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-import { notification } from 'antd/lib';
 import { compact } from 'lodash';
 import { ethers } from 'ethers';
 import {
@@ -11,10 +10,8 @@ import {
   getServiceRegistryTokenUtilityContract,
 } from 'common-util/Contracts';
 import { sendTransaction } from 'common-util/functions/sendTransaction';
+import { notifyError, notifySuccess } from 'common-util/functions';
 import { DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS } from 'util/constants';
-
-const notifySuccess = (message = 'Terminated Successfully') => notification.success({ message });
-const notifyError = (message = 'Some error occured') => notification.error({ message });
 
 /* ----- helper functions ----- */
 

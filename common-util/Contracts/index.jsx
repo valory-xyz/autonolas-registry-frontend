@@ -148,12 +148,16 @@ export const getMechMinterContract = () => {
 export const getServiceContract = () => {
   const { web3, address, chainId } = getWeb3Details();
   const { serviceRegistry } = address;
+
   const contract = new web3.eth.Contract(
     isL1Network(chainId)
       ? SERVICE_REGISTRY_CONTRACT.abi
       : SERVICE_REGISTRY_L2.abi,
     serviceRegistry,
   );
+
+  console.log({ address, chainId, contract });
+
   return contract;
 };
 

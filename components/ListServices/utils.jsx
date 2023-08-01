@@ -7,6 +7,7 @@ import { getServiceContract } from 'common-util/Contracts';
 import { convertStringToArray } from 'common-util/List/ListCommon';
 import { filterByOwner } from 'common-util/ContractUtils/myList';
 import { getTokenDetailsRequest } from 'common-util/Details/ServiceState/utils';
+import { notifyError } from 'common-util/functions';
 
 // --------- HELPER METHODS ---------
 export const getServiceOwner = (id) => new Promise((resolve, reject) => {
@@ -62,9 +63,11 @@ export const getTotalForAllServices = () => new Promise((resolve, reject) => {
     .totalSupply()
     .call()
     .then((response) => {
+      console.log('total supply', response);
       resolve(response);
     })
     .catch((e) => {
+      notifyError('Error while fetching total supply');
       reject(e);
     });
 });
