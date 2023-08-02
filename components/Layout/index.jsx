@@ -55,6 +55,8 @@ const Layout = ({ children }) => {
     );
   }
 
+  console.log('chainId inside layout', { chainId });
+
   return (
     <CustomLayout>
       <Header>
@@ -68,7 +70,7 @@ const Layout = ({ children }) => {
       <Content className="site-layout">
         <div className="site-layout-background">
           {/* chainId has to be set in redux before rendering any components */}
-          {!!chainId && <>{children}</>}
+          {chainId ? children : null}
         </div>
       </Content>
 
