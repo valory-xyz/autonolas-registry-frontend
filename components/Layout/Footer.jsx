@@ -22,6 +22,7 @@ const ContractInfo = () => {
 
   const { pathname } = router;
 
+  // if chainId is not set, show empty container
   if (!chainId) return <ContractsInfoContainer />;
 
   const addresses = ADDRESSES[chainId];

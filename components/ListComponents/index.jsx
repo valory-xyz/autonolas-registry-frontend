@@ -68,7 +68,7 @@ const ListComponents = () => {
           }
 
           // My components
-          if (currentTab === MY_COMPONENTS) {
+          if (currentTab === MY_COMPONENTS && account) {
             totalTemp = await getTotalForMyComponents(account);
           }
 
@@ -102,7 +102,7 @@ const ListComponents = () => {
            * - search by `account` as searchValue
            * - API will be called only once & store the complete list
            */
-          if (currentTab === MY_COMPONENTS && list.length === 0) {
+          if (currentTab === MY_COMPONENTS && list.length === 0 && account) {
             const e = await getFilteredComponents(account);
             setList(e);
           }

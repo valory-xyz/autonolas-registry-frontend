@@ -25,6 +25,10 @@ export const LoginV2 = ({
   useEffect(() => {
     // if chainId is undefined, the wallet is not connected & default to mainnet
     if (chainId === undefined) {
+      /**
+       * wait for 100ms to get the chainId & set it to redux to avoid race condition
+       * and dependent components are loaded once the chainId is set
+       */
       setTimeout(() => {
         const tempChainId = getChainId();
         if (!tempChainId) {
