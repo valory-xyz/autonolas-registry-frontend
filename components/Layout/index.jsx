@@ -55,8 +55,6 @@ const Layout = ({ children }) => {
     );
   }
 
-  console.log('chainId inside layout', { chainId });
-
   return (
     <CustomLayout>
       <Header>

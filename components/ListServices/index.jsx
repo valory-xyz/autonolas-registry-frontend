@@ -57,28 +57,30 @@ const ListServices = () => {
 
   // fetch total
   useEffect(async () => {
-    if (searchValue === '') {
-      try {
-        let totalTemp = null;
+    (async () => {
+      if (searchValue === '') {
+        try {
+          let totalTemp = null;
 
-        // All services
-        if (currentTab === ALL_SERVICES) {
-          totalTemp = await getTotalForAllServices();
-        }
+          // All services
+          if (currentTab === ALL_SERVICES) {
+            totalTemp = await getTotalForAllServices();
+          }
 
-        // My services
-        if (currentTab === MY_SERVICES) {
-          totalTemp = await getTotalForMyServices(account);
-        }
+          // My services
+          if (currentTab === MY_SERVICES) {
+            totalTemp = await getTotalForMyServices(account);
+          }
 
-        setTotal(Number(totalTemp));
-        if (Number(totalTemp) === 0) {
-          setIsLoading(false);
+          setTotal(Number(totalTemp));
+          if (Number(totalTemp) === 0) {
+            setIsLoading(false);
+          }
+        } catch (e) {
+          console.error(e);
         }
-      } catch (e) {
-        console.error(e);
       }
-    }
+    })();
   }, [account, currentTab, searchValue]);
 
   useEffect(() => {
