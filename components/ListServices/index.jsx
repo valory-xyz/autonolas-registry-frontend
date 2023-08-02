@@ -68,7 +68,7 @@ const ListServices = () => {
           }
 
           // My services
-          if (currentTab === MY_SERVICES) {
+          if (currentTab === MY_SERVICES && account) {
             totalTemp = await getTotalForMyServices(account);
           }
 
@@ -101,7 +101,7 @@ const ListServices = () => {
            * - search by `account` as searchValue
            * - API will be called only once & store the complete list
            */
-          if (currentTab === MY_SERVICES && list.length === 0) {
+          if (currentTab === MY_SERVICES && list.length === 0 && account) {
             setList([]);
             const e = await getFilteredServices(account);
             setList(e);
