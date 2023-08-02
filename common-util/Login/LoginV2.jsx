@@ -28,12 +28,14 @@ export const LoginV2 = ({
     console.log('<Login /> chainId inside useEffect', { address, chainId });
     // if chainId is undefined, the wallet is not connected & default to mainnet
     if (chainId === undefined) {
-      const tempChainId = getChainId();
-      if (!tempChainId) {
-        console.warn('chainId is undefined setting it to mainnet (1)');
-      }
-      window.CHAIN_ID = tempChainId || 1;
-      dispatch(setChainId(tempChainId || 1));
+      setTimeout(() => {
+        const tempChainId = getChainId();
+        if (!tempChainId) {
+          console.warn('chainId is undefined setting it to mainnet (1)');
+        }
+        window.CHAIN_ID = tempChainId || 1;
+        dispatch(setChainId(tempChainId || 1));
+      }, 1000);
     } else {
       window.CHAIN_ID = chainId;
       dispatch(setChainId(chainId));
