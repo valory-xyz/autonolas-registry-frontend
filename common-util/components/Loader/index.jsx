@@ -13,11 +13,11 @@ const Container = styled.div`
   flex-direction: column;
 `;
 
-const TIMEOUT_IN_MINUTES = 10;
+const TIMEOUT_IN_MINUTES = 20;
 
 const DEFAULT_MESSAGE = 'Items couldn’t be loaded';
 
-const Loader = ({ isAccountRequired, message }) => {
+const Loader = ({ isAccountRequired, notConnectedMessage, timeoutMessage }) => {
   const [minutes, setMinutes] = useState(TIMEOUT_IN_MINUTES);
   const account = useSelector((state) => get(state, 'setup.account'));
 
@@ -35,7 +35,7 @@ const Loader = ({ isAccountRequired, message }) => {
   if (isAccountRequired && !account) {
     return (
       <Container>
-        <p>{message || DEFAULT_MESSAGE}</p>
+        <p>{notConnectedMessage || 'Please connect your wallet'}</p>
       </Container>
     );
   }
@@ -43,7 +43,7 @@ const Loader = ({ isAccountRequired, message }) => {
   if (minutes === 0) {
     return (
       <Container>
-        <p>{message || DEFAULT_MESSAGE}</p>
+        <p>{timeoutMessage || DEFAULT_MESSAGE}</p>
         <Button ghost type="primary" onClick={() => window.location.reload()}>
           Reload
         </Button>
@@ -56,12 +56,14 @@ const Loader = ({ isAccountRequired, message }) => {
 
 Loader.propTypes = {
   isAccountRequired: PropTypes.bool,
-  message: PropTypes.string,
+  notConnectedMessage: PropTypes.string,
+  timeoutMessage: PropTypes.string,
 };
 
 Loader.defaultProps = {
   isAccountRequired: false,
-  message: '',
+  notConnectedMessage: null,
+  timeoutMessage: null,
 };
 
 export default Loader;

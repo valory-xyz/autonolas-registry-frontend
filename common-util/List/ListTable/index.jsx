@@ -29,7 +29,7 @@ const ListTable = ({
     return (
       <Loader
         isAccountRequired={isAccountRequired}
-        message={
+        notConnectedMessage={
           isAccountRequired ? `To see your ${type}s, connect wallet` : ''
         }
       />
