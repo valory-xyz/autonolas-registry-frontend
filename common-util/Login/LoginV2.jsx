@@ -29,10 +29,10 @@ export const LoginV2 = ({
     if (chainId === undefined) {
       const tempChainId = getChainId();
       if (!tempChainId) {
-        throw new Error('chainId is undefined');
+        console.warn('chainId is undefined setting it to mainnet (1)');
       }
-      dispatch(setChainId(tempChainId));
-      window.CHAIN_ID = tempChainId;
+      dispatch(setChainId(tempChainId) || 1);
+      window.CHAIN_ID = tempChainId || 1;
     } else {
       dispatch(setChainId(chainId));
       window.CHAIN_ID = chainId;
