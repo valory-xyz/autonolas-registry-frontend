@@ -131,7 +131,8 @@ export const getTableColumns = (type, { onViewClick, onUpdateClick }) => {
         key: 'action',
         fixed: 'right',
         render: (_text, record) => {
-          const canUpdate = record.state === '3' || record.state === '4' || record.state === '5';
+          // only show update button for service state of 3, 4, 5
+          const canUpdate = ['3', '4', '5'].includes(record.state);
 
           return (
             <Space size="middle">
