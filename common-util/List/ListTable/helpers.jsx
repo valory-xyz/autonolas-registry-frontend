@@ -130,19 +130,23 @@ export const getTableColumns = (type, { onViewClick, onUpdateClick }) => {
         title: 'Action',
         key: 'action',
         fixed: 'right',
-        render: (_text, record) => (
-          <Space size="middle">
-            <Button type="link" onClick={() => onViewClick(record.id)}>
-              View
-            </Button>
+        render: (_text, record) => {
+          const canUpdate = record.state === '3' || record.state === '4' || record.state === '5';
 
-            {onUpdateClick && (
-              <Button type="link" onClick={() => onUpdateClick(record.id)}>
-                Update
+          return (
+            <Space size="middle">
+              <Button type="link" onClick={() => onViewClick(record.id)}>
+                View
               </Button>
-            )}
-          </Space>
-        ),
+
+              {canUpdate && onUpdateClick && (
+                <Button type="link" onClick={() => onUpdateClick(record.id)}>
+                  Update
+                </Button>
+              )}
+            </Space>
+          );
+        },
       },
     ];
   }
