@@ -68,7 +68,7 @@ const ListAgents = () => {
           }
 
           // My agents
-          if (currentTab === MY_AGENTS) {
+          if (currentTab === MY_AGENTS && account) {
             totalTemp = await getTotalForMyAgents(account);
           }
 
@@ -102,7 +102,7 @@ const ListAgents = () => {
            * - search by `account` as searchValue
            * - API will be called only once & store the complete list
            */
-          if (currentTab === MY_AGENTS && list.length === 0) {
+          if (currentTab === MY_AGENTS && list.length === 0 && account) {
             const e = await getFilteredAgents(account);
             setList(e);
           }

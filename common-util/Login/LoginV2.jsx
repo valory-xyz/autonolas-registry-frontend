@@ -4,6 +4,9 @@ import Web3 from 'web3';
 import { Web3Modal, Web3Button, Web3NetworkSwitch } from '@web3modal/react';
 import { useAccount, useNetwork, useBalance } from 'wagmi';
 import { COLOR } from '@autonolas/frontend-library';
+import { useDispatch } from 'react-redux';
+import { setChainId } from 'store/setup/actions';
+import { getChainId } from 'common-util/functions';
 import { projectId, ethereumClient } from './config';
 import { LoginContainer } from './styles';
 
@@ -12,11 +15,33 @@ export const LoginV2 = ({
   onDisconnect: onDisconnectCb,
   theme = 'light',
 }) => {
+  const dispatch = useDispatch();
   const { address } = useAccount();
   const { chain } = useNetwork();
   const { data } = useBalance({ address });
 
   const chainId = chain?.id;
+
+  useEffect(() => {
+    // if chainId is undefined, the wallet is not connected & default to mainnet
+    if (chainId === undefined) {
+      /**
+       * wait for 100ms to get the chainId & set it to redux to avoid race condition
+       * and dependent components are loaded once the chainId is set
+       */
+      setTimeout(() => {
+        const tempChainId = getChainId();
+        if (!tempChainId) {
+          window.console.warn('chainId is undefined setting it to mainnet (1)');
+        }
+        window.CHAIN_ID = tempChainId || 1;
+        dispatch(setChainId(tempChainId || 1));
+      }, 100);
+    } else {
+      window.CHAIN_ID = chainId;
+      dispatch(setChainId(chainId));
+    }
+  }, [chainId]);
 
   const { connector } = useAccount({
     onConnect: ({ address: currentAddress }) => {

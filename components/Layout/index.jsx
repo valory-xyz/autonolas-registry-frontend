@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
-import { Layout, Result } from 'antd/lib';
+import { Layout as AntdLayout, Result } from 'antd/lib';
 import useCheckMobileScreen from 'common-util/hooks/useCheckMobileScreen';
 import { isL1Network } from 'common-util/functions';
 import Login from '../Login';
@@ -15,9 +15,9 @@ import {
 const LogoSvg = dynamic(() => import('common-util/svg/logo'), { ssr: false });
 const NavigationMenu = dynamic(() => import('./Menu'), { ssr: false });
 
-const { Header, Content } = Layout;
+const { Header, Content } = AntdLayout;
 
-const NavigationBar = ({ children }) => {
+const Layout = ({ children }) => {
   const isMobile = useCheckMobileScreen();
   const router = useRouter();
   const chainId = useSelector((state) => state?.setup?.chainId);
@@ -66,7 +66,10 @@ const NavigationBar = ({ children }) => {
       </Header>
 
       <Content className="site-layout">
-        <div className="site-layout-background">{children}</div>
+        <div className="site-layout-background">
+          {/* chainId has to be set in redux before rendering any components */}
+          {chainId ? children : null}
+        </div>
       </Content>
 
       <Footer />
@@ -74,12 +77,12 @@ const NavigationBar = ({ children }) => {
   );
 };
 
-NavigationBar.propTypes = {
+Layout.propTypes = {
   children: PropTypes.element,
 };
 
-NavigationBar.defaultProps = {
+Layout.defaultProps = {
   children: null,
 };
 
-export default NavigationBar;
+export default Layout;

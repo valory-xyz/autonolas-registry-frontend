@@ -28,10 +28,17 @@ export const safeSendTransactionNotification = () => notification.warning({
   message: 'Please submit the transaction in your safe app.',
 });
 
+export const notifySuccess = (message = 'Successful') => notification.success({ message });
+export const notifyError = (message = 'Some error occured') => notification.error({ message });
+
+// functions
 export const getChainId = (chainId = null) => {
   if (typeof window === 'undefined') return chainId;
   return Number(
-    chainId || window?.MODAL_PROVIDER?.chainId || window?.ethereum?.chainId,
+    chainId
+      || window?.CHAIN_ID // this is set in LoginV2.jsx (once wallet is connected)
+      || window?.MODAL_PROVIDER?.chainId // set by web3modal
+      || window?.ethereum?.chainId, // set by metamask (useful when wallet is not connected)
   );
 };
 
@@ -73,8 +80,6 @@ export const addressValidator = () => ({
   validator(_, value) {
     return isValidAddress(value)
       ? Promise.resolve()
-      : Promise.reject(
-        new Error('Please enter valid addresses.'),
-      );
+      : Promise.reject(new Error('Please enter valid addresses.'));
   },
 });
