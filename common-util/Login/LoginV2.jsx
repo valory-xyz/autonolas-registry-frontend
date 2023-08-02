@@ -6,6 +6,7 @@ import { useAccount, useNetwork, useBalance } from 'wagmi';
 import { COLOR } from '@autonolas/frontend-library';
 import { useDispatch } from 'react-redux';
 import { setChainId } from 'store/setup/actions';
+import { getChainId } from 'common-util/functions';
 import { projectId, ethereumClient } from './config';
 import { LoginContainer } from './styles';
 
@@ -26,8 +27,12 @@ export const LoginV2 = ({
   useEffect(() => {
     console.log('chainId inside useEffect', { address, chainId });
     if (chainId === undefined) {
-      dispatch(setChainId(1));
-      window.CHAIN_ID = 1;
+      const tempChainId = getChainId();
+      if (!tempChainId) {
+        throw new Error('chainId is undefined');
+      }
+      dispatch(setChainId(tempChainId));
+      window.CHAIN_ID = tempChainId;
     } else {
       dispatch(setChainId(chainId));
       window.CHAIN_ID = chainId;
