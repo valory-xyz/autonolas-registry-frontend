@@ -25,8 +25,13 @@ export const LoginV2 = ({
 
   useEffect(() => {
     console.log('chainId inside useEffect', { address, chainId });
-    dispatch(chainId === undefined ? setChainId(1) : setChainId(chainId));
-    window.CHAIN_ID = chainId;
+    if (chainId === undefined) {
+      dispatch(setChainId(1));
+      window.CHAIN_ID = 1;
+    } else {
+      dispatch(setChainId(chainId));
+      window.CHAIN_ID = chainId;
+    }
   }, [chainId]);
 
   const { connector } = useAccount({
