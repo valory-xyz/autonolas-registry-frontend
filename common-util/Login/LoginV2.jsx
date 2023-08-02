@@ -35,7 +35,7 @@ export const LoginV2 = ({
         }
         window.CHAIN_ID = tempChainId || 1;
         dispatch(setChainId(tempChainId || 1));
-      }, 1000);
+      }, 100);
     } else {
       window.CHAIN_ID = chainId;
       dispatch(setChainId(chainId));
