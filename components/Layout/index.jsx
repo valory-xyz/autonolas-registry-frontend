@@ -55,6 +55,8 @@ const Layout = ({ children }) => {
     );
   }
 
+  console.log({ chainId });
+
   return (
     <CustomLayout>
       <Header>

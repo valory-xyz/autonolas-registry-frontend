@@ -147,6 +147,7 @@ export const getMechMinterContract = () => {
 
 export const getServiceContract = () => {
   const { web3, address, chainId } = getWeb3Details();
+  console.log({ address, chainId });
   const { serviceRegistry } = address;
   const contract = new web3.eth.Contract(
     isL1Network(chainId)
