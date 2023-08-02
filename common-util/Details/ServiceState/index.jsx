@@ -149,7 +149,13 @@ export const ServiceState = ({
       .map((e) => e.trim());
 
     const ids = [];
-    const instances = dataSource.map(({ agentAddresses, agentId }) => {
+
+    // filter out instances that are empty
+    const filteredDataSource = dataSource.filter(
+      ({ agentAddresses }) => !!agentAddresses,
+    );
+
+    const instances = filteredDataSource.map(({ agentAddresses, agentId }) => {
       /**
        * constructs agentIds:
        * If there are 2 addresses of instances, then the agentIds will be [1, 1]

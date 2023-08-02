@@ -46,6 +46,7 @@ const EditableCell = ({
   handleSave,
   isDisabled,
   setIsValidAgentAddress,
+  agentInstances,
   ...restProps
 }) => {
   const form = useContext(EditableContext);
@@ -76,6 +77,12 @@ const EditableCell = ({
   // if there are no slots, the input should be disabled
   const isInputDisabled = isDisabled || !slots;
 
+  // event if one of the agent instance addresses is present,
+  // it is okay to not have other agent instance addresses
+  const hasAtleastOneAgentInstanceAddress = agentInstances?.some(
+    (agentInstance) => !!agentInstance?.agentAddresses,
+  );
+
   if (editable) {
     childNode = slots > 0 ? (
       <Form.Item
@@ -83,11 +90,17 @@ const EditableCell = ({
         name={dataIndex}
         rules={[
           {
-            required: true,
+            required: !hasAtleastOneAgentInstanceAddress,
             message: `${title} is required.`,
           },
           () => ({
             validator(_, value) {
+              // even if one agent instance address is present,
+              // resolve if the value is empty
+              if (hasAtleastOneAgentInstanceAddress && !value) {
+                return Promise.resolve();
+              }
+
               // array of addresses. Eg. ['0x123', '0x456']
               const addressList = value?.split(',').map((v) => v.trim());
 
@@ -207,6 +220,7 @@ const ActiveRegistrationTable = ({
         isDisabled,
         handleSave,
         setIsValidAgentAddress,
+        agentInstances: data,
       }),
     };
   });
