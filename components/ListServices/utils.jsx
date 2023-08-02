@@ -63,7 +63,6 @@ export const getTotalForAllServices = () => new Promise((resolve, reject) => {
     .totalSupply()
     .call()
     .then((response) => {
-      console.log('total supply', response);
       resolve(response);
     })
     .catch((e) => {

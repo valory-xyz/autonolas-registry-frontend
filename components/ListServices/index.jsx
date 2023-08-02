@@ -11,7 +11,6 @@ import {
   isMyTab,
 } from 'common-util/List/ListTable/helpers';
 import { getMyListOnPagination } from 'common-util/ContractUtils/myList';
-import { useNetwork } from 'wagmi';
 import {
   getServices,
   getFilteredServices,
@@ -32,7 +31,6 @@ const ListServices = () => {
   );
 
   const account = useSelector((state) => get(state, 'setup.account'));
-  const chainId = useNetwork()?.chain?.id;
 
   /**
    * extra tab content & view click
@@ -59,13 +57,7 @@ const ListServices = () => {
 
   // fetch total
   useEffect(async () => {
-    if (chainId && searchValue === '') {
-      console.log({
-        currentTab,
-        account,
-        searchValue,
-        chainId,
-      });
+    if (searchValue === '') {
       try {
         let totalTemp = null;
 
@@ -84,11 +76,10 @@ const ListServices = () => {
           setIsLoading(false);
         }
       } catch (e) {
-        console.log('error in fetching total');
         console.error(e);
       }
     }
-  }, [account, chainId, currentTab, searchValue]);
+  }, [account, currentTab, searchValue]);
 
   useEffect(() => {
     (async () => {
