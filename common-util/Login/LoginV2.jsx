@@ -33,7 +33,7 @@ export const LoginV2 = ({
         console.warn('chainId is undefined setting it to mainnet (1)');
       }
       window.CHAIN_ID = tempChainId || 1;
-      dispatch(setChainId(tempChainId) || 1);
+      dispatch(setChainId(tempChainId || 1));
     } else {
       window.CHAIN_ID = chainId;
       dispatch(setChainId(chainId));
