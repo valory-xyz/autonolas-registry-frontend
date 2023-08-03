@@ -116,7 +116,7 @@ const Details = ({
   }, [tokenUri]);
 
   if (isLoading) {
-    return <Loader message="Details couldn’t be loaded" />;
+    return <Loader timeoutMessage="Details couldn’t be loaded" />;
   }
 
   const onUpdate = () => {
