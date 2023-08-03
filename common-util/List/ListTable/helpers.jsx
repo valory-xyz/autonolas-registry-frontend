@@ -131,8 +131,8 @@ export const getTableColumns = (type, { onViewClick, onUpdateClick }) => {
         key: 'action',
         fixed: 'right',
         render: (_text, record) => {
-          // only show update button for service state of 3, 4, 5
-          const canUpdate = ['3', '4', '5'].includes(record.state);
+          // only show update button for pre-registration state
+          const canUpdate = ['1'].includes(record.state);
 
           return (
             <Space size="middle">
