@@ -91,9 +91,9 @@ export const getBonds = (id, tableDataSource) => new Promise((resolve, reject) =
 export const onTerminate = (account, id) => new Promise((resolve, reject) => {
   const contract = getServiceManagerContract();
 
-  contract.methods
-    .terminate(id)
-    .send({ from: account })
+  const fn = contract.methods.terminate(id).send({ from: account });
+
+  sendTransaction(fn, account)
     .then((information) => {
       resolve(information);
       notifySuccess('Terminated Successfully');
