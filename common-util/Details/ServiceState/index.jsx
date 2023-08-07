@@ -18,6 +18,7 @@ import {
   checkIfEth,
   mintTokenRequest,
   checkAndApproveToken,
+  checkIfAgentInstancesAreValid,
 } from './utils';
 import StepActiveRegistration from './2StepActiveRegistration';
 import StepFinishedRegistration from './3rdStepFinishedRegistration';
@@ -183,14 +184,22 @@ export const ServiceState = ({
         });
       }
 
-      await onStep2RegisterAgents({
+      // check if the agent instances are valid
+      const isValid = await checkIfAgentInstancesAreValid({
         account,
-        serviceId: id,
-        agentIds: ids,
         agentInstances,
-        dataSource,
       });
-      await updateDetails();
+
+      if (isValid) {
+        await onStep2RegisterAgents({
+          account,
+          serviceId: id,
+          agentIds: ids,
+          agentInstances,
+          dataSource,
+        });
+        await updateDetails();
+      }
     } catch (e) {
       console.error(e);
     }
