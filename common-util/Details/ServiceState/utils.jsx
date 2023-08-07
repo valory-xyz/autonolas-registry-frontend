@@ -411,9 +411,8 @@ export const getAgentInstanceAndOperator = (id) => new Promise((resolve, reject)
 export const onStep5Unbond = (account, id) => new Promise((resolve, reject) => {
   const contract = getServiceManagerContract();
 
-  contract.methods
-    .unbond(id)
-    .send({ from: account })
+  const fn = contract.methods.unbond(id).send({ from: account });
+  sendTransaction(fn, account)
     .then((information) => {
       resolve(information);
       notifySuccess('Unbonded Successfully');

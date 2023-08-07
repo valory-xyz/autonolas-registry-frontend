@@ -14,7 +14,6 @@ import {
   onTerminate,
   onStep2RegisterAgents,
   onStep3Deploy,
-  onStep5Unbond,
   checkIfEth,
   mintTokenRequest,
   checkAndApproveToken,
@@ -28,9 +27,6 @@ import { SERVICE_STATE_HELPER_LABELS } from './helpers';
 import { InfoSubHeader } from '../styles';
 import { GenericLabel, ServiceStateContainer } from './styles';
 
-/**
- * ServiceState component
- */
 export const ServiceState = ({
   account,
   isOwner,
@@ -223,16 +219,6 @@ export const ServiceState = ({
     }
   };
 
-  /* ----- step 5 ----- */
-  const handleStep5Unbond = async () => {
-    try {
-      await onStep5Unbond(account, id);
-      await updateDetails();
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
   /**
    *
    * @param {number} step step to compare with current active service state
@@ -339,7 +325,8 @@ export const ServiceState = ({
       title: 'Terminated Bonded',
       component: (
         <Unbond
-          handleStep5Unbond={handleStep5Unbond}
+          id={id}
+          updateDetails={updateDetails}
           getOtherBtnProps={getOtherBtnProps}
           getButton={getButton}
         />
