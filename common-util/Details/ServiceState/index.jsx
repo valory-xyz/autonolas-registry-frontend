@@ -28,8 +28,6 @@ import { SERVICE_STATE_HELPER_LABELS } from './helpers';
 import { InfoSubHeader } from '../styles';
 import { GenericLabel, ServiceStateContainer } from './styles';
 
-const { Step } = Steps;
-
 /**
  * ServiceState component
  */
@@ -55,18 +53,27 @@ export const ServiceState = ({
   const securityDeposit = get(details, 'securityDeposit');
 
   useEffect(() => {
+    let isMounted = true;
     (async () => {
       if (id && (agentIds || []).length !== 0) {
         const temp = await getServiceTableDataSource(id, agentIds || []);
-        setDataSource(temp);
+        if (isMounted) {
+          setDataSource(temp);
+        }
       }
 
       // if valid service id, check if it's an eth token
       if (id && chainId && isL1OnlyNetwork(chainId)) {
         const isEth = await checkIfEth(id);
-        setIsEthToken(isEth);
+        if (isMounted) {
+          setIsEthToken(isEth);
+        }
       }
     })();
+
+    return () => {
+      isMounted = false;
+    };
   }, [id, agentIds, chainId]);
 
   useEffect(() => {
@@ -367,20 +374,20 @@ export const ServiceState = ({
         />
       )}
 
-      <Steps direction="vertical" current={currentStep}>
-        {steps.map(({ id: key, title, component }) => (
-          <Step
-            key={key}
-            title={(
-              <>
-                {title}
-                <GenericLabel>{SERVICE_STATE_HELPER_LABELS[key]}</GenericLabel>
-              </>
-            )}
-            description={component}
-          />
-        ))}
-      </Steps>
+      <Steps
+        direction="vertical"
+        current={currentStep}
+        items={steps.map(({ id: key, title, component }) => ({
+          key,
+          title: (
+            <>
+              {title}
+              <GenericLabel>{SERVICE_STATE_HELPER_LABELS[key]}</GenericLabel>
+            </>
+          ),
+          description: component,
+        }))}
+      />
     </ServiceStateContainer>
   );
 };
