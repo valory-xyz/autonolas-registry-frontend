@@ -18,8 +18,6 @@ import {
   getTotalForMyComponents,
 } from './utils';
 
-const { TabPane } = Tabs;
-
 const ALL_COMPONENTS = 'all-components';
 const MY_COMPONENTS = 'my-components';
 
@@ -178,23 +176,33 @@ const ListComponents = () => {
               : URL.COMPONENTS,
           );
         }}
-      >
-        <TabPane tab="All" key={ALL_COMPONENTS}>
-          <ListTable {...tableCommonProps} list={list} />
-        </TabPane>
-
-        <TabPane tab="My Components" key={MY_COMPONENTS}>
-          <ListTable
-            {...tableCommonProps}
-            list={
-              searchValue
-                ? list
-                : getMyListOnPagination({ total, nextPage: currentPage, list })
-            }
-            isAccountRequired
-          />
-        </TabPane>
-      </Tabs>
+        items={[
+          {
+            key: ALL_COMPONENTS,
+            label: 'All',
+            children: <ListTable {...tableCommonProps} list={list} />,
+          },
+          {
+            label: 'My Components',
+            key: MY_COMPONENTS,
+            children: (
+              <ListTable
+                {...tableCommonProps}
+                list={
+                  searchValue
+                    ? list
+                    : getMyListOnPagination({
+                      total,
+                      nextPage: currentPage,
+                      list,
+                    })
+                }
+                isAccountRequired
+              />
+            ),
+          },
+        ]}
+      />
     </>
   );
 };
