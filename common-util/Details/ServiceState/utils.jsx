@@ -310,6 +310,41 @@ export const getServiceTableDataSource = async (id, agentIds) => new Promise((re
     });
 });
 
+export const checkIfAgentInstancesAreValid = async ({
+  account,
+  agentInstances,
+}) => {
+  const contract = getServiceContract();
+
+  // check if the operator is registered as an agent instance already
+  const operator = await contract.methods
+    .mapAgentInstanceOperators(account)
+    .call();
+  if (operator !== DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS) {
+    notifyError('The operator is registered as an agent instance already.');
+    return false;
+  }
+
+  // check if the agent instances are valid
+  const ifValidPromiseArray = agentInstances.map(async (agentInstance) => {
+    const isValid = await contract.methods
+      .mapAgentInstanceOperators(agentInstance)
+      .call();
+    return isValid;
+  });
+
+  const ifValidArray = (await Promise.all(ifValidPromiseArray)).some(
+    (isValid) => isValid === DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS,
+  );
+
+  if (!ifValidArray) {
+    notifyError('The agent instance address is already registered.');
+    return false;
+  }
+
+  return true;
+};
+
 export const onStep2RegisterAgents = ({
   account,
   serviceId,

@@ -95,8 +95,6 @@ export const ServiceState = ({
     }
   };
 
-  /* ----- step 4 ----- */
-
   /**
    *
    * @param {number} step step to compare with current active service state
