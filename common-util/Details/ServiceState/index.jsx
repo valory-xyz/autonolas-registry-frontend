@@ -96,14 +96,6 @@ export const ServiceState = ({
   };
 
   /* ----- step 4 ----- */
-  const handleStep4Terminate = async () => {
-    try {
-      await onTerminate(account, id);
-      await updateDetails();
-    } catch (e) {
-      console.error(e);
-    }
-  };
 
   /**
    *
@@ -123,6 +115,7 @@ export const ServiceState = ({
     updateDetails,
     isOwner,
     getButton,
+    getOtherBtnProps,
   };
 
   const steps = [
@@ -133,7 +126,6 @@ export const ServiceState = ({
         <StepPreRegistration
           isEthToken={isEthToken}
           securityDeposit={securityDeposit}
-          getOtherBtnProps={getOtherBtnProps}
           {...commonProps}
         />
       ),
@@ -145,7 +137,6 @@ export const ServiceState = ({
         <StepActiveRegistration
           dataSource={dataSource}
           setDataSource={setDataSource}
-          getOtherBtnProps={getOtherBtnProps}
           handleTerminate={handleTerminate}
           isEthToken={isEthToken}
           {...commonProps}
@@ -165,7 +156,6 @@ export const ServiceState = ({
           canShowMultisigSameAddress={
             get(details, 'multisig') !== `0x${'0'.repeat(40)}`
           }
-          getOtherBtnProps={getOtherBtnProps}
           {...commonProps}
         />
       ),
@@ -175,20 +165,11 @@ export const ServiceState = ({
       title: 'Deployed',
       component: (
         <Deployed
-          serviceId={id}
           // If in pre-registration step, don't show the table
           isShowAgentInstanceVisible={currentStep !== 0}
           multisig={multisig}
           currentStep={currentStep}
-          terminateButton={getButton(
-            <Button
-              onClick={handleStep4Terminate}
-              {...getOtherBtnProps(4, { isDisabled: !isOwner })}
-            >
-              Terminate
-            </Button>,
-            { step: 4 },
-          )}
+          {...commonProps}
         />
       ),
     },
