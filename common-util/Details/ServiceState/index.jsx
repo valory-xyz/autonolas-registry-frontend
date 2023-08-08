@@ -1,23 +1,20 @@
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { useRouter } from 'next/router';
 import {
-  Button, Space, Steps, Tooltip, Image,
+  Button, Steps, Tooltip, Image,
 } from 'antd/lib';
 import get from 'lodash/get';
-import { URL } from 'util/constants';
-import { isL1OnlyNetwork, isLocalNetwork } from 'common-util/functions';
+import { isL1OnlyNetwork } from 'common-util/functions';
 import {
-  onActivateRegistration,
   getServiceTableDataSource,
   onTerminate,
   onStep2RegisterAgents,
   onStep3Deploy,
   checkIfEth,
-  mintTokenRequest,
   checkAndApproveToken,
 } from './utils';
+import StepPreRegistration from './1StepPreRegistration';
 import StepActiveRegistration from './2StepActiveRegistration';
 import StepFinishedRegistration from './3rdStepFinishedRegistration';
 
@@ -34,7 +31,6 @@ export const ServiceState = ({
   details,
   updateDetails,
 }) => {
-  const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   const [dataSource, setDataSource] = useState([]);
   const [isEthToken, setIsEthToken] = useState(true); // by default, assume it's an eth token
@@ -107,42 +103,6 @@ export const ServiceState = ({
   };
 
   /* ----- step 1 ----- */
-  const handleStep1Registration = async () => {
-    try {
-      // if not eth, check if the user has sufficient token balance
-      // and if not, approve the token
-      if (!isEthToken) {
-        await checkAndApproveToken({
-          account,
-          chainId,
-          serviceId: id,
-        });
-      }
-
-      // NOTE: just for testing, mint tokens for local network
-      if (isLocalNetwork(chainId)) {
-        // mint tokens before activating registration
-        await mintTokenRequest({
-          account,
-          serviceId: id,
-        });
-      }
-
-      // any amount if not ETH token substitute with 1
-      await onActivateRegistration(
-        account,
-        id,
-        isEthToken ? securityDeposit : '1',
-      );
-      await updateDetails();
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const handleStep1Update = () => {
-    router.push(`${URL.UPDATE_SERVICE}/${id}`);
-  };
 
   /* ----- step 2 ----- */
   const handleStep2RegisterAgents = async () => {
@@ -237,26 +197,15 @@ export const ServiceState = ({
       id: 'pre-registration',
       title: 'Pre-Registration',
       component: (
-        <Space>
-          {getButton(
-            <Button
-              onClick={handleStep1Registration}
-              {...getOtherBtnProps(1, { isDisabled: !isOwner })}
-            >
-              Activate Registration
-            </Button>,
-            { step: 1 },
-          )}
-          {getButton(
-            <Button
-              onClick={handleStep1Update}
-              {...getOtherBtnProps(1, { isDisabled: !isOwner })}
-            >
-              Update
-            </Button>,
-            { step: 1 },
-          )}
-        </Space>
+        <StepPreRegistration
+          serviceId={id}
+          isOwner={isOwner}
+          isEthToken={isEthToken}
+          securityDeposit={securityDeposit}
+          updateDetails={updateDetails}
+          getOtherBtnProps={getOtherBtnProps}
+          getButton={getButton}
+        />
       ),
     },
     {
