@@ -162,9 +162,14 @@ const ActiveRegistration = ({
       {getButton(
         <Button
           onClick={async () => {
-            setIsTerminating(true);
-            await handleTerminate();
-            setIsTerminating(false);
+            try {
+              setIsTerminating(true);
+              await handleTerminate();
+            } catch (error) {
+              console.error(error);
+            } finally {
+              setIsTerminating(false);
+            }
           }}
           loading={isTerminating}
           {...getOtherBtnProps(2, { isDisabled: !isOwner })}

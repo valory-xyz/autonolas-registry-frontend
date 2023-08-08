@@ -14,11 +14,11 @@ import {
 
 const PreRegistration = ({
   serviceId,
-  getOtherBtnProps,
-  getButton,
   isOwner,
   securityDeposit,
   isEthToken,
+  getOtherBtnProps,
+  getButton,
   updateDetails,
 }) => {
   const router = useRouter();
@@ -42,10 +42,7 @@ const PreRegistration = ({
       // NOTE: just for testing, mint tokens for local network
       if (isLocalNetwork(chainId)) {
         // mint tokens before activating registration
-        await mintTokenRequest({
-          account,
-          serviceId,
-        });
+        await mintTokenRequest({ account, serviceId });
       }
 
       // any amount if not ETH token substitute with 1

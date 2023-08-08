@@ -49,7 +49,7 @@ export const ADDRESSES = {
     agentRegistry: '0xEB5638eefE289691EcE01943f768EDBF96258a80',
     componentRegistry: '0x7Fd1F4b764fA41d19fe3f63C85d12bf64d2bbf68',
     registriesManager: '0x10c5525F77F13b28f42c5626240c001c2D57CAd4',
-    serviceManager: '0xcDdD9D9ABaB36fFa882530D69c73FeE5D4001C2d',
+    serviceManager: '0x1d333b46dB6e8FFd271b6C2D2B254868BD9A2dbd',
     serviceRegistry: '0x1cEe30D08943EB58EFF84DD1AB44a6ee6FEff63a',
     serviceRegistryTokenUtility: '0x6d9b08701Af43D68D991c074A27E4d90Af7f2276',
     operatorWhitelist: '0x0338893fB1A1D9Df03F72CC53D8f786487d3D03E',
