@@ -6,16 +6,16 @@ import get from 'lodash/get';
 import { onStep5Unbond } from '../utils';
 
 const Unbond = ({
-  id, updateDetails, getButton, getOtherBtnProps,
+  serviceId, updateDetails, getButton, getOtherBtnProps,
 }) => {
-  const account = useSelector((state) => get(state, 'setup.account'));
+  const account = useSelector((state) => state?.setup?.account);
   const operators = useSelector((state) => get(state, 'service.serviceState.agentInstancesAndOperators'));
   const [isUnbonding, setIsUnbonding] = useState(false);
 
   const onUnbond = async () => {
     try {
       setIsUnbonding(true);
-      await onStep5Unbond(account, id);
+      await onStep5Unbond(account, serviceId);
       await updateDetails();
     } catch (e) {
       console.error(e);
@@ -46,7 +46,7 @@ const Unbond = ({
 };
 
 Unbond.propTypes = {
-  id: PropTypes.string.isRequired,
+  serviceId: PropTypes.string.isRequired,
   updateDetails: PropTypes.func.isRequired,
   getButton: PropTypes.func.isRequired,
   getOtherBtnProps: PropTypes.func.isRequired,

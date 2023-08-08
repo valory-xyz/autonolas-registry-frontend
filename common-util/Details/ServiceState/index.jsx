@@ -176,14 +176,7 @@ export const ServiceState = ({
     {
       id: 'terminated',
       title: 'Terminated Bonded',
-      component: (
-        <Unbond
-          id={id}
-          updateDetails={updateDetails}
-          getOtherBtnProps={getOtherBtnProps}
-          getButton={getButton}
-        />
-      ),
+      component: <Unbond {...commonProps} />,
     },
   ];
 
