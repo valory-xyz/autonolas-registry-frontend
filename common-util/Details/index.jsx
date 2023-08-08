@@ -189,12 +189,14 @@ const Details = ({
         </Col>
       </Row>
 
-      <IpfsHashGenerationModal
-        visible={isModalVisible}
-        type={type}
-        onUpdateHash={onUpdateHash}
-        handleCancel={onCancel}
-      />
+      {isModalVisible && (
+        <IpfsHashGenerationModal
+          visible={isModalVisible}
+          type={type}
+          onUpdateHash={onUpdateHash}
+          handleCancel={onCancel}
+        />
+      )}
     </>
   );
 };

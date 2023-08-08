@@ -177,12 +177,12 @@ const ListAgents = () => {
         items={[
           {
             key: ALL_AGENTS,
-            tab: 'All',
+            label: 'All',
             children: <ListTable {...tableCommonProps} list={list} />,
           },
           {
             key: MY_AGENTS,
-            tab: 'My Agents',
+            label: 'My Agents',
             children: (
               <ListTable
                 {...tableCommonProps}
