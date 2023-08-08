@@ -321,9 +321,11 @@ export const onStep2RegisterAgents = ({
 
   getBonds(serviceId, dataSource)
     .then(({ totalBonds }) => {
-      contract.methods
+      const fn = contract.methods
         .registerAgents(serviceId, agentInstances, agentIds)
-        .send({ from: account, value: `${totalBonds}` })
+        .send({ from: account, value: `${totalBonds}` });
+
+      sendTransaction(fn, account)
         .then((information) => {
           resolve(information);
           notifySuccess('Registered Successfully');

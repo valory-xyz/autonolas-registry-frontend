@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import React, { useContext, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 import {
   Form, Input, Table, Button,
 } from 'antd/lib';
@@ -46,7 +47,7 @@ const EditableCell = ({
   handleSave,
   isDisabled,
   setIsValidAgentAddress,
-  agentInstances,
+  hasAtleastOneAgentInstanceAddress,
   ...restProps
 }) => {
   const form = useContext(EditableContext);
@@ -60,28 +61,21 @@ const EditableCell = ({
     }
   }, [record]);
 
-  const onSave = async () => {
-    try {
-      const values = await form.validateFields();
-      handleSave({ ...record, ...values });
-      setIsValidAgentAddress(true);
-    } catch (info) {
-      setIsValidAgentAddress(false);
-      window.console.log('Save failed:', info);
-    }
-  };
-
   let childNode = children;
   const slots = get(record, 'availableSlots') || 0;
 
   // if there are no slots, the input should be disabled
   const isInputDisabled = isDisabled || !slots;
 
-  // event if one of the agent instance addresses is present,
-  // it is okay to not have other agent instance addresses
-  const hasAtleastOneAgentInstanceAddress = agentInstances?.some(
-    (agentInstance) => !!agentInstance?.agentAddresses,
-  );
+  const onSave = async () => {
+    try {
+      const values = await form.validateFields();
+      handleSave({ ...record, ...values });
+    } catch (info) {
+      setIsValidAgentAddress(false);
+      window.console.log('Save failed:', info);
+    }
+  };
 
   if (editable) {
     childNode = slots > 0 ? (
@@ -210,6 +204,16 @@ const ActiveRegistrationTable = ({
       return c;
     }
 
+    // event if one of the agent instance addresses is present,
+    // it is okay to NOT have other agent instance addresses
+    const hasAtleastOneAgentInstanceAddress = data?.some(
+      (agentInstance) => !!agentInstance?.agentAddresses,
+    );
+
+    useEffect(() => {
+      setIsValidAgentAddress(hasAtleastOneAgentInstanceAddress);
+    }, [hasAtleastOneAgentInstanceAddress]);
+
     return {
       ...c,
       onCell: (record) => ({
@@ -220,7 +224,7 @@ const ActiveRegistrationTable = ({
         isDisabled,
         handleSave,
         setIsValidAgentAddress,
-        agentInstances: data,
+        hasAtleastOneAgentInstanceAddress,
       }),
     };
   });
@@ -238,5 +242,13 @@ const ActiveRegistrationTable = ({
     </TableContainer>
   );
 };
+
+ActiveRegistrationTable.propTypes = {
+  data: PropTypes.arrayOf(
+    PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+  ).isRequired,
+};
+
+ActiveRegistrationTable.defaultProps = {};
 
 export default ActiveRegistrationTable;

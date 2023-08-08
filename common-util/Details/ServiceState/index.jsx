@@ -9,10 +9,8 @@ import { isL1OnlyNetwork } from 'common-util/functions';
 import {
   getServiceTableDataSource,
   onTerminate,
-  onStep2RegisterAgents,
   onStep3Deploy,
   checkIfEth,
-  checkAndApproveToken,
 } from './utils';
 import StepPreRegistration from './1StepPreRegistration';
 import StepActiveRegistration from './2StepActiveRegistration';
@@ -102,63 +100,6 @@ export const ServiceState = ({
     }
   };
 
-  /* ----- step 1 ----- */
-
-  /* ----- step 2 ----- */
-  const handleStep2RegisterAgents = async () => {
-    const trimArray = (string) => (string || [])
-      .join()
-      .split(',')
-      .map((e) => e.trim());
-
-    const ids = [];
-
-    // filter out instances that are empty
-    const filteredDataSource = dataSource.filter(
-      ({ agentAddresses }) => !!agentAddresses,
-    );
-
-    const instances = filteredDataSource.map(({ agentAddresses, agentId }) => {
-      /**
-       * constructs agentIds:
-       * If there are 2 addresses of instances, then the agentIds will be [1, 1]
-       * example: agentAddresses = ['0x123', '0x456']
-       * agentId = 1
-       * ids = [1, 1]
-       */
-      const address = (agentAddresses || '').trim();
-      for (let i = 0; i < trimArray([address]).length; i += 1) {
-        ids.push(agentId);
-      }
-
-      return address;
-    });
-    const agentInstances = trimArray(instances || []);
-
-    try {
-      // if not eth, check if the user has sufficient token balance
-      // and if not, approve the token
-      if (!isEthToken) {
-        await checkAndApproveToken({
-          account,
-          chainId,
-          serviceId: id,
-        });
-      }
-
-      await onStep2RegisterAgents({
-        account,
-        serviceId: id,
-        agentIds: ids,
-        agentInstances,
-        dataSource,
-      });
-      await updateDetails();
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
   /* ----- step 3 ----- */
   const handleStep3Deploy = async (radioValue, payload) => {
     try {
@@ -192,19 +133,23 @@ export const ServiceState = ({
     };
   };
 
+  const commonProps = {
+    serviceId: id,
+    updateDetails,
+  };
+
   const steps = [
     {
       id: 'pre-registration',
       title: 'Pre-Registration',
       component: (
         <StepPreRegistration
-          serviceId={id}
           isOwner={isOwner}
           isEthToken={isEthToken}
           securityDeposit={securityDeposit}
-          updateDetails={updateDetails}
           getOtherBtnProps={getOtherBtnProps}
           getButton={getButton}
+          {...commonProps}
         />
       ),
     },
@@ -213,15 +158,14 @@ export const ServiceState = ({
       title: 'Active Registration',
       component: (
         <StepActiveRegistration
-          serviceId={id}
           dataSource={dataSource}
           setDataSource={setDataSource}
-          handleStep2RegisterAgents={handleStep2RegisterAgents}
           getOtherBtnProps={getOtherBtnProps}
           getButton={getButton}
           isOwner={isOwner}
           handleTerminate={handleTerminate}
           isEthToken={isEthToken}
+          {...commonProps}
         />
       ),
     },
