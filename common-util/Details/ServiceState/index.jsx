@@ -6,12 +6,7 @@ import {
 } from 'antd/lib';
 import get from 'lodash/get';
 import { isL1OnlyNetwork } from 'common-util/functions';
-import {
-  getServiceTableDataSource,
-  onTerminate,
-  onStep3Deploy,
-  checkIfEth,
-} from './utils';
+import { getServiceTableDataSource, onTerminate, checkIfEth } from './utils';
 import StepPreRegistration from './1StepPreRegistration';
 import StepActiveRegistration from './2StepActiveRegistration';
 import StepFinishedRegistration from './3rdStepFinishedRegistration';
@@ -100,16 +95,6 @@ export const ServiceState = ({
     }
   };
 
-  /* ----- step 3 ----- */
-  const handleStep3Deploy = async (radioValue, payload) => {
-    try {
-      await onStep3Deploy(account, id, radioValue, payload);
-      await updateDetails();
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
   /* ----- step 4 ----- */
   const handleStep4Terminate = async () => {
     try {
@@ -136,6 +121,8 @@ export const ServiceState = ({
   const commonProps = {
     serviceId: id,
     updateDetails,
+    isOwner,
+    getButton,
   };
 
   const steps = [
@@ -144,11 +131,9 @@ export const ServiceState = ({
       title: 'Pre-Registration',
       component: (
         <StepPreRegistration
-          isOwner={isOwner}
           isEthToken={isEthToken}
           securityDeposit={securityDeposit}
           getOtherBtnProps={getOtherBtnProps}
-          getButton={getButton}
           {...commonProps}
         />
       ),
@@ -161,8 +146,6 @@ export const ServiceState = ({
           dataSource={dataSource}
           setDataSource={setDataSource}
           getOtherBtnProps={getOtherBtnProps}
-          getButton={getButton}
-          isOwner={isOwner}
           handleTerminate={handleTerminate}
           isEthToken={isEthToken}
           {...commonProps}
@@ -174,20 +157,16 @@ export const ServiceState = ({
       title: 'Finished Registration',
       component: (
         <StepFinishedRegistration
-          serviceId={id}
           multisig={multisig}
           threshold={threshold}
           owner={owner}
-          handleStep3Deploy={handleStep3Deploy}
           handleTerminate={handleTerminate}
           // show multisig (2nd radio button option) if the service multisig !== 0
           canShowMultisigSameAddress={
             get(details, 'multisig') !== `0x${'0'.repeat(40)}`
           }
           getOtherBtnProps={getOtherBtnProps}
-          account={account}
-          getButton={getButton}
-          isOwner={isOwner}
+          {...commonProps}
         />
       ),
     },

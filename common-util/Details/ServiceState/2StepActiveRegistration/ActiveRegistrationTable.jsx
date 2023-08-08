@@ -71,6 +71,9 @@ const EditableCell = ({
     try {
       const values = await form.validateFields();
       handleSave({ ...record, ...values });
+      if (hasAtleastOneAgentInstanceAddress) {
+        setIsValidAgentAddress(true);
+      }
     } catch (info) {
       setIsValidAgentAddress(false);
       window.console.log('Save failed:', info);
@@ -148,8 +151,18 @@ const ActiveRegistrationTable = ({
   setIsValidAgentAddress,
 }) => {
   const chainId = useSelector((state) => state?.setup?.chainId);
-
   const router = useRouter();
+
+  // event if one of the agent instance addresses is present,
+  // it is okay to NOT have other agent instance addresses
+  const hasAtleastOneAgentInstanceAddress = data?.some(
+    (agentInstance) => !!agentInstance?.agentAddresses,
+  );
+
+  useEffect(() => {
+    setIsValidAgentAddress(hasAtleastOneAgentInstanceAddress);
+  }, [hasAtleastOneAgentInstanceAddress]);
+
   const STEP_2_TABLE_COLUMNS = [
     {
       title: 'Agent ID',
@@ -203,16 +216,6 @@ const ActiveRegistrationTable = ({
     if (!c.editable) {
       return c;
     }
-
-    // event if one of the agent instance addresses is present,
-    // it is okay to NOT have other agent instance addresses
-    const hasAtleastOneAgentInstanceAddress = data?.some(
-      (agentInstance) => !!agentInstance?.agentAddresses,
-    );
-
-    useEffect(() => {
-      setIsValidAgentAddress(hasAtleastOneAgentInstanceAddress);
-    }, [hasAtleastOneAgentInstanceAddress]);
 
     return {
       ...c,

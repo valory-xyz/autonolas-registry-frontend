@@ -10,7 +10,7 @@ import {
   checkAndApproveToken,
   onStep2RegisterAgents,
 } from '../utils';
-import ActiveRegistrationTable from '../ActiveRegistrationTable';
+import ActiveRegistrationTable from './ActiveRegistrationTable';
 
 const { Text } = Typography;
 
@@ -183,7 +183,6 @@ ActiveRegistration.propTypes = {
     PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   ).isRequired,
   setDataSource: PropTypes.func.isRequired,
-  handleStep2RegisterAgents: PropTypes.func.isRequired,
   getOtherBtnProps: PropTypes.func.isRequired,
   handleTerminate: PropTypes.func.isRequired,
   getButton: PropTypes.func.isRequired,
