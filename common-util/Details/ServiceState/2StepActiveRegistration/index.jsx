@@ -9,6 +9,7 @@ import {
   getNumberOfAgentAddress,
   checkAndApproveToken,
   onStep2RegisterAgents,
+  checkIfAgentInstancesAreValid,
 } from '../utils';
 import ActiveRegistrationTable from './ActiveRegistrationTable';
 
@@ -107,14 +108,22 @@ const ActiveRegistration = ({
         });
       }
 
-      await onStep2RegisterAgents({
+      // check if the agent instances are valid
+      const isValid = await checkIfAgentInstancesAreValid({
         account,
-        serviceId,
-        agentIds: ids,
         agentInstances,
-        dataSource,
       });
-      await updateDetails();
+
+      if (isValid) {
+        await onStep2RegisterAgents({
+          account,
+          serviceId,
+          agentIds: ids,
+          agentInstances,
+          dataSource,
+        });
+        await updateDetails();
+      }
     } catch (e) {
       console.error(e);
     } finally {
