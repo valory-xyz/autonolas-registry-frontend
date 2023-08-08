@@ -4,24 +4,25 @@ import PropTypes from 'prop-types';
 import { connect, useSelector } from 'react-redux';
 import { Typography, notification } from 'antd/lib';
 import get from 'lodash/get';
+import {
+  DEFAULT_SERVICE_CREATION_ETH_TOKEN,
+  DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS,
+} from 'util/constants';
 import Loader from 'common-util/components/Loader';
 import { convertStringToArray, AlertError } from 'common-util/List/ListCommon';
 import {
   getServiceManagerContract,
   getServiceManagerL2Contract,
 } from 'common-util/Contracts';
-import { FormContainer } from 'components/styles';
-import {
-  DEFAULT_SERVICE_CREATION_ETH_TOKEN,
-  DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS,
-} from 'util/constants';
 import { isL1Network, isL1OnlyNetwork } from 'common-util/functions';
+import { sendTransaction } from 'common-util/functions/sendTransaction';
 import RegisterForm from './RegisterForm';
 import {
   getAgentParams,
   getServiceDetails,
   getTokenAddressRequest,
 } from './utils';
+import { FormContainer } from '../styles';
 
 const { Title } = Typography;
 
@@ -84,9 +85,8 @@ const Service = ({ account }) => {
         ? [token, ...commonParams]
         : [...commonParams];
 
-      contract.methods
-        .update(...params)
-        .send({ from: account })
+      const fn = contract.methods.update(...params).send({ from: account });
+      sendTransaction(fn, account)
         .then(() => {
           notification.success({ message: 'Service Updated' });
         })

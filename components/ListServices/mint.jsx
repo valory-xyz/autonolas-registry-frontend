@@ -4,6 +4,10 @@ import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import { Typography, notification } from 'antd/lib';
 import {
+  DEFAULT_SERVICE_CREATION_ETH_TOKEN,
+  DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS,
+} from 'util/constants';
+import {
   convertStringToArray,
   AlertSuccess,
   AlertError,
@@ -12,14 +16,11 @@ import {
   getServiceManagerContract,
   getServiceManagerL2Contract,
 } from 'common-util/Contracts';
-import { FormContainer } from 'components/styles';
-import {
-  DEFAULT_SERVICE_CREATION_ETH_TOKEN,
-  DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS,
-} from 'util/constants';
+import { sendTransaction } from 'common-util/functions/sendTransaction';
 import { isL1Network } from 'common-util/functions';
 import RegisterForm from './RegisterForm';
 import { getAgentParams } from './utils';
+import { FormContainer } from '../styles';
 
 const { Title } = Typography;
 
@@ -58,9 +59,8 @@ const MintService = ({ account }) => {
         ]
         : [values.owner_address, ...commonParams];
 
-      contract.methods
-        .create(...params)
-        .send({ from: account })
+      const fn = contract.methods.create(...params).send({ from: account });
+      sendTransaction(fn, account)
         .then((result) => {
           setInformation(result);
           notification.success({ message: 'Service minted' });

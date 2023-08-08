@@ -368,10 +368,11 @@ export const getServiceAgentInstances = (id) => new Promise((resolve, reject) =>
 
 export const onStep3Deploy = (account, id, radioValue, payload = '0x') => new Promise((resolve, reject) => {
   const contract = getServiceManagerContract();
-
-  contract.methods
+  const fn = contract.methods
     .deploy(id, radioValue, payload)
-    .send({ from: account })
+    .send({ from: account });
+
+  sendTransaction(fn, account)
     .then((information) => {
       resolve(information);
       notifySuccess('Deployed Successfully');
