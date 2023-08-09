@@ -95,6 +95,7 @@ export const handleMultisigSubmit = async ({
 
   // signer
   const provider = new ethers.providers.Web3Provider(getMyProvider(), 'any');
+
   const code = await provider.getCode(account);
 
   try {
