@@ -18,6 +18,7 @@ import {
 } from 'common-util/Contracts';
 import { sendTransaction } from 'common-util/functions/sendTransaction';
 import { isL1Network } from 'common-util/functions';
+import { checkIfERC721Receive } from 'common-util/functions/requests';
 import RegisterForm from './RegisterForm';
 import { getAgentParams } from './utils';
 import { FormContainer } from '../styles';
@@ -32,11 +33,25 @@ const MintService = ({ account }) => {
   const [error, setError] = useState(null);
   const [information, setInformation] = useState(null);
 
-  const handleSubmit = (values) => {
+  const handleSubmit = async (values) => {
     if (account) {
       setIsMinting(true);
       setError(null);
       setInformation(null);
+
+      try {
+        const isValid = await checkIfERC721Receive(
+          account,
+          values.owner_address,
+        );
+        if (!isValid) {
+          setIsMinting(false);
+          return;
+        }
+      } catch (e) {
+        setIsMinting(false);
+        console.error(e);
+      }
 
       const contract = isL1Network(chainId)
         ? getServiceManagerContract()
