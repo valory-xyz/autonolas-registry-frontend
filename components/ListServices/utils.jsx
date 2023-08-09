@@ -1,9 +1,15 @@
+import { ethers } from 'ethers';
 import {
   DEFAULT_SERVICE_CREATION_ETH_TOKEN,
   TOTAL_VIEW_COUNT,
   DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS,
 } from 'util/constants';
-import { getServiceContract } from 'common-util/Contracts';
+import {
+  getServiceContract,
+  getServiceOwnerMultisigContract,
+  getMyProvider,
+  getWeb3Details,
+} from 'common-util/Contracts';
 import { convertStringToArray } from 'common-util/List/ListCommon';
 import { filterByOwner } from 'common-util/ContractUtils/myList';
 import { getTokenDetailsRequest } from 'common-util/Details/ServiceState/utils';
@@ -186,3 +192,35 @@ export const getTokenAddressRequest = (id) => new Promise((resolve, reject) => {
       reject(e);
     });
 });
+
+const FALLBACK_HANDLER_STORAGE_SLOT = '0x6c9a6c4a39284e37ed1cf53d337577d14212a4870fb976a4366c693b939918d5';
+//
+export const checkERC721Receive = async (account) => {
+  const provider = new ethers.providers.Web3Provider(getMyProvider(), 'any');
+  const code = await provider.getCode(account);
+
+  // gnosis safe (if multisig)
+  if (code !== '0x') {
+    try {
+      const contract = getServiceOwnerMultisigContract(account);
+      const threshold = await contract.methods.getThreshold().call();
+      const owners = await contract.methods.getOwners().call();
+
+      if (Number(threshold) > 0 && owners.length > 0) {
+        const { web3 } = getWeb3Details();
+        const contents = await web3.eth.getStorageAt(
+          account,
+          FALLBACK_HANDLER_STORAGE_SLOT,
+        );
+
+        if (!contents || contents.slice(26) === DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS.slice(2)) {
+          return 'Unable to mint to [ownerAddress] due to the absense of a fallback handler.';
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  return null;
+};
