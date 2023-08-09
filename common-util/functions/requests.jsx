@@ -5,7 +5,7 @@ import {
   getMyProvider,
   getWeb3Details,
 } from 'common-util/Contracts';
-import { notifyError } from '.';
+import { checkIfGnosisSafe, notifyError } from './index';
 
 const FALLBACK_HANDLER_STORAGE_SLOT = '0x6c9a6c4a39284e37ed1cf53d337577d14212a4870fb976a4366c693b939918d5';
 
@@ -16,10 +16,9 @@ const FALLBACK_HANDLER_STORAGE_SLOT = '0x6c9a6c4a39284e37ed1cf53d337577d14212a48
  */
 export const checkIfERC721Receive = async (account, ownerAddress) => {
   const provider = new ethers.providers.Web3Provider(getMyProvider(), 'any');
-  const code = await provider.getCode(account);
+  const isSafe = await checkIfGnosisSafe(account, provider);
 
-  // check for gnosis safe (if multisig)
-  if (code !== '0x') {
+  if (isSafe) {
     try {
       const contract = getServiceOwnerMultisigContract(account);
       const threshold = await contract.methods.getThreshold().call();
