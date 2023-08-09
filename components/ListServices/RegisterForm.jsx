@@ -5,7 +5,9 @@ import useDeepCompareEffect from 'use-deep-compare-effect';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import get from 'lodash/get';
-import { Button, Form, Input } from 'antd/lib';
+import {
+  Button, Form, Input, Tooltip,
+} from 'antd/lib';
 
 import { DEFAULT_SERVICE_CREATION_ETH_TOKEN } from 'util/constants';
 import { WhiteButton } from 'common-util/components/Button';
@@ -15,6 +17,7 @@ import IpfsHashGenerationModal from 'common-util/List/IpfsHashGenerationModal';
 import { ComplexLabel } from 'common-util/List/styles';
 import { isL1Network } from 'common-util/functions';
 import { RegisterFooter } from 'components/styles';
+import { checkERC721Receive } from './utils';
 
 export const FORM_NAME = 'serviceRegisterForm';
 
@@ -30,13 +33,16 @@ const RegisterForm = ({
   const account = useSelector((state) => state?.setup?.account);
   const chainId = useSelector((state) => state?.setup?.chainId);
 
+  // show tooltip if user has not enabled ERC721 receive
+  const [erc721ReceiveMessage, setErc721ReceiveMessage] = useState(null);
+
   const [form] = Form.useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [fields, setFields] = useState([]);
   const router = useRouter();
   const id = get(router, 'query.id') || null;
 
-  useEffect(() => {
+  useEffect(async () => {
     if (account && ethTokenAddress && isL1Network(chainId)) {
       setFields([
         {
@@ -44,6 +50,11 @@ const RegisterForm = ({
           value: ethTokenAddress,
         },
       ]);
+    }
+
+    if (account) {
+      const value = await checkERC721Receive(account);
+      setErc721ReceiveMessage(value);
     }
   }, [account, ethTokenAddress]);
 
@@ -116,6 +127,12 @@ const RegisterForm = ({
   };
 
   const hashValue = form.getFieldValue('hash');
+
+  const submitButton = (
+    <Button type="primary" htmlType="submit" loading={isLoading}>
+      Submit
+    </Button>
+  );
 
   return (
     <>
@@ -331,9 +348,11 @@ const RegisterForm = ({
 
         {account ? (
           <Form.Item>
-            <Button type="primary" htmlType="submit" loading={isLoading}>
-              Submit
-            </Button>
+            {erc721ReceiveMessage ? (
+              <Tooltip title={erc721ReceiveMessage}>{submitButton}</Tooltip>
+            ) : (
+              submitButton
+            )}
           </Form.Item>
         ) : (
           <RegisterFooter>
