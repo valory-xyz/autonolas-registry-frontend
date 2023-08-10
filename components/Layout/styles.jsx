@@ -69,7 +69,3 @@ export const ContractsInfoContainer = styled.div`
     margin-right: 8px;
   }
 `;
-
-export const SupportOnlyDesktop = styled.div`
-  margin: 4rem 0;
-`;
