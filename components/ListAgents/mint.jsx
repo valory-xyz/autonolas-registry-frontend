@@ -6,7 +6,8 @@ import RegisterForm from 'common-util/List/RegisterForm';
 import { AlertSuccess, AlertError } from 'common-util/List/ListCommon';
 import { getMechMinterContract } from 'common-util/Contracts';
 import { sendTransaction } from 'common-util/functions/sendTransaction';
-import { FormContainer } from 'components/styles';
+import { checkIfERC721Receive } from 'common-util/functions/requests';
+import { FormContainer } from '../styles';
 
 const { Title } = Typography;
 
@@ -24,6 +25,20 @@ const MintAgent = () => {
       setIsMinting(true);
       setError(null);
       setInformation(null);
+
+      try {
+        const isValid = await checkIfERC721Receive(
+          account,
+          values.owner_address,
+        );
+        if (!isValid) {
+          setIsMinting(false);
+          return;
+        }
+      } catch (e) {
+        setIsMinting(false);
+        console.error(e);
+      }
 
       const contract = getMechMinterContract(account);
 
