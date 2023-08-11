@@ -3,14 +3,17 @@ import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
-import { Layout as AntdLayout, Result } from 'antd/lib';
+import { Layout as AntdLayout, Result, Typography } from 'antd/lib';
 import useCheckMobileScreen from 'common-util/hooks/useCheckMobileScreen';
 import { isL1Network } from 'common-util/functions';
+import { getNetworkName } from '@autonolas/frontend-library';
 import Login from '../Login';
 import Footer from './Footer';
 import {
   CustomLayout, Logo, RightMenu, SupportOnlyDesktop,
 } from './styles';
+
+const { Text } = Typography;
 
 const LogoSvg = dynamic(() => import('common-util/svg/logo'), { ssr: false });
 const NavigationMenu = dynamic(() => import('./Menu'), { ssr: false });
@@ -20,6 +23,7 @@ const { Header, Content } = AntdLayout;
 const Layout = ({ children }) => {
   const isMobile = useCheckMobileScreen();
   const router = useRouter();
+  const account = useSelector((state) => state?.setup?.account);
   const chainId = useSelector((state) => state?.setup?.chainId);
   const path = router?.pathname || '';
 
@@ -61,6 +65,13 @@ const Layout = ({ children }) => {
         {logo}
         <NavigationMenu />
         <RightMenu>
+          {account ? null : (
+            <div className="mr-16">
+              <Text type="warning">
+                {`Results from ${getNetworkName(chainId)}`}
+              </Text>
+            </div>
+          )}
           <Login />
         </RightMenu>
       </Header>
