@@ -1,3 +1,4 @@
+import { MEDIA_QUERY } from '@autonolas/frontend-library';
 import { createGlobalStyle } from 'styled-components';
 import { COLOR, OTHERS } from 'util/theme';
 
@@ -77,16 +78,6 @@ const GlobalStyle = createGlobalStyle`
 
   .ant-layout-footer {
     text-align: center;
-  }
-
-  /* layout */
-  .site-layout {
-    padding: 0 50px;
-    margin-top: 64px;
-  }
-  .site-layout-background {
-    padding: 24px 0;
-    min-height: calc(100vh - 140px);
   }
 
   /* tabs */
@@ -176,6 +167,12 @@ const GlobalStyle = createGlobalStyle`
   /* ant image */
   .ant-image-preview-wrap {
     background: ${COLOR.GREY_2}
+  }
+
+  ${MEDIA_QUERY.mobileM} {
+    .ant-layout-header {
+      padding: 0;
+    }
   }
 `;
 

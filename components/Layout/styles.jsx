@@ -1,8 +1,16 @@
 import styled from 'styled-components';
 import { Layout } from 'antd/lib';
-import { COLOR } from '@autonolas/frontend-library';
+import { COLOR, MEDIA_QUERY } from '@autonolas/frontend-library';
 
 export const CustomLayout = styled(Layout)`
+  .site-layout {
+    padding: 0 50px;
+    margin-top: 64px;
+  }
+  .site-layout-background {
+    padding: 24px 0;
+    min-height: calc(100vh - 140px);
+  }
   .registry-tabs {
     .ant-tabs-extra-content {
       &:not(:last-child) {
@@ -33,6 +41,10 @@ export const Logo = styled.div`
   margin-right: 3.5rem;
   span {
     margin-left: 0.5rem;
+  }
+
+  ${MEDIA_QUERY.mobileL} {
+    margin-right: 0.5rem;
   }
 `;
 
