@@ -91,9 +91,9 @@ export const getBonds = (id, tableDataSource) => new Promise((resolve, reject) =
 export const onTerminate = (account, id) => new Promise((resolve, reject) => {
   const contract = getServiceManagerContract();
 
-  contract.methods
-    .terminate(id)
-    .send({ from: account })
+  const fn = contract.methods.terminate(id).send({ from: account });
+
+  sendTransaction(fn, account)
     .then((information) => {
       resolve(information);
       notifySuccess('Terminated Successfully');
@@ -356,9 +356,11 @@ export const onStep2RegisterAgents = ({
 
   getBonds(serviceId, dataSource)
     .then(({ totalBonds }) => {
-      contract.methods
+      const fn = contract.methods
         .registerAgents(serviceId, agentInstances, agentIds)
-        .send({ from: account, value: `${totalBonds}` })
+        .send({ from: account, value: `${totalBonds}` });
+
+      sendTransaction(fn, account)
         .then((information) => {
           resolve(information);
           notifySuccess('Registered Successfully');
@@ -401,10 +403,11 @@ export const getServiceAgentInstances = (id) => new Promise((resolve, reject) =>
 
 export const onStep3Deploy = (account, id, radioValue, payload = '0x') => new Promise((resolve, reject) => {
   const contract = getServiceManagerContract();
-
-  contract.methods
+  const fn = contract.methods
     .deploy(id, radioValue, payload)
-    .send({ from: account })
+    .send({ from: account });
+
+  sendTransaction(fn, account)
     .then((information) => {
       resolve(information);
       notifySuccess('Deployed Successfully');
@@ -446,9 +449,8 @@ export const getAgentInstanceAndOperator = (id) => new Promise((resolve, reject)
 export const onStep5Unbond = (account, id) => new Promise((resolve, reject) => {
   const contract = getServiceManagerContract();
 
-  contract.methods
-    .unbond(id)
-    .send({ from: account })
+  const fn = contract.methods.unbond(id).send({ from: account });
+  sendTransaction(fn, account)
     .then((information) => {
       resolve(information);
       notifySuccess('Unbonded Successfully');
