@@ -1,7 +1,5 @@
-import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import get from 'lodash/get';
 import { Footer as CommonFooter } from '@autonolas/frontend-library';
 import { ADDRESSES } from 'common-util/Contracts';
 import {
@@ -10,6 +8,7 @@ import {
   isPolygon,
   isPolygonMumbai,
 } from 'common-util/functions';
+import { useHelpers } from 'common-util/hooks';
 import Socials from './Socials';
 import { ContractsInfoContainer } from './styles';
 
@@ -17,7 +16,7 @@ import { ContractsInfoContainer } from './styles';
 const PATHS_NOT_TO_SHOW = ['/', '/disclaimer'];
 
 const ContractInfo = () => {
-  const chainId = useSelector((state) => get(state, 'setup.chainId'));
+  const { isValidChainId, chainId } = useHelpers();
   const router = useRouter();
 
   const { pathname } = router;
@@ -27,7 +26,7 @@ const ContractInfo = () => {
 
   const addresses = ADDRESSES[chainId];
   const getCurrentPageAddresses = () => {
-    if ((pathname || '').includes('components')) {
+    if (addresses && (pathname || '').includes('components')) {
       return {
         registryText: 'ComponentRegistry',
         managerText: 'RegistriesManager',
@@ -36,7 +35,7 @@ const ContractInfo = () => {
       };
     }
 
-    if ((pathname || '').includes('agents')) {
+    if (addresses && (pathname || '').includes('agents')) {
       return {
         registryText: 'AgentRegistry',
         managerText: 'RegistriesManager',
@@ -45,7 +44,7 @@ const ContractInfo = () => {
       };
     }
 
-    if ((pathname || '').includes('services')) {
+    if (addresses && (pathname || '').includes('services')) {
       return {
         registryText: 'ServiceRegistry',
         managerText: 'ServiceManager',
@@ -96,7 +95,7 @@ const ContractInfo = () => {
 
   return (
     <ContractsInfoContainer>
-      {!PATHS_NOT_TO_SHOW.includes(pathname) && (
+      {!PATHS_NOT_TO_SHOW.includes(pathname) && isValidChainId && (
         <>
           <img
             alt="Etherscan link"

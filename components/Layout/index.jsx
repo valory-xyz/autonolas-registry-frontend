@@ -24,7 +24,6 @@ const { Header, Content } = AntdLayout;
 const Layout = ({ children }) => {
   const isMobile = useCheckMobileScreen();
   const router = useRouter();
-  const account = useSelector((state) => state?.setup?.account);
   const chainId = useSelector((state) => state?.setup?.chainId);
   const path = router?.pathname || '';
 
@@ -44,7 +43,7 @@ const Layout = ({ children }) => {
     <Logo onClick={() => router.push('/')} data-testid="protocol-logo">
       <LogoSvg />
       <span>
-        {account || isValidChainId ? (
+        {isValidChainId ? (
           <Text>{`Registry on ${getNetworkName(chainId)}`}</Text>
         ) : (
           'Registry'
