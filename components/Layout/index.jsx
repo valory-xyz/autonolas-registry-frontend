@@ -1,13 +1,12 @@
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
 import { Layout as AntdLayout, Result, Typography } from 'antd/lib';
+import { getNetworkName } from '@autonolas/frontend-library';
 import useCheckMobileScreen from 'common-util/hooks/useCheckMobileScreen';
 import { isL1Network } from 'common-util/functions';
-import { getNetworkName } from '@autonolas/frontend-library';
-import { SUPPORTED_CHAINS } from 'common-util/Login';
+import { useHelpers } from 'common-util/hooks';
 import Login from '../Login';
 import Footer from './Footer';
 import {
@@ -24,7 +23,7 @@ const { Header, Content } = AntdLayout;
 const Layout = ({ children }) => {
   const isMobile = useCheckMobileScreen();
   const router = useRouter();
-  const chainId = useSelector((state) => state?.setup?.chainId);
+  const { chainId, isValidChainId } = useHelpers();
   const path = router?.pathname || '';
 
   useEffect(() => {
@@ -37,8 +36,6 @@ const Layout = ({ children }) => {
     }
   }, [chainId]);
 
-  // show registry logo if account is present or chainId is not supported
-  const isValidChainId = SUPPORTED_CHAINS.some((e) => e.id === chainId);
   const logo = (
     <Logo onClick={() => router.push('/')} data-testid="protocol-logo">
       <LogoSvg />
