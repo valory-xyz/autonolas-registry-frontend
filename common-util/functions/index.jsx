@@ -45,8 +45,8 @@ export const getChainId = (chainId = null) => {
 export const isL1OnlyNetwork = (chainId) => {
   const chain = getChainId(chainId);
   return (
-    chain === 5
-    || chain === 1
+    chain === 1
+    || chain === 5
     || chain === STAGING_CHAIN_ID
     || chain === LOCAL_FORK_ID
   );

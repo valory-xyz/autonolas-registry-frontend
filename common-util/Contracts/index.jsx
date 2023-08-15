@@ -73,23 +73,12 @@ export const ADDRESSES = {
     agentRegistry: '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512',
     componentRegistry: '0x5FbDB2315678afecb367f032d93F642f64180aa3',
     registriesManager: '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0',
-
-    // TODO: figure out after deployment.
-    // serviceManager: '0x70e0bA845a1A0F2DA3359C97E0285013525FFC49',
-
-    // This will remain the same, uncomment once deployed
-    // serviceRegistry: '0x998abeb3E57409262aE5b751f60747921B33613E',
-
-    // This will remain the same, uncomment once deployed
-    serviceManager: '0x1291Be112d480055DaFd8a610b7d1e203891C274',
-
-    // TODO: figure out after deployment
-    serviceRegistry: '0x36C02dA8a0983159322a80FFE9F24b1acfF8B570',
-    serviceRegistryTokenUtility: '0x809d550fca64d94Bd9F66E60752A544199cfAC3D',
-    operatorWhitelist: '0x4c5859f0F772848b2D91F1D83E2Fe57935348029',
-
+    serviceRegistry: '0x998abeb3E57409262aE5b751f60747921B33613E',
+    serviceManager: '0x4c5859f0F772848b2D91F1D83E2Fe57935348029',
+    serviceRegistryTokenUtility: '0x36C02dA8a0983159322a80FFE9F24b1acfF8B570',
+    operatorWhitelist: '0x809d550fca64d94Bd9F66E60752A544199cfAC3D',
     // used for testing - service creation/update token address
-    ERC20Token: '0x5f3f1dBD7B74C6B46e8c44f98792A1dAf8d69154',
+    ERC20Token: '0x1291Be112d480055DaFd8a610b7d1e203891C274',
   },
   [LOCAL_FORK_ID]: MAINNET_ADDRESSES,
   [LOCAL_FORK_ID_GNOSIS]: GNOSIS_ADDRESSES,
