@@ -44,12 +44,12 @@ const Layout = ({ children }) => {
     <Logo onClick={() => router.push('/')} data-testid="protocol-logo">
       <LogoSvg />
       <span>
-        {account || !isValidChainId ? (
-          'Registry'
-        ) : (
+        {account || isValidChainId ? (
           <div className="mr-16">
             <Text>{`Registry on ${getNetworkName(chainId)}`}</Text>
           </div>
+        ) : (
+          'Registry'
         )}
       </span>
     </Logo>

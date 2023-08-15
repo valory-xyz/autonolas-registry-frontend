@@ -23,7 +23,6 @@ export const CustomLayout = styled(Layout)`
 `;
 
 export const Logo = styled.div`
-  width: 110px;
   font-weight: bold;
   cursor: pointer;
   display: flex;
