@@ -36,7 +36,7 @@ const RegisterForm = ({
   const router = useRouter();
   const id = get(router, 'query.id') || null;
 
-  useEffect(() => {
+  useEffect(async () => {
     if (account && ethTokenAddress && isL1Network(chainId)) {
       setFields([
         {

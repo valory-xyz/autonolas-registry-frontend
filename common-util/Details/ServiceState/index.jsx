@@ -1,25 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { useRouter } from 'next/router';
 import {
-  Button, Space, Steps, Tooltip, Image,
+  Button, Steps, Tooltip, Image,
 } from 'antd/lib';
 import get from 'lodash/get';
-import { URL } from 'util/constants';
-import { isL1OnlyNetwork, isLocalNetwork } from 'common-util/functions';
-import {
-  onActivateRegistration,
-  getServiceTableDataSource,
-  onTerminate,
-  onStep2RegisterAgents,
-  onStep3Deploy,
-  onStep5Unbond,
-  checkIfEth,
-  mintTokenRequest,
-  checkAndApproveToken,
-  checkIfAgentInstancesAreValid,
-} from './utils';
+import { isL1OnlyNetwork } from 'common-util/functions';
+import { getServiceTableDataSource, onTerminate, checkIfEth } from './utils';
+import StepPreRegistration from './1StepPreRegistration';
 import StepActiveRegistration from './2StepActiveRegistration';
 import StepFinishedRegistration from './3rdStepFinishedRegistration';
 
@@ -29,11 +17,6 @@ import { SERVICE_STATE_HELPER_LABELS } from './helpers';
 import { InfoSubHeader } from '../styles';
 import { GenericLabel, ServiceStateContainer } from './styles';
 
-const { Step } = Steps;
-
-/**
- * ServiceState component
- */
 export const ServiceState = ({
   account,
   isOwner,
@@ -41,7 +24,6 @@ export const ServiceState = ({
   details,
   updateDetails,
 }) => {
-  const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   const [dataSource, setDataSource] = useState([]);
   const [isEthToken, setIsEthToken] = useState(true); // by default, assume it's an eth token
@@ -56,18 +38,27 @@ export const ServiceState = ({
   const securityDeposit = get(details, 'securityDeposit');
 
   useEffect(() => {
+    let isMounted = true;
     (async () => {
       if (id && (agentIds || []).length !== 0) {
         const temp = await getServiceTableDataSource(id, agentIds || []);
-        setDataSource(temp);
+        if (isMounted) {
+          setDataSource(temp);
+        }
       }
 
       // if valid service id, check if it's an eth token
       if (id && chainId && isL1OnlyNetwork(chainId)) {
         const isEth = await checkIfEth(id);
-        setIsEthToken(isEth);
+        if (isMounted) {
+          setIsEthToken(isEth);
+        }
       }
     })();
+
+    return () => {
+      isMounted = false;
+    };
   }, [id, agentIds, chainId]);
 
   useEffect(() => {
@@ -104,137 +95,6 @@ export const ServiceState = ({
     }
   };
 
-  /* ----- step 1 ----- */
-  const handleStep1Registration = async () => {
-    try {
-      // if not eth, check if the user has sufficient token balance
-      // and if not, approve the token
-      if (!isEthToken) {
-        await checkAndApproveToken({
-          account,
-          chainId,
-          serviceId: id,
-        });
-      }
-
-      // NOTE: just for testing, mint tokens for local network
-      if (isLocalNetwork(chainId)) {
-        // mint tokens before activating registration
-        await mintTokenRequest({
-          account,
-          serviceId: id,
-        });
-      }
-
-      // any amount if not ETH token substitute with 1
-      await onActivateRegistration(
-        account,
-        id,
-        isEthToken ? securityDeposit : '1',
-      );
-      await updateDetails();
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const handleStep1Update = () => {
-    router.push(`${URL.UPDATE_SERVICE}/${id}`);
-  };
-
-  /* ----- step 2 ----- */
-  const handleStep2RegisterAgents = async () => {
-    const trimArray = (string) => (string || [])
-      .join()
-      .split(',')
-      .map((e) => e.trim());
-
-    const ids = [];
-
-    // filter out instances that are empty
-    const filteredDataSource = dataSource.filter(
-      ({ agentAddresses }) => !!agentAddresses,
-    );
-
-    const instances = filteredDataSource.map(({ agentAddresses, agentId }) => {
-      /**
-       * constructs agentIds:
-       * If there are 2 addresses of instances, then the agentIds will be [1, 1]
-       * example: agentAddresses = ['0x123', '0x456']
-       * agentId = 1
-       * ids = [1, 1]
-       */
-      const address = (agentAddresses || '').trim();
-      for (let i = 0; i < trimArray([address]).length; i += 1) {
-        ids.push(agentId);
-      }
-
-      return address;
-    });
-    const agentInstances = trimArray(instances || []);
-
-    try {
-      // if not eth, check if the user has sufficient token balance
-      // and if not, approve the token
-      if (!isEthToken) {
-        await checkAndApproveToken({
-          account,
-          chainId,
-          serviceId: id,
-        });
-      }
-
-      // check if the agent instances are valid
-      const isValid = await checkIfAgentInstancesAreValid({
-        account,
-        agentInstances,
-      });
-
-      if (isValid) {
-        await onStep2RegisterAgents({
-          account,
-          serviceId: id,
-          agentIds: ids,
-          agentInstances,
-          dataSource,
-        });
-        await updateDetails();
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  /* ----- step 3 ----- */
-  const handleStep3Deploy = async (radioValue, payload) => {
-    try {
-      await onStep3Deploy(account, id, radioValue, payload);
-      await updateDetails();
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  /* ----- step 4 ----- */
-  const handleStep4Terminate = async () => {
-    try {
-      await onTerminate(account, id);
-      await updateDetails();
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  /* ----- step 5 ----- */
-  const handleStep5Unbond = async () => {
-    try {
-      await onStep5Unbond(account, id);
-      await updateDetails();
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
   /**
    *
    * @param {number} step step to compare with current active service state
@@ -248,31 +108,24 @@ export const ServiceState = ({
     };
   };
 
+  const commonProps = {
+    serviceId: id,
+    updateDetails,
+    isOwner,
+    getButton,
+    getOtherBtnProps,
+  };
+
   const steps = [
     {
       id: 'pre-registration',
       title: 'Pre-Registration',
       component: (
-        <Space>
-          {getButton(
-            <Button
-              onClick={handleStep1Registration}
-              {...getOtherBtnProps(1, { isDisabled: !isOwner })}
-            >
-              Activate Registration
-            </Button>,
-            { step: 1 },
-          )}
-          {getButton(
-            <Button
-              onClick={handleStep1Update}
-              {...getOtherBtnProps(1, { isDisabled: !isOwner })}
-            >
-              Update
-            </Button>,
-            { step: 1 },
-          )}
-        </Space>
+        <StepPreRegistration
+          isEthToken={isEthToken}
+          securityDeposit={securityDeposit}
+          {...commonProps}
+        />
       ),
     },
     {
@@ -280,15 +133,11 @@ export const ServiceState = ({
       title: 'Active Registration',
       component: (
         <StepActiveRegistration
-          serviceId={id}
           dataSource={dataSource}
           setDataSource={setDataSource}
-          handleStep2RegisterAgents={handleStep2RegisterAgents}
-          getOtherBtnProps={getOtherBtnProps}
-          getButton={getButton}
-          isOwner={isOwner}
           handleTerminate={handleTerminate}
           isEthToken={isEthToken}
+          {...commonProps}
         />
       ),
     },
@@ -297,20 +146,15 @@ export const ServiceState = ({
       title: 'Finished Registration',
       component: (
         <StepFinishedRegistration
-          serviceId={id}
           multisig={multisig}
           threshold={threshold}
           owner={owner}
-          handleStep3Deploy={handleStep3Deploy}
           handleTerminate={handleTerminate}
           // show multisig (2nd radio button option) if the service multisig !== 0
           canShowMultisigSameAddress={
             get(details, 'multisig') !== `0x${'0'.repeat(40)}`
           }
-          getOtherBtnProps={getOtherBtnProps}
-          account={account}
-          getButton={getButton}
-          isOwner={isOwner}
+          {...commonProps}
         />
       ),
     },
@@ -319,33 +163,18 @@ export const ServiceState = ({
       title: 'Deployed',
       component: (
         <Deployed
-          serviceId={id}
           // If in pre-registration step, don't show the table
           isShowAgentInstanceVisible={currentStep !== 0}
           multisig={multisig}
           currentStep={currentStep}
-          terminateButton={getButton(
-            <Button
-              onClick={handleStep4Terminate}
-              {...getOtherBtnProps(4, { isDisabled: !isOwner })}
-            >
-              Terminate
-            </Button>,
-            { step: 4 },
-          )}
+          {...commonProps}
         />
       ),
     },
     {
       id: 'terminated',
       title: 'Terminated Bonded',
-      component: (
-        <Unbond
-          handleStep5Unbond={handleStep5Unbond}
-          getOtherBtnProps={getOtherBtnProps}
-          getButton={getButton}
-        />
-      ),
+      component: <Unbond {...commonProps} />,
     },
   ];
 
@@ -376,20 +205,20 @@ export const ServiceState = ({
         />
       )}
 
-      <Steps direction="vertical" current={currentStep}>
-        {steps.map(({ id: key, title, component }) => (
-          <Step
-            key={key}
-            title={(
-              <>
-                {title}
-                <GenericLabel>{SERVICE_STATE_HELPER_LABELS[key]}</GenericLabel>
-              </>
-            )}
-            description={component}
-          />
-        ))}
-      </Steps>
+      <Steps
+        direction="vertical"
+        current={currentStep}
+        items={steps.map(({ id: key, title, component }) => ({
+          key,
+          title: (
+            <>
+              {title}
+              <GenericLabel>{SERVICE_STATE_HELPER_LABELS[key]}</GenericLabel>
+            </>
+          ),
+          description: component,
+        }))}
+      />
     </ServiceStateContainer>
   );
 };

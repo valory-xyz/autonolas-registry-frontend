@@ -11,7 +11,7 @@ import {
   multisigAddresses,
   multisigSameAddresses,
 } from 'common-util/Contracts';
-import { getServiceAgentInstances } from '../utils';
+import { getServiceAgentInstances, onStep3Deploy } from '../utils';
 import { handleMultisigSubmit } from './utils';
 import { RadioLabel } from '../styles';
 
@@ -25,17 +25,32 @@ const StepThreePayload = ({
   owner: serviceOwner,
   threshold,
   multisig,
-  handleStep3Deploy,
   handleTerminate,
   canShowMultisigSameAddress,
   getOtherBtnProps,
   getButton,
-  account,
+  updateDetails,
 }) => {
+  const account = useSelector((state) => state?.setup?.account);
   const chainId = useSelector((state) => get(state, 'setup.chainId'));
+
   const [form] = Form.useForm();
   const [radioValue, setRadioValue] = useState(null);
   const [agentInstances, setAgentInstances] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleStep3Deploy = async (radioValuePassed, payload) => {
+    try {
+      setIsSubmitting(true);
+      await onStep3Deploy(account, serviceId, radioValuePassed, payload);
+      await updateDetails();
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const onFinish = (values) => {
     const payload = ethers.utils.solidityPack(
       [
@@ -192,6 +207,7 @@ const StepThreePayload = ({
               <Button
                 type="primary"
                 htmlType="submit"
+                loading={isSubmitting}
                 {...getOtherBtnProps(STEP, {
                   isDisabled: !radioValue || !isOwner,
                 })}
@@ -210,17 +226,25 @@ const StepThreePayload = ({
           {getButton(
             <Button
               type="primary"
+              loading={isSubmitting}
               onClick={async () => {
-                await handleMultisigSubmit({
-                  multisig,
-                  threshold,
-                  agentInstances,
-                  serviceOwner,
-                  chainId,
-                  handleStep3Deploy,
-                  radioValue,
-                  account,
-                });
+                try {
+                  setIsSubmitting(true);
+                  await handleMultisigSubmit({
+                    multisig,
+                    threshold,
+                    agentInstances,
+                    serviceOwner,
+                    chainId,
+                    handleStep3Deploy,
+                    radioValue,
+                    account,
+                  });
+                } catch (error) {
+                  console.error(error);
+                } finally {
+                  setIsSubmitting(false);
+                }
               }}
               {...getOtherBtnProps(STEP, {
                 isDisabled: !radioValue || !isOwner,
@@ -254,17 +278,15 @@ StepThreePayload.propTypes = {
   multisig: PropTypes.string.isRequired,
   owner: PropTypes.string.isRequired,
   threshold: PropTypes.string.isRequired,
-  handleStep3Deploy: PropTypes.func,
   handleTerminate: PropTypes.func,
   getButton: PropTypes.func.isRequired,
   canShowMultisigSameAddress: PropTypes.bool,
   getOtherBtnProps: PropTypes.func.isRequired,
-  account: PropTypes.string.isRequired,
+  updateDetails: PropTypes.func.isRequired,
 };
 
 StepThreePayload.defaultProps = {
   canShowMultisigSameAddress: false,
-  handleStep3Deploy: () => {},
   handleTerminate: () => {},
 };
 

@@ -73,16 +73,24 @@ export const DetailsInfo = ({
 
   // get token address for service on load
   useEffect(() => {
+    let isMounted = true;
+
     const getData = async () => {
       if (type === NAV_TYPES.SERVICE) {
         const response = await getTokenDetailsRequest(id);
-        setTokenAddress(response.token);
+        if (isMounted) {
+          setTokenAddress(response.token);
+        }
 
         await setOpWhitelist(id);
       }
     };
 
     if (id && isL1OnlyNetwork(chainId)) getData();
+
+    return () => {
+      isMounted = false;
+    };
   }, [id]);
 
   const updateHashBtn = isOwner ? (

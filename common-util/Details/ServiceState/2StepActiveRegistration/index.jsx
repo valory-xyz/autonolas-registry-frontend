@@ -7,8 +7,11 @@ import {
   getBonds,
   getTokenBondRequest,
   getNumberOfAgentAddress,
+  checkAndApproveToken,
+  onStep2RegisterAgents,
+  checkIfAgentInstancesAreValid,
 } from '../utils';
-import ActiveRegistrationTable from '../ActiveRegistrationTable';
+import ActiveRegistrationTable from './ActiveRegistrationTable';
 
 const { Text } = Typography;
 
@@ -18,18 +21,21 @@ const ActiveRegistration = ({
   serviceId,
   dataSource,
   setDataSource,
-  handleStep2RegisterAgents,
   getOtherBtnProps,
   handleTerminate,
   getButton,
   isOwner,
   isEthToken,
+  updateDetails,
 }) => {
+  const account = useSelector((state) => state?.setup?.account);
   const chainId = useSelector((state) => state?.setup?.chainId);
 
   const [totalBonds, setTotalBond] = useState(null);
   const [ethTokenBonds, setEthTokenBonds] = useState([]);
   const [isValidAgentAddress, setIsValidAgentAddress] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(false);
+  const [isTerminating, setIsTerminating] = useState(false);
 
   useEffect(() => {
     // react will throw an warning if we use setState after the component is unmounted,
@@ -59,8 +65,73 @@ const ActiveRegistration = ({
     };
   }, [serviceId, dataSource]);
 
-  const btnProps = getOtherBtnProps(STEP);
+  const handleStep2RegisterAgents = async () => {
+    const trimArray = (string) => (string || [])
+      .join()
+      .split(',')
+      .map((e) => e.trim());
 
+    const ids = [];
+
+    // filter out instances that are empty
+    const filteredDataSource = dataSource.filter(
+      ({ agentAddresses }) => !!agentAddresses,
+    );
+
+    const instances = filteredDataSource.map(({ agentAddresses, agentId }) => {
+      /**
+       * constructs agentIds:
+       * If there are 2 addresses of instances, then the agentIds will be [1, 1]
+       * example: agentAddresses = ['0x123', '0x456']
+       * agentId = 1
+       * ids = [1, 1]
+       */
+      const address = (agentAddresses || '').trim();
+      for (let i = 0; i < trimArray([address]).length; i += 1) {
+        ids.push(agentId);
+      }
+
+      return address;
+    });
+    const agentInstances = trimArray(instances || []);
+
+    try {
+      setIsRegistering(true);
+
+      // if not eth, check if the user has sufficient token balance
+      // and if not, approve the token
+      if (!isEthToken) {
+        await checkAndApproveToken({
+          account,
+          chainId,
+          serviceId,
+        });
+      }
+
+      // check if the agent instances are valid
+      const isValid = await checkIfAgentInstancesAreValid({
+        account,
+        agentInstances,
+      });
+
+      if (isValid) {
+        await onStep2RegisterAgents({
+          account,
+          serviceId,
+          agentIds: ids,
+          agentInstances,
+          dataSource,
+        });
+        await updateDetails();
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsRegistering(false);
+    }
+  };
+
+  const btnProps = getOtherBtnProps(STEP);
   const totalBondEthToken = convertToEth((totalBonds || 0).toString()) || '--';
 
   let totalTokenBonds = 0;
@@ -76,9 +147,9 @@ const ActiveRegistration = ({
       <ActiveRegistrationTable
         data={dataSource}
         setDataSource={setDataSource}
-        bordered
         isDisabled={btnProps.disabled}
         setIsValidAgentAddress={setIsValidAgentAddress}
+        bordered
       />
       <Text type="secondary">
         {`Adding instances will cause a bond of ${totalBondEthToken} ETH`}
@@ -91,6 +162,7 @@ const ActiveRegistration = ({
       <Button
         onClick={handleStep2RegisterAgents}
         {...btnProps}
+        loading={isRegistering}
         disabled={btnProps.disabled || !isValidAgentAddress}
       >
         Register Agents
@@ -98,7 +170,17 @@ const ActiveRegistration = ({
       <Divider />
       {getButton(
         <Button
-          onClick={handleTerminate}
+          onClick={async () => {
+            try {
+              setIsTerminating(true);
+              await handleTerminate();
+            } catch (error) {
+              console.error(error);
+            } finally {
+              setIsTerminating(false);
+            }
+          }}
+          loading={isTerminating}
           {...getOtherBtnProps(2, { isDisabled: !isOwner })}
         >
           Terminate
@@ -115,12 +197,12 @@ ActiveRegistration.propTypes = {
     PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   ).isRequired,
   setDataSource: PropTypes.func.isRequired,
-  handleStep2RegisterAgents: PropTypes.func.isRequired,
   getOtherBtnProps: PropTypes.func.isRequired,
   handleTerminate: PropTypes.func.isRequired,
   getButton: PropTypes.func.isRequired,
   isOwner: PropTypes.bool.isRequired,
   isEthToken: PropTypes.bool.isRequired,
+  updateDetails: PropTypes.func.isRequired,
 };
 
 ActiveRegistration.defaultProps = {
