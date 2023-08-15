@@ -80,6 +80,7 @@ const ContractInfo = () => {
 
   const getContractInfo = (text, addressToPoint) => (
     <div className="registry-contract">
+      &nbsp;•&nbsp;
       <a
         href={getEtherscanLink(addressToPoint)}
         target="_blank"
@@ -98,16 +99,16 @@ const ContractInfo = () => {
     <ContractsInfoContainer>
       {!PATHS_NOT_TO_SHOW.includes(pathname) && (
         <>
-          <img
-            alt="Etherscan link"
-            width={18}
-            height={18}
-            src="/images/etherscan-logo.svg"
-          />
-          <span>Contracts</span>
-          &nbsp;•&nbsp;
+          <div>
+            <img
+              alt="Etherscan link"
+              width={18}
+              height={18}
+              src="/images/etherscan-logo.svg"
+            />
+            <span>Contracts</span>
+          </div>
           {getContractInfo(registryText, registry)}
-          &nbsp;•&nbsp;
           {getContractInfo(managerText, manager)}
         </>
       )}

@@ -57,20 +57,24 @@ EllipsisMiddle.defaultProps = {
  * helper functions
  */
 
-export const getTableColumns = (type, { onViewClick, onUpdateClick }) => {
+export const getTableColumns = (
+  type,
+  { onViewClick, onUpdateClick, isMobile },
+) => {
   if (type === NAV_TYPES.COMPONENT || type === NAV_TYPES.AGENT) {
     return [
       {
         title: 'ID',
         dataIndex: 'id',
         key: 'id',
-        width: 50,
+        width: isMobile ? 30 : 50,
       },
       {
         title: 'Owner',
         dataIndex: 'owner',
         key: 'owner',
         width: 160,
+        // width: isMobile ? 80 : 160,
         render: (text) => <EllipsisMiddle>{text}</EllipsisMiddle>,
       },
       {
@@ -78,16 +82,17 @@ export const getTableColumns = (type, { onViewClick, onUpdateClick }) => {
         dataIndex: 'hash',
         key: 'hash',
         width: 200,
+        // width: isMobile ? 80 : 200,
         render: (text) => <EllipsisMiddle>{text}</EllipsisMiddle>,
       },
       {
         title: 'No. of component dependencies',
         dataIndex: 'dependency',
-        width: 180,
+        width: isMobile ? 70 : 180,
         key: 'dependency',
       },
       {
-        width: 200,
+        width: isMobile ? 50 : 200,
         title: 'Action',
         key: 'action',
         fixed: 'right',

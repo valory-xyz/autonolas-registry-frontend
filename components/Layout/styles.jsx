@@ -29,9 +29,37 @@ export const CustomLayout = styled(Layout)`
     }
   }
 
+  ${MEDIA_QUERY.tabletL} {
+    .site-layout {
+      padding: 0 24px;
+    }
+    .site-layout-background {
+      padding: 0;
+    }
+    .registry-tabs {
+      .ant-tabs-nav {
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        .ant-tabs-extra-content {
+          margin-top: 12px;
+        }
+      }
+    }
+  }
+
   ${MEDIA_QUERY.mobileL} {
     .site-layout {
       padding: 0 16px;
+    }
+    /* footer from autonolas-library */
+    main + div {
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      .footer-center {
+        position: relative;
+      }
     }
   }
 `;
@@ -59,31 +87,23 @@ export const RightMenu = styled.div`
   align-items: center;
 `;
 
-export const FooterContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  padding: 1rem 50px;
-  .socials {
-    display: flex;
-    column-gap: 28px;
-  }
-  .footer {
-    position: absolute;
-    left: 50%;
-    transform: translate(-50%, 0%);
-  }
-`;
-
 export const ContractsInfoContainer = styled.div`
-  font-size: 16px;
   display: flex;
   align-items: center;
+  font-size: 16px;
   .registry-contract {
     display: flex;
     align-items: center;
   }
   img {
     margin-right: 8px;
+  }
+
+  ${MEDIA_QUERY.laptop} {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  ${MEDIA_QUERY.mobileL} {
+    align-items: center;
   }
 `;
