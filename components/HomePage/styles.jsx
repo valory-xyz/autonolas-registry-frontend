@@ -26,13 +26,14 @@ export const HeaderRow = styled.div`
     height: 80vh;
     .hero-title {
       line-height: 1;
+      font-size: 40px;
     }
   }
 `;
 
 export const ContentRow = styled.div`
   max-width: 900px;
-  margin: 0 auto;
+  margin: 0 auto 6rem auto;
   .title {
     margin-bottom: 3rem;
     text-align: center;
@@ -67,7 +68,9 @@ export const ContentRow = styled.div`
   }
 
   ${MEDIA_QUERY.mobileL} {
+    margin-bottom: 0rem;
     .each-service {
+      margin-bottom: 4rem;
       .column-1 .each-service-image {
         height: 120px;
       }

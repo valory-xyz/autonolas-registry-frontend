@@ -110,9 +110,6 @@ const HomePage = () => {
           </Row>
         ))}
       </ContentRow>
-
-      <br />
-      <br />
     </Container>
   );
 };
