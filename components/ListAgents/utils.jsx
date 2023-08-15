@@ -2,6 +2,7 @@ import { notification } from 'antd/lib';
 import { TOTAL_VIEW_COUNT } from 'util/constants';
 import { getMechMinterContract, getAgentContract } from 'common-util/Contracts';
 import { getListByAccount } from 'common-util/ContractUtils/myList';
+import { sendTransaction } from 'common-util/functions/sendTransaction';
 
 // --------- HELPER METHODS ---------
 export const getAgentOwner = (agentId) => new Promise((resolve, reject) => {
@@ -134,9 +135,11 @@ export const getAgentHashes = (agentId) => new Promise((resolve, reject) => {
 export const updateAgentHashes = (account, id, newHash) => {
   const contract = getMechMinterContract();
 
-  contract.methods
+  const fn = contract.methods
     .updateHash('1', id, `0x${newHash}`)
-    .send({ from: account })
+    .send({ from: account });
+
+  sendTransaction(fn, account)
     .then(() => {
       notification.success({ message: 'Hash Updated' });
     })

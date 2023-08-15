@@ -18,8 +18,6 @@ import {
   getTotalForMyAgents,
 } from './utils';
 
-const { TabPane } = Tabs;
-
 const ALL_AGENTS = 'all-agents';
 const MY_AGENTS = 'my-agents';
 
@@ -176,23 +174,33 @@ const ListAgents = () => {
             e === MY_AGENTS ? `${URL.AGENTS}#${MY_AGENTS}` : URL.AGENTS,
           );
         }}
-      >
-        <TabPane tab="All" key={ALL_AGENTS}>
-          <ListTable {...tableCommonProps} list={list} />
-        </TabPane>
-
-        <TabPane tab="My Agents" key={MY_AGENTS}>
-          <ListTable
-            {...tableCommonProps}
-            list={
-              searchValue
-                ? list
-                : getMyListOnPagination({ total, nextPage: currentPage, list })
-            }
-            isAccountRequired
-          />
-        </TabPane>
-      </Tabs>
+        items={[
+          {
+            key: ALL_AGENTS,
+            label: 'All',
+            children: <ListTable {...tableCommonProps} list={list} />,
+          },
+          {
+            key: MY_AGENTS,
+            label: 'My Agents',
+            children: (
+              <ListTable
+                {...tableCommonProps}
+                list={
+                  searchValue
+                    ? list
+                    : getMyListOnPagination({
+                      total,
+                      nextPage: currentPage,
+                      list,
+                    })
+                }
+                isAccountRequired
+              />
+            ),
+          },
+        ]}
+      />
     </>
   );
 };

@@ -85,7 +85,7 @@ const IpfsModal = ({
 
   return (
     <CustomModal
-      visible={visible}
+      open={visible}
       centered
       title="Generate IPFS Hash of Metadata File"
       okText="Copy Hash & Close"

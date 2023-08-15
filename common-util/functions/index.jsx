@@ -83,3 +83,9 @@ export const addressValidator = () => ({
       : Promise.reject(new Error('Please enter valid addresses.'));
   },
 });
+
+// check if the provider is gnosis safe
+export const checkIfGnosisSafe = async (account, provider) => {
+  const code = await provider.getCode(account);
+  return code !== '0x';
+};

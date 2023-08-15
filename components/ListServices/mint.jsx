@@ -4,6 +4,10 @@ import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import { Typography, notification } from 'antd/lib';
 import {
+  DEFAULT_SERVICE_CREATION_ETH_TOKEN,
+  DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS,
+} from 'util/constants';
+import {
   convertStringToArray,
   AlertSuccess,
   AlertError,
@@ -12,14 +16,12 @@ import {
   getServiceManagerContract,
   getServiceManagerL2Contract,
 } from 'common-util/Contracts';
-import { FormContainer } from 'components/styles';
-import {
-  DEFAULT_SERVICE_CREATION_ETH_TOKEN,
-  DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS,
-} from 'util/constants';
+import { sendTransaction } from 'common-util/functions/sendTransaction';
 import { isL1Network } from 'common-util/functions';
+import { checkIfERC721Receive } from 'common-util/functions/requests';
 import RegisterForm from './RegisterForm';
 import { getAgentParams } from './utils';
+import { FormContainer } from '../styles';
 
 const { Title } = Typography;
 
@@ -31,11 +33,25 @@ const MintService = ({ account }) => {
   const [error, setError] = useState(null);
   const [information, setInformation] = useState(null);
 
-  const handleSubmit = (values) => {
+  const handleSubmit = async (values) => {
     if (account) {
       setIsMinting(true);
       setError(null);
       setInformation(null);
+
+      try {
+        const isValid = await checkIfERC721Receive(
+          account,
+          values.owner_address,
+        );
+        if (!isValid) {
+          setIsMinting(false);
+          return;
+        }
+      } catch (e) {
+        setIsMinting(false);
+        console.error(e);
+      }
 
       const contract = isL1Network(chainId)
         ? getServiceManagerContract()
@@ -58,9 +74,8 @@ const MintService = ({ account }) => {
         ]
         : [values.owner_address, ...commonParams];
 
-      contract.methods
-        .create(...params)
-        .send({ from: account })
+      const fn = contract.methods.create(...params).send({ from: account });
+      sendTransaction(fn, account)
         .then((result) => {
           setInformation(result);
           notification.success({ message: 'Service minted' });

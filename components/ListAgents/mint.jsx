@@ -5,7 +5,9 @@ import { Typography, notification } from 'antd/lib';
 import RegisterForm from 'common-util/List/RegisterForm';
 import { AlertSuccess, AlertError } from 'common-util/List/ListCommon';
 import { getMechMinterContract } from 'common-util/Contracts';
-import { FormContainer } from 'components/styles';
+import { sendTransaction } from 'common-util/functions/sendTransaction';
+import { checkIfERC721Receive } from 'common-util/functions/requests';
+import { FormContainer } from '../styles';
 
 const { Title } = Typography;
 
@@ -24,16 +26,32 @@ const MintAgent = () => {
       setError(null);
       setInformation(null);
 
+      try {
+        const isValid = await checkIfERC721Receive(
+          account,
+          values.owner_address,
+        );
+        if (!isValid) {
+          setIsMinting(false);
+          return;
+        }
+      } catch (e) {
+        setIsMinting(false);
+        console.error(e);
+      }
+
       const contract = getMechMinterContract(account);
 
-      contract.methods
+      const fn = contract.methods
         .create(
           '1',
           values.owner_address,
           `0x${values.hash}`,
           values.dependencies ? values.dependencies.split(', ') : [],
         )
-        .send({ from: account })
+        .send({ from: account });
+
+      sendTransaction(fn, account)
         .then((result) => {
           setInformation(result);
           notification.success({ message: 'Agent minted' });

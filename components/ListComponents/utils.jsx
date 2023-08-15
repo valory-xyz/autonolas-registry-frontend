@@ -5,6 +5,7 @@ import {
 } from 'common-util/Contracts';
 import { getListByAccount } from 'common-util/ContractUtils/myList';
 import { getFirstAndLastIndex } from 'common-util/functions';
+import { sendTransaction } from 'common-util/functions/sendTransaction';
 
 // --------- HELPER METHODS ---------
 export const getComponentOwner = (id) => new Promise((resolve, reject) => {
@@ -136,9 +137,11 @@ export const updateComponentHashes = (account, id, newHash) => {
   const contract = getMechMinterContract();
 
   // 0 to indicate `components`
-  contract.methods
+  const fn = contract.methods
     .updateHash('0', id, `0x${newHash}`)
-    .send({ from: account })
+    .send({ from: account });
+
+  sendTransaction(fn, account)
     .then(() => {
       notification.success({ message: 'Hash Updated' });
     })

@@ -1,11 +1,11 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Table, Space } from 'antd/lib';
+import { Table, Space, Button } from 'antd/lib';
 import get from 'lodash/get';
 import { AddressLink } from '@autonolas/frontend-library';
 import { setAgentInstancesAndOperators } from 'store/service/state/actions';
-import { getAgentInstanceAndOperator } from '../utils';
+import { getAgentInstanceAndOperator, onTerminate } from '../utils';
 
 const columns = [
   {
@@ -25,12 +25,17 @@ const columns = [
 const Deployed = ({
   serviceId,
   multisig,
-  terminateButton,
   isShowAgentInstanceVisible,
   currentStep,
+  isOwner,
+  getButton,
+  getOtherBtnProps,
+  updateDetails,
 }) => {
   const dispatch = useDispatch();
   const data = useSelector((state) => get(state, 'service.serviceState.agentInstancesAndOperators'));
+  const account = useSelector((state) => state?.setup?.account);
+  const [isTerminating, setIsTerminating] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -49,6 +54,18 @@ const Deployed = ({
     };
   }, [serviceId, currentStep]);
 
+  const handleTerminate = async () => {
+    try {
+      setIsTerminating(true);
+      await onTerminate(account, serviceId);
+      await updateDetails();
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsTerminating(false);
+    }
+  };
+
   return (
     <div className="step-4-terminate">
       <Space direction="vertical" size={10}>
@@ -62,7 +79,16 @@ const Deployed = ({
           />
         )}
         <div>{`Safe contract address: ${multisig}`}</div>
-        {terminateButton}
+        {getButton(
+          <Button
+            onClick={handleTerminate}
+            loading={isTerminating}
+            {...getOtherBtnProps(4, { isDisabled: !isOwner })}
+          >
+            Terminate
+          </Button>,
+          { step: 4 },
+        )}
       </Space>
     </div>
   );
@@ -71,14 +97,18 @@ const Deployed = ({
 Deployed.propTypes = {
   serviceId: PropTypes.string,
   multisig: PropTypes.string.isRequired,
-  terminateButton: PropTypes.element.isRequired,
   isShowAgentInstanceVisible: PropTypes.bool,
   currentStep: PropTypes.number.isRequired,
+  getButton: PropTypes.func.isRequired,
+  getOtherBtnProps: PropTypes.func.isRequired,
+  updateDetails: PropTypes.func.isRequired,
+  isOwner: PropTypes.bool,
 };
 
 Deployed.defaultProps = {
   serviceId: null,
   isShowAgentInstanceVisible: false,
+  isOwner: false,
 };
 
 export default Deployed;

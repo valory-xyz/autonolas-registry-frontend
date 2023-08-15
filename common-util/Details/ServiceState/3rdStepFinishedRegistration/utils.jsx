@@ -10,6 +10,7 @@ import {
   safeMultiSend,
   getMyProvider,
 } from 'common-util/Contracts';
+import { checkIfGnosisSafe } from 'common-util/functions';
 import { isHashApproved } from './helpers';
 
 const safeContracts = require('@gnosis.pm/safe-contracts');
@@ -93,15 +94,13 @@ export const handleMultisigSubmit = async ({
     nonce,
   );
 
-  // signer
   const provider = new ethers.providers.Web3Provider(getMyProvider(), 'any');
-
-  const code = await provider.getCode(account);
+  const isSafe = await checkIfGnosisSafe(account, provider);
 
   try {
     // TODO: check if we are dealing with safe in future!
     // logic to deal with gnosis-safe
-    if (code !== '0x') {
+    if (isSafe) {
       // Create a message hash from the multisend transaction
       const messageHash = await multisigContract.getTransactionHash(
         safeTx.to,

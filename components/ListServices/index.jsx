@@ -18,8 +18,6 @@ import {
   getTotalForMyServices,
 } from './utils';
 
-const { TabPane } = Tabs;
-
 const ALL_SERVICES = 'all-services';
 const MY_SERVICES = 'my-services';
 
@@ -176,24 +174,34 @@ const ListServices = () => {
             e === MY_SERVICES ? `${URL.SERVICES}#${MY_SERVICES}` : URL.SERVICES,
           );
         }}
-      >
-        <TabPane tab="All" key={ALL_SERVICES}>
-          <ListTable {...tableCommonProps} list={list} />
-        </TabPane>
-
-        <TabPane tab="My Services" key={MY_SERVICES}>
-          <ListTable
-            {...tableCommonProps}
-            list={
-              searchValue
-                ? list
-                : getMyListOnPagination({ total, nextPage: currentPage, list })
-            }
-            onUpdateClick={(serviceId) => router.push(`${URL.UPDATE_SERVICE}/${serviceId}`)}
-            isAccountRequired
-          />
-        </TabPane>
-      </Tabs>
+        items={[
+          {
+            key: ALL_SERVICES,
+            label: 'All',
+            children: <ListTable {...tableCommonProps} list={list} />,
+          },
+          {
+            key: MY_SERVICES,
+            label: 'My Services',
+            children: (
+              <ListTable
+                {...tableCommonProps}
+                list={
+                  searchValue
+                    ? list
+                    : getMyListOnPagination({
+                      total,
+                      nextPage: currentPage,
+                      list,
+                    })
+                }
+                onUpdateClick={(serviceId) => router.push(`${URL.UPDATE_SERVICE}/${serviceId}`)}
+                isAccountRequired
+              />
+            ),
+          },
+        ]}
+      />
     </>
   );
 };
