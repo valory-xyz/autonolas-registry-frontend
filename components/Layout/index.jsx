@@ -7,6 +7,7 @@ import { Layout as AntdLayout, Result, Typography } from 'antd/lib';
 import useCheckMobileScreen from 'common-util/hooks/useCheckMobileScreen';
 import { isL1Network } from 'common-util/functions';
 import { getNetworkName } from '@autonolas/frontend-library';
+import { SUPPORTED_CHAINS } from 'common-util/Login';
 import Login from '../Login';
 import Footer from './Footer';
 import {
@@ -37,10 +38,20 @@ const Layout = ({ children }) => {
     }
   }, [chainId]);
 
+  // show registry logo if account is present or chainId is not supported
+  const isValidChainId = SUPPORTED_CHAINS.some((e) => e.id === chainId);
   const logo = (
     <Logo onClick={() => router.push('/')} data-testid="protocol-logo">
       <LogoSvg />
-      <span>Registry</span>
+      <span>
+        {account || !isValidChainId ? (
+          'Registry'
+        ) : (
+          <div className="mr-16">
+            <Text>{`Registry on ${getNetworkName(chainId)}`}</Text>
+          </div>
+        )}
+      </span>
     </Logo>
   );
 
@@ -65,13 +76,6 @@ const Layout = ({ children }) => {
         {logo}
         <NavigationMenu />
         <RightMenu>
-          {account ? null : (
-            <div className="mr-16">
-              <Text type="warning">
-                {`Results from ${getNetworkName(chainId)}`}
-              </Text>
-            </div>
-          )}
           <Login />
         </RightMenu>
       </Header>

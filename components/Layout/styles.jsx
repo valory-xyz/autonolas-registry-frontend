@@ -30,8 +30,8 @@ export const Logo = styled.div`
   align-items: center;
   justify-content: left;
   margin-left: 0.5rem;
-  margin-right: 3.5rem;
-  span {
+  margin-right: 0.5rem;
+  > span {
     margin-left: 0.5rem;
   }
 `;

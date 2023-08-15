@@ -18,8 +18,17 @@ import { rpc } from 'common-util/Contracts';
 
 export const projectId = process.env.NEXT_PUBLIC_WALLET_PROJECT_ID;
 
+export const SUPPORTED_CHAINS = [
+  mainnet,
+  goerli,
+  gnosis,
+  gnosisChiado,
+  polygon,
+  polygonMumbai,
+];
+
 const { publicClient, webSocketPublicClient, chains } = configureChains(
-  [mainnet, goerli, gnosis, gnosisChiado, polygon, polygonMumbai],
+  SUPPORTED_CHAINS,
   [
     jsonRpcProvider({
       rpc: (chain) => ({
