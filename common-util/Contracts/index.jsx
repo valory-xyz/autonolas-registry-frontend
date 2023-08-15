@@ -74,7 +74,7 @@ export const ADDRESSES = {
     componentRegistry: '0x5FbDB2315678afecb367f032d93F642f64180aa3',
     registriesManager: '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0',
 
-    // TODO: figure out after deployment
+    // TODO: figure out after deployment.
     // serviceManager: '0x70e0bA845a1A0F2DA3359C97E0285013525FFC49',
 
     // This will remain the same, uncomment once deployed
