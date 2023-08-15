@@ -28,6 +28,12 @@ export const CustomLayout = styled(Layout)`
       padding-left: 16px;
     }
   }
+
+  ${MEDIA_QUERY.mobileL} {
+    .site-layout {
+      padding: 0 16px;
+    }
+  }
 `;
 
 export const Logo = styled.div`

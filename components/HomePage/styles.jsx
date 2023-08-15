@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { MEDIA_QUERY } from '@autonolas/frontend-library';
 
 export const Container = styled.div``;
 
@@ -19,6 +20,14 @@ export const HeaderRow = styled.div`
     background-size: contain;
     background-repeat: no-repeat;
   }
+
+  ${MEDIA_QUERY.mobileL} {
+    margin-top: 1rem;
+    height: 80vh;
+    .hero-title {
+      line-height: 1;
+    }
+  }
 `;
 
 export const ContentRow = styled.div`
@@ -35,9 +44,6 @@ export const ContentRow = styled.div`
   .each-service {
     display: flex;
     margin-bottom: 8rem;
-    .column {
-      flex: 1;
-    }
     .column-1 {
       display: flex;
       justify-content: center;
@@ -52,10 +58,18 @@ export const ContentRow = styled.div`
       }
       a {
         &::after {
-          content: "→";
+          content: '→';
           vertical-align: middle;
           margin-left: 0.35rem;
         }
+      }
+    }
+  }
+
+  ${MEDIA_QUERY.mobileL} {
+    .each-service {
+      .column-1 .each-service-image {
+        height: 120px;
       }
     }
   }
