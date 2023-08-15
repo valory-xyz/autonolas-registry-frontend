@@ -46,6 +46,10 @@ export const CustomLayout = styled(Layout)`
         }
       }
     }
+    /* footer from autonolas-library */
+    main + div {
+      padding: 24px;
+    }
   }
 
   ${MEDIA_QUERY.mobileL} {
@@ -59,6 +63,8 @@ export const CustomLayout = styled(Layout)`
       gap: 20px;
       .footer-center {
         position: relative;
+        left: 0;
+        transform: none;
       }
     }
   }

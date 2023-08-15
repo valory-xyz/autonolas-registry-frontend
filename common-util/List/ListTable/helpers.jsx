@@ -113,8 +113,7 @@ export const getTableColumns = (
         title: 'ID',
         dataIndex: 'id',
         key: 'id',
-        width: 50,
-        fixed: 'left',
+        width: isMobile ? 30 : 50,
       },
       {
         title: 'Owner',
@@ -131,7 +130,7 @@ export const getTableColumns = (
         render: (e) => <>{SERVICE_STATE[e]}</>,
       },
       {
-        width: 220,
+        width: isMobile ? 50 : 220,
         title: 'Action',
         key: 'action',
         fixed: 'right',
