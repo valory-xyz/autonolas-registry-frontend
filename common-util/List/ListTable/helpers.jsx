@@ -74,7 +74,6 @@ export const getTableColumns = (
         dataIndex: 'owner',
         key: 'owner',
         width: 160,
-        // width: isMobile ? 80 : 160,
         render: (text) => <EllipsisMiddle>{text}</EllipsisMiddle>,
       },
       {
@@ -82,7 +81,6 @@ export const getTableColumns = (
         dataIndex: 'hash',
         key: 'hash',
         width: 200,
-        // width: isMobile ? 80 : 200,
         render: (text) => <EllipsisMiddle>{text}</EllipsisMiddle>,
       },
       {

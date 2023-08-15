@@ -10,11 +10,9 @@ export const URL = {
   root: '/',
   AGENTS: '/agents',
   COMPONENTS: '/components',
-  OPERATORS: '/operators',
   SERVICES: '/services',
   MINT_AGENT: '/agents/mint',
   MINT_COMPONENT: '/components/mint',
-  REGISTER_OPERATOR: '/operators/register',
   MINT_SERVICE: '/services/mint',
   UPDATE_SERVICE: '/services/update',
 };
