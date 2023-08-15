@@ -45,9 +45,7 @@ const Layout = ({ children }) => {
       <LogoSvg />
       <span>
         {account || isValidChainId ? (
-          <div className="mr-16">
-            <Text>{`Registry on ${getNetworkName(chainId)}`}</Text>
-          </div>
+          <Text>{`Registry on ${getNetworkName(chainId)}`}</Text>
         ) : (
           'Registry'
         )}
