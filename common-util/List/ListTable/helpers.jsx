@@ -90,7 +90,7 @@ export const getTableColumns = (
         key: 'dependency',
       },
       {
-        width: isMobile ? 50 : 200,
+        width: isMobile ? 40 : 200,
         title: 'Action',
         key: 'action',
         fixed: 'right',
@@ -128,7 +128,7 @@ export const getTableColumns = (
         render: (e) => <>{SERVICE_STATE[e]}</>,
       },
       {
-        width: isMobile ? 50 : 220,
+        width: isMobile ? 40 : 220,
         title: 'Action',
         key: 'action',
         fixed: 'right',

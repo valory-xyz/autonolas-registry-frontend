@@ -45,6 +45,12 @@ export const CustomLayout = styled(Layout)`
           margin-top: 12px;
         }
       }
+      .ant-tabs-nav-wrap {
+        padding-left: 0;
+      }
+      .ant-tabs-nav-list {
+        transform: none !important;
+      }
     }
     /* footer from autonolas-library */
     main + div {
