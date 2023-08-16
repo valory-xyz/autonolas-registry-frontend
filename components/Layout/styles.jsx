@@ -1,8 +1,16 @@
 import styled from 'styled-components';
 import { Layout } from 'antd/lib';
-import { COLOR } from '@autonolas/frontend-library';
+import { COLOR, MEDIA_QUERY } from '@autonolas/frontend-library';
 
 export const CustomLayout = styled(Layout)`
+  .site-layout {
+    padding: 0 50px;
+    margin-top: 64px;
+  }
+  .site-layout-background {
+    padding: 24px 0;
+    min-height: calc(100vh - 140px);
+  }
   .registry-tabs {
     .ant-tabs-extra-content {
       &:not(:last-child) {
@@ -20,6 +28,52 @@ export const CustomLayout = styled(Layout)`
       padding-left: 16px;
     }
   }
+
+  ${MEDIA_QUERY.tabletL} {
+    .site-layout {
+      padding: 0 24px;
+    }
+    .site-layout-background {
+      padding: 0;
+    }
+    .registry-tabs {
+      .ant-tabs-nav {
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        .ant-tabs-extra-content {
+          margin-top: 12px;
+        }
+      }
+      .ant-tabs-nav-wrap {
+        padding-left: 0;
+      }
+      .ant-tabs-nav-list {
+        transform: none !important;
+      }
+    }
+    /* footer from autonolas-library */
+    main + div {
+      padding: 24px;
+    }
+  }
+
+  ${MEDIA_QUERY.mobileL} {
+    .site-layout {
+      padding: 0 16px;
+    }
+    /* footer from autonolas-library */
+    main + div {
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      .footer-center {
+        position: relative;
+        left: 0;
+        transform: none;
+      }
+    }
+  }
 `;
 
 export const Logo = styled.div`
@@ -34,6 +88,10 @@ export const Logo = styled.div`
   span {
     margin-left: 0.5rem;
   }
+
+  ${MEDIA_QUERY.mobileL} {
+    margin-right: 0.5rem;
+  }
 `;
 
 export const RightMenu = styled.div`
@@ -41,26 +99,10 @@ export const RightMenu = styled.div`
   align-items: center;
 `;
 
-export const FooterContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  padding: 1rem 50px;
-  .socials {
-    display: flex;
-    column-gap: 28px;
-  }
-  .footer {
-    position: absolute;
-    left: 50%;
-    transform: translate(-50%, 0%);
-  }
-`;
-
 export const ContractsInfoContainer = styled.div`
-  font-size: 16px;
   display: flex;
   align-items: center;
+  font-size: 16px;
   .registry-contract {
     display: flex;
     align-items: center;
@@ -68,8 +110,12 @@ export const ContractsInfoContainer = styled.div`
   img {
     margin-right: 8px;
   }
-`;
 
-export const SupportOnlyDesktop = styled.div`
-  margin: 4rem 0;
+  ${MEDIA_QUERY.laptop} {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  ${MEDIA_QUERY.mobileL} {
+    align-items: center;
+  }
 `;

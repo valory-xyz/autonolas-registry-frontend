@@ -81,7 +81,7 @@ const HomePage = () => {
             key={`each-service-${type}`}
             align="middle"
           >
-            <Col className="column column-1">
+            <Col className="column column-1" md={12} xs={10}>
               <img
                 src={`/${IMG_PATH}${type}.svg`}
                 className="each-service-image"
@@ -89,7 +89,7 @@ const HomePage = () => {
               />
             </Col>
 
-            <Col className="column column-2">
+            <Col className="column column-2" md={12} xs={14}>
               <Title level={5}>{title}</Title>
               <Text className="description">{desc}</Text>
               <br />
@@ -110,9 +110,6 @@ const HomePage = () => {
           </Row>
         ))}
       </ContentRow>
-
-      <br />
-      <br />
     </Container>
   );
 };

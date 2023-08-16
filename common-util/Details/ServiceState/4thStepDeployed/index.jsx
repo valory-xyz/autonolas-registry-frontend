@@ -1,26 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Table, Space, Button } from 'antd/lib';
+import {
+  Table, Space, Button, Grid,
+} from 'antd/lib';
 import get from 'lodash/get';
 import { AddressLink } from '@autonolas/frontend-library';
 import { setAgentInstancesAndOperators } from 'store/service/state/actions';
 import { getAgentInstanceAndOperator, onTerminate } from '../utils';
 
-const columns = [
-  {
-    title: 'Agent Instances',
-    dataIndex: 'agentInstance',
-    key: 'agentInstance',
-    render: (text) => <AddressLink text={text} suffixCount={10} />,
-  },
-  {
-    title: 'Operators',
-    dataIndex: 'operatorAddress',
-    key: 'operatorAddress',
-    render: (text) => <AddressLink text={text} suffixCount={10} />,
-  },
-];
+const { useBreakpoint } = Grid;
 
 const Deployed = ({
   serviceId,
@@ -36,6 +25,8 @@ const Deployed = ({
   const data = useSelector((state) => get(state, 'service.serviceState.agentInstancesAndOperators'));
   const account = useSelector((state) => state?.setup?.account);
   const [isTerminating, setIsTerminating] = useState(false);
+  const screens = useBreakpoint();
+  const isMobile = screens.xs || screens.sm;
 
   useEffect(() => {
     let isMounted = true;
@@ -71,7 +62,24 @@ const Deployed = ({
       <Space direction="vertical" size={10}>
         {isShowAgentInstanceVisible && (
           <Table
-            columns={columns}
+            columns={[
+              {
+                title: 'Agent Instances',
+                dataIndex: 'agentInstance',
+                key: 'agentInstance',
+                render: (text) => (
+                  <AddressLink text={text} suffixCount={isMobile ? 4 : 10} />
+                ),
+              },
+              {
+                title: 'Operators',
+                dataIndex: 'operatorAddress',
+                key: 'operatorAddress',
+                render: (text) => (
+                  <AddressLink text={text} suffixCount={isMobile ? 4 : 10} />
+                ),
+              },
+            ]}
             dataSource={data}
             pagination={false}
             bordered

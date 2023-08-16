@@ -19,12 +19,6 @@ import {
 import { Header, DetailsTitle } from './styles';
 
 const { Text } = Typography;
-const gt = {
-  xs: 8,
-  sm: 16,
-  md: 24,
-  lg: 32,
-};
 
 const Details = ({
   account,
@@ -154,8 +148,8 @@ const Details = ({
         </div>
       </Header>
 
-      <Row gutter={gt}>
-        <Col className="gutter-row" span={12}>
+      <Row>
+        <Col md={12} xs={24}>
           <DetailsInfo
             id={id}
             isOwner={isOwner}
@@ -172,7 +166,7 @@ const Details = ({
           />
         </Col>
 
-        <Col className="gutter-row" span={12}>
+        <Col md={12} xs={24}>
           {type !== NAV_TYPES.SERVICE && (
             <NftImage metadata={metadata} type={type} />
           )}

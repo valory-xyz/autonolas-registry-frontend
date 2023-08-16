@@ -1,6 +1,7 @@
 import styled from 'styled-components';
-import { COLOR } from 'util/theme';
 import { Typography } from 'antd/lib';
+import { MEDIA_QUERY } from '@autonolas/frontend-library';
+import { COLOR } from 'util/theme';
 
 const { Text } = Typography;
 
@@ -16,7 +17,6 @@ export const ServiceStateContainer = styled.div`
       margin: 0.75rem 0;
     }
   }
-
   .step-2-active-registration {
     .ant-table-wrapper {
     }
@@ -36,6 +36,14 @@ export const ServiceStateContainer = styled.div`
       margin-top: 0.75rem;
     }
   }
+  .step-2-active-registration {
+    .ant-table {
+      .ant-table-thead > tr > th,
+      .ant-table-tbody > tr > td {
+        padding: 6px 10px;
+      }
+    }
+  }
   .step-4-terminate {
     > div {
       font-size: 16px;
@@ -49,24 +57,31 @@ export const ServiceStateContainer = styled.div`
   .editable-cell {
     position: relative;
   }
-
   .editable-cell-value-wrap {
     padding: 5px 12px;
     cursor: pointer;
   }
-
   .editable-row:hover .editable-cell-value-wrap {
     padding: 4px 11px;
     border: 1px solid #d9d9d9;
     border-radius: 2px;
   }
-
   .ant-form-item-explain.ant-form-item-explain-error {
     font-size: 16px;
   }
-
   [data-theme='dark'] .editable-row:hover .editable-cell-value-wrap {
     border: 1px solid #434343;
+  }
+
+  ${MEDIA_QUERY.mobileL} {
+    .ant-radio-group {
+      display: block;
+    }
+    .step-4-terminate {
+      .ant-table-wrapper {
+        width: 300px;
+      }
+    }
   }
 `;
 
