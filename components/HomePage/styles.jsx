@@ -48,9 +48,6 @@ export const ContentRow = styled.div`
     .column-1 {
       display: flex;
       justify-content: center;
-      .each-service-image {
-        height: 150px;
-      }
     }
     .column-2 {
       .description {
@@ -71,9 +68,6 @@ export const ContentRow = styled.div`
     margin-bottom: 0rem;
     .each-service {
       margin-bottom: 4rem;
-      .column-1 .each-service-image {
-        height: 120px;
-      }
     }
   }
 `;

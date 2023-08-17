@@ -5,6 +5,7 @@ import {
 import Link from 'next/link';
 import { URL } from 'util/constants';
 import { isL1Network } from 'common-util/functions';
+import { useScreen } from 'common-util/hooks/useScreen';
 import { Container, HeaderRow, ContentRow } from './styles';
 
 const { Title, Text } = Typography;
@@ -34,6 +35,7 @@ const LIST = [
 
 const HomePage = () => {
   const chainId = useSelector((state) => state?.setup?.chainId);
+  const { isMobile } = useScreen();
 
   return (
     <Container>
@@ -85,7 +87,9 @@ const HomePage = () => {
               <img
                 src={`/${IMG_PATH}${type}.svg`}
                 className="each-service-image"
-                alt=""
+                alt={desc}
+                width={isMobile ? 120 : 150}
+                height={isMobile ? 120 : 150}
               />
             </Col>
 
