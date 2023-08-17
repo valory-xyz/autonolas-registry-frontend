@@ -44,7 +44,7 @@ exports[`<HomePage> should render homepage 1`] = `
       </div>
     </div>
     <div
-      class="styles__ContentRow-sc-4qo35f-2 hTaylV row-2"
+      class="styles__ContentRow-sc-4qo35f-2 iyTKju row-2"
     >
       <h3
         class="ant-typography title"
@@ -58,19 +58,21 @@ exports[`<HomePage> should render homepage 1`] = `
           class="ant-col column column-1 ant-col-xs-10 ant-col-md-12"
         >
           <img
-            alt=""
+            alt="They manage how the service is set up. Service owners define the business model of their services, and charge DAOs to use them."
             class="each-service-image"
+            height="150"
             src="/images/homepage/services.svg"
+            width="150"
           />
         </div>
         <div
           class="ant-col column column-2 ant-col-xs-14 ant-col-md-12"
         >
-          <h5
+          <h4
             class="ant-typography"
           >
             Service owners mint and manage complete agent services
-          </h5>
+          </h4>
           <span
             class="ant-typography description"
           >
@@ -91,19 +93,21 @@ exports[`<HomePage> should render homepage 1`] = `
           class="ant-col column column-1 ant-col-xs-10 ant-col-md-12"
         >
           <img
-            alt=""
+            alt="Services are run by multiple  software agents, each with an independent operator. Developers can author full agents, and these can be composed by service owners."
             class="each-service-image"
+            height="150"
             src="/images/homepage/agents.svg"
+            width="150"
           />
         </div>
         <div
           class="ant-col column column-2 ant-col-xs-14 ant-col-md-12"
         >
-          <h5
+          <h4
             class="ant-typography"
           >
             Services are made of agents
-          </h5>
+          </h4>
           <span
             class="ant-typography description"
           >
@@ -124,19 +128,21 @@ exports[`<HomePage> should render homepage 1`] = `
           class="ant-col column column-1 ant-col-xs-10 ant-col-md-12"
         >
           <img
-            alt=""
+            alt="Components are smaller blocks of code which can be reused by agent developers."
             class="each-service-image"
+            height="150"
             src="/images/homepage/components.svg"
+            width="150"
           />
         </div>
         <div
           class="ant-col column column-2 ant-col-xs-14 ant-col-md-12"
         >
-          <h5
+          <h4
             class="ant-typography"
           >
             Each agent is made of components
-          </h5>
+          </h4>
           <span
             class="ant-typography description"
           >
