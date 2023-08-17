@@ -94,7 +94,7 @@ const HomePage = () => {
             </Col>
 
             <Col className="column column-2" md={12} xs={14}>
-              <Title level={5}>{title}</Title>
+              <Title level={4}>{title}</Title>
               <Text className="description">{desc}</Text>
               <br />
               {type === 'services' ? (
