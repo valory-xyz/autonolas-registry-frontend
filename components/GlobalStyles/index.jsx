@@ -1,3 +1,4 @@
+import { MEDIA_QUERY } from '@autonolas/frontend-library';
 import { createGlobalStyle } from 'styled-components';
 import { COLOR, OTHERS } from 'util/theme';
 
@@ -82,16 +83,6 @@ const GlobalStyle = createGlobalStyle`
     text-align: center;
   }
 
-  /* layout */
-  .site-layout {
-    padding: 0 50px;
-    margin-top: 64px;
-  }
-  .site-layout-background {
-    padding: 24px 0;
-    min-height: calc(100vh - 140px);
-  }
-
   /* tabs */
   .ant-tabs-card.ant-tabs-top {
     > .ant-tabs-nav .ant-tabs-tab {
@@ -121,7 +112,9 @@ const GlobalStyle = createGlobalStyle`
       > tr > th {
         font-weight: normal;
         padding: 12px 16px;
-        &:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before {
+        &:not(:last-child):not(.ant-table-selection-column):not(
+            .ant-table-row-expand-icon-cell
+          ):not([colspan])::before {
           background-color: transparent;
         }
       }
@@ -178,7 +171,28 @@ const GlobalStyle = createGlobalStyle`
 
   /* ant image */
   .ant-image-preview-wrap {
-    background: ${COLOR.GREY_2}
+    background: ${COLOR.GREY_2};
+  }
+
+  ${MEDIA_QUERY.mobileL} {
+    .ant-table {
+      .ant-table-thead {
+        > tr > th {
+          padding: 6px 16px;
+        }
+      }
+      .ant-table-tbody > tr {
+        > td {
+          padding: 6px 16px;
+        }
+      }
+    }
+  }
+
+  ${MEDIA_QUERY.mobileM} {
+    .ant-layout-header {
+      padding: 0;
+    }
   }
 `;
 

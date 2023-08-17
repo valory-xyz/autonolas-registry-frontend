@@ -2,16 +2,13 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
-import { Layout as AntdLayout, Result, Typography } from 'antd/lib';
+import { Layout as AntdLayout, Typography } from 'antd/lib';
 import { getNetworkName } from '@autonolas/frontend-library';
-import useCheckMobileScreen from 'common-util/hooks/useCheckMobileScreen';
 import { isL1Network } from 'common-util/functions';
 import { useHelpers } from 'common-util/hooks';
 import Login from '../Login';
 import Footer from './Footer';
-import {
-  CustomLayout, Logo, RightMenu, SupportOnlyDesktop,
-} from './styles';
+import { CustomLayout, Logo, RightMenu } from './styles';
 
 const { Text } = Typography;
 
@@ -21,7 +18,6 @@ const NavigationMenu = dynamic(() => import('./Menu'), { ssr: false });
 const { Header, Content } = AntdLayout;
 
 const Layout = ({ children }) => {
-  const isMobile = useCheckMobileScreen();
   const router = useRouter();
   const { chainId, isValidChainId } = useHelpers();
   const path = router?.pathname || '';
@@ -48,21 +44,6 @@ const Layout = ({ children }) => {
       </span>
     </Logo>
   );
-
-  // TODO: fix mobile responsiveness and remove the below component
-  if (isMobile) {
-    return (
-      <CustomLayout hasSider>
-        <Header>{logo}</Header>
-        <SupportOnlyDesktop>
-          <Result
-            status="warning"
-            title="Oops, Mobile & Tablet devices are not supported."
-          />
-        </SupportOnlyDesktop>
-      </CustomLayout>
-    );
-  }
 
   return (
     <CustomLayout>

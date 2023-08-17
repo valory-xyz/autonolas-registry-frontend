@@ -1,20 +1,24 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from 'react';
 import get from 'lodash/get';
+import { Grid } from 'antd/lib';
 import { GATEWAY_URL, NAV_TYPES } from 'util/constants';
 import { NftImageContainer } from '../styles';
+
+const { useBreakpoint } = Grid;
 
 const DEFAULT_SIZE = { width: 600, height: 600 };
 const SMALL_SIZE = { width: 300, height: 300 };
 
 export const NftImage = ({ metadata, type }) => {
   const [imageSize, setImageSize] = useState(DEFAULT_SIZE);
+  const screens = useBreakpoint();
 
   useEffect(() => {
-    if (type === NAV_TYPES.SERVICE) {
+    if (type === NAV_TYPES.SERVICE || screens.xs || screens.sm) {
       setImageSize(SMALL_SIZE);
     }
-  }, [type]);
+  }, [type, screens.xs, screens.sm]);
 
   const imageUrl = (get(metadata, 'image') || '').replace(
     'ipfs://',

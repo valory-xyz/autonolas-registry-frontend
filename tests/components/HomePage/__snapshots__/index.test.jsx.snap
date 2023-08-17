@@ -6,7 +6,7 @@ exports[`<HomePage> should render homepage 1`] = `
     class="styles__Container-sc-4qo35f-0"
   >
     <div
-      class="styles__HeaderRow-sc-4qo35f-1 cWafSz row-1"
+      class="styles__HeaderRow-sc-4qo35f-1 eooEqM row-1"
     >
       <div
         class="ant-row"
@@ -44,7 +44,7 @@ exports[`<HomePage> should render homepage 1`] = `
       </div>
     </div>
     <div
-      class="styles__ContentRow-sc-4qo35f-2 bHSfXW row-2"
+      class="styles__ContentRow-sc-4qo35f-2 hTaylV row-2"
     >
       <h3
         class="ant-typography title"
@@ -55,7 +55,7 @@ exports[`<HomePage> should render homepage 1`] = `
         class="ant-row ant-row-middle each-service"
       >
         <div
-          class="ant-col column column-1"
+          class="ant-col column column-1 ant-col-xs-10 ant-col-md-12"
         >
           <img
             alt=""
@@ -64,7 +64,7 @@ exports[`<HomePage> should render homepage 1`] = `
           />
         </div>
         <div
-          class="ant-col column column-2"
+          class="ant-col column column-2 ant-col-xs-14 ant-col-md-12"
         >
           <h5
             class="ant-typography"
@@ -88,7 +88,7 @@ exports[`<HomePage> should render homepage 1`] = `
         class="ant-row ant-row-middle each-service"
       >
         <div
-          class="ant-col column column-1"
+          class="ant-col column column-1 ant-col-xs-10 ant-col-md-12"
         >
           <img
             alt=""
@@ -97,7 +97,7 @@ exports[`<HomePage> should render homepage 1`] = `
           />
         </div>
         <div
-          class="ant-col column column-2"
+          class="ant-col column column-2 ant-col-xs-14 ant-col-md-12"
         >
           <h5
             class="ant-typography"
@@ -121,7 +121,7 @@ exports[`<HomePage> should render homepage 1`] = `
         class="ant-row ant-row-middle each-service"
       >
         <div
-          class="ant-col column column-1"
+          class="ant-col column column-1 ant-col-xs-10 ant-col-md-12"
         >
           <img
             alt=""
@@ -130,7 +130,7 @@ exports[`<HomePage> should render homepage 1`] = `
           />
         </div>
         <div
-          class="ant-col column column-2"
+          class="ant-col column column-2 ant-col-xs-14 ant-col-md-12"
         >
           <h5
             class="ant-typography"
@@ -151,8 +151,6 @@ exports[`<HomePage> should render homepage 1`] = `
         </div>
       </div>
     </div>
-    <br />
-    <br />
   </div>
 </div>
 `;
