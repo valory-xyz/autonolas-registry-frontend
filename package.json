@@ -6,7 +6,8 @@
     "lint": "eslint ./",
     "test": "jest",
     "testw": "jest --watch",
-    "testc": "jest --coverage --verbose"
+    "testc": "jest --coverage --verbose",
+    "analyze": "ANALYZE=true yarn build"
   },
   "dependencies": {
     "@ant-design/icons": "^4.8.0",
