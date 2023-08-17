@@ -9,22 +9,22 @@ const path = require('path');
 const nextConfig = {
   reactStrictMode: true,
   ...withAntdLess({
-    lessVarsFilePath: path.resolve('./styles/variables.less'),
+    lessVarsFilePath: './styles/variables.less',
     lessVarsFilePathAppendToEndOfContent: false,
     cssLoaderOptions: {},
     lessLoaderOptions: {
       javascriptEnabled: true,
     },
+    webpack: (config) => {
+      config.resolve.alias.react = path.resolve('./node_modules/react');
+      config.resolve.alias['react-dom'] = path.resolve('./node_modules/react-dom');
+      config.resolve.alias.antd = path.resolve('./node_modules/antd');
+      config.resolve.alias['styled-components'] = path.resolve('./node_modules/styled-components');
+      return config;
+    },
   }),
   compiler: {
     styledComponents: true,
-  },
-  webpack: (config) => {
-    config.resolve.alias.react = path.resolve('./node_modules/react');
-    config.resolve.alias['react-dom'] = path.resolve('./node_modules/react-dom');
-    config.resolve.alias.antd = path.resolve('./node_modules/antd');
-    config.resolve.alias['styled-components'] = path.resolve('./node_modules/styled-components');
-    return config;
   },
 };
 
