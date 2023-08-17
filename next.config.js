@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 const withAntdLess = require('next-plugin-antd-less');
-const withBundleAnalyzer = require('@next/bundle-analyzer');
+// const withBundleAnalyzer = require('@next/bundle-analyzer');
 const path = require('path');
 
 const nextConfig = {
@@ -26,6 +26,8 @@ const nextConfig = {
   },
 };
 
-module.exports = withBundleAnalyzer({
-  enabled: process.env.ANALYZE === 'true',
-}, nextConfig);
+module.exports = nextConfig;
+
+// module.exports = withBundleAnalyzer({
+//   enabled: process.env.ANALYZE === 'true',
+// }, nextConfig);
