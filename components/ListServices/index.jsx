@@ -156,7 +156,7 @@ const ListServices = () => {
       <Tabs
         className="registry-tabs"
         type="card"
-        activeKey={currentTab}
+        // activeKey={currentTab}
         tabBarExtraContent={extraTabContent}
         onChange={(e) => {
           setCurrentTab(e);

@@ -5,9 +5,9 @@ export const Container = styled.div``;
 
 export const HeaderRow = styled.div`
   margin-top: 4rem;
-  height: 60vh;
+  min-height: 60vh;
   .hero-title {
-    max-width: 24ch;
+    max-width: 21ch;
   }
   .lead {
     display: block;
