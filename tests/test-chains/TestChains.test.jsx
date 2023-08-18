@@ -11,10 +11,11 @@ import {
 } from 'common-util/AbiAndAddresses';
 import { ADDRESSES } from 'common-util/Contracts';
 import fs from 'fs';
+
 var assert = require('assert');
 
-describe('Test Chains', () => {
-  it('Check contract addresses and ABIs', async () => {
+describe('test-chains/TestChains.jsx', () => {
+  it('check contract addresses and ABIs', async () => {
     // Try to do fetch. For now, the file is in local configuration.json
     //const registriesRepo = 'https://github.com/valory-xyz/autonolas-registries/blob/main/';
     //const response = await fetch(registriesRepo + 'docs/configuration.json');
@@ -38,7 +39,7 @@ describe('Test Chains', () => {
     const parsedConfig = JSON.parse(dataFromJSON);
 
     // Loop over chains
-    const numChains = parsedConfig.length
+    const numChains = parsedConfig.length;
     for (let i = 0; i < numChains; i++) {
       const contracts = parsedConfig[i]['contracts'];
       // Traverse all tup-to-date configuration contracts
