@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from 'react';
 import {
   COMPONENT_REGISTRY_CONTRACT,
   AGENT_REGISTRY_CONTRACT,
@@ -11,7 +10,7 @@ import {
   OPERATOR_WHITELIST_CONTRACT,
 } from 'common-util/AbiAndAddresses';
 import { ADDRESSES } from 'common-util/Contracts';
-import fs from "fs";
+import fs from 'fs';
 var assert = require('assert');
 
 describe('Test Chains', () => {
@@ -41,30 +40,30 @@ describe('Test Chains', () => {
     // Loop over chains
     const numChains = parsedConfig.length
     for (let i = 0; i < numChains; i++) {
-      const contracts = parsedConfig[i]["contracts"];
+      const contracts = parsedConfig[i]['contracts'];
       // Traverse all tup-to-date configuration contracts
       for (let j = 0; j < contracts.length; j++) {
         // Go over local artifacts
         for (let k = 0; k < localArtifacts.length; k++) {
           // Take the configuration and local contract names that match
-          if (contracts[j]["name"] === localArtifacts[k].contractName) {
+          if (contracts[j]['name'] === localArtifacts[k].contractName) {
             // Get local and configuration ABIs, stringify them
             const localABI = JSON.stringify(localArtifacts[k].abi);
             // TODO: update with fetching the URL
             // Get up-to-date remote contract artifact and its ABI
-            const remoteJSON = fs.readFileSync(curDir + contracts[j]["artifact"], 'utf8');
+            const remoteJSON = fs.readFileSync(curDir + contracts[j]['artifact'], 'utf8');
             const remoteArtifact = JSON.parse(remoteJSON);
             // Stringify the remote ABI and compare with the local one
-            const remoteABI = JSON.stringify(remoteArtifact["abi"]);
+            const remoteABI = JSON.stringify(remoteArtifact['abi']);
             assert(localABI === remoteABI);
 
             // Check the address
             const lowLetter = localArtifacts[k].contractName.charAt(0).toLowerCase() + localArtifacts[k].contractName.slice(1);
             // Need to stringify and then convert to JSON again to access the address field
-            const addressStruct = JSON.stringify(ADDRESSES[parsedConfig[i]["chainId"]]);
+            const addressStruct = JSON.stringify(ADDRESSES[parsedConfig[i]['chainId']]);
             const addressStructJSON = JSON.parse(addressStruct);
             const localAddress = addressStructJSON[lowLetter];
-            assert(localAddress === contracts[j]["address"]);
+            assert(localAddress === contracts[j]['address']);
           }
         }
       }
