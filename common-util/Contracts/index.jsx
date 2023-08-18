@@ -3,7 +3,7 @@ import {
   REGISTRIES_MANAGER_CONTRACT,
   AGENT_REGISTRY_CONTRACT,
   COMPONENT_REGISTRY_CONTRACT,
-  SERVICE_MANAGER_CONTRACT_L2,
+  SERVICE_MANAGER_CONTRACT,
   SERVICE_REGISTRY_CONTRACT,
   SERVICE_MANAGER_TOKEN_CONTRACT,
   SERVICE_REGISTRY_L2,
@@ -160,7 +160,7 @@ export const getServiceManagerL2Contract = () => {
   const { web3, address } = getWeb3Details();
   const { serviceManager } = address;
   const contract = new web3.eth.Contract(
-    SERVICE_MANAGER_CONTRACT_L2.abi,
+    SERVICE_MANAGER_CONTRACT.abi,
     serviceManager,
   );
   return contract;
