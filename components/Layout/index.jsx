@@ -1,13 +1,16 @@
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
-import { Layout as AntdLayout } from 'antd/lib';
+import { Layout as AntdLayout, Typography } from 'antd/lib';
+import { getNetworkName } from '@autonolas/frontend-library';
 import { isL1Network } from 'common-util/functions';
+import { useHelpers } from 'common-util/hooks';
 import Login from '../Login';
 import Footer from './Footer';
 import { CustomLayout, Logo, RightMenu } from './styles';
+
+const { Text } = Typography;
 
 const LogoSvg = dynamic(() => import('common-util/svg/logo'), { ssr: false });
 const NavigationMenu = dynamic(() => import('./Menu'), { ssr: false });
@@ -16,7 +19,7 @@ const { Header, Content } = AntdLayout;
 
 const Layout = ({ children }) => {
   const router = useRouter();
-  const chainId = useSelector((state) => state?.setup?.chainId);
+  const { chainId, isValidChainId } = useHelpers();
   const path = router?.pathname || '';
 
   useEffect(() => {
@@ -32,7 +35,13 @@ const Layout = ({ children }) => {
   const logo = (
     <Logo onClick={() => router.push('/')} data-testid="protocol-logo">
       <LogoSvg />
-      <span>Registry</span>
+      <span>
+        {isValidChainId ? (
+          <Text>{`Registry on ${getNetworkName(chainId)}`}</Text>
+        ) : (
+          'Registry'
+        )}
+      </span>
     </Logo>
   );
 
