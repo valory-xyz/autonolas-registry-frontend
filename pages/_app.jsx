@@ -9,9 +9,6 @@ import Layout from 'components/Layout';
 import { wagmiConfig } from 'common-util/Login/config';
 import initStore from '../store';
 
-/* eslint-disable-next-line jest/require-hook */
-require('../styles/variables.less');
-
 class MyApp extends App {
   static async getInitialProps({ Component, ctx }) {
     const pageProps = Component.getInitialProps
