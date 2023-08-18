@@ -6,6 +6,7 @@ import { SearchOutlined, CopyOutlined } from '@ant-design/icons';
 import PropTypes from 'prop-types';
 
 import { NAV_TYPES, SERVICE_STATE, TOTAL_VIEW_COUNT } from 'util/constants';
+import { AddressLink } from '@autonolas/frontend-library';
 
 const { Text, Title } = Typography;
 const textStyle = { maxWidth: '100%' };
@@ -74,14 +75,14 @@ export const getTableColumns = (
         dataIndex: 'owner',
         key: 'owner',
         width: 80,
-        render: (text) => <EllipsisMiddle>{text}</EllipsisMiddle>,
+        render: (text) => <AddressLink text={text} suffixCount={isMobile ? 4 : 6} />,
       },
       {
         title: 'Hash',
         dataIndex: 'hash',
         key: 'hash',
         width: 80,
-        render: (text) => <EllipsisMiddle>{text}</EllipsisMiddle>,
+        render: (text) => <AddressLink text={text} suffixCount={isMobile ? 4 : 6} />,
       },
       {
         title: 'No. of component dependencies',
@@ -118,7 +119,7 @@ export const getTableColumns = (
         dataIndex: 'owner',
         key: 'owner',
         width: 200,
-        render: (text) => <EllipsisMiddle>{text}</EllipsisMiddle>,
+        render: (text) => <AddressLink text={text} suffixCount={isMobile ? 4 : 6} />,
       },
       {
         title: 'State',

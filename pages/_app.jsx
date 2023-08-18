@@ -65,8 +65,12 @@ class MyApp extends App {
                   // colorBorder: 'transparent',
                   // colorBgBase: COLOR.BLACK,
                 },
+                Pagination: {
+                  itemSize: 30,
+                },
               },
             }}
+
           >
             <Layout>
               <Component {...pageProps} />
