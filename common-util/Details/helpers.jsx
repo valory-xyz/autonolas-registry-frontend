@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Button, Typography, Alert, Switch,
-} from 'antd/lib';
+} from 'antd';
 import { ArrowUpRight, Circle } from 'react-feather';
 import get from 'lodash/get';
 import {

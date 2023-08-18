@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import {
   Button, Col, Row, Typography,
-} from 'antd/lib';
+} from 'antd';
 import Link from 'next/link';
 import { URL } from 'util/constants';
 import { isL1Network } from 'common-util/functions';

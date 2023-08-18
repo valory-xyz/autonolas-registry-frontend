@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import {
   Button, Form, Input, Space, Radio,
-} from 'antd/lib';
+} from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { addressValidator } from 'common-util/functions';
 

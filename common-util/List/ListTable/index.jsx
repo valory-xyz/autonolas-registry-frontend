@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { Table, Grid } from 'antd/lib';
+import { Table, Grid } from 'antd';
 import { TOTAL_VIEW_COUNT } from 'util/constants';
 import { ListEmptyMessage } from 'common-util/List/ListCommon';
 import Loader from 'common-util/components/Loader';

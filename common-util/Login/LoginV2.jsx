@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Web3 from 'web3';
 import { Web3Modal, Web3Button, Web3NetworkSwitch } from '@web3modal/react';
 import { useAccount, useNetwork, useBalance } from 'wagmi';
-import { Grid } from 'antd/lib';
+import { Grid } from 'antd';
 import { COLOR } from '@autonolas/frontend-library';
 import { useDispatch } from 'react-redux';
 import { setChainId } from 'store/setup/actions';

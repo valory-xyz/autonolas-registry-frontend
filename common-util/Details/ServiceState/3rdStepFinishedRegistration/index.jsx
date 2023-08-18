@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { ethers } from 'ethers';
 import {
   Button, Divider, Radio, Form, Input,
-} from 'antd/lib';
+} from 'antd';
 import PropTypes from 'prop-types';
 import get from 'lodash/get';
 

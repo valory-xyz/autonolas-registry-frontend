@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Button, Typography, Input, notification, Form,
-} from 'antd/lib';
+} from 'antd';
 import { DynamicFieldsForm } from 'common-util/DynamicFieldsForm';
 import { addressValidator } from 'common-util/functions';
 import {

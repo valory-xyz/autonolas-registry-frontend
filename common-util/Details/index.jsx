@@ -5,7 +5,7 @@ import get from 'lodash/get';
 import capitalize from 'lodash/capitalize';
 import {
   Row, Col, Button, Typography,
-} from 'antd/lib';
+} from 'antd';
 import { NAV_TYPES } from 'util/constants';
 import Loader from 'common-util/components/Loader';
 import IpfsHashGenerationModal from '../List/IpfsHashGenerationModal';

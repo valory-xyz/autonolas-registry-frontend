@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
-import { Layout as AntdLayout } from 'antd/lib';
+import { Layout as AntdLayout } from 'antd';
 import { isL1Network } from 'common-util/functions';
 import Login from '../Login';
 import Footer from './Footer';

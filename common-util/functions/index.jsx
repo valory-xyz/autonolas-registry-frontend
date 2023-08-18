@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { notification } from 'antd/lib';
+import { notification } from 'antd';
 import { STAGING_CHAIN_ID } from '@autonolas/frontend-library';
 import { TOTAL_VIEW_COUNT, LOCAL_FORK_ID } from 'util/constants';
 import { ADDRESSES } from 'common-util/Contracts';

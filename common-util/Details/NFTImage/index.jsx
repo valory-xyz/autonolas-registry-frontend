@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from 'react';
 import get from 'lodash/get';
-import { Grid } from 'antd/lib';
+import { Grid } from 'antd';
 import { GATEWAY_URL, NAV_TYPES } from 'util/constants';
 import { NftImageContainer } from '../styles';
 

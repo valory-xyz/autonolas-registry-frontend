@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import get from 'lodash/get';
-import { Button, Skeleton } from 'antd/lib';
+import { Button, Skeleton } from 'antd';
 
 const Container = styled.div`
   min-height: 200px;

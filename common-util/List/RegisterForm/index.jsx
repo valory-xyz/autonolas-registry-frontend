@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { Button, Form, Input } from 'antd/lib';
+import { Button, Form, Input } from 'antd';
 import isNil from 'lodash/isNil';
 import { WhiteButton } from 'common-util/components/Button';
 import { isValidAddress } from 'common-util/functions';

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import { connect, useSelector } from 'react-redux';
-import { Typography, notification } from 'antd/lib';
+import { Typography, notification } from 'antd';
 import get from 'lodash/get';
 import {
   DEFAULT_SERVICE_CREATION_ETH_TOKEN,

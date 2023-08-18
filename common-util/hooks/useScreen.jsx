@@ -1,4 +1,4 @@
-import { Grid } from 'antd/lib';
+import { Grid } from 'antd';
 
 const { useBreakpoint } = Grid;
 

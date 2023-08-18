@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Typography, Image } from 'antd/lib';
+import { Typography, Image } from 'antd';
 import { COLOR } from 'util/theme';
 
 export const DetailsTitle = styled(Typography.Title)`

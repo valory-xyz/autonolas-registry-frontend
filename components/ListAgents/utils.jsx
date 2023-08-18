@@ -1,4 +1,4 @@
-import { notification } from 'antd/lib';
+import { notification } from 'antd';
 import { TOTAL_VIEW_COUNT } from 'util/constants';
 import { getMechMinterContract, getAgentContract } from 'common-util/Contracts';
 import { getListByAccount } from 'common-util/ContractUtils/myList';

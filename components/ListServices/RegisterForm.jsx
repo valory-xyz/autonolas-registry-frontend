@@ -5,7 +5,7 @@ import useDeepCompareEffect from 'use-deep-compare-effect';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import get from 'lodash/get';
-import { Button, Form, Input } from 'antd/lib';
+import { Button, Form, Input } from 'antd';
 
 import { DEFAULT_SERVICE_CREATION_ETH_TOKEN } from 'util/constants';
 import { WhiteButton } from 'common-util/components/Button';

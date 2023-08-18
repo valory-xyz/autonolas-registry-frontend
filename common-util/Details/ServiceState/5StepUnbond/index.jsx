@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Button } from 'antd/lib';
+import { Button } from 'antd';
 import get from 'lodash/get';
 import { onStep5Unbond } from '../utils';
 
