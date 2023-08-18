@@ -1,7 +1,9 @@
 import App from 'next/app';
 import Head from 'next/head';
 import { createWrapper } from 'next-redux-wrapper';
+import { ConfigProvider } from 'antd';
 import PropTypes from 'prop-types';
+import { COLOR } from '@autonolas/frontend-library';
 
 import { WagmiConfig } from 'wagmi';
 import GlobalStyle from 'components/GlobalStyles';
@@ -32,9 +34,27 @@ class MyApp extends App {
           />
         </Head>
         <WagmiConfig config={wagmiConfig}>
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
+          <ConfigProvider
+            theme={{
+              token: {
+                colorPrimary: COLOR.PRIMARY,
+                fontSize: 18,
+                borderRadius: 5,
+                colorBgBase: COLOR.WHITE,
+                colorTextPlaceholder: COLOR.GREY_2,
+                colorLink: COLOR.PRIMARY,
+              },
+              components: {
+                Layout: {
+                  colorBgHeader: COLOR.WHITE,
+                },
+              },
+            }}
+          >
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </ConfigProvider>
         </WagmiConfig>
       </>
     );
@@ -53,3 +73,12 @@ MyApp.propTypes = {
 
 const wrapper = createWrapper(initStore);
 export default wrapper.withRedux(MyApp);
+
+/**
+ * thought process:
+ * 1. create a new component that wraps the app - configProvider
+ * https://ant.design/docs/react/migrate-less-variables - to match the current design
+ * 2. themeProvider - https://ant.design/docs/react/customize-theme
+ * 3. usage of antd icons
+ * 4. try to check the performance with blank page
+ */
