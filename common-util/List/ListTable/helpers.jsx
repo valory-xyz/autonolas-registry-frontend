@@ -74,15 +74,18 @@ export const getTableColumns = (
         title: 'Owner',
         dataIndex: 'owner',
         key: 'owner',
-        width: 80,
-        render: (text) => <AddressLink text={text} suffixCount={isMobile ? 4 : 6} />,
+        width: 160,
+        render: (text) => (
+          <AddressLink text={text} suffixCount={isMobile ? 4 : 6} />
+        ),
       },
       {
         title: 'Hash',
         dataIndex: 'hash',
         key: 'hash',
-        width: 80,
-        render: (text) => <AddressLink text={text} suffixCount={isMobile ? 4 : 6} />,
+        width: 180,
+        render: (text) => <EllipsisMiddle>{text}</EllipsisMiddle>,
+
       },
       {
         title: 'No. of component dependencies',
@@ -119,7 +122,9 @@ export const getTableColumns = (
         dataIndex: 'owner',
         key: 'owner',
         width: 200,
-        render: (text) => <AddressLink text={text} suffixCount={isMobile ? 4 : 6} />,
+        render: (text) => (
+          <AddressLink text={text} suffixCount={isMobile ? 4 : 6} />
+        ),
       },
       {
         title: 'State',
