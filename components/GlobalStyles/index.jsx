@@ -3,7 +3,6 @@ import { createGlobalStyle } from 'styled-components';
 import { COLOR, OTHERS } from 'util/theme';
 
 const ANTD_COLOR = {
-  whiteColor: '#fff',
   borderColor: '#f0f0f0',
 };
 
