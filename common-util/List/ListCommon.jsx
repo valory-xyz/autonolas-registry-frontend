@@ -35,7 +35,7 @@ export const getIpfsHashFromBytes32 = (bytes32Hex) => {
 // ----------- components -----------
 export const MyLink = ({ children, href, ...linkProps }) => (
   <Link {...linkProps} href={href}>
-    <a href={href}>{children}</a>
+    {children}
   </Link>
 );
 MyLink.propTypes = {

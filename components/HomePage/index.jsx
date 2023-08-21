@@ -53,6 +53,7 @@ const HomePage = () => {
             <Link
               href={isL1Network(chainId) ? URL.COMPONENTS : URL.SERVICES}
               passHref
+              legacyBehavior
             >
               <Button type="primary" size="large">
                 Get started →
@@ -98,11 +99,11 @@ const HomePage = () => {
               <Text className="description">{desc}</Text>
               <br />
               {type === 'services' ? (
-                <Link href={link}>{`View all ${type}`}</Link>
+                <Link href={link} legacyBehavior>{`View all ${type}`}</Link>
               ) : (
                 <>
                   {isL1Network(chainId) ? (
-                    <Link href={link}>{`View all ${type}`}</Link>
+                    <Link href={link} legacyBehavior>{`View all ${type}`}</Link>
                   ) : (
                     <Text disabled>
                       {`Switch network (to Ethereum or Goerli) to view ${type}`}
