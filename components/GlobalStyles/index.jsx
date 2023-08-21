@@ -48,6 +48,9 @@ const GlobalStyle = createGlobalStyle`
   .mt-8 {
     margin-top: 8px;
   }
+  .mr-16 {
+    margin-right: 16px;
+  }
   .pl-0 {
     padding-left: 0px !important;
   }
