@@ -43,7 +43,7 @@ const MintComponent = () => {
       }
 
       const contract = getMechMinterContract();
-      const fn = contract.methods
+      const fn = contract
         .create(
           '0',
           values.owner_address,

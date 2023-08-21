@@ -74,7 +74,7 @@ const MintService = ({ account }) => {
         ]
         : [values.owner_address, ...commonParams];
 
-      const fn = contract.methods.create(...params).send({ from: account });
+      const fn = contract.create(...params).send({ from: account });
       sendTransaction(fn, account)
         .then((result) => {
           setInformation(result);
