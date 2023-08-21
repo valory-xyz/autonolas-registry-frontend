@@ -14,12 +14,11 @@ import fs from 'fs';
 
 var assert = require('assert');
 
+const fetch = require('node-fetch');
+
 describe('test-chains/TestChains.jsx', () => {
   it('check contract addresses and ABIs', async () => {
-    // Try to do fetch. For now, the file is in local configuration.json
-    //const registriesRepo = 'https://github.com/valory-xyz/autonolas-registries/blob/main/';
-    //const response = await fetch(registriesRepo + 'docs/configuration.json');
-    //const data = await response.json();
+
 
     const localArtifacts = [
       COMPONENT_REGISTRY_CONTRACT,
@@ -33,10 +32,11 @@ describe('test-chains/TestChains.jsx', () => {
       OPERATOR_WHITELIST_CONTRACT
     ];
 
-    const curDir = 'tests/test-chains/'
-    const configName = curDir + 'configuration.json';
-    const dataFromJSON = fs.readFileSync(configName, 'utf8');
-    const parsedConfig = JSON.parse(dataFromJSON);
+    // Registries repository
+    const registriesRepo = 'https://raw.githubusercontent.com/valory-xyz/autonolas-registries/main/';
+    // Fetch the actual config
+    let response = await fetch(registriesRepo + 'docs/configuration.json');
+    const parsedConfig = await response.json();
 
     // Loop over chains
     const numChains = parsedConfig.length;
@@ -52,8 +52,8 @@ describe('test-chains/TestChains.jsx', () => {
             const localABI = JSON.stringify(localArtifacts[k].abi);
             // TODO: update with fetching the URL
             // Get up-to-date remote contract artifact and its ABI
-            const remoteJSON = fs.readFileSync(curDir + contracts[j]['artifact'], 'utf8');
-            const remoteArtifact = JSON.parse(remoteJSON);
+            response = await fetch(registriesRepo + contracts[j]['artifact']);
+            const remoteArtifact = await response.json();
             // Stringify the remote ABI and compare with the local one
             const remoteABI = JSON.stringify(remoteArtifact['abi']);
             assert(localABI === remoteABI);
