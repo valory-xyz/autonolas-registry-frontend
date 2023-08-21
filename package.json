@@ -10,6 +10,7 @@
     "analyze": "ANALYZE=true yarn build"
   },
   "dependencies": {
+    "@ant-design/cssinjs": "^1.16.2",
     "@ant-design/icons": "^5.2.5",
     "@autonolas/frontend-library": "0.3.19",
     "@gnosis.pm/safe-contracts": "^1.3.0",
