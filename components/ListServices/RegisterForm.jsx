@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import Web3 from 'web3';
+import { ethers } from 'ethers';
 import { useRouter } from 'next/router';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 import PropTypes from 'prop-types';
@@ -144,7 +144,7 @@ const RegisterForm = ({
             },
             () => ({
               validator(_, value) {
-                if (Web3.utils.isAddress(value)) return Promise.resolve();
+                if (ethers.utils.isAddress(value)) return Promise.resolve();
                 return Promise.reject(
                   new Error(
                     `Please input a valid address of the ${listType} Owner`,
@@ -189,7 +189,7 @@ const RegisterForm = ({
                 },
                 () => ({
                   validator(_, value) {
-                    if (Web3.utils.isAddress(value)) return Promise.resolve();
+                    if (ethers.utils.isAddress(value)) return Promise.resolve();
                     return Promise.reject(
                       new Error('Please input a valid address'),
                     );

@@ -1,3 +1,4 @@
+import { ethers } from 'ethers';
 import Web3 from 'web3';
 import {
   REGISTRIES_MANAGER_CONTRACT,
@@ -97,15 +98,37 @@ export const getWeb3Details = () => {
    * - fallback to remote mainnet [remote node provider](https://web3js.readthedocs.io/en/v1.7.5/web3.html#example-remote-node-provider)
    */
   const web3 = new Web3(getMyProvider());
+  const provider = new ethers.providers.Web3Provider(getMyProvider(), 'any');
+
   const chainId = getChainId() || 1; // default to mainnet
   const address = ADDRESSES[chainId];
-  return { web3, address, chainId };
+  return {
+    web3,
+    address,
+    chainId,
+    provider,
+  };
+};
+
+// returns the contract instance
+const getContract = (abi, contractAddress) => {
+  const { provider } = getWeb3Details();
+  // const contract = new web3.eth.Contract(abi, address);
+  // return contract;
+
+  const contract = new ethers.Contract(
+    contractAddress,
+    abi,
+    provider.getSigner(),
+  );
+
+  return contract;
 };
 
 export const getComponentContract = () => {
-  const { web3, address } = getWeb3Details();
+  const { address } = getWeb3Details();
   const { componentRegistry } = address;
-  const contract = new web3.eth.Contract(
+  const contract = getContract(
     COMPONENT_REGISTRY_CONTRACT.abi,
     componentRegistry,
   );

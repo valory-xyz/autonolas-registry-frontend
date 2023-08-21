@@ -11,9 +11,8 @@ import { sendTransaction } from 'common-util/functions/sendTransaction';
 export const getComponentOwner = (id) => new Promise((resolve, reject) => {
   const contract = getComponentContract();
 
-  contract.methods
+  contract
     .ownerOf(id)
-    .call()
     .then((response) => {
       resolve(response);
     })
@@ -42,9 +41,8 @@ const getComponentsHelper = (startIndex, promiseList, resolve) => {
 export const getComponentDetails = (id) => new Promise((resolve, reject) => {
   const contract = getComponentContract();
 
-  contract.methods
+  contract
     .getUnit(id)
-    .call()
     .then((information) => {
       resolve(information);
     })
@@ -57,9 +55,8 @@ export const getComponentDetails = (id) => new Promise((resolve, reject) => {
 // totals
 export const getTotalForAllComponents = () => new Promise((resolve, reject) => {
   const contract = getComponentContract();
-  contract.methods
+  contract
     .totalSupply()
-    .call()
     .then((response) => {
       resolve(response);
     })
@@ -70,9 +67,8 @@ export const getTotalForAllComponents = () => new Promise((resolve, reject) => {
 
 export const getTotalForMyComponents = (account) => new Promise((resolve, reject) => {
   const contract = getComponentContract();
-  contract.methods
+  contract
     .balanceOf(account)
-    .call()
     .then((response) => {
       resolve(response);
     })
@@ -84,12 +80,11 @@ export const getTotalForMyComponents = (account) => new Promise((resolve, reject
 export const getFilteredComponents = async (searchValue, account) => {
   const contract = getComponentContract();
   const total = await getTotalForAllComponents();
-  const { getUnit } = contract.methods;
 
   return getListByAccount({
     searchValue,
     total,
-    getUnit,
+    getUnit: contract.getUnit,
     getOwner: getComponentOwner,
     account,
   });
@@ -107,7 +102,7 @@ export const getComponents = (total, nextPage) => new Promise((resolve, reject) 
     const { first, last } = getFirstAndLastIndex(total, nextPage);
     for (let i = first; i <= last; i += 1) {
       const componentId = `${i}`;
-      const result = contract.methods.getUnit(componentId).call();
+      const result = contract.getUnit(componentId);
       allComponentsPromises.push(result);
     }
 
@@ -121,9 +116,8 @@ export const getComponents = (total, nextPage) => new Promise((resolve, reject) 
 export const getComponentHashes = (id) => new Promise((resolve, reject) => {
   const contract = getComponentContract();
 
-  contract.methods
+  contract
     .getUpdatedHashes(id)
-    .call()
     .then((response) => {
       resolve(response);
     })
@@ -137,7 +131,7 @@ export const updateComponentHashes = (account, id, newHash) => {
   const contract = getMechMinterContract();
 
   // 0 to indicate `components`
-  const fn = contract.methods
+  const fn = contract
     .updateHash('0', id, `0x${newHash}`)
     .send({ from: account });
 
@@ -154,9 +148,8 @@ export const updateComponentHashes = (account, id, newHash) => {
 export const getTokenUri = (id) => new Promise((resolve, reject) => {
   const contract = getComponentContract();
 
-  contract.methods
+  contract
     .tokenURI(id)
-    .call()
     .then((response) => {
       resolve(response);
     })
