@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import Web3 from 'web3';
 import { Web3Modal, Web3Button, Web3NetworkSwitch } from '@web3modal/react';
 import { useAccount, useNetwork, useBalance } from 'wagmi';
 import { Grid } from 'antd';
@@ -70,16 +69,10 @@ export const LoginV2 = ({
         || (await connector?.getProvider?.());
 
       if (modalProvider) {
-        // We plug the initial `provider` and get back
-        // a Web3Provider. This will add on methods and
-        // event listeners such as `.on()` will be different.
-        const wProvider = new Web3(modalProvider);
-
         // *******************************************************
         // ************ setting to the window object! ************
         // *******************************************************
         window.MODAL_PROVIDER = modalProvider;
-        window.WEB3_PROVIDER = wProvider;
 
         if (modalProvider?.on) {
           // https://docs.ethers.io/v5/concepts/best-practices/#best-practices--network-changes

@@ -1,8 +1,6 @@
-import { ethers } from 'ethers';
 import { DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS } from 'util/constants';
 import {
   getServiceOwnerMultisigContract,
-  getMyProvider,
   getWeb3Details,
 } from 'common-util/Contracts';
 import { checkIfGnosisSafe, notifyError } from './index';
@@ -15,18 +13,17 @@ const FALLBACK_HANDLER_STORAGE_SLOT = '0x6c9a6c4a39284e37ed1cf53d337577d14212a48
  * @returns {Promise<boolean>} true if the owner address can mint
  */
 export const checkIfERC721Receive = async (account, ownerAddress) => {
-  const provider = new ethers.providers.Web3Provider(getMyProvider(), 'any');
+  const { provider } = getWeb3Details();
   const isSafe = await checkIfGnosisSafe(account, provider);
 
   if (isSafe) {
     try {
       const contract = getServiceOwnerMultisigContract(account);
-      const threshold = await contract.methods.getThreshold().call();
-      const owners = await contract.methods.getOwners().call();
+      const threshold = await contract.getThreshold();
+      const owners = await contract.getOwners();
 
       if (Number(threshold) > 0 && owners.length > 0) {
-        const { web3 } = getWeb3Details();
-        const contents = await web3.eth.getStorageAt(
+        const contents = await provider.getStorageAt(
           account,
           FALLBACK_HANDLER_STORAGE_SLOT,
         );

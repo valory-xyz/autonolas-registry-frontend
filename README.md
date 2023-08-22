@@ -2,13 +2,13 @@
 This repository contains the [Autonolas Registry](https://registry.olas.network/) frontend.
 
 ## Tech Stack
-- web3.js
 - ReactJS
 - NextJS
 - Styled-components
 - Ant Design
 - React-testing-library
 - Jest
+- etherJS
 
 ## Installation and Setup Instructions
 

@@ -77,15 +77,14 @@ export const CustomLayout = styled(Layout)`
 `;
 
 export const Logo = styled.div`
-  width: 110px;
   font-weight: bold;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: left;
   margin-left: 0.5rem;
-  margin-right: 3.5rem;
-  span {
+  margin-right: 1.5rem;
+  > span {
     margin-left: 0.5rem;
   }
 

@@ -28,7 +28,7 @@ export const getListByAccount = async ({
     const allListPromise = [];
     for (let i = 1; i <= total; i += 1) {
       const id = `${i}`;
-      const result = getUnit(id).call();
+      const result = getUnit(id);
       allListPromise.push(result);
     }
 
