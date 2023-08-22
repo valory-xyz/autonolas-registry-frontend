@@ -13,9 +13,8 @@ import { notifyError } from 'common-util/functions';
 export const getServiceOwner = (id) => new Promise((resolve, reject) => {
   const contract = getServiceContract();
 
-  contract.methods
+  contract
     .ownerOf(id)
-    .call()
     .then((response) => {
       resolve(response);
     })
@@ -29,9 +28,8 @@ export const getServiceOwner = (id) => new Promise((resolve, reject) => {
 export const getServiceDetails = (id) => new Promise((resolve, reject) => {
   const contract = getServiceContract();
 
-  contract.methods
+  contract
     .getService(id)
-    .call()
     .then(async (information) => {
       const owner = await getServiceOwner(id);
       resolve({ ...information, owner });
@@ -43,9 +41,8 @@ export const getServiceDetails = (id) => new Promise((resolve, reject) => {
 
 export const getTotalForMyServices = (account) => new Promise((resolve, reject) => {
   const contract = getServiceContract();
-  contract.methods
+  contract
     .balanceOf(account)
-    .call()
     .then((response) => {
       resolve(response);
     })
@@ -59,9 +56,8 @@ export const getTotalForMyServices = (account) => new Promise((resolve, reject) 
  */
 export const getTotalForAllServices = () => new Promise((resolve, reject) => {
   const contract = getServiceContract();
-  contract.methods
+  contract
     .totalSupply()
-    .call()
     .then((response) => {
       resolve(response);
     })
@@ -83,7 +79,7 @@ export const getServices = (total, nextPage, fetchAll = false) => new Promise((r
       : Math.min(nextPage * TOTAL_VIEW_COUNT, total);
 
     for (let i = first; i <= last; i += 1) {
-      const result = contract.methods.exists(`${i}`).call();
+      const result = contract.exists(`${i}`);
       existsPromises.push(result);
     }
 
@@ -144,10 +140,8 @@ export const getAgentParams = (values) => {
 
 export const getServiceHashes = (id) => new Promise((resolve, reject) => {
   const contract = getServiceContract();
-
-  contract.methods
+  contract
     .getPreviousHashes(id)
-    .call()
     .then((information) => {
       resolve(information);
     })
@@ -160,9 +154,8 @@ export const getServiceHashes = (id) => new Promise((resolve, reject) => {
 export const getTokenUri = (id) => new Promise((resolve, reject) => {
   const contract = getServiceContract();
 
-  contract.methods
+  contract
     .tokenURI(id)
-    .call()
     .then((response) => {
       resolve(response);
     })

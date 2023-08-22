@@ -76,6 +76,8 @@ const ListComponents = () => {
           }
         } catch (e) {
           console.error(e);
+        } finally {
+          setIsLoading(false);
         }
       }
     })();

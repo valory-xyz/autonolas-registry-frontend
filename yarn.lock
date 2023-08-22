@@ -66,7 +66,7 @@
   dependencies:
     "@ctrl/tinycolor" "^3.4.0"
 
-"@ant-design/cssinjs@^1.16.0":
+"@ant-design/cssinjs@^1.16.0", "@ant-design/cssinjs@^1.16.2":
   version "1.16.2"
   resolved "https://registry.yarnpkg.com/@ant-design/cssinjs/-/cssinjs-1.16.2.tgz#4bb4156d721f76043d9a1300038be9f862b1c23a"
   integrity sha512-W+LT6Xm5sEYZn7ocMAIP9LvX99woxGg1aYu15o608/uUAaJDR7LrxBu/5cnMLa6AQK1829zdoKmRnRFOxAgzEg==
@@ -17113,7 +17113,7 @@ web3-utils@1.10.0:
     randombytes "^2.1.0"
     utf8 "3.0.0"
 
-web3@^1.6.1, web3@^1.7.3:
+web3@^1.6.1:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/web3/-/web3-1.10.0.tgz#2fde0009f59aa756c93e07ea2a7f3ab971091274"
   integrity sha512-YfKY9wSkGcM8seO+daR89oVTcbu18NsVfvOngzqMYGUU0pPSQmE57qQDvQzUeoIOHAnXEBNzrhjQJmm8ER0rng==

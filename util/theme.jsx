@@ -20,3 +20,42 @@ export const TRANSITION = {
 export const OTHERS = {
   borderRadius: '5px',
 };
+
+/**
+ * @type {import('antd').ThemeConfig}
+ */
+export const themeConfig = {
+  token: {
+    colorPrimary: COLOR.PRIMARY,
+    fontSize: 18,
+    borderRadius: 5,
+    colorBgBase: COLOR.WHITE,
+    colorTextPlaceholder: COLOR.GREY_2,
+    colorLink: COLOR.PRIMARY,
+    controlHeight: 42,
+  },
+  components: {
+    Layout: {
+      colorBgHeader: COLOR.WHITE,
+      // lineHeightHeader: 60,
+      lineHeight: 64,
+    },
+    Typography: {
+      // titleMarginBottom: 0,
+    },
+    // Input: {
+    //   height: 50,
+    // }
+    Tabs: {
+      // motionDurationFast: 0,
+      motionDurationMid: '0.1s',
+      motionDurationSlow: '0.1s',
+      // borderRadius: 18,
+      // colorBorder: 'transparent',
+      // colorBgBase: COLOR.BLACK,
+    },
+    Pagination: {
+      itemSize: 30,
+    },
+  },
+};

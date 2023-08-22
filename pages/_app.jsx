@@ -3,9 +3,9 @@ import Head from 'next/head';
 import { createWrapper } from 'next-redux-wrapper';
 import { ConfigProvider } from 'antd';
 import PropTypes from 'prop-types';
-import { COLOR } from '@autonolas/frontend-library';
 
 import { WagmiConfig } from 'wagmi';
+import { themeConfig } from 'util/theme';
 import GlobalStyle from 'components/GlobalStyles';
 import Layout from 'components/Layout';
 import { wagmiConfig } from 'common-util/Login/config';
@@ -33,50 +33,13 @@ class MyApp extends App {
             content="View and manage components, agents and services via the Autonolas on-chain registry."
           />
         </Head>
-        <WagmiConfig config={wagmiConfig}>
-          <ConfigProvider
-            theme={{
-              token: {
-                colorPrimary: COLOR.PRIMARY,
-                fontSize: 18,
-                borderRadius: 5,
-                colorBgBase: COLOR.WHITE,
-                colorTextPlaceholder: COLOR.GREY_2,
-                colorLink: COLOR.PRIMARY,
-                controlHeight: 42,
-              },
-              components: {
-                Layout: {
-                  colorBgHeader: COLOR.WHITE,
-                  // lineHeightHeader: 60,
-                  lineHeight: 64,
-                },
-                Typography: {
-                  // titleMarginBottom: 0,
-                },
-                // Input: {
-                //   height: 50,
-                // }
-                Tabs: {
-                  // motionDurationFast: 0,
-                  motionDurationMid: '0.1s',
-                  motionDurationSlow: '0.1s',
-                  // borderRadius: 18,
-                  // colorBorder: 'transparent',
-                  // colorBgBase: COLOR.BLACK,
-                },
-                Pagination: {
-                  itemSize: 30,
-                },
-              },
-            }}
-
-          >
+        <ConfigProvider theme={themeConfig}>
+          <WagmiConfig config={wagmiConfig}>
             <Layout>
               <Component {...pageProps} />
             </Layout>
-          </ConfigProvider>
-        </WagmiConfig>
+          </WagmiConfig>
+        </ConfigProvider>
       </>
     );
   }

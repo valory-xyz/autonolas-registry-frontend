@@ -85,7 +85,7 @@ const Service = ({ account }) => {
         ? [token, ...commonParams]
         : [...commonParams];
 
-      const fn = contract.methods.update(...params).send({ from: account });
+      const fn = contract.update(...params).send({ from: account });
       sendTransaction(fn, account)
         .then(() => {
           notification.success({ message: 'Service Updated' });

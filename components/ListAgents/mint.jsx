@@ -42,7 +42,7 @@ const MintAgent = () => {
 
       const contract = getMechMinterContract(account);
 
-      const fn = contract.methods
+      const fn = contract
         .create(
           '1',
           values.owner_address,

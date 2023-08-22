@@ -8,9 +8,8 @@ import { sendTransaction } from 'common-util/functions/sendTransaction';
 export const getAgentOwner = (agentId) => new Promise((resolve, reject) => {
   const contract = getAgentContract();
 
-  contract.methods
+  contract
     .ownerOf(agentId)
-    .call()
     .then((response) => {
       resolve(response);
     })
@@ -42,9 +41,8 @@ const getAgentsHelper = (startIndex, promiseList, resolve, reject) => {
 export const getAgentDetails = (agentId) => new Promise((resolve, reject) => {
   const contract = getAgentContract();
 
-  contract.methods
+  contract
     .getUnit(agentId)
-    .call()
     .then((information) => {
       resolve(information);
     })
@@ -56,9 +54,8 @@ export const getAgentDetails = (agentId) => new Promise((resolve, reject) => {
 
 export const getTotalForMyAgents = (account) => new Promise((resolve, reject) => {
   const contract = getAgentContract();
-  contract.methods
+  contract
     .balanceOf(account)
-    .call()
     .then((response) => {
       resolve(response);
     })
@@ -72,9 +69,8 @@ export const getTotalForMyAgents = (account) => new Promise((resolve, reject) =>
  */
 export const getTotalForAllAgents = () => new Promise((resolve, reject) => {
   const contract = getAgentContract();
-  contract.methods
+  contract
     .totalSupply()
-    .call()
     .then((response) => {
       resolve(response);
     })
@@ -92,7 +88,7 @@ export const getAgents = (total, nextPage) => new Promise((resolve, reject) => {
     const last = Math.min(nextPage * TOTAL_VIEW_COUNT, total);
     for (let i = first; i <= last; i += 1) {
       const agentId = `${i}`;
-      const result = contract.methods.getUnit(agentId).call();
+      const result = contract.getUnit(agentId);
       allAgentsPromises.push(result);
     }
 
@@ -106,7 +102,7 @@ export const getAgents = (total, nextPage) => new Promise((resolve, reject) => {
 export const getFilteredAgents = async (searchValue, account) => {
   const contract = getAgentContract();
   const total = await getTotalForAllAgents();
-  const { getUnit } = contract.methods;
+  const { getUnit } = contract;
 
   return getListByAccount({
     searchValue,
@@ -120,9 +116,8 @@ export const getFilteredAgents = async (searchValue, account) => {
 export const getAgentHashes = (agentId) => new Promise((resolve, reject) => {
   const contract = getAgentContract();
 
-  contract.methods
+  contract
     .getUpdatedHashes(agentId)
-    .call()
     .then((response) => {
       resolve(response);
     })
@@ -135,7 +130,7 @@ export const getAgentHashes = (agentId) => new Promise((resolve, reject) => {
 export const updateAgentHashes = (account, id, newHash) => {
   const contract = getMechMinterContract();
 
-  const fn = contract.methods
+  const fn = contract
     .updateHash('1', id, `0x${newHash}`)
     .send({ from: account });
 
@@ -152,9 +147,8 @@ export const updateAgentHashes = (account, id, newHash) => {
 export const getTokenUri = (id) => new Promise((resolve, reject) => {
   const contract = getAgentContract();
 
-  contract.methods
+  contract
     .tokenURI(id)
-    .call()
     .then((response) => {
       resolve(response);
     })

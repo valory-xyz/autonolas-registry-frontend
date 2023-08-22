@@ -1,4 +1,4 @@
-import Web3 from 'web3';
+import { ethers } from 'ethers';
 import {
   REGISTRIES_MANAGER_CONTRACT,
   AGENT_REGISTRY_CONTRACT,
@@ -96,16 +96,36 @@ export const getWeb3Details = () => {
    * - currentProvider by metamask or
    * - fallback to remote mainnet [remote node provider](https://web3js.readthedocs.io/en/v1.7.5/web3.html#example-remote-node-provider)
    */
-  const web3 = new Web3(getMyProvider());
+  const provider = new ethers.providers.Web3Provider(getMyProvider(), 'any');
+
   const chainId = getChainId() || 1; // default to mainnet
   const address = ADDRESSES[chainId];
-  return { web3, address, chainId };
+  return {
+    address,
+    chainId,
+    provider,
+  };
+};
+
+// returns the contract instance
+const getContract = (abi, contractAddress) => {
+  const { provider } = getWeb3Details();
+  // const contract = getContract(abi, address);
+  // return contract;
+
+  const contract = new ethers.Contract(
+    contractAddress,
+    abi,
+    provider.getSigner(),
+  );
+
+  return contract;
 };
 
 export const getComponentContract = () => {
-  const { web3, address } = getWeb3Details();
+  const { address } = getWeb3Details();
   const { componentRegistry } = address;
-  const contract = new web3.eth.Contract(
+  const contract = getContract(
     COMPONENT_REGISTRY_CONTRACT.abi,
     componentRegistry,
   );
@@ -113,20 +133,17 @@ export const getComponentContract = () => {
 };
 
 export const getAgentContract = () => {
-  const { web3, address } = getWeb3Details();
+  const { address } = getWeb3Details();
   const { agentRegistry } = address;
-  const contract = new web3.eth.Contract(
-    AGENT_REGISTRY_CONTRACT.abi,
-    agentRegistry,
-  );
+  const contract = getContract(AGENT_REGISTRY_CONTRACT.abi, agentRegistry);
   return contract;
 };
 
 export const getMechMinterContract = () => {
-  const { web3, address } = getWeb3Details();
+  const { address } = getWeb3Details();
   const { registriesManager } = address;
 
-  const contract = new web3.eth.Contract(
+  const contract = getContract(
     REGISTRIES_MANAGER_CONTRACT.abi,
     registriesManager,
   );
@@ -135,9 +152,9 @@ export const getMechMinterContract = () => {
 };
 
 export const getServiceContract = () => {
-  const { web3, address, chainId } = getWeb3Details();
+  const { address, chainId } = getWeb3Details();
   const { serviceRegistry } = address;
-  const contract = new web3.eth.Contract(
+  const contract = getContract(
     isL1Network(chainId)
       ? SERVICE_REGISTRY_CONTRACT.abi
       : SERVICE_REGISTRY_L2.abi,
@@ -147,9 +164,9 @@ export const getServiceContract = () => {
 };
 
 export const getServiceManagerContract = () => {
-  const { web3, address } = getWeb3Details();
+  const { address } = getWeb3Details();
   const { serviceManager } = address;
-  const contract = new web3.eth.Contract(
+  const contract = getContract(
     SERVICE_MANAGER_TOKEN_CONTRACT.abi,
     serviceManager,
   );
@@ -157,19 +174,16 @@ export const getServiceManagerContract = () => {
 };
 
 export const getServiceManagerL2Contract = () => {
-  const { web3, address } = getWeb3Details();
+  const { address } = getWeb3Details();
   const { serviceManager } = address;
-  const contract = new web3.eth.Contract(
-    SERVICE_MANAGER_CONTRACT_L2.abi,
-    serviceManager,
-  );
+  const contract = getContract(SERVICE_MANAGER_CONTRACT_L2.abi, serviceManager);
   return contract;
 };
 
 export const getServiceRegistryTokenUtilityContract = () => {
-  const { web3, address } = getWeb3Details();
+  const { address } = getWeb3Details();
   const { serviceRegistryTokenUtility } = address;
-  const contract = new web3.eth.Contract(
+  const contract = getContract(
     SERVICE_REGISTRY_TOKEN_UTILITY_CONTRACT.abi,
     serviceRegistryTokenUtility,
   );
@@ -177,9 +191,9 @@ export const getServiceRegistryTokenUtilityContract = () => {
 };
 
 export const getOperatorWhitelistContract = () => {
-  const { web3, address } = getWeb3Details();
+  const { address } = getWeb3Details();
   const { operatorWhitelist } = address;
-  const contract = new web3.eth.Contract(
+  const contract = getContract(
     OPERATOR_WHITELIST_CONTRACT.abi,
     operatorWhitelist,
   );
@@ -187,32 +201,22 @@ export const getOperatorWhitelistContract = () => {
 };
 
 export const getGenericErc20Contract = (tokenAddress) => {
-  const { web3 } = getWeb3Details();
-  const contract = new web3.eth.Contract(
-    GENERIC_ERC20_CONTRACT.abi,
-    tokenAddress,
-  );
+  const contract = getContract(GENERIC_ERC20_CONTRACT.abi, tokenAddress);
   return contract;
 };
 
 export const getSignMessageLibContract = (address) => {
-  const { web3 } = getWeb3Details();
-  const contract = new web3.eth.Contract(
-    SIGN_MESSAGE_LIB_CONTRACT.abi,
-    address,
-  );
+  const contract = getContract(SIGN_MESSAGE_LIB_CONTRACT.abi, address);
   return contract;
 };
 
 export const getServiceOwnerMultisigContract = (address) => {
-  const { web3 } = getWeb3Details();
-  const contract = new web3.eth.Contract(GNOSIS_SAFE_CONTRACT.abi, address);
+  const contract = getContract(GNOSIS_SAFE_CONTRACT.abi, address);
   return contract;
 };
 
 export const getMultiSendContract = (address) => {
-  const { web3 } = getWeb3Details();
-  const contract = new web3.eth.Contract(MULTI_SEND_CONTRACT.abi, address);
+  const contract = getContract(MULTI_SEND_CONTRACT.abi, address);
   return contract;
 };
 

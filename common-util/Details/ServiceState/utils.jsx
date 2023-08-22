@@ -35,9 +35,8 @@ export const getNumberOfAgentAddress = (agentAddresses) => {
  */
 export const getBonds = (id, tableDataSource) => new Promise((resolve, reject) => {
   const serviceContract = getServiceContract();
-  serviceContract.methods
+  serviceContract
     .getAgentParams(id)
-    .call()
     .then((response) => {
       const bondsArray = [];
       const slotsArray = [];
@@ -91,7 +90,7 @@ export const getBonds = (id, tableDataSource) => new Promise((resolve, reject) =
 export const onTerminate = (account, id) => new Promise((resolve, reject) => {
   const contract = getServiceManagerContract();
 
-  const fn = contract.methods.terminate(id).send({ from: account });
+  const fn = contract.terminate(id).send({ from: account });
 
   sendTransaction(fn, account)
     .then((information) => {
@@ -107,9 +106,8 @@ export const onTerminate = (account, id) => new Promise((resolve, reject) => {
 export const getServiceOwner = (id) => new Promise((resolve, reject) => {
   const contract = getServiceContract();
 
-  contract.methods
+  contract
     .ownerOf(id)
-    .call()
     .then((response) => {
       resolve(response);
     })
@@ -121,9 +119,8 @@ export const getServiceOwner = (id) => new Promise((resolve, reject) => {
 export const getTokenDetailsRequest = (serviceId) => new Promise((resolve, reject) => {
   const contract = getServiceRegistryTokenUtilityContract();
 
-  contract.methods
+  contract
     .mapServiceIdTokenDeposit(serviceId)
-    .call()
     .then((response) => {
       resolve(response);
     })
@@ -142,9 +139,8 @@ const hasSufficientTokenRequest = ({ account, chainId, serviceId }) => new Promi
     .then(({ token }) => {
       const contract = getGenericErc20Contract(token);
 
-      contract.methods
+      contract
         .allowance(account, ADDRESSES[chainId].serviceRegistryTokenUtility)
-        .call()
         .then((response) => {
           resolve(
             !(ethers.BigNumber.from(response) < ethers.constants.MaxUint256),
@@ -168,8 +164,7 @@ const approveToken = ({ account, chainId, serviceId }) => new Promise((resolve, 
   getTokenDetailsRequest(serviceId)
     .then(({ token }) => {
       const contract = getGenericErc20Contract(token);
-
-      const fn = contract.methods
+      const fn = contract
         .approve(
           ADDRESSES[chainId].serviceRegistryTokenUtility,
           ethers.constants.MaxUint256,
@@ -236,8 +231,7 @@ export const mintTokenRequest = ({ account, serviceId }) => new Promise((resolve
   getTokenDetailsRequest(serviceId)
     .then(({ token }) => {
       const contract = getGenericErc20Contract(token);
-
-      const fn = contract.methods
+      const fn = contract
         .mint(account, ethers.utils.parseEther('1000'))
         .send({ from: account });
 
@@ -256,7 +250,7 @@ export const mintTokenRequest = ({ account, serviceId }) => new Promise((resolve
 export const onActivateRegistration = (account, id, deposit) => new Promise((resolve, reject) => {
   const contract = getServiceManagerContract();
 
-  const fn = contract.methods
+  const fn = contract
     .activateRegistration(id)
     .send({ from: account, value: deposit });
 
@@ -287,9 +281,7 @@ export const getServiceTableDataSource = async (id, agentIds) => new Promise((re
          */
       const numAgentInstancesArray = await Promise.all(
         agentIds.map(async (agentId) => {
-          const info = await contract.methods
-            .getInstancesForAgentId(id, agentId)
-            .call();
+          const info = await contract.getInstancesForAgentId(id, agentId);
           return info.numAgentInstances;
         }),
       );
@@ -317,9 +309,7 @@ export const checkIfAgentInstancesAreValid = async ({
   const contract = getServiceContract();
 
   // check if the operator is registered as an agent instance already
-  const operator = await contract.methods
-    .mapAgentInstanceOperators(account)
-    .call();
+  const operator = await contract.mapAgentInstanceOperators(account);
   if (operator !== DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS) {
     notifyError('The operator is registered as an agent instance already.');
     return false;
@@ -327,9 +317,7 @@ export const checkIfAgentInstancesAreValid = async ({
 
   // check if the agent instances are valid
   const ifValidPromiseArray = agentInstances.map(async (agentInstance) => {
-    const isValid = await contract.methods
-      .mapAgentInstanceOperators(agentInstance)
-      .call();
+    const isValid = await contract.mapAgentInstanceOperators(agentInstance);
     return isValid;
   });
 
@@ -356,7 +344,7 @@ export const onStep2RegisterAgents = ({
 
   getBonds(serviceId, dataSource)
     .then(({ totalBonds }) => {
-      const fn = contract.methods
+      const fn = contract
         .registerAgents(serviceId, agentInstances, agentIds)
         .send({ from: account, value: `${totalBonds}` });
 
@@ -380,7 +368,7 @@ export const getTokenBondRequest = (id, source) => {
 
   return Promise.all(
     (source || []).map(async ({ agentId }) => {
-      const bond = await contract.methods.getAgentBond(id, agentId).call();
+      const bond = await contract.getAgentBond(id, agentId);
       return bond;
     }),
   );
@@ -390,9 +378,8 @@ export const getTokenBondRequest = (id, source) => {
 export const getServiceAgentInstances = (id) => new Promise((resolve, reject) => {
   const contract = getServiceContract();
 
-  contract.methods
+  contract
     .getAgentInstances(id)
-    .call()
     .then((response) => {
       resolve(response?.agentInstances);
     })
@@ -403,9 +390,7 @@ export const getServiceAgentInstances = (id) => new Promise((resolve, reject) =>
 
 export const onStep3Deploy = (account, id, radioValue, payload = '0x') => new Promise((resolve, reject) => {
   const contract = getServiceManagerContract();
-  const fn = contract.methods
-    .deploy(id, radioValue, payload)
-    .send({ from: account });
+  const fn = contract.deploy(id, radioValue, payload).send({ from: account });
 
   sendTransaction(fn, account)
     .then((information) => {
@@ -422,15 +407,14 @@ export const onStep3Deploy = (account, id, radioValue, payload = '0x') => new Pr
 export const getAgentInstanceAndOperator = (id) => new Promise((resolve, reject) => {
   const contract = getServiceContract();
 
-  contract.methods
+  contract
     .getAgentInstances(id)
-    .call()
     .then(async (response) => {
       const data = await Promise.all(
         (response?.agentInstances || []).map(async (key, index) => {
-          const operatorAddress = await contract.methods
-            .mapAgentInstanceOperators(key)
-            .call();
+          const operatorAddress = await contract.mapAgentInstanceOperators(
+            key,
+          );
           return {
             id: `agent-instance-row-${index + 1}`,
             operatorAddress,
@@ -449,7 +433,7 @@ export const getAgentInstanceAndOperator = (id) => new Promise((resolve, reject)
 export const onStep5Unbond = (account, id) => new Promise((resolve, reject) => {
   const contract = getServiceManagerContract();
 
-  const fn = contract.methods.unbond(id).send({ from: account });
+  const fn = contract.unbond(id).send({ from: account });
   sendTransaction(fn, account)
     .then((information) => {
       resolve(information);
@@ -465,9 +449,8 @@ export const onStep5Unbond = (account, id) => new Promise((resolve, reject) => {
 export const checkIfServiceRequiresWhiltelisting = (serviceId) => new Promise((resolve, reject) => {
   const contract = getOperatorWhitelistContract();
 
-  contract.methods
+  contract
     .mapServiceIdOperatorsCheck(serviceId)
-    .call()
     .then((response) => {
       // if true: it is whitelisted by default
       // else we can whitelist using the input field
@@ -484,9 +467,8 @@ export const checkIfServiceRequiresWhiltelisting = (serviceId) => new Promise((r
 export const checkIfServiceIsWhitelisted = (serviceId, operatorAddress) => new Promise((resolve, reject) => {
   const contract = getOperatorWhitelistContract();
 
-  contract.methods
+  contract
     .isOperatorWhitelisted(serviceId, operatorAddress)
-    .call()
     .then((response) => {
       resolve(response);
     })
@@ -504,7 +486,7 @@ export const setOperatorsStatusesRequest = ({
 }) => new Promise((resolve, reject) => {
   const contract = getOperatorWhitelistContract();
 
-  const fn = contract.methods
+  const fn = contract
     .setOperatorsStatuses(
       serviceId,
       operatorAddresses,
@@ -526,7 +508,7 @@ export const setOperatorsStatusesRequest = ({
 export const setOperatorsCheckRequest = ({ account, serviceId, isChecked }) => new Promise((resolve, reject) => {
   const contract = getOperatorWhitelistContract();
 
-  const fn = contract.methods
+  const fn = contract
     .setOperatorsCheck(serviceId, isChecked)
     .send({ from: account });
 
