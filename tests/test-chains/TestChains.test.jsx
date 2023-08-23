@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 /* eslint-disable jest/expect-expect */
 import {
   COMPONENT_REGISTRY_CONTRACT,
@@ -11,7 +12,6 @@ import {
   OPERATOR_WHITELIST_CONTRACT,
 } from 'common-util/AbiAndAddresses';
 import { ADDRESSES } from 'common-util/Contracts';
-import fs from 'fs';
 
 const assert = require('assert');
 
