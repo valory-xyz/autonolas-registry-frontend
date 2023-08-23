@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable jest/expect-expect */
 import {
@@ -13,9 +14,7 @@ import {
 } from 'common-util/AbiAndAddresses';
 import { ADDRESSES } from 'common-util/Contracts';
 
-const assert = require('assert');
-
-const fetch = require('node-fetch');
+import fetch from 'node-fetch';
 
 describe('test-chains/TestChains.jsx', () => {
   it(
@@ -57,7 +56,7 @@ describe('test-chains/TestChains.jsx', () => {
               const remoteArtifact = await response.json();
               // Stringify the remote ABI and compare with the local one
               const remoteABI = JSON.stringify(remoteArtifact.abi);
-              assert(localABI === remoteABI);
+              expect(localABI).toBe(remoteABI);
 
               // Check the address
               const lowLetter = localArtifacts[k].contractName.charAt(0).toLowerCase()
@@ -68,7 +67,7 @@ describe('test-chains/TestChains.jsx', () => {
               );
               const addressStructJSON = JSON.parse(addressStruct);
               const localAddress = addressStructJSON[lowLetter];
-              assert(localAddress === contracts[j].address);
+              expect(localAddress).toBe(contracts[j].address);
             }
           }
         }
