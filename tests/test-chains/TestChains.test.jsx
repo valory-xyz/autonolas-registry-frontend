@@ -14,7 +14,7 @@ import {
 } from 'common-util/AbiAndAddresses';
 import { ADDRESSES } from 'common-util/Contracts';
 
-import fetch from 'node-fetch';
+const fetch = require('node-fetch');
 
 describe('test-chains/TestChains.jsx', () => {
   it(
