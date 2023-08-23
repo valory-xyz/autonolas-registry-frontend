@@ -139,10 +139,16 @@ export const getServiceContract = () => {
   let contract;
   if (isL1Network(chainId)) {
     const { serviceRegistry } = address;
-    contract = new web3.eth.Contract(SERVICE_REGISTRY_CONTRACT.abi, serviceRegistry);
+    contract = new web3.eth.Contract(
+      SERVICE_REGISTRY_CONTRACT.abi,
+      serviceRegistry,
+    );
   } else {
     const { serviceRegistryL2 } = address;
-    contract = new web3.eth.Contract(SERVICE_REGISTRY_L2.abi, serviceRegistryL2);
+    contract = new web3.eth.Contract(
+      SERVICE_REGISTRY_L2.abi,
+      serviceRegistryL2,
+    );
   }
   return contract;
 };
