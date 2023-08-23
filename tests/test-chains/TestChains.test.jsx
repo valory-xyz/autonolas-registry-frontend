@@ -50,10 +50,11 @@ describe('test-chains/TestChains.jsx', () => {
             if (contracts[j].name === localArtifacts[k].contractName) {
               // Get local and configuration ABIs, stringify them
               const localABI = JSON.stringify(localArtifacts[k].abi);
-              // TODO: update with fetching the URL
+
               // Get up-to-date remote contract artifact and its ABI
               response = await fetch(registriesRepo + contracts[j].artifact);
               const remoteArtifact = await response.json();
+
               // Stringify the remote ABI and compare with the local one
               const remoteABI = JSON.stringify(remoteArtifact.abi);
               expect(localABI).toBe(remoteABI);
