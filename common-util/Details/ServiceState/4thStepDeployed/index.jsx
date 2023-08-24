@@ -5,7 +5,7 @@ import {
   Table, Space, Button, Grid,
 } from 'antd/lib';
 import get from 'lodash/get';
-import { AddressLink } from '@autonolas/frontend-library';
+import { AddressLink } from 'common-util/AddressLink';
 import { setAgentInstancesAndOperators } from 'store/service/state/actions';
 import { getAgentInstanceAndOperator, onTerminate } from '../utils';
 
