@@ -136,21 +136,16 @@ export const getMechMinterContract = () => {
 
 export const getServiceContract = () => {
   const { web3, address, chainId } = getWeb3Details();
-  let contract;
   if (isL1Network(chainId)) {
     const { serviceRegistry } = address;
-    contract = new web3.eth.Contract(
+    return new web3.eth.Contract(
       SERVICE_REGISTRY_CONTRACT.abi,
       serviceRegistry,
     );
-  } else {
-    const { serviceRegistryL2 } = address;
-    contract = new web3.eth.Contract(
-      SERVICE_REGISTRY_L2.abi,
-      serviceRegistryL2,
-    );
   }
-  return contract;
+
+  const { serviceRegistryL2 } = address;
+  return new web3.eth.Contract(SERVICE_REGISTRY_L2.abi, serviceRegistryL2);
 };
 
 export const getServiceManagerContract = () => {
@@ -225,6 +220,7 @@ export const getMultiSendContract = (address) => {
 
 /**
  * Other details
+ * Addresses: https://github.com/safe-global/safe-deployments/tree/main/src/assets/v1.3.0
  */
 
 export const multisigAddresses = {
@@ -258,6 +254,8 @@ export const safeMultiSend = {
   5: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
   100: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
   137: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
+  10200: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
+  80001: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
   31337: ['0x9d4454B023096f34B160D6B654540c56A1F81688'],
   [LOCAL_FORK_ID]: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
   [LOCAL_FORK_ID_GNOSIS]: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
@@ -269,8 +267,23 @@ export const rpc = {
   5: process.env.NEXT_PUBLIC_GOERLI_URL,
   100: process.env.NEXT_PUBLIC_GNOSIS_URL,
   137: process.env.NEXT_PUBLIC_POLYGON_URL,
+  10200: process.env.NEXT_PUBLIC_GNOSIS_CHIADO_URL,
+  80001: process.env.NEXT_PUBLIC_POLYGON_MUMBAI_URL,
   31337: process.env.NEXT_PUBLIC_AUTONOLAS_URL,
   [LOCAL_FORK_ID]: 'http://localhost:8545',
   [LOCAL_FORK_ID_GNOSIS]: 'http://localhost:8545',
   [LOCAL_FORK_ID_POLYGON]: 'http://localhost:8545',
+};
+
+export const FALLBACK_HANDLER = {
+  1: '0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4',
+  5: '0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4',
+  100: '0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4',
+  137: '0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4',
+  10200: '0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4',
+  80001: '0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4',
+  31337: '0x0000000000000000000000000000000000000000',
+  [LOCAL_FORK_ID]: '0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4',
+  [LOCAL_FORK_ID_GNOSIS]: '0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4',
+  [LOCAL_FORK_ID_POLYGON]: '0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4',
 };

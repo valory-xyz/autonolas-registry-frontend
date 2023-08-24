@@ -70,6 +70,8 @@ export const isPolygon = (chainId) => getChainId(chainId) === 137;
 
 export const isPolygonMumbai = (chainId) => getChainId(chainId) === 80001;
 
+export const isGnosisChiado = (chainId) => getChainId(chainId) === 10200;
+
 export const getSupportedNetworks = () => Object.keys(ADDRESSES).map((e) => Number(e));
 
 export const isLocalNetwork = (chainId) => getChainId(chainId) === 31337;
