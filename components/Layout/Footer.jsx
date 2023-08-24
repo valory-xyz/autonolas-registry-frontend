@@ -7,6 +7,7 @@ import {
   isGnosis,
   isPolygon,
   isPolygonMumbai,
+  isGnosisChiado,
 } from 'common-util/functions';
 import { useHelpers } from 'common-util/hooks';
 import Socials from './Socials';
@@ -73,6 +74,9 @@ const ContractInfo = () => {
     }
     if (isPolygonMumbai(chainId)) {
       return `https://mumbai.polygonscan.com/address/${address}`;
+    }
+    if (isGnosisChiado(chainId)) {
+      return `https://gnosis-chiado.blockscout.com/address/${address}`;
     }
     return `https://etherscan.io/address/${address}`;
   };
