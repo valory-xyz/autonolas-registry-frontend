@@ -1,6 +1,9 @@
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { Footer as CommonFooter } from '@autonolas/frontend-library';
+import {
+  Footer as CommonFooter,
+  isL1Network,
+} from '@autonolas/frontend-library';
 import { ADDRESSES } from 'common-util/Contracts';
 import {
   isGoerli,
@@ -50,7 +53,9 @@ const ContractInfo = () => {
         registryText: 'ServiceRegistry',
         managerText: 'ServiceManager',
         registry: addresses.serviceRegistry,
-        manager: addresses.serviceManager,
+        manager: isL1Network(chainId)
+          ? addresses.serviceManagerToken
+          : addresses.serviceManager,
       };
     }
 
@@ -62,6 +67,7 @@ const ContractInfo = () => {
     };
   };
 
+  // TODO: move to autonolas-library
   const getEtherscanLink = (address) => {
     if (isGoerli(chainId)) {
       return `https://goerli.etherscan.io/address/${address}`;

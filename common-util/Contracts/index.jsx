@@ -225,6 +225,7 @@ export const getMultiSendContract = (address) => {
 
 /**
  * Other details
+ * Addresses: https://github.com/safe-global/safe-deployments/tree/main/src/assets/v1.3.0
  */
 
 export const multisigAddresses = {
@@ -258,8 +259,8 @@ export const safeMultiSend = {
   5: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
   100: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
   137: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
-  10200: ['TODO'], // TODO: add safe multisend address
-  80001: ['TODO'], // TODO: add safe multisend address
+  10200: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
+  80001: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
   31337: ['0x9d4454B023096f34B160D6B654540c56A1F81688'],
   [LOCAL_FORK_ID]: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
   [LOCAL_FORK_ID_GNOSIS]: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
