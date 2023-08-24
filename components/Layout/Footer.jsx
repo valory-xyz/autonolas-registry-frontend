@@ -1,9 +1,6 @@
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import {
-  Footer as CommonFooter,
-  isL1Network,
-} from '@autonolas/frontend-library';
+import { Footer as CommonFooter } from '@autonolas/frontend-library';
 import { ADDRESSES } from 'common-util/Contracts';
 import {
   isGoerli,
@@ -11,6 +8,7 @@ import {
   isPolygon,
   isPolygonMumbai,
   isGnosisChiado,
+  isL1Network,
 } from 'common-util/functions';
 import { useHelpers } from 'common-util/hooks';
 import Socials from './Socials';
@@ -52,7 +50,9 @@ const ContractInfo = () => {
       return {
         registryText: 'ServiceRegistry',
         managerText: 'ServiceManager',
-        registry: addresses.serviceRegistry,
+        registry: isL1Network(chainId)
+          ? addresses.serviceRegistry
+          : addresses.serviceRegistryL2,
         manager: isL1Network(chainId)
           ? addresses.serviceManagerToken
           : addresses.serviceManager,
