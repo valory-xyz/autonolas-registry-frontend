@@ -17,6 +17,7 @@ const NavigationMenu = dynamic(() => import('./Menu'), { ssr: false });
 
 const { Header, Content } = AntdLayout;
 
+// eslint-disable-next-line no-unused-vars
 const Layout = ({ children }) => {
   const router = useRouter();
   const { chainId, isValidChainId } = useHelpers();
@@ -58,7 +59,7 @@ const Layout = ({ children }) => {
       <Content className="site-layout">
         <div className="site-layout-background">
           {/* chainId has to be set in redux before rendering any components */}
-          {chainId ? children : null}
+          {/* {chainId ? children : null} */}
         </div>
       </Content>
 
