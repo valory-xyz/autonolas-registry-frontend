@@ -9,6 +9,11 @@ const nextConfig = {
   compiler: {
     styledComponents: true,
   },
+  pages: {
+    '*': {
+      maxChunkSize: 30000,
+    },
+  },
 };
 
 module.exports = withBundleAnalyzer({

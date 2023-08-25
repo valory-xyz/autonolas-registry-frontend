@@ -7,7 +7,7 @@
     "test": "jest",
     "testw": "jest --watch",
     "testc": "jest --coverage --verbose",
-    "analyze": "ANALYZE=true yarn build"
+    "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
     "@ant-design/cssinjs": "^1.16.2",
