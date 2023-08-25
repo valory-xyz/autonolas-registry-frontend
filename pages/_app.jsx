@@ -28,6 +28,7 @@ class MyApp extends App {
 
     return (
       <>
+        Hello world
         {/* <GlobalStyle />
         <Head>
           <title>Autonolas Registry</title>
