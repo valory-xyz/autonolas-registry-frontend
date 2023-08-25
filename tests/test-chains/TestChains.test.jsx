@@ -10,30 +10,34 @@ import {
   SERVICE_REGISTRY_L2,
   SERVICE_MANAGER_CONTRACT,
   SERVICE_MANAGER_TOKEN_CONTRACT,
-  OPERATOR_WHITELIST_CONTRACT
+  OPERATOR_WHITELIST_CONTRACT,
 } from 'common-util/AbiAndAddresses';
-import { ADDRESSES, multisigAddresses, multisigSameAddresses } from 'common-util/Contracts';
+import {
+  ADDRESSES,
+  multisigAddresses,
+  multisigSameAddresses,
+} from 'common-util/Contracts';
 
 const fetch = require('node-fetch');
+
+const localArtifacts = [
+  COMPONENT_REGISTRY_CONTRACT,
+  AGENT_REGISTRY_CONTRACT,
+  REGISTRIES_MANAGER_CONTRACT,
+  SERVICE_REGISTRY_CONTRACT,
+  SERVICE_REGISTRY_TOKEN_UTILITY_CONTRACT,
+  SERVICE_REGISTRY_L2,
+  SERVICE_MANAGER_CONTRACT,
+  SERVICE_MANAGER_TOKEN_CONTRACT,
+  OPERATOR_WHITELIST_CONTRACT,
+];
+const registriesRepo = 'https://raw.githubusercontent.com/valory-xyz/autonolas-registries/main/';
 
 describe('test-chains/TestChains.jsx', () => {
   it(
     'check contract addresses and ABIs',
     async () => {
-      const localArtifacts = [
-        COMPONENT_REGISTRY_CONTRACT,
-        AGENT_REGISTRY_CONTRACT,
-        REGISTRIES_MANAGER_CONTRACT,
-        SERVICE_REGISTRY_CONTRACT,
-        SERVICE_REGISTRY_TOKEN_UTILITY_CONTRACT,
-        SERVICE_REGISTRY_L2,
-        SERVICE_MANAGER_CONTRACT,
-        SERVICE_MANAGER_TOKEN_CONTRACT,
-        OPERATOR_WHITELIST_CONTRACT,
-      ];
-
       // Registries repository
-      const registriesRepo = 'https://raw.githubusercontent.com/valory-xyz/autonolas-registries/main/';
       // Fetch the actual config
       let response = await fetch(`${registriesRepo}docs/configuration.json`);
       const parsedConfig = await response.json();
@@ -46,18 +50,18 @@ describe('test-chains/TestChains.jsx', () => {
         for (let j = 0; j < contracts.length; j += 1) {
           // Go over local artifacts
           for (let k = 0; k < localArtifacts.length; k += 1) {
-            // Check for the GnosisSafeMultisig address
+            const { chainId } = parsedConfig[i];
+
             if (contracts[j].name === 'GnosisSafeMultisig') {
-              expect(contracts[j].address).toBe(multisigAddresses[parsedConfig[i].chainId][0])
-              continue;
-            }
-            // Check for the GnosisSafeSameAddressMultisig address
-            if (contracts[j].name === 'GnosisSafeSameAddressMultisig') {
-              expect(contracts[j].address).toBe(multisigSameAddresses[parsedConfig[i].chainId][0])
-              continue;
-            }
-            // Take the configuration and local contract names that match
-            if (contracts[j].name === localArtifacts[k].contractName) {
+              // Check for the GnosisSafeMultisig address
+              expect(contracts[j].address).toBe(multisigAddresses[chainId][0]);
+            } else if (contracts[j].name === 'GnosisSafeSameAddressMultisig') {
+              // Check for the GnosisSafeSameAddressMultisig address
+              expect(contracts[j].address).toBe(
+                multisigSameAddresses[chainId][0],
+              );
+            } else if (contracts[j].name === localArtifacts[k].contractName) {
+              // Take the configuration and local contract names that match
               // Get local and configuration ABIs, stringify them
               const localABI = JSON.stringify(localArtifacts[k].abi);
 
@@ -73,9 +77,7 @@ describe('test-chains/TestChains.jsx', () => {
               const lowLetter = localArtifacts[k].contractName.charAt(0).toLowerCase()
                 + localArtifacts[k].contractName.slice(1);
               // Need to stringify and then convert to JSON again to access the address field
-              const addressStruct = JSON.stringify(
-                ADDRESSES[parsedConfig[i].chainId],
-              );
+              const addressStruct = JSON.stringify(ADDRESSES[chainId]);
               const addressStructJSON = JSON.parse(addressStruct);
               const localAddress = addressStructJSON[lowLetter];
               expect(localAddress).toBe(contracts[j].address);
