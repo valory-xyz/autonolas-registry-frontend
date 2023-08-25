@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import get from 'lodash/get';
 
 import {
+  FALLBACK_HANDLER,
   multisigAddresses,
   multisigSameAddresses,
 } from 'common-util/Contracts';
@@ -152,7 +153,7 @@ const StepThreePayload = ({
             rules={[
               { required: true, message: 'Please input Fallback Handler' },
             ]}
-            initialValue="0xf48f2b2d2a534e402487b3ee7c18c33aec0fe5e4"
+            initialValue={FALLBACK_HANDLER[chainId]}
           >
             <Input />
           </Form.Item>
