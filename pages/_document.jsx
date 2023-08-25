@@ -24,7 +24,6 @@ MyDocument.getInitialProps = async (ctx) => {
     enhanceApp: (App) => (props) => (
       <StyleProvider cache={cache}>
         {sheet.collectStyles(<App {...props} />)}
-        <App {...props} />
       </StyleProvider>
     ),
   });
