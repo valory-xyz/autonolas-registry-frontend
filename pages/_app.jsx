@@ -2,14 +2,14 @@
 import App from 'next/app';
 import Head from 'next/head';
 import { createWrapper } from 'next-redux-wrapper';
-// import { ConfigProvider } from 'antd';
+import { ConfigProvider } from 'antd';
 import PropTypes from 'prop-types';
 
-// import { WagmiConfig } from 'wagmi';
-// import { themeConfig } from 'util/theme';
-import GlobalStyle from 'components/GlobalStyles';
+import { WagmiConfig } from 'wagmi';
+import { themeConfig } from 'util/theme';
 // import Layout from 'components/Layout';
-// import { wagmiConfig } from 'common-util/Login/config';
+import GlobalStyle from 'components/GlobalStyles';
+import { wagmiConfig } from 'common-util/Login/config';
 import initStore from '../store';
 
 const DESC = 'View and manage components, agents and services via the Autonolas on-chain registry.';
@@ -33,15 +33,14 @@ class MyApp extends App {
           <title>Autonolas Registry</title>
           <meta name="description" content={DESC} />
         </Head>
-        Hello world
-        {/* <ConfigProvider theme={themeConfig}>
+        <ConfigProvider theme={themeConfig}>
           <WagmiConfig config={wagmiConfig}>
-            hello
-            <Layout>
+            <div>Hello world</div>
+            {/* <Layout>
               <Component {...pageProps} />
-            </Layout>
+            </Layout> */}
           </WagmiConfig>
-        </ConfigProvider> */}
+        </ConfigProvider>
       </>
     );
   }
