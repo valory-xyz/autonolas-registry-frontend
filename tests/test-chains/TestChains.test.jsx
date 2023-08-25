@@ -10,9 +10,9 @@ import {
   SERVICE_REGISTRY_L2,
   SERVICE_MANAGER_CONTRACT,
   SERVICE_MANAGER_TOKEN_CONTRACT,
-  OPERATOR_WHITELIST_CONTRACT,
+  OPERATOR_WHITELIST_CONTRACT
 } from 'common-util/AbiAndAddresses';
-import { ADDRESSES } from 'common-util/Contracts';
+import { ADDRESSES, multisigAddresses, multisigSameAddresses } from 'common-util/Contracts';
 
 const fetch = require('node-fetch');
 
@@ -46,6 +46,16 @@ describe('test-chains/TestChains.jsx', () => {
         for (let j = 0; j < contracts.length; j += 1) {
           // Go over local artifacts
           for (let k = 0; k < localArtifacts.length; k += 1) {
+            // Check for the GnosisSafeMultisig address
+            if (contracts[j].name === 'GnosisSafeMultisig') {
+              expect(contracts[j].address).toBe(multisigAddresses[parsedConfig[i].chainId][0])
+              continue;
+            }
+            // Check for the GnosisSafeSameAddressMultisig address
+            if (contracts[j].name === 'GnosisSafeSameAddressMultisig') {
+              expect(contracts[j].address).toBe(multisigSameAddresses[parsedConfig[i].chainId][0])
+              continue;
+            }
             // Take the configuration and local contract names that match
             if (contracts[j].name === localArtifacts[k].contractName) {
               // Get local and configuration ABIs, stringify them
