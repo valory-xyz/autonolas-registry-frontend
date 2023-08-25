@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
-import { Layout as AntdLayout, Typography } from 'antd/lib';
+import { Layout as AntdLayout, Typography } from 'antd';
 import { getNetworkName } from '@autonolas/frontend-library';
 import { isL1Network } from 'common-util/functions';
 import { useHelpers } from 'common-util/hooks';

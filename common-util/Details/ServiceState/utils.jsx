@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { compact } from 'lodash';
+import compact from 'lodash/compact';
 import { ethers } from 'ethers';
 import {
   ADDRESSES,

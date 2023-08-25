@@ -5,11 +5,11 @@ import { createWrapper } from 'next-redux-wrapper';
 import { ConfigProvider } from 'antd';
 import PropTypes from 'prop-types';
 
-import { WagmiConfig } from 'wagmi';
+// import { WagmiConfig } from 'wagmi';
 import { themeConfig } from 'util/theme';
 // import Layout from 'components/Layout';
 import GlobalStyle from 'components/GlobalStyles';
-import { wagmiConfig } from 'common-util/Login/config';
+// import { wagmiConfig } from 'common-util/Login/config';
 import initStore from '../store';
 
 const DESC = 'View and manage components, agents and services via the Autonolas on-chain registry.';
@@ -34,12 +34,12 @@ class MyApp extends App {
           <meta name="description" content={DESC} />
         </Head>
         <ConfigProvider theme={themeConfig}>
-          <WagmiConfig config={wagmiConfig}>
-            <div>Hello world</div>
-            {/* <Layout>
+          <div>Hello world</div>
+          {/* <WagmiConfig config={wagmiConfig}>
+            <Layout>
               <Component {...pageProps} />
-            </Layout> */}
-          </WagmiConfig>
+            </Layout>
+          </WagmiConfig> */}
         </ConfigProvider>
       </>
     );
@@ -66,4 +66,10 @@ export default wrapper.withRedux(MyApp);
  * 2. themeProvider - https://ant.design/docs/react/customize-theme
  * 3. usage of antd icons
  * 4. try to check the performance with blank page
+ *
+ *
+ *
+ *
+ * OPTIMIZATION:
+ * https://github.com/vercel/next.js/discussions/13646#discussioncomment-5544203
  */
