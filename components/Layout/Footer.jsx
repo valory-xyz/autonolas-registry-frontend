@@ -7,6 +7,8 @@ import {
   isGnosis,
   isPolygon,
   isPolygonMumbai,
+  isGnosisChiado,
+  isL1Network,
 } from 'common-util/functions';
 import { useHelpers } from 'common-util/hooks';
 import Socials from './Socials';
@@ -48,8 +50,12 @@ const ContractInfo = () => {
       return {
         registryText: 'ServiceRegistry',
         managerText: 'ServiceManager',
-        registry: addresses.serviceRegistry,
-        manager: addresses.serviceManager,
+        registry: isL1Network(chainId)
+          ? addresses.serviceRegistry
+          : addresses.serviceRegistryL2,
+        manager: isL1Network(chainId)
+          ? addresses.serviceManagerToken
+          : addresses.serviceManager,
       };
     }
 
@@ -61,6 +67,7 @@ const ContractInfo = () => {
     };
   };
 
+  // TODO: move to autonolas-library
   const getEtherscanLink = (address) => {
     if (isGoerli(chainId)) {
       return `https://goerli.etherscan.io/address/${address}`;
@@ -73,6 +80,9 @@ const ContractInfo = () => {
     }
     if (isPolygonMumbai(chainId)) {
       return `https://mumbai.polygonscan.com/address/${address}`;
+    }
+    if (isGnosisChiado(chainId)) {
+      return `https://gnosis-chiado.blockscout.com/address/${address}`;
     }
     return `https://etherscan.io/address/${address}`;
   };
@@ -125,6 +135,14 @@ const Footer = () => (
         {new Date().getFullYear()}
         &nbsp;•&nbsp;
         <Link href="/disclaimer">Disclaimer</Link>
+        &nbsp;•&nbsp;
+        <a
+          href="https://gateway.autonolas.tech/ipfs/bafybeibrhz6hnxsxcbv7dkzerq4chssotexb276pidzwclbytzj7m4t47u"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          DAO Constitution
+        </a>
       </>
     )}
   />

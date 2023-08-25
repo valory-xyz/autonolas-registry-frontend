@@ -33,6 +33,7 @@
     "next": "^13.4.19",
     "next-plugin-antd-less": "^1.5.2",
     "next-redux-wrapper": "^6.0.2",
+    "node-fetch": "2",
     "prop-types": "^15.7.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

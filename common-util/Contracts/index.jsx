@@ -3,7 +3,7 @@ import {
   REGISTRIES_MANAGER_CONTRACT,
   AGENT_REGISTRY_CONTRACT,
   COMPONENT_REGISTRY_CONTRACT,
-  SERVICE_MANAGER_CONTRACT_L2,
+  SERVICE_MANAGER_CONTRACT,
   SERVICE_REGISTRY_CONTRACT,
   SERVICE_MANAGER_TOKEN_CONTRACT,
   SERVICE_REGISTRY_L2,
@@ -25,7 +25,7 @@ const MAINNET_ADDRESSES = {
   agentRegistry: '0x2F1f7D38e4772884b88f3eCd8B6b9faCdC319112',
   componentRegistry: '0x15bd56669F57192a97dF41A2aa8f4403e9491776',
   registriesManager: '0x9eC9156dEF5C613B2a7D4c46C383F9B58DfcD6fE',
-  serviceManager: '0x2EA682121f815FBcF86EA3F3CaFdd5d67F2dB143',
+  serviceManagerToken: '0x2EA682121f815FBcF86EA3F3CaFdd5d67F2dB143',
   serviceRegistry: '0x48b6af7B12C71f09e2fC8aF4855De4Ff54e775cA',
   serviceRegistryTokenUtility: '0x3Fb926116D454b95c669B6Bf2E7c3bad8d19affA',
   operatorWhitelist: '0x42042799B0DE38AdD2a70dc996f69f98E1a85260',
@@ -33,12 +33,12 @@ const MAINNET_ADDRESSES = {
 
 const GNOSIS_ADDRESSES = {
   serviceManager: '0xE3607b00E75f6405248323A9417ff6b39B244b50',
-  serviceRegistry: '0x9338b5153AE39BB89f50468E608eD9d764B755fD',
+  serviceRegistryL2: '0x9338b5153AE39BB89f50468E608eD9d764B755fD',
 };
 
 const POLYGON_ADDRESSES = {
   serviceManager: '0x3C1fF68f5aa342D296d4DEe4Bb1cACCA912D95fE',
-  serviceRegistry: '0xE3607b00E75f6405248323A9417ff6b39B244b50',
+  serviceRegistryL2: '0xE3607b00E75f6405248323A9417ff6b39B244b50',
 };
 
 // get addresses from scripts/deployment folder in autonolas-registries repo
@@ -49,7 +49,7 @@ export const ADDRESSES = {
     agentRegistry: '0xEB5638eefE289691EcE01943f768EDBF96258a80',
     componentRegistry: '0x7Fd1F4b764fA41d19fe3f63C85d12bf64d2bbf68',
     registriesManager: '0x10c5525F77F13b28f42c5626240c001c2D57CAd4',
-    serviceManager: '0x1d333b46dB6e8FFd271b6C2D2B254868BD9A2dbd',
+    serviceManagerToken: '0x1d333b46dB6e8FFd271b6C2D2B254868BD9A2dbd',
     serviceRegistry: '0x1cEe30D08943EB58EFF84DD1AB44a6ee6FEff63a',
     serviceRegistryTokenUtility: '0x6d9b08701Af43D68D991c074A27E4d90Af7f2276',
     operatorWhitelist: '0x0338893fB1A1D9Df03F72CC53D8f786487d3D03E',
@@ -61,12 +61,12 @@ export const ADDRESSES = {
   // chiado
   10200: {
     serviceManager: '0x29086141ecdc310058fc23273F8ef7881d20C2f7',
-    serviceRegistry: '0x31D3202d8744B16A120117A053459DDFAE93c855',
+    serviceRegistryL2: '0x31D3202d8744B16A120117A053459DDFAE93c855',
   },
   // polygon mumbai
   80001: {
     serviceManager: '0x43d28764bB39936185c84906983fB57A8A905a4F',
-    serviceRegistry: '0xf805DfF246CC208CD2F08ffaD242b7C32bc93623',
+    serviceRegistryL2: '0xf805DfF246CC208CD2F08ffaD242b7C32bc93623',
   },
   // local
   31337: {
@@ -153,22 +153,24 @@ export const getMechMinterContract = () => {
 
 export const getServiceContract = () => {
   const { address, chainId } = getWeb3Details();
-  const { serviceRegistry } = address;
-  const contract = getContract(
-    isL1Network(chainId)
-      ? SERVICE_REGISTRY_CONTRACT.abi
-      : SERVICE_REGISTRY_L2.abi,
-    serviceRegistry,
-  );
-  return contract;
+  if (isL1Network(chainId)) {
+    const { serviceRegistry } = address;
+    return getContract(
+      SERVICE_REGISTRY_CONTRACT.abi,
+      serviceRegistry,
+    );
+  }
+
+  const { serviceRegistryL2 } = address;
+  return getContract(SERVICE_REGISTRY_L2.abi, serviceRegistryL2);
 };
 
 export const getServiceManagerContract = () => {
   const { address } = getWeb3Details();
-  const { serviceManager } = address;
+  const { serviceManagerToken } = address;
   const contract = getContract(
     SERVICE_MANAGER_TOKEN_CONTRACT.abi,
-    serviceManager,
+    serviceManagerToken,
   );
   return contract;
 };
@@ -176,7 +178,10 @@ export const getServiceManagerContract = () => {
 export const getServiceManagerL2Contract = () => {
   const { address } = getWeb3Details();
   const { serviceManager } = address;
-  const contract = getContract(SERVICE_MANAGER_CONTRACT_L2.abi, serviceManager);
+  const contract = getContract(
+    SERVICE_MANAGER_CONTRACT.abi,
+    serviceManager,
+  );
   return contract;
 };
 
@@ -222,6 +227,7 @@ export const getMultiSendContract = (address) => {
 
 /**
  * Other details
+ * Addresses: https://github.com/safe-global/safe-deployments/tree/main/src/assets/v1.3.0
  */
 
 export const multisigAddresses = {
@@ -255,6 +261,8 @@ export const safeMultiSend = {
   5: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
   100: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
   137: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
+  10200: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
+  80001: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
   31337: ['0x9d4454B023096f34B160D6B654540c56A1F81688'],
   [LOCAL_FORK_ID]: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
   [LOCAL_FORK_ID_GNOSIS]: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
@@ -266,8 +274,23 @@ export const rpc = {
   5: process.env.NEXT_PUBLIC_GOERLI_URL,
   100: process.env.NEXT_PUBLIC_GNOSIS_URL,
   137: process.env.NEXT_PUBLIC_POLYGON_URL,
+  10200: process.env.NEXT_PUBLIC_GNOSIS_CHIADO_URL,
+  80001: process.env.NEXT_PUBLIC_POLYGON_MUMBAI_URL,
   31337: process.env.NEXT_PUBLIC_AUTONOLAS_URL,
   [LOCAL_FORK_ID]: 'http://localhost:8545',
   [LOCAL_FORK_ID_GNOSIS]: 'http://localhost:8545',
   [LOCAL_FORK_ID_POLYGON]: 'http://localhost:8545',
+};
+
+export const FALLBACK_HANDLER = {
+  1: '0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4',
+  5: '0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4',
+  100: '0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4',
+  137: '0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4',
+  10200: '0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4',
+  80001: '0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4',
+  31337: '0x0000000000000000000000000000000000000000',
+  [LOCAL_FORK_ID]: '0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4',
+  [LOCAL_FORK_ID_GNOSIS]: '0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4',
+  [LOCAL_FORK_ID_POLYGON]: '0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4',
 };
