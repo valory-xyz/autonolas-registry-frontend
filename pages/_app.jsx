@@ -1,18 +1,18 @@
 /* eslint-disable max-len */
 import App from 'next/app';
-// import Head from 'next/head';
+import Head from 'next/head';
 import { createWrapper } from 'next-redux-wrapper';
 // import { ConfigProvider } from 'antd';
 import PropTypes from 'prop-types';
 
 // import { WagmiConfig } from 'wagmi';
 // import { themeConfig } from 'util/theme';
-// import GlobalStyle from 'components/GlobalStyles';
+import GlobalStyle from 'components/GlobalStyles';
 // import Layout from 'components/Layout';
 // import { wagmiConfig } from 'common-util/Login/config';
 import initStore from '../store';
 
-// const DESC = 'View and manage components, agents and services via the Autonolas on-chain registry.';
+const DESC = 'View and manage components, agents and services via the Autonolas on-chain registry.';
 
 class MyApp extends App {
   static async getInitialProps({ Component, ctx }) {
@@ -28,16 +28,13 @@ class MyApp extends App {
 
     return (
       <>
-        Hello world
-        {/* <GlobalStyle />
+        <GlobalStyle />
         <Head>
           <title>Autonolas Registry</title>
-          <meta
-            name="description"
-            content={DESC}
-          />
+          <meta name="description" content={DESC} />
         </Head>
-        <ConfigProvider theme={themeConfig}>
+        Hello world
+        {/* <ConfigProvider theme={themeConfig}>
           <WagmiConfig config={wagmiConfig}>
             hello
             <Layout>
