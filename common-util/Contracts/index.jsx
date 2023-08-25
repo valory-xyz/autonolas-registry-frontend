@@ -152,7 +152,7 @@ export const getMechMinterContract = () => {
 };
 
 export const getServiceContract = () => {
-  const { web3, address, chainId } = getWeb3Details();
+  const { address, chainId } = getWeb3Details();
   if (isL1Network(chainId)) {
     const { serviceRegistry } = address;
     return getContract(
@@ -166,7 +166,7 @@ export const getServiceContract = () => {
 };
 
 export const getServiceManagerContract = () => {
-  const { web3, address } = getWeb3Details();
+  const { address } = getWeb3Details();
   const { serviceManagerToken } = address;
   const contract = getContract(
     SERVICE_MANAGER_TOKEN_CONTRACT.abi,
