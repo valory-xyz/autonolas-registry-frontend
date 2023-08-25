@@ -5,11 +5,14 @@ import { createWrapper } from 'next-redux-wrapper';
 import { ConfigProvider } from 'antd';
 import PropTypes from 'prop-types';
 
+/** wagmi config */
 // import { WagmiConfig } from 'wagmi';
-import { themeConfig } from 'util/theme';
-// import Layout from 'components/Layout';
-import GlobalStyle from 'components/GlobalStyles';
 // import { wagmiConfig } from 'common-util/Login/config';
+
+/** antd theme config */
+import Layout from 'components/Layout';
+import { themeConfig } from 'util/theme';
+import GlobalStyle from 'components/GlobalStyles';
 import initStore from '../store';
 
 const DESC = 'View and manage components, agents and services via the Autonolas on-chain registry.';
@@ -24,7 +27,7 @@ class MyApp extends App {
   }
 
   render() {
-    // const { Component, pageProps } = this.props;
+    const { Component, pageProps } = this.props;
 
     return (
       <>
@@ -34,12 +37,12 @@ class MyApp extends App {
           <meta name="description" content={DESC} />
         </Head>
         <ConfigProvider theme={themeConfig}>
-          <div>Hello world</div>
-          {/* <WagmiConfig config={wagmiConfig}>
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
-          </WagmiConfig> */}
+          {/* <div>Hello world</div> */}
+          {/* <WagmiConfig config={wagmiConfig}> */}
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+          {/* </WagmiConfig> */}
         </ConfigProvider>
       </>
     );

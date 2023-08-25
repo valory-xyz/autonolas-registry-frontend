@@ -6,7 +6,7 @@ import { Layout as AntdLayout, Typography } from 'antd';
 import { getNetworkName } from '@autonolas/frontend-library';
 import { isL1Network } from 'common-util/functions';
 import { useHelpers } from 'common-util/hooks';
-import Login from '../Login';
+// import Login from '../Login';
 import Footer from './Footer';
 import { CustomLayout, Logo, RightMenu } from './styles';
 
@@ -52,7 +52,7 @@ const Layout = ({ children }) => {
         {logo}
         <NavigationMenu />
         <RightMenu>
-          <Login />
+          {/* <Login /> */}
         </RightMenu>
       </Header>
 
