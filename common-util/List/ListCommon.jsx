@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import Link from 'next/link';
 import { Alert } from 'antd';
 import bs58 from 'bs58';
-import { ExternalLink } from 'react-feather';
+import { ExportOutlined } from '@ant-design/icons';
 import { EmptyMessage, RegisterFooter } from 'components/styles';
 import { isL1Network } from 'common-util/functions';
 import { WhiteButton } from '../components/Button';
@@ -65,7 +65,7 @@ export const DependencyLabel = ({ type, chainId }) => {
           IDs on&nbsp;
           <MyLink href="/agents">
             Agents
-            <ExternalLink size={12} />
+            <ExportOutlined style={{ width: 14 }} />
           </MyLink>
           &nbsp;page.&nbsp;
           {dependencyHelperText}
@@ -76,7 +76,7 @@ export const DependencyLabel = ({ type, chainId }) => {
           &nbsp;
           <MyLink href="/components">
             Components
-            <ExternalLink size={12} />
+            <ExportOutlined style={{ width: 14 }} />
           </MyLink>
           &nbsp;page.&nbsp;
           {dependencyHelperText}
