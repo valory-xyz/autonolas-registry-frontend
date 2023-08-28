@@ -17,6 +17,8 @@ const NavigationMenu = dynamic(() => import('./Menu'), { ssr: false });
 
 const { Header, Content } = AntdLayout;
 
+const FILES_TO_LOAD_WITHOUT_CHAINID = ['/', '/disclaimer'];
+
 const Layout = ({ children }) => {
   const router = useRouter();
   const { chainId, isValidChainId } = useHelpers();
@@ -57,8 +59,11 @@ const Layout = ({ children }) => {
 
       <Content className="site-layout">
         <div className="site-layout-background">
-          {/* chainId has to be set in redux before rendering any components */}
-          {chainId ? children : null}
+          {/* chainId has to be set in redux before rendering any components OR
+          the page doesn't depends on the chain Id */}
+          {chainId || FILES_TO_LOAD_WITHOUT_CHAINID.some((e) => e === path)
+            ? children
+            : null}
         </div>
       </Content>
 
