@@ -1,7 +1,6 @@
 import Document, {
   Head, Html, Main, NextScript,
 } from 'next/document';
-/* eslint-disable-next-line import/no-extraneous-dependencies */
 import { StyleProvider, createCache, extractStyle } from '@ant-design/cssinjs';
 import { ServerStyleSheet } from 'styled-components';
 
