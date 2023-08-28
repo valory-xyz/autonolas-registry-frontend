@@ -154,58 +154,56 @@ const ListComponents = () => {
   };
 
   return (
-    <>
-      <Tabs
-        className="registry-tabs"
-        type="card"
-        activeKey={currentTab}
-        tabBarExtraContent={extraTabContent}
-        onChange={(e) => {
-          setCurrentTab(e);
+    <Tabs
+      className="registry-tabs"
+      type="card"
+      activeKey={currentTab}
+      tabBarExtraContent={extraTabContent}
+      onChange={(e) => {
+        setCurrentTab(e);
 
-          setList([]);
-          setTotal(0);
-          setCurrentPage(1);
-          setIsLoading(true);
+        setList([]);
+        setTotal(0);
+        setCurrentPage(1);
+        setIsLoading(true);
 
-          // clear the search
-          clearSearch();
+        // clear the search
+        clearSearch();
 
-          // update the URL to keep track of my-components
-          router.push(
-            e === MY_COMPONENTS
-              ? `${URL.COMPONENTS}#${MY_COMPONENTS}`
-              : URL.COMPONENTS,
-          );
-        }}
-        items={[
-          {
-            key: ALL_COMPONENTS,
-            label: 'All',
-            children: <ListTable {...tableCommonProps} list={list} />,
-          },
-          {
-            label: 'My Components',
-            key: MY_COMPONENTS,
-            children: (
-              <ListTable
-                {...tableCommonProps}
-                list={
-                  searchValue
-                    ? list
-                    : getMyListOnPagination({
-                      total,
-                      nextPage: currentPage,
-                      list,
-                    })
-                }
-                isAccountRequired
-              />
-            ),
-          },
-        ]}
-      />
-    </>
+        // update the URL to keep track of my-components
+        router.push(
+          e === MY_COMPONENTS
+            ? `${URL.COMPONENTS}#${MY_COMPONENTS}`
+            : URL.COMPONENTS,
+        );
+      }}
+      items={[
+        {
+          key: ALL_COMPONENTS,
+          label: 'All',
+          children: <ListTable {...tableCommonProps} list={list} />,
+        },
+        {
+          label: 'My Components',
+          key: MY_COMPONENTS,
+          children: (
+            <ListTable
+              {...tableCommonProps}
+              list={
+                searchValue
+                  ? list
+                  : getMyListOnPagination({
+                    total,
+                    nextPage: currentPage,
+                    list,
+                  })
+              }
+              isAccountRequired
+            />
+          ),
+        },
+      ]}
+    />
   );
 };
 

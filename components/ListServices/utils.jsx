@@ -118,7 +118,10 @@ export const getFilteredServices = async (searchValue, account) => {
     true,
   );
 
-  return new Promise((resolve) => resolve(filterByOwner(list, { searchValue, account })));
+  return new Promise((resolve) => {
+    const filteredList = filterByOwner(list, { searchValue, account });
+    resolve(filteredList);
+  });
 };
 
 // for services, hash is hardcoded in frontend
