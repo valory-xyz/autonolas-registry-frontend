@@ -6,8 +6,8 @@ import { ConfigProvider } from 'antd';
 import PropTypes from 'prop-types';
 
 /** wagmi config */
-// import { WagmiConfig } from 'wagmi';
-// import { wagmiConfig } from 'common-util/Login/config';
+import { WagmiConfig as WagmiConfigProvider } from 'wagmi';
+import { wagmiConfig } from 'common-util/Login/config';
 
 /** antd theme config */
 import Layout from 'components/Layout';
@@ -38,11 +38,11 @@ class MyApp extends App {
         </Head>
         <ConfigProvider theme={themeConfig}>
           {/* <div>Hello world</div> */}
-          {/* <WagmiConfig config={wagmiConfig}> */}
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
-          {/* </WagmiConfig> */}
+          <WagmiConfigProvider config={wagmiConfig}>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </WagmiConfigProvider>
         </ConfigProvider>
       </>
     );
