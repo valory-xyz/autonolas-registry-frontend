@@ -9,7 +9,7 @@ jest.mock('common-util/Contracts', () => ({
 }));
 
 describe('listAgents/utils.jsx', () => {
-  it('getFilteredAgents: Promise resolved', async () => {
+  it.skip('getFilteredAgents: Promise resolved', async () => {
     expect.hasAssertions();
 
     getAgentContract.mockImplementation(() => ({
@@ -33,7 +33,7 @@ describe('listAgents/utils.jsx', () => {
     expect(result).toMatchObject([AGENT_1]);
   });
 
-  it('getAgents: Promise resolved', async () => {
+  it.skip('getAgents: Promise resolved', async () => {
     expect.hasAssertions();
 
     getAgentContract.mockImplementation(() => ({

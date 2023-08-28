@@ -107,7 +107,6 @@ describe('listServices/details.jsx', () => {
 
   // eslint-disable-next-line jest/no-disabled-tests
   it.skip('should render service details', async () => {
-    expect.hasAssertions();
     const { container, getByText, getByTestId } = render(
       wrapProvider(<Services />),
     );

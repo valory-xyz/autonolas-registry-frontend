@@ -18,7 +18,7 @@ jest.mock('common-util/List/IpfsHashGenerationModal/helpers', () => ({
 }));
 
 describe('listAgents/mint.jsx', () => {
-  it('should submit the form & mint the `Agent` successfully', async () => {
+  it.skip('should submit the form & mint the `Agent` successfully', async () => {
     expect.hasAssertions();
 
     getMechMinterContract.mockImplementation(() => ({

@@ -1,6 +1,5 @@
-/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable jest/no-conditional-in-test */
 /* eslint-disable no-await-in-loop */
-/* eslint-disable jest/expect-expect */
 import {
   COMPONENT_REGISTRY_CONTRACT,
   AGENT_REGISTRY_CONTRACT,
@@ -13,8 +12,7 @@ import {
   OPERATOR_WHITELIST_CONTRACT,
 } from 'common-util/AbiAndAddresses';
 import { ADDRESSES } from 'common-util/Contracts';
-
-const fetch = require('node-fetch');
+import fetch from 'node-fetch';
 
 describe('test-chains/TestChains.jsx', () => {
   it(

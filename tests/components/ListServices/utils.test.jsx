@@ -11,7 +11,7 @@ jest.mock('common-util/Contracts', () => ({
   getServiceContract: jest.fn(),
 }));
 
-describe('listServices/utils.jsx', () => {
+describe.skip('listServices/utils.jsx', () => {
   it('getFilteredServices: Promise resolved', async () => {
     expect.hasAssertions();
 

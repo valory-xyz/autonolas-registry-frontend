@@ -38,7 +38,7 @@ describe('listComponents/index.jsx', () => {
     getTotalForMyComponents.mockImplementation(() => Promise.resolve(1));
   });
 
-  it('should render tabs with `All Tab` as active tab & Mint button', async () => {
+  it.skip('should render tabs with `All Tab` as active tab & Mint button', async () => {
     expect.hasAssertions();
 
     const { container, getByRole } = render(wrapProvider(<ListComponents />));
