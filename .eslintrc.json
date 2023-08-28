@@ -50,6 +50,6 @@
     ],
     "react/jsx-no-useless-fragment": [2, { "allowExpressions": true }],
     "no-untyped-mock-factory": "off",
-    " jest/no-untyped-mock-factory": "off",
+    "jest/no-untyped-mock-factory": "off"
   }
 }

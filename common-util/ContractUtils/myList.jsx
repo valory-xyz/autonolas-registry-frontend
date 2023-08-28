@@ -1,7 +1,7 @@
 import { getFirstAndLastIndex } from 'common-util/functions';
 import includes from 'lodash/includes';
 
-export const filterByOwner = (results = [], { searchValue, account }) => results.filter((e) => {
+export const filterByOwner = (results, { searchValue, account }) => (results || []).filter((e) => {
   const search = (searchValue || '').trim().toLowerCase();
   const ownerL = (e.owner || '').trim().toLowerCase();
   const hashL = (e.unitHash || '').trim().toLowerCase();

@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
+import Image from 'next/image';
 import { Layout as AntdLayout, Typography } from 'antd';
 import { getNetworkName } from '@autonolas/frontend-library';
 import { isL1Network } from 'common-util/functions';
@@ -11,7 +12,6 @@ import { CustomLayout, Logo, RightMenu } from './styles';
 
 const { Text } = Typography;
 
-const LogoSvg = dynamic(() => import('common-util/svg/logo'), { ssr: false });
 const NavigationMenu = dynamic(() => import('./Menu'), { ssr: false });
 const Footer = dynamic(() => import('./Footer'), { ssr: false });
 
@@ -36,7 +36,13 @@ const Layout = ({ children }) => {
 
   const logo = (
     <Logo onClick={() => router.push('/')} data-testid="protocol-logo">
-      <LogoSvg />
+      <Image
+        priority
+        src="/images/logo.svg"
+        height={32}
+        width={32}
+        alt="Autonolas"
+      />
       <span>
         {isValidChainId ? (
           <Text>{`Registry on ${getNetworkName(chainId)}`}</Text>
