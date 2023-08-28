@@ -3,7 +3,7 @@
     "browser": true,
     "es6": true
   },
-  "parser": "babel-eslint",
+  "parser": "@babel/eslint-parser",
   "extends": [
     "eslint:recommended",
     "plugin:react/recommended",
@@ -40,6 +40,16 @@
     "react/destructuring-assignment": "off",
     "jest/no-hooks": "off",
     "jest/prefer-expect-assertions": "off",
-    "jest/no-conditional-expect": "off"
+    "jest/no-conditional-expect": "off",
+    "react/function-component-definition": [
+      2,
+      {
+        "namedComponents": ["arrow-function", "function-declaration"],
+        "unnamedComponents": "arrow-function"
+      }
+    ],
+    "react/jsx-no-useless-fragment": [2, { "allowExpressions": true }],
+    "no-untyped-mock-factory": "off",
+    " jest/no-untyped-mock-factory": "off",
   }
 }
