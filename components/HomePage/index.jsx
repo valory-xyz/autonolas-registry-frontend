@@ -44,6 +44,8 @@ const HomePage = () => {
               src="images/homepage/autonomous-agent-service-architecture.svg"
               width={isMobile ? 120 : 344}
               height={isMobile ? 120 : 344}
+              fetchPriority="high"
+              alt="Autonomous Agent Service Architecture"
             />
           </Col>
         </Row>
