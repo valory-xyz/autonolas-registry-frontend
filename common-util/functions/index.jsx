@@ -2,7 +2,6 @@ import { ethers } from 'ethers';
 import { notification } from 'antd/lib';
 import { STAGING_CHAIN_ID } from '@autonolas/frontend-library';
 import { TOTAL_VIEW_COUNT, LOCAL_FORK_ID } from 'util/constants';
-import { ADDRESSES } from 'common-util/Contracts';
 
 export const convertToEth = (value) => ethers.utils.formatEther(value);
 
@@ -61,18 +60,6 @@ export const isL1Network = (chainId) => {
   // even if chainId is null, we still show everything as shown in goerli or mainnet
   return isL1OnlyNetwork(chain) || chain === null;
 };
-
-export const isGoerli = (chainId) => getChainId(chainId) === 5;
-
-export const isGnosis = (chainId) => getChainId(chainId) === 100;
-
-export const isPolygon = (chainId) => getChainId(chainId) === 137;
-
-export const isPolygonMumbai = (chainId) => getChainId(chainId) === 80001;
-
-export const isGnosisChiado = (chainId) => getChainId(chainId) === 10200;
-
-export const getSupportedNetworks = () => Object.keys(ADDRESSES).map((e) => Number(e));
 
 export const isLocalNetwork = (chainId) => getChainId(chainId) === 31337;
 
