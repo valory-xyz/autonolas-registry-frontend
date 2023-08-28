@@ -3,17 +3,18 @@ import {
   Button, Col, Row, Typography,
 } from 'antd';
 import Link from 'next/link';
+import Image from 'next/image';
 import { URL } from 'util/constants';
 import { isL1Network } from 'common-util/functions';
+import { useScreen } from 'common-util/hooks/useScreen';
 import { AutonolasServicesArchitected } from './AutonolasServicesArchitected';
 import { Container, HeaderRow } from './styles';
 
 const { Title, Text } = Typography;
 
-const IMG_PATH = 'images/homepage/';
-
 const HomePage = () => {
   const chainId = useSelector((state) => state?.setup?.chainId);
+  const { isMobile } = useScreen();
 
   return (
     <Container>
@@ -39,11 +40,10 @@ const HomePage = () => {
             </Link>
           </Col>
           <Col span={8}>
-            <div
-              className="header-image"
-              style={{
-                backgroundImage: `url(${IMG_PATH}autonomous-agent-service-architecture.svg)`,
-              }}
+            <Image
+              src="images/homepage/autonomous-agent-service-architecture.svg"
+              width={isMobile ? 120 : 344}
+              height={isMobile ? 120 : 344}
             />
           </Col>
         </Row>

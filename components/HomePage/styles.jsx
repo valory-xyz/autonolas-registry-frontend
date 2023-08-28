@@ -14,12 +14,6 @@ export const HeaderRow = styled.div`
     font-size: 24px;
     margin-bottom: 2rem;
   }
-  .header-image {
-    width: 100%;
-    height: 100%;
-    background-size: contain;
-    background-repeat: no-repeat;
-  }
 
   ${MEDIA_QUERY.mobileL} {
     margin-top: 1rem;

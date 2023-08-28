@@ -6,7 +6,7 @@ exports[`<HomePage> should render homepage 1`] = `
     class="styles__Container-sc-4qo35f-0"
   >
     <div
-      class="styles__HeaderRow-sc-4qo35f-1 jyxRVO row-1"
+      class="styles__HeaderRow-sc-4qo35f-1 jDvrGP row-1"
     >
       <div
         class="ant-row css-dev-only-do-not-override-17a39f8"
@@ -36,9 +36,14 @@ exports[`<HomePage> should render homepage 1`] = `
         <div
           class="ant-col ant-col-8 css-dev-only-do-not-override-17a39f8"
         >
-          <div
-            class="header-image"
-            style="background-image: url(images/homepage/autonomous-agent-service-architecture.svg);"
+          <img
+            data-nimg="1"
+            decoding="async"
+            height="344"
+            loading="lazy"
+            src="images/homepage/autonomous-agent-service-architecture.svg"
+            style="color: transparent;"
+            width="344"
           />
         </div>
       </div>
@@ -60,8 +65,12 @@ exports[`<HomePage> should render homepage 1`] = `
           <img
             alt="They manage how the service is set up. Service owners define the business model of their services, and charge DAOs to use them."
             class="each-service-image"
+            data-nimg="1"
+            decoding="async"
             height="150"
+            loading="lazy"
             src="/images/homepage/services.svg"
+            style="color: transparent;"
             width="150"
           />
         </div>
@@ -95,8 +104,12 @@ exports[`<HomePage> should render homepage 1`] = `
           <img
             alt="Services are run by multiple  software agents, each with an independent operator. Developers can author full agents, and these can be composed by service owners."
             class="each-service-image"
+            data-nimg="1"
+            decoding="async"
             height="150"
+            loading="lazy"
             src="/images/homepage/agents.svg"
+            style="color: transparent;"
             width="150"
           />
         </div>
@@ -130,8 +143,12 @@ exports[`<HomePage> should render homepage 1`] = `
           <img
             alt="Components are smaller blocks of code which can be reused by agent developers."
             class="each-service-image"
+            data-nimg="1"
+            decoding="async"
             height="150"
+            loading="lazy"
             src="/images/homepage/components.svg"
+            style="color: transparent;"
             width="150"
           />
         </div>

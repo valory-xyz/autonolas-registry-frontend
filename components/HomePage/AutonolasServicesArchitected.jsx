@@ -4,11 +4,10 @@ import Link from 'next/link';
 import { URL } from 'util/constants';
 import { isL1Network } from 'common-util/functions';
 import { useScreen } from 'common-util/hooks/useScreen';
+import Image from 'next/image';
 import { ContentRow } from './styles';
 
 const { Title, Text } = Typography;
-
-const IMG_PATH = 'images/homepage/';
 
 const LIST = [
   {
@@ -50,8 +49,8 @@ export const AutonolasServicesArchitected = () => {
           align="middle"
         >
           <Col className="column column-1" md={12} xs={10}>
-            <img
-              src={`/${IMG_PATH}${type}.svg`}
+            <Image
+              src={`/images/homepage/${type}.svg`}
               className="each-service-image"
               alt={desc}
               width={isMobile ? 120 : 150}

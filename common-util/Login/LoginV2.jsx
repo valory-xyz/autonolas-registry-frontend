@@ -66,9 +66,8 @@ export const LoginV2 = ({
       try {
         // This is the initial `provider` that is returned when
         // using web3Modal to connect. Can be MetaMask or WalletConnect.
-        const modalProvider =
-          connector?.options?.getProvider?.() ||
-          (await connector?.getProvider?.());
+        const modalProvider = connector?.options?.getProvider?.()
+          || (await connector?.getProvider?.());
 
         if (modalProvider) {
           // *******************************************************
@@ -96,9 +95,10 @@ export const LoginV2 = ({
           }
         }
 
-        return undefined;
+        return () => null;
       } catch (error) {
         console.error(error);
+        return () => null;
       }
     };
 

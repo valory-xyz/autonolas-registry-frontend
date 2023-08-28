@@ -12,10 +12,8 @@ const initialState = {
   isLoaded: false,
 };
 
-const setup = (state = initialState, action) => {
-  const { data } = action;
-
-  switch (action.type) {
+const setup = (state = initialState, { data, type } = {}) => {
+  switch (type) {
     case apiTypes.GET_API: {
       return { ...state, data };
     }
@@ -26,7 +24,7 @@ const setup = (state = initialState, action) => {
     case syncTypes.SET_LOGIN_ERROR:
     case syncTypes.SET_CHAIND_ID:
     case syncTypes.SET_STORE_STATE: {
-      return { ...state, ...action.data };
+      return { ...state, ...data };
     }
 
     case syncTypes.SET_LOGOUT: {
