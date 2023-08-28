@@ -7,13 +7,13 @@ import { getNetworkName } from '@autonolas/frontend-library';
 import { isL1Network } from 'common-util/functions';
 import { useHelpers } from 'common-util/hooks';
 import Login from '../Login';
-import Footer from './Footer';
 import { CustomLayout, Logo, RightMenu } from './styles';
 
 const { Text } = Typography;
 
 const LogoSvg = dynamic(() => import('common-util/svg/logo'), { ssr: false });
 const NavigationMenu = dynamic(() => import('./Menu'), { ssr: false });
+const Footer = dynamic(() => import('./Footer'), { ssr: false });
 
 const { Header, Content } = AntdLayout;
 
