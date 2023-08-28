@@ -1,5 +1,3 @@
-/* eslint-disable max-len */
-import App from 'next/app';
 import Head from 'next/head';
 import { createWrapper } from 'next-redux-wrapper';
 import { ConfigProvider } from 'antd';
@@ -17,37 +15,31 @@ import initStore from '../store';
 
 const DESC = 'View and manage components, agents and services via the Autonolas on-chain registry.';
 
-class MyApp extends App {
-  static async getInitialProps({ Component, ctx }) {
-    const pageProps = Component.getInitialProps
-      ? await Component.getInitialProps(ctx)
-      : {};
+const MyApp = ({ Component, pageProps }) => (
+  <>
+    <GlobalStyle />
+    <Head>
+      <title>Autonolas Registry</title>
+      <meta name="description" content={DESC} />
+    </Head>
+    <ConfigProvider theme={themeConfig}>
+      {/* <div>Hello world</div> */}
+      <WagmiConfigProvider config={wagmiConfig}>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </WagmiConfigProvider>
+    </ConfigProvider>
+  </>
+);
 
-    return { pageProps };
-  }
+MyApp.getInitialProps = async ({ Component, ctx }) => {
+  const pageProps = Component.getInitialProps
+    ? await Component.getInitialProps(ctx)
+    : {};
 
-  render() {
-    const { Component, pageProps } = this.props;
-
-    return (
-      <>
-        <GlobalStyle />
-        <Head>
-          <title>Autonolas Registry</title>
-          <meta name="description" content={DESC} />
-        </Head>
-        <ConfigProvider theme={themeConfig}>
-          {/* <div>Hello world</div> */}
-          <WagmiConfigProvider config={wagmiConfig}>
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
-          </WagmiConfigProvider>
-        </ConfigProvider>
-      </>
-    );
-  }
-}
+  return { pageProps };
+};
 
 MyApp.propTypes = {
   Component: PropTypes.oneOfType([PropTypes.func, PropTypes.shape({})])
