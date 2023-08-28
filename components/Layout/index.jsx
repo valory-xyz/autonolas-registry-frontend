@@ -7,11 +7,12 @@ import { Layout as AntdLayout, Typography } from 'antd';
 import { getNetworkName } from '@autonolas/frontend-library';
 import { isL1Network } from 'common-util/functions';
 import { useHelpers } from 'common-util/hooks';
-import Login from '../Login';
+import { useScreen } from 'common-util/hooks/useScreen';
 import { CustomLayout, Logo, RightMenu } from './styles';
 
 const { Text } = Typography;
 
+const Login = dynamic(() => import('../Login'), { ssr: false });
 const NavigationMenu = dynamic(() => import('./Menu'), { ssr: false });
 const Footer = dynamic(() => import('./Footer'), { ssr: false });
 
@@ -23,6 +24,7 @@ const Layout = ({ children }) => {
   const router = useRouter();
   const { chainId, isValidChainId } = useHelpers();
   const path = router?.pathname || '';
+  const { isMobile } = useScreen();
 
   useEffect(() => {
     if (chainId && !isL1Network(chainId)) {
@@ -43,8 +45,9 @@ const Layout = ({ children }) => {
         width={32}
         alt="Autonolas"
       />
+
       <span>
-        {isValidChainId ? (
+        {isValidChainId && !isMobile ? (
           <Text>{`Registry on ${getNetworkName(chainId)}`}</Text>
         ) : (
           'Registry'
