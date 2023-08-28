@@ -1,10 +1,10 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Button, Typography, Alert, Switch,
 } from 'antd';
-import { ArrowUpRight, Circle } from 'react-feather';
+import { ArrowRightOutlined } from '@ant-design/icons';
 import get from 'lodash/get';
 import {
   DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS,
@@ -12,6 +12,7 @@ import {
   NA,
   NAV_TYPES,
 } from 'util/constants';
+import { Circle } from 'common-util/svg/Circle';
 import { isL1OnlyNetwork, isL1Network } from 'common-util/functions';
 import { NftImage } from './NFTImage';
 import { SetOperatorStatus, OperatorWhitelist } from './ServiceDetailsHelper';
@@ -39,6 +40,17 @@ export const HASH_DETAILS_STATE = {
   LOADED: 'LOADED',
   FAILED: 'FAILED',
 };
+
+const ArrowLink = memo(() => (
+  <ArrowRightOutlined
+    style={{
+      width: 14,
+      transform: 'rotate(320deg)',
+      position: 'relative',
+      top: '-4px',
+    }}
+  />
+));
 
 export const DetailsInfo = ({
   id,
@@ -112,7 +124,7 @@ export const DetailsInfo = ({
         href={getAutonolasTokenUri(tokenUri)}
       >
         View Hash&nbsp;
-        <ArrowUpRight size={16} />
+        <ArrowLink />
       </Link>
         &nbsp;•&nbsp;
       <Link
@@ -124,7 +136,7 @@ export const DetailsInfo = ({
         )}
       >
         View Code&nbsp;
-        <ArrowUpRight size={16} />
+        <ArrowLink />
       </Link>
     </>
   ) : null;
