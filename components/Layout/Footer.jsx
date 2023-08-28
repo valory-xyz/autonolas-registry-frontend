@@ -3,14 +3,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Footer as CommonFooter } from '@autonolas/frontend-library';
 import { ADDRESSES } from 'common-util/Contracts';
-import {
-  isGoerli,
-  isGnosis,
-  isPolygon,
-  isPolygonMumbai,
-  isGnosisChiado,
-  isL1Network,
-} from 'common-util/functions';
+import { getExplorerURL } from 'common-util/AddressLink';
+import { isL1Network } from 'common-util/functions';
 import { useHelpers } from 'common-util/hooks';
 import Socials from './Socials';
 import { ContractsInfoContainer } from './styles';
@@ -68,31 +62,11 @@ const ContractInfo = () => {
     };
   };
 
-  // TODO: move to autonolas-library
-  const getEtherscanLink = (address) => {
-    if (isGoerli(chainId)) {
-      return `https://goerli.etherscan.io/address/${address}`;
-    }
-    if (isGnosis(chainId)) {
-      return `https://gnosisscan.io/address/${address}`;
-    }
-    if (isPolygon(chainId)) {
-      return `https://polygonscan.com/address/${address}`;
-    }
-    if (isPolygonMumbai(chainId)) {
-      return `https://mumbai.polygonscan.com/address/${address}`;
-    }
-    if (isGnosisChiado(chainId)) {
-      return `https://gnosis-chiado.blockscout.com/address/${address}`;
-    }
-    return `https://etherscan.io/address/${address}`;
-  };
-
   const getContractInfo = (text, addressToPoint) => (
     <div className="registry-contract">
       &nbsp;•&nbsp;
       <a
-        href={getEtherscanLink(addressToPoint)}
+        href={`${getExplorerURL(chainId)}/address/${addressToPoint}`}
         target="_blank"
         rel="noopener noreferrer"
       >
