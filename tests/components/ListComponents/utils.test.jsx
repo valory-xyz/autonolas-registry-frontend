@@ -12,16 +12,10 @@ jest.mock('common-util/Contracts', () => ({
   getComponentContract: jest.fn(),
 }));
 
-describe.skip('listComponents/utils.jsx', () => {
+describe('listComponents/utils.jsx', () => {
   it('getComponentDetails: Promise resolved', async () => {
-    expect.hasAssertions();
-
     getComponentContract.mockImplementation(() => ({
-      methods: {
-        getUnit: jest.fn(() => ({
-          call: jest.fn(() => Promise.resolve(COMPONENT_1)),
-        })),
-      },
+      getUnit: jest.fn(() => Promise.resolve(COMPONENT_1)),
     }));
 
     const result = await getComponentDetails();
@@ -29,23 +23,11 @@ describe.skip('listComponents/utils.jsx', () => {
   });
 
   it('getFilteredComponents: Promise resolved', async () => {
-    expect.hasAssertions();
-
     getComponentContract.mockImplementation(() => ({
-      methods: {
-        totalSupply: jest.fn(() => ({
-          call: jest.fn(() => Promise.resolve(1)),
-        })),
-        balanceOf: jest.fn(() => ({
-          call: jest.fn(() => Promise.resolve(1)),
-        })),
-        getUnit: jest.fn(() => ({
-          call: jest.fn(() => Promise.resolve(COMPONENT_1)),
-        })),
-        ownerOf: jest.fn(() => ({
-          call: jest.fn(() => Promise.resolve(dummyAddress)),
-        })),
-      },
+      totalSupply: jest.fn(() => Promise.resolve(1)),
+      balanceOf: jest.fn(() => Promise.resolve(1)),
+      getUnit: jest.fn(() => Promise.resolve(COMPONENT_1)),
+      ownerOf: jest.fn(() => Promise.resolve(dummyAddress)),
     }));
 
     const result = await getFilteredComponents(dummyAddress);
@@ -53,20 +35,10 @@ describe.skip('listComponents/utils.jsx', () => {
   });
 
   it('getComponents: Promise resolved', async () => {
-    expect.hasAssertions();
-
     getComponentContract.mockImplementation(() => ({
-      methods: {
-        totalSupply: jest.fn(() => ({
-          call: jest.fn(() => Promise.resolve(1)),
-        })),
-        getUnit: jest.fn(() => ({
-          call: jest.fn(() => Promise.resolve(COMPONENT_1)),
-        })),
-        ownerOf: jest.fn(() => ({
-          call: jest.fn(() => Promise.resolve(dummyAddress)),
-        })),
-      },
+      totalSupply: jest.fn(() => Promise.resolve(1)),
+      getUnit: jest.fn(() => Promise.resolve(COMPONENT_1)),
+      ownerOf: jest.fn(() => Promise.resolve(dummyAddress)),
     }));
 
     const result = await getComponents(1, 1);

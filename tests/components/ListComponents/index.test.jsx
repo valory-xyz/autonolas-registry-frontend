@@ -11,12 +11,6 @@ import {
 import { useRouter } from 'next/router';
 import { wrapProvider, ACTIVE_TAB, getTableTd } from '../../helpers';
 
-// mocks for router & smart-contract functions
-jest.mock('next/router', () => ({
-  __esModule: true,
-  useRouter: jest.fn(),
-}));
-
 jest.mock('components/ListComponents/utils', () => ({
   getComponents: jest.fn(),
   getFilteredComponents: jest.fn(),
@@ -32,13 +26,13 @@ describe('listComponents/index.jsx', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     useRouter.mockImplementation(() => ({ push: jest.fn() }));
-    getComponents.mockImplementation(() => Promise.resolve([allComponentResponse]));
-    getFilteredComponents.mockImplementation(() => Promise.resolve([myComponentResponse]));
-    getTotalForAllComponents.mockImplementation(() => Promise.resolve(1));
-    getTotalForMyComponents.mockImplementation(() => Promise.resolve(1));
+    getComponents.mockResolvedValue([allComponentResponse]);
+    getFilteredComponents.mockResolvedValue([myComponentResponse]);
+    getTotalForAllComponents.mockResolvedValue(1);
+    getTotalForMyComponents.mockResolvedValue(1);
   });
 
-  it.skip('should render tabs with `All Tab` as active tab & Mint button', async () => {
+  it('should render tabs with `All Tab` as active tab & Mint button', async () => {
     expect.hasAssertions();
 
     const { container, getByRole } = render(wrapProvider(<ListComponents />));
@@ -46,16 +40,18 @@ describe('listComponents/index.jsx', () => {
     // check if the selected tab is `All` & has the correct content
     await waitFor(async () => expect(container.querySelector(ACTIVE_TAB).textContent).toBe('All'));
 
-    // ckecking Id, description column
-    expect(container.querySelector(getTableTd(1)).textContent).toBe('1');
-    expect(container.querySelector(getTableTd(4)).textContent).toBe(
-      allComponentResponse.dependencies.length.toString(),
-    );
+    await waitFor(async () => {
+      // ckecking Id, description column
+      expect(container.querySelector(getTableTd(1)).textContent).toBe('1');
+      expect(container.querySelector(getTableTd(4)).textContent).toBe(
+        allComponentResponse.dependencies.length.toString(),
+      );
 
-    // it should be called once
-    // expect(useRouter).toHaveBeenCalledTimes(1);
+      // it should be called once
+      // expect(useRouter).toHaveBeenCalledTimes(1);
 
-    expect(getByRole('button', { name: 'Mint' })).toBeInTheDocument();
+      expect(getByRole('button', { name: 'Mint' })).toBeInTheDocument();
+    });
   });
 
   it('should render tabs with `My Components` as active tab & Mint button', async () => {

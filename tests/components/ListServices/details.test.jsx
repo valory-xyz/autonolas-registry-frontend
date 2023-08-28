@@ -1,3 +1,4 @@
+/* eslint-disable jest/max-expects */
 import React from 'react';
 import { render, waitFor } from '@testing-library/react';
 import { GATEWAY_URL } from 'util/constants';
@@ -68,15 +69,21 @@ const dummyHashes = {
 const unmockedFetch = global.fetch;
 
 describe('listServices/details.jsx', () => {
+  beforeAll(() => {
+    global.fetch = () => Promise.resolve({
+      json: () => Promise.resolve(mockIpfs),
+    });
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
-    getServiceDetails.mockImplementation(() => Promise.resolve(dummyDetails));
-    getServiceHashes.mockImplementation(() => Promise.resolve(dummyHashes));
-    getServiceOwner.mockImplementation(() => Promise.resolve(dummyAddress));
-    getTokenUri.mockImplementation(() => Promise.resolve(dummyDetails.tokenUrl));
-    getBonds.mockImplementation(() => Promise.resolve(['1']));
-    getServiceAgentInstances.mockImplementation(() => Promise.resolve(['1']));
-    getServiceTableDataSource.mockImplementation(() => Promise.resolve([
+    getServiceDetails.mockResolvedValue(dummyDetails);
+    getServiceHashes.mockResolvedValue(dummyHashes);
+    getServiceOwner.mockResolvedValue(dummyAddress);
+    getTokenUri.mockResolvedValue(dummyDetails.tokenUrl);
+    getBonds.mockResolvedValue(['1']);
+    getServiceAgentInstances.mockResolvedValue(['1']);
+    getServiceTableDataSource.mockResolvedValue([
       {
         key: 1,
         agentId: '1',
@@ -85,20 +92,14 @@ describe('listServices/details.jsx', () => {
         bond: 10000000000000,
         agentAddresses: null,
       },
-    ]));
-    getAgentInstanceAndOperator.mockImplementation(() => Promise.resolve([
+    ]);
+    getAgentInstanceAndOperator.mockResolvedValue([
       {
         id: 'agent-instance-row-1',
         operatorAddress: 'operator_address_1',
         agentInstance: 'agent_instance_1',
       },
-    ]));
-  });
-
-  beforeAll(() => {
-    global.fetch = () => Promise.resolve({
-      json: () => Promise.resolve(mockIpfs),
-    });
+    ]);
   });
 
   afterAll(() => {

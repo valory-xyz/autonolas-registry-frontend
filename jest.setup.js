@@ -19,3 +19,8 @@ Object.defineProperty(window, 'matchMedia', {
 jest.mock('ipfs-only-hash', () => ({
   of: jest.fn(),
 }));
+
+jest.mock('next/router', () => ({
+  __esModule: true,
+  useRouter: jest.fn(),
+}));

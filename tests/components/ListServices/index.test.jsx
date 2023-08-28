@@ -12,12 +12,6 @@ import { useRouter } from 'next/router';
 import { getServiceContract } from 'common-util/Contracts';
 import { wrapProvider, ACTIVE_TAB, getTableTd } from '../../helpers';
 
-// mocks for router & smart-contract functions
-jest.mock('next/router', () => ({
-  __esModule: true,
-  useRouter: jest.fn(() => ({ push: jest.fn() })),
-}));
-
 jest.mock('components/ListServices/utils', () => ({
   getServices: jest.fn(),
   getFilteredServices: jest.fn(),
@@ -36,7 +30,7 @@ const SERVICE_1 = { name: 'Service One' };
 const allServiceResponse = { id: '1', state: '5' };
 const myServiceResponse = { id: '2' };
 
-describe.skip('listServices/index.jsx', () => {
+describe('listServices/index.jsx', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     useRouter.mockImplementation(() => ({ push: jest.fn() }));
@@ -48,10 +42,10 @@ describe.skip('listServices/index.jsx', () => {
         })),
       },
     }));
-    getServices.mockImplementation(() => Promise.resolve([allServiceResponse]));
-    getFilteredServices.mockImplementation(() => Promise.resolve([myServiceResponse]));
-    getTotalForAllServices.mockImplementation(() => Promise.resolve(1));
-    getTotalForMyServices.mockImplementation(() => Promise.resolve(1));
+    getServices.mockResolvedValue([allServiceResponse]);
+    getFilteredServices.mockResolvedValue([myServiceResponse]);
+    getTotalForAllServices.mockResolvedValue(1);
+    getTotalForMyServices.mockResolvedValue(1);
   });
 
   it('should render tabs with `All Tab` as active tab & Mint button', async () => {
@@ -63,14 +57,16 @@ describe.skip('listServices/index.jsx', () => {
       expect(container.querySelector(ACTIVE_TAB).textContent).toBe('All');
     });
 
-    // ckecking Id, description column
-    expect(container.querySelector(getTableTd(1)).textContent).toBe('1');
-    expect(container.querySelector(getTableTd(3)).textContent).toBe(
-      'Terminated Bonded',
-    );
+    await waitFor(async () => {
+      // ckecking Id, description column
+      expect(container.querySelector(getTableTd(1)).textContent).toBe('1');
+      expect(container.querySelector(getTableTd(3)).textContent).toBe(
+        'Terminated Bonded',
+      );
 
-    // Mint button
-    expect(getByRole('button', { name: 'Mint' })).toBeInTheDocument();
+      // Mint button
+      expect(getByRole('button', { name: 'Mint' })).toBeInTheDocument();
+    });
   });
 
   it('should render tabs with `All Services` as active tab & Mint button', async () => {
@@ -85,7 +81,9 @@ describe.skip('listServices/index.jsx', () => {
       'My Services',
     ));
 
-    // Mint button
-    expect(getByRole('button', { name: 'Mint' })).toBeInTheDocument();
+    await waitFor(async () => {
+      // Mint button
+      expect(getByRole('button', { name: 'Mint' })).toBeInTheDocument();
+    });
   });
 });
