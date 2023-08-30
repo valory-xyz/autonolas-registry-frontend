@@ -55,9 +55,6 @@ const GlobalStyle = createGlobalStyle`
   }
 
   /* layout */
-  .ant-layout {
-    background: ${COLOR.WHITE};
-  }
   .ant-layout-header {
     display: flex;
     position: fixed;
@@ -111,8 +108,6 @@ const GlobalStyle = createGlobalStyle`
   .ant-table {
     .ant-table-thead {
       > tr > th {
-        font-weight: normal;
-        padding: 12px 16px;
         &:not(:last-child):not(.ant-table-selection-column):not(
             .ant-table-row-expand-icon-cell
           ):not([colspan])::before {
@@ -122,10 +117,6 @@ const GlobalStyle = createGlobalStyle`
     }
     .ant-table-tbody > tr {
       > td {
-        padding: 12px 16px;
-        &.underline span {
-          text-decoration: underline;
-        }
         .ant-btn {
           &:first-child {
             padding-left: 0;
