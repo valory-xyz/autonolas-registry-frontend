@@ -41,7 +41,7 @@ const HomePage = () => {
           </Col>
           <Col span={8}>
             <Image
-              src="images/homepage/autonomous-agent-service-architecture.svg"
+              src="/images/homepage/autonomous-agent-service-architecture.svg"
               width={isMobile ? 120 : 344}
               height={isMobile ? 120 : 344}
               fetchPriority="high"

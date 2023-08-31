@@ -41,7 +41,7 @@ exports[`<HomePage> should render homepage 1`] = `
             decoding="async"
             height="344"
             loading="lazy"
-            src="images/homepage/autonomous-agent-service-architecture.svg"
+            src="/images/homepage/autonomous-agent-service-architecture.svg"
             style="color: transparent;"
             width="344"
           />

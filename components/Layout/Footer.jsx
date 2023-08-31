@@ -85,7 +85,7 @@ const ContractInfo = () => {
         <>
           <div>
             <Image
-              src="images/etherscan-logo.svg"
+              src="/images/etherscan-logo.svg"
               width={18}
               height={18}
               alt="Etherscan link"
