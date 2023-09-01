@@ -1,13 +1,20 @@
 import { ethers } from 'ethers';
+import { isGnosis, isGoerli, isPolygon } from '@autonolas/frontend-library';
 import get from 'lodash/get';
 import { getMyProvider } from 'common-util/Contracts';
 import { getChainId, safeSendTransactionNotification } from './index';
 
 const getUrl = (hash, chainId) => {
-  if (chainId === 5) {
-    return `${process.env.NEXT_PUBLIC_GNOSIS_SAFE_API_GOERLI}/${hash}`;
+  switch (chainId) {
+    case isGoerli(chainId):
+      return `${process.env.NEXT_PUBLIC_GNOSIS_SAFE_API_GOERLI}/${hash}`;
+    case isGnosis(chainId):
+      return `${process.env.NEXT_PUBLIC_GNOSIS_SAFE_API_GNOSIS}/${hash}`;
+    case isPolygon(chainId):
+      return `${process.env.NEXT_PUBLIC_GNOSIS_SAFE_API_POLYGON}/${hash}`;
+    default:
+      return `${process.env.NEXT_PUBLIC_GNOSIS_SAFE_API_MAINNET}/${hash}`;
   }
-  return `${process.env.NEXT_PUBLIC_GNOSIS_SAFE_API_MAINNET}/${hash}`;
 };
 
 /**

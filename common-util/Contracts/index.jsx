@@ -113,11 +113,7 @@ const getContract = (abi, contractAddress) => {
   // const contract = getContract(abi, address);
   // return contract;
 
-  const contract = new ethers.Contract(
-    contractAddress,
-    abi,
-    provider.getSigner(),
-  );
+  const contract = new ethers.Contract(contractAddress, abi, provider);
 
   return contract;
 };
@@ -155,10 +151,7 @@ export const getServiceContract = () => {
   const { address, chainId } = getWeb3Details();
   if (isL1Network(chainId)) {
     const { serviceRegistry } = address;
-    return getContract(
-      SERVICE_REGISTRY_CONTRACT.abi,
-      serviceRegistry,
-    );
+    return getContract(SERVICE_REGISTRY_CONTRACT.abi, serviceRegistry);
   }
 
   const { serviceRegistryL2 } = address;
@@ -178,10 +171,7 @@ export const getServiceManagerContract = () => {
 export const getServiceManagerL2Contract = () => {
   const { address } = getWeb3Details();
   const { serviceManager } = address;
-  const contract = getContract(
-    SERVICE_MANAGER_CONTRACT.abi,
-    serviceManager,
-  );
+  const contract = getContract(SERVICE_MANAGER_CONTRACT.abi, serviceManager);
   return contract;
 };
 
