@@ -118,7 +118,7 @@ const GlobalStyle = createGlobalStyle`
     }
     .ant-table-tbody > tr {
       > td {
-        padding: 12px 16px;
+        padding: 8px 16px;
         .ant-btn {
           &:first-child {
             padding-left: 0;

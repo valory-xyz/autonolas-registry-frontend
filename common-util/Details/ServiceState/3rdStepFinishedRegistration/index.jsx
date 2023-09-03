@@ -278,7 +278,7 @@ StepThreePayload.propTypes = {
   serviceId: PropTypes.string.isRequired,
   multisig: PropTypes.string.isRequired,
   owner: PropTypes.string.isRequired,
-  threshold: PropTypes.string.isRequired,
+  threshold: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   handleTerminate: PropTypes.func,
   getButton: PropTypes.func.isRequired,
   canShowMultisigSameAddress: PropTypes.bool,

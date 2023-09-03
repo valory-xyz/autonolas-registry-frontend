@@ -8,7 +8,7 @@ import {
   rpc,
   getServiceOwnerMultisigContract,
   safeMultiSend,
-  getMyProvider,
+  getWeb3Details,
 } from 'common-util/Contracts';
 import { checkIfGnosisSafe } from 'common-util/functions';
 import safeContracts from '@gnosis.pm/safe-contracts';
@@ -93,7 +93,7 @@ export const handleMultisigSubmit = async ({
     nonce,
   );
 
-  const provider = new ethers.providers.Web3Provider(getMyProvider(), 'any');
+  const { provider } = getWeb3Details();
   const isSafe = await checkIfGnosisSafe(account, provider);
 
   try {

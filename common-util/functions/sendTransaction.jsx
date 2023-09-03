@@ -1,9 +1,13 @@
-import { ethers } from 'ethers';
 import { isGnosis, isGoerli, isPolygon } from '@autonolas/frontend-library';
 import get from 'lodash/get';
-import { getMyProvider } from 'common-util/Contracts';
+import { getWeb3Details } from 'common-util/Contracts';
 import { getChainId, safeSendTransactionNotification } from './index';
 
+/**
+ * @returns {string} - url of gnosis-safe API.
+ * List of available gnosis safe transaction service
+ * https://docs.safe.global/safe-core-api/available-services
+ */
 const getUrl = (hash, chainId) => {
   switch (chainId) {
     case isGoerli(chainId):
@@ -51,7 +55,7 @@ export const sendTransaction = (
   sendFn,
   account = window?.MODAL_PROVIDER?.accounts[0],
 ) => new Promise((resolve, reject) => {
-  const provider = new ethers.providers.Web3Provider(getMyProvider(), 'any');
+  const { provider } = getWeb3Details();
 
   provider
     .getCode(account)

@@ -21,6 +21,19 @@ import {
   LOCAL_FORK_ID_POLYGON,
 } from 'util/constants';
 
+export const rpc = {
+  1: process.env.NEXT_PUBLIC_MAINNET_URL,
+  5: process.env.NEXT_PUBLIC_GOERLI_URL,
+  100: process.env.NEXT_PUBLIC_GNOSIS_URL,
+  137: process.env.NEXT_PUBLIC_POLYGON_URL,
+  10200: process.env.NEXT_PUBLIC_GNOSIS_CHIADO_URL,
+  80001: process.env.NEXT_PUBLIC_POLYGON_MUMBAI_URL,
+  31337: process.env.NEXT_PUBLIC_AUTONOLAS_URL,
+  [LOCAL_FORK_ID]: 'http://localhost:8545',
+  [LOCAL_FORK_ID_GNOSIS]: 'http://localhost:8545',
+  [LOCAL_FORK_ID_POLYGON]: 'http://localhost:8545',
+};
+
 const MAINNET_ADDRESSES = {
   agentRegistry: '0x2F1f7D38e4772884b88f3eCd8B6b9faCdC319112',
   componentRegistry: '0x15bd56669F57192a97dF41A2aa8f4403e9491776',
@@ -85,21 +98,22 @@ export const ADDRESSES = {
   [LOCAL_FORK_ID_POLYGON]: POLYGON_ADDRESSES,
 };
 
-export const getMyProvider = () => window.MODAL_PROVIDER
-  || window.web3?.currentProvider
-  || process.env.NEXT_PUBLIC_MAINNET_URL;
+export const getMyProvider = () => window.MODAL_PROVIDER || window.web3?.currentProvider;
 
 export const getWeb3Details = () => {
+  const chainId = getChainId() || 1; // default to mainnet
+  const address = ADDRESSES[chainId];
+
   /**
    * web3 provider =
    * - wallect-connect provider or
    * - currentProvider by metamask or
    * - fallback to remote mainnet [remote node provider](https://web3js.readthedocs.io/en/v1.7.5/web3.html#example-remote-node-provider)
    */
-  const provider = new ethers.providers.Web3Provider(getMyProvider(), 'any');
+  const provider = getMyProvider()
+    ? new ethers.providers.Web3Provider(getMyProvider(), 'any')
+    : new ethers.providers.JsonRpcProvider(rpc[chainId]);
 
-  const chainId = getChainId() || 1; // default to mainnet
-  const address = ADDRESSES[chainId];
   return {
     address,
     chainId,
@@ -110,10 +124,19 @@ export const getWeb3Details = () => {
 // returns the contract instance
 const getContract = (abi, contractAddress) => {
   const { provider } = getWeb3Details();
-  // const contract = getContract(abi, address);
-  // return contract;
 
-  const contract = new ethers.Contract(contractAddress, abi, provider);
+  // if MODAL_PROVIDER is set (means the user is logged-in), use the signer
+  // else use the provider
+  const currentProvider = window.MODAL_PROVIDER
+    ? provider.getSigner()
+    : provider;
+
+  const contract = new ethers.Contract(
+    contractAddress,
+    abi,
+
+    currentProvider,
+  );
 
   return contract;
 };
@@ -257,19 +280,6 @@ export const safeMultiSend = {
   [LOCAL_FORK_ID]: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
   [LOCAL_FORK_ID_GNOSIS]: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
   [LOCAL_FORK_ID_POLYGON]: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
-};
-
-export const rpc = {
-  1: process.env.NEXT_PUBLIC_MAINNET_URL,
-  5: process.env.NEXT_PUBLIC_GOERLI_URL,
-  100: process.env.NEXT_PUBLIC_GNOSIS_URL,
-  137: process.env.NEXT_PUBLIC_POLYGON_URL,
-  10200: process.env.NEXT_PUBLIC_GNOSIS_CHIADO_URL,
-  80001: process.env.NEXT_PUBLIC_POLYGON_MUMBAI_URL,
-  31337: process.env.NEXT_PUBLIC_AUTONOLAS_URL,
-  [LOCAL_FORK_ID]: 'http://localhost:8545',
-  [LOCAL_FORK_ID_GNOSIS]: 'http://localhost:8545',
-  [LOCAL_FORK_ID_POLYGON]: 'http://localhost:8545',
 };
 
 export const FALLBACK_HANDLER = {
