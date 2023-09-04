@@ -9,7 +9,7 @@ import {
   getServiceManagerContract,
   getServiceRegistryTokenUtilityContract,
 } from 'common-util/Contracts';
-import { sendTransaction } from 'common-util/functions/sendTransaction';
+import { triggerTransaction } from 'common-util/functions/triggerTransaction';
 import { notifyError, notifySuccess } from 'common-util/functions';
 import { DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS } from 'util/constants';
 
@@ -33,102 +33,76 @@ export const getNumberOfAgentAddress = (agentAddresses) => {
  * @param {Array} tableDataSource dataSource of the table and it can be null or undefined
  * @returns {Promise} { totalBonds, bondsArray, slotsArray }
  */
-export const getBonds = (id, tableDataSource) => new Promise((resolve, reject) => {
-  const serviceContract = getServiceContract();
-  serviceContract
-    .getAgentParams(id)
-    .then((response) => {
-      const bondsArray = [];
-      const slotsArray = [];
-      for (let i = 0; i < response.agentParams.length; i += 1) {
-        /**
-           * agentParams = [{ slots: 2, bond: 2000 }, { slots: 3, bond: 4000 }]
-           * slotsArray = [2, 3]
-           * bondsArray = [2000, 4000]
-           */
+export const getBonds = async (id, tableDataSource) => {
+  const serviceContract = await getServiceContract();
+  const response = await serviceContract.getAgentParams(id);
 
-        const { bond, slots } = response.agentParams[i];
-        slotsArray.push(slots);
-        bondsArray.push(bond);
-      }
+  const bondsArray = [];
+  const slotsArray = [];
+  for (let i = 0; i < response.agentParams.length; i += 1) {
+    /**
+     * agentParams = [{ slots: 2, bond: 2000 }, { slots: 3, bond: 4000 }]
+     * slotsArray = [2, 3]
+     * bondsArray = [2000, 4000]
+     */
 
-      /**
-         * FOR AGENT ID
-         * 1. get the bond value
-         * 2. get the number of input addresses
-         * 3. multiply the number of past addresses with the bond value
-         *
-         * @example
-         * input: [agentId1 => 2 address, agentId2 => 3 address]
-         * bonds: [100, 200]
-         * output: 2 * 100 + 3 * 200 = 800
-         */
+    const { bond, slots } = response.agentParams[i];
+    slotsArray.push(slots);
+    bondsArray.push(bond);
+  }
 
-      let totalBonds = 0;
-      (tableDataSource || []).forEach((data) => {
-        const { agentAddresses, bond } = data;
+  /**
+   * FOR AGENT ID
+   * 1. get the bond value
+   * 2. get the number of input addresses
+   * 3. multiply the number of past addresses with the bond value
+   *
+   * @example
+   * input: [agentId1 => 2 address, agentId2 => 3 address]
+   * bonds: [100, 200]
+   * output: 2 * 100 + 3 * 200 = 800
+   */
 
-        /**
-           * get the number of addresses
-           * g1. ['0x123', '0x456'] => 2
-           * eg2. ['0x123', '0x456', ''] => 2 // empty string (falsy) is ignored
-           */
-        const numberOfAgentAddress = getNumberOfAgentAddress(agentAddresses);
+  let totalBonds = 0;
+  (tableDataSource || []).forEach((data) => {
+    const { agentAddresses, bond } = data;
 
-        // multiply the number of addresses with the bond value of the agentId
-        totalBonds += numberOfAgentAddress * bond;
-      });
+    /**
+     * get the number of addresses
+     * g1. ['0x123', '0x456'] => 2
+     * eg2. ['0x123', '0x456', ''] => 2 // empty string (falsy) is ignored
+     */
+    const numberOfAgentAddress = getNumberOfAgentAddress(agentAddresses);
 
-      resolve({ slots: slotsArray, bonds: bondsArray, totalBonds });
-    })
-    .catch((e) => {
-      reject(e);
-    });
-});
+    // multiply the number of addresses with the bond value of the agentId
+    totalBonds += numberOfAgentAddress * bond;
+  });
+
+  return { slots: slotsArray, bonds: bondsArray, totalBonds };
+};
 
 /* ----- common functions ----- */
-export const onTerminate = (account, id) => new Promise((resolve, reject) => {
-  const contract = getServiceManagerContract();
+export const onTerminate = async (account, id) => {
+  const contract = await getServiceManagerContract();
+  const txResponse = await contract.terminate(id);
+  // console.log('txResponse', txResponse);
+  const response = await triggerTransaction(txResponse, account);
+  // console.log('Final response', response);
+  notifySuccess('Terminated Successfully');
+  return response;
+};
 
-  const fn = contract.terminate(id).send({ from: account });
+export const getServiceOwner = async (id) => {
+  const contract = await getServiceContract();
+  const response = await contract.ownerOf(id);
+  return response;
+};
 
-  sendTransaction(fn, account)
-    .then((information) => {
-      resolve(information);
-      notifySuccess('Terminated Successfully');
-    })
-    .catch((e) => {
-      reject(e);
-      notifyError();
-    });
-});
-
-export const getServiceOwner = (id) => new Promise((resolve, reject) => {
-  const contract = getServiceContract();
-
-  contract
-    .ownerOf(id)
-    .then((response) => {
-      resolve(response);
-    })
-    .catch((e) => {
-      reject(e);
-    });
-});
-
-export const getTokenDetailsRequest = (serviceId) => new Promise((resolve, reject) => {
-  const contract = getServiceRegistryTokenUtilityContract();
-
-  contract
-    .mapServiceIdTokenDeposit(serviceId)
-    .then((response) => {
-      resolve(response);
-    })
-    .catch((e) => {
-      reject(e);
-      notifyError('Error occured on getting token details');
-    });
-});
+export const getTokenDetailsRequest = async (serviceId) => {
+  const contract = await getServiceRegistryTokenUtilityContract();
+  const deposit = await contract.mapServiceIdTokenDeposit(serviceId);
+  return deposit;
+};
 
 const hasSufficientTokenRequest = ({ account, chainId, serviceId }) => new Promise((resolve, reject) => {
   /**
@@ -160,31 +134,17 @@ const hasSufficientTokenRequest = ({ account, chainId, serviceId }) => new Promi
 /**
  * Approves
  */
-const approveToken = ({ account, chainId, serviceId }) => new Promise((resolve, reject) => {
-  getTokenDetailsRequest(serviceId)
-    .then(({ token }) => {
-      const contract = getGenericErc20Contract(token);
-      const fn = contract
-        .approve(
-          ADDRESSES[chainId].serviceRegistryTokenUtility,
-          ethers.constants.MaxUint256,
-        )
-        .send({ from: account });
+const approveToken = async ({ account, chainId, serviceId }) => {
+  const { token } = await getTokenDetailsRequest(serviceId);
+  const contract = await getGenericErc20Contract(token);
+  const txResponse = await contract.approve(
+    ADDRESSES[chainId].serviceRegistryTokenUtility,
+    ethers.constants.MaxUint256,
+  );
 
-      sendTransaction(fn, account)
-        .then((response) => {
-          resolve(response);
-        })
-        .catch((e) => {
-          window.console.log('Error occured on approving');
-          reject(e);
-        });
-    })
-    .catch((e) => {
-      reject(e);
-      notifyError('Error occured on approving token');
-    });
-});
+  const response = await triggerTransaction(txResponse, account);
+  return response;
+};
 
 export const checkAndApproveToken = ({ account, chainId, serviceId }) => new Promise((resolve, reject) => {
   hasSufficientTokenRequest({
@@ -231,11 +191,12 @@ export const mintTokenRequest = ({ account, serviceId }) => new Promise((resolve
   getTokenDetailsRequest(serviceId)
     .then(({ token }) => {
       const contract = getGenericErc20Contract(token);
-      const fn = contract
-        .mint(account, ethers.utils.parseEther('1000'))
-        .send({ from: account });
-
-      sendTransaction(fn, account)
+      const txResponse = contract.mint(
+        account,
+        ethers.utils.parseEther('1000'),
+      );
+        // TODO: fix me
+      triggerTransaction(txResponse, account)
         .then(() => resolve())
         .catch((e) => {
           reject(e);
@@ -247,60 +208,98 @@ export const mintTokenRequest = ({ account, serviceId }) => new Promise((resolve
     });
 });
 
-export const onActivateRegistration = (account, id, deposit) => new Promise((resolve, reject) => {
-  const contract = getServiceManagerContract();
+export const onActivateRegistration = async (account, id, deposit) => {
+  const contract = await getServiceManagerContract();
+  const code1 = await contract.provider.getCode(contract.address);
+  const code2 = await contract.signer.provider.getCode(contract.address);
+  console.log({
+    contract,
+    code1,
+    code2,
+    cc: code1 === code2,
+  });
+  const txResponse = await contract.activateRegistration(id, {
+    value: deposit,
+  });
+  // const sendTransactionInfo = contract.signer.sendTransaction({
+  //   to: contract.address,
+  //   from: account,
+  //   value: deposit,
+  //   // gasLimit: 50000,
+  //   gasLimit: 5000000,
+  // });
 
-  const fn = contract
-    .activateRegistration(id)
-    .send({ from: account, value: deposit });
+  const response = await triggerTransaction(txResponse, account);
+  notifySuccess('Activated Successfully');
 
-  sendTransaction(fn, account)
-    .then((response) => {
-      notifySuccess('Activated Successfully');
-      resolve(response);
-    })
-    .catch((e) => {
-      reject(e);
-      notifyError('Error occured on activating registration');
-    });
-});
+  return response;
+
+  // console.log({ provider });
+
+  // const provider = contract.signer.signTransaction({
+  //   from: account,
+  //   value: deposit,
+  //   to: contract.address,
+  //   gasLimit: 200000,
+  // }).then((e) => {
+  //   console.log(e);
+  // });
+
+  // contract.signer
+  //   .triggerTransaction({
+  //     from: account,
+  //     value: deposit,
+  //     // to: contract.address,
+  //     // gasLimit: 200000,
+  //   })
+  //   .then(async (e) => {
+  //     console.log(e);
+
+  //     const txResponse = await contract.activateRegistration(id);
+  //     const response = await triggerTransaction(txResponse, account);
+
+  //     console.log({ txResponse, response });
+
+  //     notifySuccess('Activated Successfully');
+  //     resolve(response);
+  //   })
+  //   .catch((e) => {
+  //     reject(e);
+  //     notifyError('Error occured on activating registration');
+  //   });
+};
 
 /* ----- step 2 functions ----- */
-export const getServiceTableDataSource = async (id, agentIds) => new Promise((resolve, reject) => {
-  const contract = getServiceContract();
+export const getServiceTableDataSource = async (id, agentIds) => {
+  const contract = await getServiceContract();
+  const response = await getBonds(id);
+  const { slots, bonds } = response;
+  /**
+   * for each agent Id, we call instances = getInstancesForAgentId(serviceId, agentId):
+   * instances.numAgentInstances will give the number of occupied instances slots, so in
+   * the Available Slots row you subtract params.agentParams.slots[i] -
+   * instances.numAgentInstances, considering the same agentId. And as for Agent Addresses
+   * for the correspondent Agent ID, just grab all the values from the:
+   * instances.agentInstances
+   */
+  const numAgentInstancesArray = await Promise.all(
+    agentIds.map(async (agentId) => {
+      const info = await contract.getInstancesForAgentId(id, agentId);
+      return info.numAgentInstances;
+    }),
+  );
 
-  getBonds(id)
-    .then(async ({ slots, bonds }) => {
-      /**
-         * for each agent Id, we call instances = getInstancesForAgentId(serviceId, agentId):
-         * instances.numAgentInstances will give the number of occupied instances slots, so in
-         * the Available Slots row you subtract params.agentParams.slots[i] -
-         * instances.numAgentInstances, considering the same agentId. And as for Agent Addresses
-         * for the correspondent Agent ID, just grab all the values from the:
-         * instances.agentInstances
-         */
-      const numAgentInstancesArray = await Promise.all(
-        agentIds.map(async (agentId) => {
-          const info = await contract.getInstancesForAgentId(id, agentId);
-          return info.numAgentInstances;
-        }),
-      );
+  const dateSource = agentIds.map((aid, i) => ({
+    key: aid,
+    agentId: aid,
+    availableSlots: Number(slots[i]) - Number(numAgentInstancesArray[i]),
+    totalSlots: slots[i],
+    bond: bonds[i],
+    agentAddresses: null,
+  }));
 
-      const dateSource = agentIds.map((aid, i) => ({
-        key: aid,
-        agentId: aid,
-        availableSlots: Number(slots[i]) - Number(numAgentInstancesArray[i]),
-        totalSlots: slots[i],
-        bond: bonds[i],
-        agentAddresses: null,
-      }));
-
-      resolve(dateSource);
-    })
-    .catch((e) => {
-      reject(e);
-    });
-});
+  return dateSource;
+};
 
 export const checkIfAgentInstancesAreValid = async ({
   account,
@@ -348,7 +347,8 @@ export const onStep2RegisterAgents = ({
         .registerAgents(serviceId, agentInstances, agentIds)
         .send({ from: account, value: `${totalBonds}` });
 
-      sendTransaction(fn, account)
+      // TODO: fix me
+      triggerTransaction(fn, account)
         .then((information) => {
           resolve(information);
           notifySuccess('Registered Successfully');
@@ -374,25 +374,18 @@ export const getTokenBondRequest = (id, source) => {
   );
 };
 
-/* ----- step 3 functions ----- */
-export const getServiceAgentInstances = (id) => new Promise((resolve, reject) => {
-  const contract = getServiceContract();
-
-  contract
-    .getAgentInstances(id)
-    .then((response) => {
-      resolve(response?.agentInstances);
-    })
-    .catch((e) => {
-      reject(e);
-    });
-});
+export const getServiceAgentInstances = async (id) => {
+  const contract = await getServiceContract();
+  const response = await contract.getAgentInstances(id);
+  return response?.agentInstances;
+};
 
 export const onStep3Deploy = (account, id, radioValue, payload = '0x') => new Promise((resolve, reject) => {
   const contract = getServiceManagerContract();
   const fn = contract.deploy(id, radioValue, payload).send({ from: account });
 
-  sendTransaction(fn, account)
+  // TODO: fix me
+  triggerTransaction(fn, account)
     .then((information) => {
       resolve(information);
       notifySuccess('Deployed Successfully');
@@ -404,37 +397,30 @@ export const onStep3Deploy = (account, id, radioValue, payload = '0x') => new Pr
 });
 
 /* ----- step 4 functions ----- */
-export const getAgentInstanceAndOperator = (id) => new Promise((resolve, reject) => {
-  const contract = getServiceContract();
-
-  contract
-    .getAgentInstances(id)
-    .then(async (response) => {
-      const data = await Promise.all(
-        (response?.agentInstances || []).map(async (key, index) => {
-          const operatorAddress = await contract.mapAgentInstanceOperators(
-            key,
-          );
-          return {
-            id: `agent-instance-row-${index + 1}`,
-            operatorAddress,
-            agentInstance: key,
-          };
-        }),
-      );
-      resolve(data);
-    })
-    .catch((e) => {
-      reject(e);
-    });
-});
+export const getAgentInstanceAndOperator = async (id) => {
+  const contract = await getServiceContract();
+  const response = await contract.getAgentInstances(id);
+  const data = await Promise.all(
+    (response?.agentInstances || []).map(async (key, index) => {
+      const operatorAddress = await contract.mapAgentInstanceOperators(key);
+      return {
+        id: `agent-instance-row-${index + 1}`,
+        operatorAddress,
+        agentInstance: key,
+      };
+    }),
+  );
+  return data;
+};
 
 /* ----- step 5 functions ----- */
 export const onStep5Unbond = (account, id) => new Promise((resolve, reject) => {
   const contract = getServiceManagerContract();
 
   const fn = contract.unbond(id).send({ from: account });
-  sendTransaction(fn, account)
+
+  // TODO: fix me
+  triggerTransaction(fn, account)
     .then((information) => {
       resolve(information);
       notifySuccess('Unbonded Successfully');
@@ -446,23 +432,14 @@ export const onStep5Unbond = (account, id) => new Promise((resolve, reject) => {
 });
 
 /* ----- operator whitelist functions ----- */
-export const checkIfServiceRequiresWhiltelisting = (serviceId) => new Promise((resolve, reject) => {
-  const contract = getOperatorWhitelistContract();
-
-  contract
-    .mapServiceIdOperatorsCheck(serviceId)
-    .then((response) => {
-      // if true: it is whitelisted by default
-      // else we can whitelist using the input field
-      resolve(response);
-    })
-    .catch((e) => {
-      reject(e);
-      notifyError(
-        'Error occured on checking if service requires whitelisting',
-      );
-    });
-});
+// convert above function to async/await
+export const checkIfServiceRequiresWhiltelisting = async (serviceId) => {
+  const contract = await getOperatorWhitelistContract();
+  // if true: it is whitelisted by default
+  // else we can whitelist using the input field
+  const response = await contract.mapServiceIdOperatorsCheck(serviceId);
+  return response;
+};
 
 export const checkIfServiceIsWhitelisted = (serviceId, operatorAddress) => new Promise((resolve, reject) => {
   const contract = getOperatorWhitelistContract();
@@ -495,7 +472,8 @@ export const setOperatorsStatusesRequest = ({
     )
     .send({ from: account });
 
-  sendTransaction(fn, account)
+  // TODO: fix me
+  triggerTransaction(fn, account)
     .then((response) => {
       resolve(response);
     })
@@ -505,19 +483,16 @@ export const setOperatorsStatusesRequest = ({
     });
 });
 
-export const setOperatorsCheckRequest = ({ account, serviceId, isChecked }) => new Promise((resolve, reject) => {
-  const contract = getOperatorWhitelistContract();
-
-  const fn = contract
-    .setOperatorsCheck(serviceId, isChecked)
-    .send({ from: account });
-
-  sendTransaction(fn, account)
-    .then((response) => {
-      resolve(response);
-    })
-    .catch((e) => {
-      reject(e);
-      notifyError('Error occured on checking operator whitelist');
-    });
-});
+export const setOperatorsCheckRequest = async ({
+  account,
+  serviceId,
+  isChecked,
+}) => {
+  const contract = await getOperatorWhitelistContract();
+  const txResponse = contract['setOperatorsCheck(uint256,bool)'](
+    serviceId,
+    isChecked,
+  );
+  const response = await triggerTransaction(txResponse, account);
+  return response;
+};
