@@ -1,81 +1,37 @@
-import { notification } from 'antd';
 import {
   getMechMinterContract,
   getComponentContract,
 } from 'common-util/Contracts';
 import { getListByAccount } from 'common-util/ContractUtils/myList';
-import { getFirstAndLastIndex } from 'common-util/functions';
-import { sendTransaction } from 'common-util/functions/sendTransaction';
+import { getFirstAndLastIndex, notifySuccess } from 'common-util/functions';
+import { triggerTransaction } from 'common-util/functions/triggerTransaction';
 
 // --------- HELPER METHODS ---------
-export const getComponentOwner = (id) => new Promise((resolve, reject) => {
-  const contract = getComponentContract();
-
-  contract
-    .ownerOf(id)
-    .then((response) => {
-      resolve(response);
-    })
-    .catch((e) => {
-      console.error(e);
-      reject(e);
-    });
-});
-
-/**
- * helper to return the list of details (table in index page)
- */
-const getComponentsHelper = (startIndex, promiseList, resolve) => {
-  Promise.all(promiseList).then(async (componentsList) => {
-    const results = await Promise.all(
-      componentsList.map(async (info, i) => {
-        const owner = await getComponentOwner(`${startIndex + i}`);
-        return { ...info, owner };
-      }),
-    );
-    resolve(results);
-  });
+export const getComponentOwner = async (id) => {
+  const contract = await getComponentContract();
+  const owner = await contract.ownerOf(id);
+  return owner;
 };
 
 // --------- utils ---------
-export const getComponentDetails = (id) => new Promise((resolve, reject) => {
-  const contract = getComponentContract();
-
-  contract
-    .getUnit(id)
-    .then((information) => {
-      resolve(information);
-    })
-    .catch((e) => {
-      console.error(e);
-      reject(e);
-    });
-});
+export const getComponentDetails = async (id) => {
+  const contract = await getComponentContract();
+  const information = await contract.getUnit(id);
+  return information;
+};
 
 // totals
-export const getTotalForAllComponents = () => new Promise((resolve, reject) => {
-  const contract = getComponentContract();
-  contract
-    .totalSupply()
-    .then((response) => {
-      resolve(response);
-    })
-    .catch((e) => {
-      reject(e);
-    });
-});
+export const getTotalForAllComponents = async () => {
+  const contract = await getComponentContract();
+  const total = await contract.totalSupply();
+  return total;
+};
 
-export const getTotalForMyComponents = (account) => new Promise((resolve, reject) => {
-  const contract = getComponentContract();
-  contract
-    .balanceOf(account)
-    .then((response) => {
-      resolve(response);
-    })
-    .catch((e) => {
-      reject(e);
-    });
-});
+export const getTotalForMyComponents = async (account) => {
+  const contract = await getComponentContract();
+  const balance = await contract.balanceOf(account);
+  return balance;
+};
 
 export const getFilteredComponents = async (searchValue, account) => {
   const contract = getComponentContract();
@@ -90,71 +46,55 @@ export const getFilteredComponents = async (searchValue, account) => {
   });
 };
 
-/**
- * Function to return all components
- */
-export const getComponents = (total, nextPage) => new Promise((resolve, reject) => {
-  const contract = getComponentContract();
+export const getComponents = async (total, nextPage) => {
+  const contract = await getComponentContract();
 
-  try {
-    const allComponentsPromises = [];
+  const allComponentsPromises = [];
+  // const mapUnitsPromises = [];
+  // const dependenciesPromises = [];
 
-    const { first, last } = getFirstAndLastIndex(total, nextPage);
-    for (let i = first; i <= last; i += 1) {
-      const componentId = `${i}`;
-      const result = contract.getUnit(componentId);
-      allComponentsPromises.push(result);
-    }
-
-    getComponentsHelper(first, allComponentsPromises, resolve);
-  } catch (e) {
-    console.error(e);
-    reject(e);
+  const { first, last } = getFirstAndLastIndex(total, nextPage);
+  for (let i = first; i <= last; i += 1) {
+    allComponentsPromises.push(contract.getUnit(`${i}`));
+    // mapUnitsPromises.push(contract.mapUnits(`${i}`));
+    // dependenciesPromises.push(contract.getDependencies(`${i}`));
   }
-});
 
-export const getComponentHashes = (id) => new Promise((resolve, reject) => {
-  const contract = getComponentContract();
+  const components = await Promise.allSettled(allComponentsPromises);
+  // const a2 = await Promise.allSettled(mapUnitsPromises);
+  // const a3 = await Promise.allSettled(dependenciesPromises);
+  // console.log({ a2, a3, a4: a3.map((e) => e.value) });
+  // console.log('allComponentsPromises', components);
 
-  contract
-    .getUpdatedHashes(id)
-    .then((response) => {
-      resolve(response);
-    })
-    .catch((e) => {
-      console.error(e);
-      reject(e);
-    });
-});
+  const results = await Promise.all(
+    components.map(async (info, i) => {
+      const owner = await getComponentOwner(`${first + i}`);
+      return { ...info.value, owner };
+    }),
+  );
 
-export const updateComponentHashes = (account, id, newHash) => {
-  const contract = getMechMinterContract();
-
-  // 0 to indicate `components`
-  const fn = contract
-    .updateHash('0', id, `0x${newHash}`)
-    .send({ from: account });
-
-  sendTransaction(fn, account)
-    .then(() => {
-      notification.success({ message: 'Hash Updated' });
-    })
-    .catch((e) => {
-      notification.error({ message: 'Some error occured' });
-      console.error(e);
-    });
+  return results;
 };
 
-export const getTokenUri = (id) => new Promise((resolve, reject) => {
-  const contract = getComponentContract();
+export const getComponentHashes = async (id) => {
+  const contract = await getComponentContract();
+  const response = await contract.getUpdatedHashes(id);
+  return response;
+};
 
-  contract
-    .tokenURI(id)
-    .then((response) => {
-      resolve(response);
-    })
-    .catch((e) => {
-      console.error(e);
-      reject(e);
-    });
-});
+export const updateComponentHashes = async (account, id, newHash) => {
+  const contract = await getMechMinterContract();
+
+  // 0 to indicate `components`
+  const fn = await contract
+    .updateHash('0', id, `0x${newHash}`)
+    .send({ from: account });
+  await triggerTransaction(fn, account);
+  notifySuccess('Hash updated');
+};
+
+export const getTokenUri = async (id) => {
+  const contract = await getComponentContract();
+  const response = await contract.tokenURI(id);
+  return response;
+};
