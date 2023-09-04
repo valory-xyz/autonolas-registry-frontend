@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux';
 import get from 'lodash/get';
 import { Tabs } from 'antd';
 import { useRouter } from 'next/router';
+import dynamic from 'next/dynamic';
 import { URL, NAV_TYPES } from 'util/constants';
-import ListTable from 'common-util/List/ListTable';
 import {
   useExtraTabContent,
   getHash,
@@ -17,6 +17,10 @@ import {
   getTotalForAllServices,
   getTotalForMyServices,
 } from './utils';
+
+const ListTable = dynamic(() => import('common-util/List/ListTable'), {
+  ssr: false,
+});
 
 const ALL_SERVICES = 'all-services';
 const MY_SERVICES = 'my-services';
@@ -155,6 +159,10 @@ const ListServices = () => {
     searchValue,
   };
 
+  const myServiceList = searchValue
+    ? list
+    : getMyListOnPagination({ total, nextPage: currentPage, list });
+
   return (
     <Tabs
       className="registry-tabs"
@@ -189,15 +197,7 @@ const ListServices = () => {
           children: (
             <ListTable
               {...tableCommonProps}
-              list={
-                searchValue
-                  ? list
-                  : getMyListOnPagination({
-                    total,
-                    nextPage: currentPage,
-                    list,
-                  })
-              }
+              list={myServiceList}
               onUpdateClick={(serviceId) => router.push(`${URL.UPDATE_SERVICE}/${serviceId}`)}
               isAccountRequired
             />
