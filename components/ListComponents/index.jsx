@@ -11,6 +11,7 @@ import {
   isMyTab,
 } from 'common-util/List/ListTable/helpers';
 import { getMyListOnPagination } from 'common-util/ContractUtils/myList';
+import { notifyError } from 'common-util/functions';
 import {
   getComponents,
   getFilteredComponents,
@@ -108,6 +109,7 @@ const ListComponents = () => {
           }
         } catch (e) {
           console.error(e);
+          notifyError('Error fetching components');
         } finally {
           setIsLoading(false);
         }
@@ -136,6 +138,7 @@ const ListComponents = () => {
           setCurrentPage(1);
         } catch (e) {
           console.error(e);
+          notifyError('Error fetching components');
         } finally {
           setIsLoading(false);
         }

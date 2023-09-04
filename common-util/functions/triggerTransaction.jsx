@@ -50,55 +50,53 @@ async function pollTransactionDetails(hash, chainId) {
 
 /**
  * poll until the hash has been approved before deploy
+ * @param {ethers.ContractTransaction} sendTransactionInfo {ethers.}
  */
-export const sendTransaction = (
-  sendFn,
+export const triggerTransaction = async (
+  sendTransactionInfo,
   account = window?.MODAL_PROVIDER?.accounts[0],
-) => new Promise((resolve, reject) => {
+) => {
+  console.log('INSIDE TRIGGER TRANSACTION');
   const { provider } = getWeb3Details();
+  console.log({ provider });
 
-  provider
-    .getCode(account)
-    .then(async (code) => {
-      const isGnosisSafe = code !== '0x';
+  try {
+    const code = await provider.getCode(account);
+    const isGnosisSafe = code !== '0x';
+    console.log({ sendTransactionInfo, isGnosisSafe });
 
-      if (isGnosisSafe) {
-        /**
-           * Logic to deal with gnosis-safe
-           * - show notification on to check gnosis-safe
-           * - poll until transaction is completed
-           * - return response
-           */
-        safeSendTransactionNotification();
+    if (isGnosisSafe) {
+      /**
+       * Logic to deal with gnosis-safe
+       * - show notification on to check gnosis-safe
+       * - poll until transaction is completed
+       * - return response
+       */
+      safeSendTransactionNotification();
 
-        sendFn
-          .on('transactionHash', async (safeTx) => {
-            window.console.log('safeTx', safeTx);
+      const safeTx = await sendTransactionInfo.wait();
+      window.console.log('safeTx', safeTx);
+      console.log({ safeTx });
 
-            /**
-               * use `transactionHash`, get the hash, then poll until
-               * it resolves with Output
-               */
-            const chainId = getChainId();
-            pollTransactionDetails(safeTx, chainId)
-              .then((receipt) => {
-                resolve(receipt);
-              })
-              .catch((e) => {
-                console.error('Error on fetching transaction details');
-                reject(e);
-              });
-          })
-          .catch((e) => {
-            reject(e);
-          });
-      } else {
-        // usual send function
-        sendFn.then((receipt) => resolve(receipt)).catch((e) => reject(e));
+      /**
+       * use `transactionHash`, get the hash, then poll until
+       * it resolves with Output
+       */
+      const chainId = getChainId();
+      try {
+        const receipt = await pollTransactionDetails(safeTx, chainId);
+        return receipt;
+      } catch (error) {
+        console.error('Error on fetching transaction details');
+        throw error;
       }
-    })
-    .catch((e) => {
-      console.error('Error on fetching code');
-      reject(e);
-    });
-});
+    } else {
+      // not safe, so just wait for the transaction to be mined
+      const receipt = await sendTransactionInfo.wait();
+      return receipt;
+    }
+  } catch (error) {
+    window.console.error('Error occured while sending transaction');
+    throw error;
+  }
+};
