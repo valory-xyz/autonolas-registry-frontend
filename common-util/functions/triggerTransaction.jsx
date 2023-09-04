@@ -50,20 +50,18 @@ async function pollTransactionDetails(hash, chainId) {
 
 /**
  * poll until the hash has been approved before deploy
- * @param {ethers.ContractTransaction} sendTransactionInfo {ethers.}
+ * @param {ethers.ContractTransaction} sendTransactionInfo
+ * TODO: needs to be FIXED for gnosis-safe
  */
 export const triggerTransaction = async (
   sendTransactionInfo,
   account = window?.MODAL_PROVIDER?.accounts[0],
 ) => {
-  console.log('INSIDE TRIGGER TRANSACTION');
-  const { provider } = getWeb3Details();
-  console.log({ provider });
+  const { provider } = await getWeb3Details();
 
   try {
     const code = await provider.getCode(account);
     const isGnosisSafe = code !== '0x';
-    console.log({ sendTransactionInfo, isGnosisSafe });
 
     if (isGnosisSafe) {
       /**
@@ -76,7 +74,6 @@ export const triggerTransaction = async (
 
       const safeTx = await sendTransactionInfo.wait();
       window.console.log('safeTx', safeTx);
-      console.log({ safeTx });
 
       /**
        * use `transactionHash`, get the hash, then poll until

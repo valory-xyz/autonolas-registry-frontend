@@ -84,14 +84,11 @@ export const getBonds = async (id, tableDataSource) => {
 /* ----- common functions ----- */
 export const onTerminate = async (account, id) => {
   const contract = await getServiceManagerContract();
-  console.log('HEREEEE', account, id);
   const txResponse = await contract.terminate(id, {
     from: account,
     gasLimit: 1000000,
   });
-  console.log('txResponse', txResponse);
   const response = await triggerTransaction(txResponse, account);
-  console.log('Final response', response);
   notifySuccess('Terminated Successfully');
   return response;
 };
@@ -108,32 +105,19 @@ export const getTokenDetailsRequest = async (serviceId) => {
   return deposit;
 };
 
-const hasSufficientTokenRequest = ({ account, chainId, serviceId }) => new Promise((resolve, reject) => {
+const hasSufficientTokenRequest = async ({ account, chainId, serviceId }) => {
   /**
-     * - fetch the token address from the serviceId
-     * - fetch the allowance of the token using the token address
-     */
-  getTokenDetailsRequest(serviceId)
-    .then(({ token }) => {
-      const contract = getGenericErc20Contract(token);
-
-      contract
-        .allowance(account, ADDRESSES[chainId].serviceRegistryTokenUtility)
-        .then((response) => {
-          resolve(
-            !(ethers.BigNumber.from(response) < ethers.constants.MaxUint256),
-          );
-        })
-        .catch((e) => {
-          reject(e);
-          notifyError('Error occured on checking allowance');
-        });
-    })
-    .catch((e) => {
-      reject(e);
-      notifyError('Error occured on checking token');
-    });
-});
+   * - fetch the token address from the serviceId
+   * - fetch the allowance of the token using the token address
+   */
+  const { token } = await getTokenDetailsRequest(serviceId);
+  const contract = await getGenericErc20Contract(token);
+  const response = contract.allowance(
+    account,
+    ADDRESSES[chainId].serviceRegistryTokenUtility,
+  );
+  return !(ethers.BigNumber.from(response) < ethers.constants.MaxUint256);
+};
 
 /**
  * Approves
@@ -191,37 +175,23 @@ export const checkIfEth = (id) => new Promise((resolve, reject) => {
 });
 
 // NOTE: this function is used only for testing
-export const mintTokenRequest = ({ account, serviceId }) => new Promise((resolve, reject) => {
-  getTokenDetailsRequest(serviceId)
-    .then(({ token }) => {
-      const contract = getGenericErc20Contract(token);
-      const txResponse = contract.mint(
-        account,
-        ethers.utils.parseEther('1000'),
-      );
-        // TODO: fix me
-      triggerTransaction(txResponse, account)
-        .then(() => resolve())
-        .catch((e) => {
-          reject(e);
-          notifyError();
-        });
-    })
-    .catch((e) => {
-      reject(e);
-    });
-});
+export const mintTokenRequest = async ({ account, serviceId }) => {
+  const { token } = await getTokenDetailsRequest(serviceId);
+  const contract = await getGenericErc20Contract(token);
+  const txResponse = await contract.mint(
+    account,
+    ethers.utils.parseEther('1000'),
+  );
+  await triggerTransaction(txResponse, account);
+  return null;
+};
 
 export const onActivateRegistration = async (account, id, deposit) => {
   const contract = await getServiceManagerContract();
-  console.log('HEREEEE', account, id);
-
   const txResponse = await contract.activateRegistration(id, {
     value: deposit,
   });
-  console.log('txResponse', txResponse);
   const response = await triggerTransaction(txResponse, account);
-  console.log('Final response', response);
   notifySuccess('Activated Successfully');
   return response;
 };
@@ -262,7 +232,7 @@ export const checkIfAgentInstancesAreValid = async ({
   account,
   agentInstances,
 }) => {
-  const contract = getServiceContract();
+  const contract = await getServiceContract();
 
   // check if the operator is registered as an agent instance already
   const operator = await contract.mapAgentInstanceOperators(account);
@@ -289,40 +259,33 @@ export const checkIfAgentInstancesAreValid = async ({
   return true;
 };
 
-export const onStep2RegisterAgents = ({
+export const onStep2RegisterAgents = async ({
   account,
   serviceId,
   agentIds,
   agentInstances,
   dataSource,
-}) => new Promise((resolve, reject) => {
-  const contract = getServiceManagerContract();
+}) => {
+  const contract = await getServiceManagerContract();
+  const { totalBonds } = await getBonds(serviceId, dataSource);
 
-  getBonds(serviceId, dataSource)
-    .then(({ totalBonds }) => {
-      const fn = contract
-        .registerAgents(serviceId, agentInstances, agentIds)
-        .send({ from: account, value: `${totalBonds}` });
+  const tx = await contract.registerAgents(
+    serviceId,
+    agentInstances,
+    agentIds,
+    {
+      from: account,
+      value: `${totalBonds}`,
+    },
+  );
 
-      // TODO: fix me
-      triggerTransaction(fn, account)
-        .then((information) => {
-          resolve(information);
-          notifySuccess('Registered Successfully');
-        })
-        .catch((e) => {
-          reject(e);
-        });
-    })
-    .catch((e) => {
-      reject(e);
-      notifyError();
-    });
-});
+  const response = await triggerTransaction(tx, account);
+  notifySuccess('Registered Successfully');
+  return response;
+};
 
-export const getTokenBondRequest = (id, source) => {
-  const contract = getServiceRegistryTokenUtilityContract();
-
+export const getTokenBondRequest = async (id, source) => {
+  const contract = await getServiceRegistryTokenUtilityContract();
   return Promise.all(
     (source || []).map(async ({ agentId }) => {
       const bond = await contract.getAgentBond(id, agentId);
@@ -337,21 +300,18 @@ export const getServiceAgentInstances = async (id) => {
   return response?.agentInstances;
 };
 
-export const onStep3Deploy = (account, id, radioValue, payload = '0x') => new Promise((resolve, reject) => {
-  const contract = getServiceManagerContract();
-  const fn = contract.deploy(id, radioValue, payload).send({ from: account });
-
-  // TODO: fix me
-  triggerTransaction(fn, account)
-    .then((information) => {
-      resolve(information);
-      notifySuccess('Deployed Successfully');
-    })
-    .catch((e) => {
-      reject(e);
-      notifyError();
-    });
-});
+export const onStep3Deploy = async (
+  account,
+  id,
+  radioValue,
+  payload = '0x',
+) => {
+  const contract = await getServiceManagerContract();
+  const tx = await contract.deploy(id, radioValue, payload);
+  const response = triggerTransaction(tx, account);
+  notifySuccess('Deployed Successfully');
+  return response;
+};
 
 /* ----- step 4 functions ----- */
 export const getAgentInstanceAndOperator = async (id) => {
@@ -371,22 +331,13 @@ export const getAgentInstanceAndOperator = async (id) => {
 };
 
 /* ----- step 5 functions ----- */
-export const onStep5Unbond = (account, id) => new Promise((resolve, reject) => {
-  const contract = getServiceManagerContract();
-
-  const fn = contract.unbond(id).send({ from: account });
-
-  // TODO: fix me
-  triggerTransaction(fn, account)
-    .then((information) => {
-      resolve(information);
-      notifySuccess('Unbonded Successfully');
-    })
-    .catch((e) => {
-      notifyError();
-      reject(e);
-    });
-});
+export const onStep5Unbond = async (account, id) => {
+  const contract = await getServiceManagerContract();
+  const tx = await contract.unbond(id);
+  const response = await triggerTransaction(tx, account);
+  notifySuccess('Unbonded Successfully');
+  return response;
+};
 
 /* ----- operator whitelist functions ----- */
 // convert above function to async/await

@@ -5,7 +5,11 @@ import {
   Button, Typography, Input, notification, Form,
 } from 'antd';
 import { DynamicFieldsForm } from 'common-util/DynamicFieldsForm';
-import { addressValidator, notifyError } from 'common-util/functions';
+import {
+  addressValidator,
+  notifyError,
+  notifySuccess,
+} from 'common-util/functions';
 import {
   checkIfServiceIsWhitelisted,
   setOperatorsStatusesRequest,
@@ -103,7 +107,7 @@ export const SetOperatorStatus = ({ id, setOpWhitelist }) => {
         operatorStatuses: values.status.map((e) => e === 'true'),
       });
       await setOpWhitelist();
-      notification.success({ message: 'Operator status updated' });
+      notifySuccess('Operator status updated');
     } catch (error) {
       console.error(error);
       notifyError('Error occurred while updating operator status');

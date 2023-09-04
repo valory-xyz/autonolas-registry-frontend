@@ -103,28 +103,12 @@ export const ADDRESSES = {
  * @returns {Object} - web3 details
  * @returns {Promise<ethers.JsonRpcSigner>} signer to sign the transaction
  */
-export const getWeb3Details = () => {
+export const getWeb3Details = async () => {
   const chainId = getChainId() || 1; // default to mainnet
   const address = ADDRESSES[chainId];
-
-  /**
-   * web3 provider =
-   * - wallect-connect provider or
-   * - currentProvider by metamask or
-   * - fallback to remote mainnet [remote node provider](https://web3js.readthedocs.io/en/v1.7.5/web3.html#example-remote-node-provider)
-   */
   const provider = new ethers.providers.Web3Provider(
     window.MODAL_PROVIDER || window.ethereum,
   );
-
-  // console.log({
-  //   a: window.MODAL_PROVIDER,
-  //   b: window.ethereum,
-  //   provider,
-  // });
-
-  // if MODAL_PROVIDER is set (means the user is logged-in), use the signer
-  // else use the provider
   const providerOrSigner = provider.getSigner();
 
   return {
@@ -149,7 +133,7 @@ const getContract = async (abi, contractAddress) => {
 };
 
 export const getComponentContract = async () => {
-  const { address } = getWeb3Details();
+  const { address } = await getWeb3Details();
   const { componentRegistry } = address;
   const contract = await getContract(
     COMPONENT_REGISTRY_CONTRACT.abi,
@@ -159,14 +143,17 @@ export const getComponentContract = async () => {
 };
 
 export const getAgentContract = async () => {
-  const { address } = getWeb3Details();
+  const { address } = await getWeb3Details();
   const { agentRegistry } = address;
-  const contract = await getContract(AGENT_REGISTRY_CONTRACT.abi, agentRegistry);
+  const contract = await getContract(
+    AGENT_REGISTRY_CONTRACT.abi,
+    agentRegistry,
+  );
   return contract;
 };
 
 export const getMechMinterContract = async () => {
-  const { address } = getWeb3Details();
+  const { address } = await getWeb3Details();
   const { registriesManager } = address;
 
   const contract = await getContract(
@@ -182,7 +169,7 @@ export const getMechMinterContract = async () => {
  * @returns {Promise<ethers.Contract>} serviceRegistry contract
  */
 export const getServiceContract = async () => {
-  const { address, chainId } = getWeb3Details();
+  const { address, chainId } = await getWeb3Details();
   if (isL1Network(chainId)) {
     const { serviceRegistry } = address;
     const contract = await getContract(
@@ -204,7 +191,7 @@ export const getServiceContract = async () => {
  * @returns {ethers.Contract} serviceManager contract
  */
 export const getServiceManagerContract = async () => {
-  const { address } = getWeb3Details();
+  const { address } = await getWeb3Details();
   const { serviceManagerToken } = address;
   const contract = await getContract(
     SERVICE_MANAGER_TOKEN_CONTRACT.abi,
@@ -217,7 +204,7 @@ export const getServiceManagerContract = async () => {
  * @returns {ethers.Contract} serviceManager L2 contract
  */
 export const getServiceManagerL2Contract = async () => {
-  const { address } = getWeb3Details();
+  const { address } = await getWeb3Details();
   const { serviceManager } = address;
   const contract = await getContract(
     SERVICE_MANAGER_CONTRACT.abi,
@@ -227,7 +214,7 @@ export const getServiceManagerL2Contract = async () => {
 };
 
 export const getServiceRegistryTokenUtilityContract = async () => {
-  const { address } = getWeb3Details();
+  const { address } = await getWeb3Details();
   const { serviceRegistryTokenUtility } = address;
   const contract = await getContract(
     SERVICE_REGISTRY_TOKEN_UTILITY_CONTRACT.abi,
@@ -237,7 +224,7 @@ export const getServiceRegistryTokenUtilityContract = async () => {
 };
 
 export const getOperatorWhitelistContract = async () => {
-  const { address } = getWeb3Details();
+  const { address } = await getWeb3Details();
   const { operatorWhitelist } = address;
   const contract = await getContract(
     OPERATOR_WHITELIST_CONTRACT.abi,

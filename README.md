@@ -4,11 +4,13 @@ This repository contains the [Autonolas Registry](https://registry.olas.network/
 ## Tech Stack
 - ReactJS
 - NextJS
-- Styled-components
 - Ant Design
-- React-testing-library
+- ethers
+- Web3Modal
+- Styled components
+- React testing library
 - Jest
-- etherJS
+
 
 ## Installation and Setup Instructions
 
