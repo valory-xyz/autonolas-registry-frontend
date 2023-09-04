@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { Tooltip } from 'antd/lib';
+import { Tooltip } from 'antd';
 import { GATEWAY_URL } from '@autonolas/frontend-library';
 import { getChainId } from 'common-util/functions';
 

@@ -44,6 +44,12 @@ const ListTable = ({
     isMobile,
   });
   const dataSource = getData(type, list, { current: currentPage });
+  const pagination = {
+    total,
+    current: currentPage,
+    defaultPageSize: TOTAL_VIEW_COUNT,
+    onChange: (e) => setCurrentPage(e),
+  };
 
   return (
     <>
@@ -53,16 +59,7 @@ const ListTable = ({
         <Table
           columns={columns}
           dataSource={dataSource}
-          pagination={
-            isPaginationRequired
-              ? {
-                total,
-                current: currentPage,
-                defaultPageSize: TOTAL_VIEW_COUNT,
-                onChange: (e) => setCurrentPage(e),
-              }
-              : false
-          }
+          pagination={isPaginationRequired ? pagination : false}
           scroll={{ x: scrollX || 1200 }}
           rowKey={(record) => `${type}-row-${record.id}`}
         />
@@ -82,9 +79,7 @@ ListTable.propTypes = {
   isAccountRequired: PropTypes.bool,
   onViewClick: PropTypes.func,
   onUpdateClick: PropTypes.func,
-  extra: PropTypes.shape({
-    scrollX: PropTypes.number,
-  }),
+  extra: PropTypes.shape({ scrollX: PropTypes.number }),
 };
 
 ListTable.defaultProps = {

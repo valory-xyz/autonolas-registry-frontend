@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import get from 'lodash/get';
-import { Button, Skeleton } from 'antd';
+import { Button } from 'antd';
+// import { Button, Skeleton } from 'antd';
 
 const Container = styled.div`
   min-height: 200px;
@@ -51,7 +52,8 @@ const Loader = ({ isAccountRequired, notConnectedMessage, timeoutMessage }) => {
     );
   }
 
-  return <Skeleton active />;
+  return <>Loading...</>;
+  // return <Skeleton active />;
 };
 
 Loader.propTypes = {
