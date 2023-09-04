@@ -7,108 +7,71 @@ import { getServiceContract } from 'common-util/Contracts';
 import { convertStringToArray } from 'common-util/List/ListCommon';
 import { filterByOwner } from 'common-util/ContractUtils/myList';
 import { getTokenDetailsRequest } from 'common-util/Details/ServiceState/utils';
-import { notifyError } from 'common-util/functions';
 
 // --------- HELPER METHODS ---------
-export const getServiceOwner = (id) => new Promise((resolve, reject) => {
-  const contract = getServiceContract();
-
-  contract
-    .ownerOf(id)
-    .then((response) => {
-      resolve(response);
-    })
-    .catch((e) => {
-      console.error(e);
-      reject(e);
-    });
-});
+export const getServiceOwner = async (id) => {
+  const contract = await getServiceContract();
+  const response = await contract.ownerOf(id);
+  return response;
+};
 
 // --------- utils ---------
-export const getServiceDetails = (id) => new Promise((resolve, reject) => {
-  const contract = getServiceContract();
+export const getServiceDetails = async (id) => {
+  const contract = await getServiceContract();
+  const information = await contract.getService(id);
+  const owner = await getServiceOwner(id);
+  return { ...information, owner };
+};
 
-  contract
-    .getService(id)
-    .then(async (information) => {
-      const owner = await getServiceOwner(id);
-      resolve({ ...information, owner });
-    })
-    .catch((e) => {
-      reject(e);
-    });
-});
-
-export const getTotalForMyServices = (account) => new Promise((resolve, reject) => {
-  const contract = getServiceContract();
-  contract
-    .balanceOf(account)
-    .then((response) => {
-      resolve(response);
-    })
-    .catch((e) => {
-      reject(e);
-    });
-});
+export const getTotalForMyServices = async (account) => {
+  const contract = await getServiceContract();
+  const total = await contract.balanceOf(account);
+  return total;
+};
 
 /**
  * Function to return all services
  */
-export const getTotalForAllServices = () => new Promise((resolve, reject) => {
-  const contract = getServiceContract();
-  contract
-    .totalSupply()
-    .then((response) => {
-      resolve(response);
-    })
-    .catch((e) => {
-      notifyError('Error while fetching total supply');
-      reject(e);
-    });
-});
+export const getTotalForAllServices = async () => {
+  const contract = await getServiceContract();
+  const total = await contract.totalSupply();
+  return total;
+};
 
-export const getServices = (total, nextPage, fetchAll = false) => new Promise((resolve, reject) => {
-  const contract = getServiceContract();
+export const getServices = async (total, nextPage, fetchAll = false) => {
+  const contract = await getServiceContract();
 
-  try {
-    const existsPromises = [];
+  const existsPromises = [];
 
-    const first = fetchAll ? 1 : (nextPage - 1) * TOTAL_VIEW_COUNT + 1;
-    const last = fetchAll
-      ? total
-      : Math.min(nextPage * TOTAL_VIEW_COUNT, total);
+  const first = fetchAll ? 1 : (nextPage - 1) * TOTAL_VIEW_COUNT + 1;
+  const last = fetchAll ? total : Math.min(nextPage * TOTAL_VIEW_COUNT, total);
 
-    for (let i = first; i <= last; i += 1) {
-      const result = contract.exists(`${i}`);
-      existsPromises.push(result);
-    }
-
-    Promise.allSettled(existsPromises).then(async (existsResult) => {
-      // filter services which don't exists (deleted or destroyed)
-      const validTokenIds = [];
-      existsResult.forEach((item, index) => {
-        const serviceId = `${first + index}`;
-        if (item.status === 'fulfilled' && !!item.value) {
-          validTokenIds.push(serviceId);
-        }
-      });
-
-      // list of promises of valid service
-      const results = await Promise.all(
-        validTokenIds.map(async (id) => {
-          const info = await getServiceDetails(id);
-          const owner = await getServiceOwner(id);
-          return { ...info, id, owner };
-        }),
-      );
-
-      resolve(results);
-    });
-  } catch (e) {
-    console.error(e);
-    reject(e);
+  for (let i = first; i <= last; i += 1) {
+    const result = contract.exists(`${i}`);
+    existsPromises.push(result);
   }
-});
+
+  const existsResult = await Promise.allSettled(existsPromises);
+  // filter services which don't exists (deleted or destroyed)
+  const validTokenIds = [];
+  existsResult.forEach((item, index) => {
+    const serviceId = `${first + index}`;
+    if (item.status === 'fulfilled' && !!item.value) {
+      validTokenIds.push(serviceId);
+    }
+  });
+
+  // list of promises of valid service
+  const results = await Promise.all(
+    validTokenIds.map(async (id) => {
+      const info = await getServiceDetails(id);
+      const owner = await getServiceOwner(id);
+      return { ...info, id, owner };
+    }),
+  );
+
+  return results;
+};
 
 export const getFilteredServices = async (searchValue, account) => {
   const total = await getTotalForAllServices();
@@ -141,44 +104,21 @@ export const getAgentParams = (values) => {
   return bonds.map((bond, index) => [agentNumSlots[index], bond]);
 };
 
-export const getServiceHashes = (id) => new Promise((resolve, reject) => {
-  const contract = getServiceContract();
-  contract
-    .getPreviousHashes(id)
-    .then((information) => {
-      resolve(information);
-    })
-    .catch((e) => {
-      console.error(e);
-      reject(e);
-    });
-});
+export const getServiceHashes = async (id) => {
+  const contract = await getServiceContract();
+  const information = await contract.getPreviousHashes(id);
+  return information;
+};
 
-export const getTokenUri = (id) => new Promise((resolve, reject) => {
-  const contract = getServiceContract();
+export const getTokenUri = async (id) => {
+  const contract = await getServiceContract();
+  const response = await contract.tokenURI(id);
+  return response;
+};
 
-  contract
-    .tokenURI(id)
-    .then((response) => {
-      resolve(response);
-    })
-    .catch((e) => {
-      console.error(e);
-      reject(e);
-    });
-});
-
-export const getTokenAddressRequest = (id) => new Promise((resolve, reject) => {
-  getTokenDetailsRequest(id)
-    .then((response) => {
-      resolve(
-        response.token === DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS
-          ? DEFAULT_SERVICE_CREATION_ETH_TOKEN
-          : response.token,
-      );
-    })
-    .catch((e) => {
-      console.error('Error occured on getting token address');
-      reject(e);
-    });
-});
+export const getTokenAddressRequest = async (id) => {
+  const response = await getTokenDetailsRequest(id);
+  return response.token === DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS
+    ? DEFAULT_SERVICE_CREATION_ETH_TOKEN
+    : response.token;
+};

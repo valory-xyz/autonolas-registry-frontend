@@ -84,10 +84,14 @@ export const getBonds = async (id, tableDataSource) => {
 /* ----- common functions ----- */
 export const onTerminate = async (account, id) => {
   const contract = await getServiceManagerContract();
-  const txResponse = await contract.terminate(id);
-  // console.log('txResponse', txResponse);
+  console.log('HEREEEE', account, id);
+  const txResponse = await contract.terminate(id, {
+    from: account,
+    gasLimit: 1000000,
+  });
+  console.log('txResponse', txResponse);
   const response = await triggerTransaction(txResponse, account);
-  // console.log('Final response', response);
+  console.log('Final response', response);
   notifySuccess('Terminated Successfully');
   return response;
 };
@@ -210,63 +214,16 @@ export const mintTokenRequest = ({ account, serviceId }) => new Promise((resolve
 
 export const onActivateRegistration = async (account, id, deposit) => {
   const contract = await getServiceManagerContract();
-  const code1 = await contract.provider.getCode(contract.address);
-  const code2 = await contract.signer.provider.getCode(contract.address);
-  console.log({
-    contract,
-    code1,
-    code2,
-    cc: code1 === code2,
-  });
+  console.log('HEREEEE', account, id);
+
   const txResponse = await contract.activateRegistration(id, {
     value: deposit,
   });
-  // const sendTransactionInfo = contract.signer.sendTransaction({
-  //   to: contract.address,
-  //   from: account,
-  //   value: deposit,
-  //   // gasLimit: 50000,
-  //   gasLimit: 5000000,
-  // });
-
+  console.log('txResponse', txResponse);
   const response = await triggerTransaction(txResponse, account);
+  console.log('Final response', response);
   notifySuccess('Activated Successfully');
-
   return response;
-
-  // console.log({ provider });
-
-  // const provider = contract.signer.signTransaction({
-  //   from: account,
-  //   value: deposit,
-  //   to: contract.address,
-  //   gasLimit: 200000,
-  // }).then((e) => {
-  //   console.log(e);
-  // });
-
-  // contract.signer
-  //   .triggerTransaction({
-  //     from: account,
-  //     value: deposit,
-  //     // to: contract.address,
-  //     // gasLimit: 200000,
-  //   })
-  //   .then(async (e) => {
-  //     console.log(e);
-
-  //     const txResponse = await contract.activateRegistration(id);
-  //     const response = await triggerTransaction(txResponse, account);
-
-  //     console.log({ txResponse, response });
-
-  //     notifySuccess('Activated Successfully');
-  //     resolve(response);
-  //   })
-  //   .catch((e) => {
-  //     reject(e);
-  //     notifyError('Error occured on activating registration');
-  //   });
 };
 
 /* ----- step 2 functions ----- */
@@ -441,47 +398,31 @@ export const checkIfServiceRequiresWhiltelisting = async (serviceId) => {
   return response;
 };
 
-export const checkIfServiceIsWhitelisted = (serviceId, operatorAddress) => new Promise((resolve, reject) => {
-  const contract = getOperatorWhitelistContract();
+export const checkIfServiceIsWhitelisted = async (
+  serviceId,
+  operatorAddress,
+) => {
+  const contract = await getOperatorWhitelistContract();
+  const response = contract.isOperatorWhitelisted(serviceId, operatorAddress);
+  return response;
+};
 
-  contract
-    .isOperatorWhitelisted(serviceId, operatorAddress)
-    .then((response) => {
-      resolve(response);
-    })
-    .catch((e) => {
-      reject(e);
-      notifyError('Error occured on checking operator whitelist');
-    });
-});
-
-export const setOperatorsStatusesRequest = ({
+export const setOperatorsStatusesRequest = async ({
   account,
   serviceId,
   operatorAddresses,
   operatorStatuses,
-}) => new Promise((resolve, reject) => {
-  const contract = getOperatorWhitelistContract();
-
-  const fn = contract
-    .setOperatorsStatuses(
-      serviceId,
-      operatorAddresses,
-      operatorStatuses,
-      true,
-    )
-    .send({ from: account });
-
-  // TODO: fix me
-  triggerTransaction(fn, account)
-    .then((response) => {
-      resolve(response);
-    })
-    .catch((e) => {
-      reject(e);
-      notifyError('Error occured on checking operator whitelist');
-    });
-});
+}) => {
+  const contract = await getOperatorWhitelistContract();
+  const fn = await contract.setOperatorsStatuses(
+    serviceId,
+    operatorAddresses,
+    operatorStatuses,
+    true,
+  );
+  const response = await triggerTransaction(fn, account);
+  return response;
+};
 
 export const setOperatorsCheckRequest = async ({
   account,

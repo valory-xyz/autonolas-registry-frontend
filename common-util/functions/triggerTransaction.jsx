@@ -1,7 +1,6 @@
 import { isGnosis, isGoerli, isPolygon } from '@autonolas/frontend-library';
 import get from 'lodash/get';
 import { getWeb3Details } from 'common-util/Contracts';
-import { ethers } from 'ethers';
 import { getChainId, safeSendTransactionNotification } from './index';
 
 /**
@@ -51,19 +50,20 @@ async function pollTransactionDetails(hash, chainId) {
 
 /**
  * poll until the hash has been approved before deploy
+ * @param {ethers.ContractTransaction} sendTransactionInfo {ethers.}
  */
 export const triggerTransaction = async (
   sendTransactionInfo,
   account = window?.MODAL_PROVIDER?.accounts[0],
 ) => {
+  console.log('INSIDE TRIGGER TRANSACTION');
   const { provider } = getWeb3Details();
+  console.log({ provider });
 
   try {
-    const txResponse = await sendTransactionInfo;
     const code = await provider.getCode(account);
-    console.log(txResponse);
-
     const isGnosisSafe = code !== '0x';
+    console.log({ sendTransactionInfo, isGnosisSafe });
 
     if (isGnosisSafe) {
       /**
@@ -74,8 +74,9 @@ export const triggerTransaction = async (
        */
       safeSendTransactionNotification();
 
-      const safeTx = txResponse.wait();
+      const safeTx = await sendTransactionInfo.wait();
       window.console.log('safeTx', safeTx);
+      console.log({ safeTx });
 
       /**
        * use `transactionHash`, get the hash, then poll until
@@ -91,68 +92,11 @@ export const triggerTransaction = async (
       }
     } else {
       // not safe, so just wait for the transaction to be mined
-      const receipt = txResponse.wait();
+      const receipt = await sendTransactionInfo.wait();
       return receipt;
     }
   } catch (error) {
     window.console.error('Error occured while sending transaction');
     throw error;
-  }
-};
-
-// * @param {ethers.providers} signer - signer
-
-/**
- * sign the transaction
- * @param {object} message - transaction object
- * @param {ethers.Signer} signer - signer
- *
- */
-export const sendTransactionHelper = async (message, signer) => {
-  try {
-    const { provider } = getWeb3Details();
-
-    console.log({
-      provider,
-    });
-
-    const gasPrice = await provider.getGasPrice();
-    console.log({
-      gasPrice,
-    });
-
-    const tx = {
-      ...message,
-
-      // gasPrice: ethers.utils.hexlify(parseInt(gasPrice, 10)),
-    };
-    const code = await provider.getCode(message.from);
-    const isGnosisSafe = code !== '0x';
-
-    console.log({
-      tx,
-      code,
-      isGnosisSafe,
-    });
-
-    if (isGnosisSafe) {
-      /**
-       * Logic to deal with gnosis-safe
-       * - show notification on to check gnosis-safe
-       * - poll until transaction is completed
-       * - return response
-       */
-      safeSendTransactionNotification();
-      const signedTx = await signer.signTransaction(tx);
-      console.log('txResponse', signedTx);
-      // const signedTx = tx;
-
-      const txResponse = provider.sendTransaction(signedTx);
-      console.log('txResponse', txResponse);
-    } else {
-      // ff
-    }
-  } catch (error) {
-    console.error(error);
   }
 };

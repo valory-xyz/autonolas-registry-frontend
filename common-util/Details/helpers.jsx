@@ -76,6 +76,7 @@ export const DetailsInfo = ({
   useEffect(() => {
     setSwitchValue(isWhiteListed);
   }, [isWhiteListed]);
+  const [isWhiteListingLoading, setIsWhiteListingLoading] = useState(false);
 
   // get operator whitelist
   const setOpWhitelist = async () => {
@@ -89,12 +90,16 @@ export const DetailsInfo = ({
 
     const getData = async () => {
       if (type === NAV_TYPES.SERVICE) {
-        const response = await getTokenDetailsRequest(id);
-        if (isMounted) {
-          setTokenAddress(response.token);
-        }
+        try {
+          const response = await getTokenDetailsRequest(id);
+          if (isMounted) {
+            setTokenAddress(response.token);
+          }
 
-        await setOpWhitelist(id);
+          await setOpWhitelist(id);
+        } catch (error) {
+          console.error(error);
+        }
       }
     };
 
@@ -191,6 +196,7 @@ export const DetailsInfo = ({
         value: (
           <>
             {viewHashAndCode}
+            &nbsp;•&nbsp;
             {updateHashBtn}
           </>
         ),
@@ -270,19 +276,22 @@ export const DetailsInfo = ({
               checked={switchValue}
               checkedChildren="Enabled"
               unCheckedChildren="Disabled"
+              loading={isWhiteListingLoading}
               onChange={async (checked) => {
                 try {
+                  setIsWhiteListingLoading(true);
                   await setOperatorsCheckRequest({
                     account,
                     serviceId: id,
                     isChecked: checked,
                   });
                   setSwitchValue(checked);
+                  await setOpWhitelist();
                 } catch (error) {
                   console.error(error);
+                } finally {
+                  setIsWhiteListingLoading(false);
                 }
-
-                await setOpWhitelist();
               }}
             />
           </>

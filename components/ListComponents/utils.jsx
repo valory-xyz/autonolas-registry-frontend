@@ -75,9 +75,7 @@ export const updateComponentHashes = async (account, id, newHash) => {
   const contract = await getMechMinterContract();
 
   // 0 to indicate `components`
-  const fn = await contract
-    .updateHash('0', id, `0x${newHash}`)
-    .send({ from: account });
+  const fn = await contract.updateHash('0', id, `0x${newHash}`);
   await triggerTransaction(fn, account);
   notifySuccess('Hash updated');
 };
