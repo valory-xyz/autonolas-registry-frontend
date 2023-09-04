@@ -3,7 +3,6 @@ import { createGlobalStyle } from 'styled-components';
 import { COLOR, OTHERS } from 'util/theme';
 
 const ANTD_COLOR = {
-  whiteColor: '#fff',
   borderColor: '#f0f0f0',
 };
 
@@ -109,6 +108,7 @@ const GlobalStyle = createGlobalStyle`
   .ant-table {
     .ant-table-thead {
       > tr > th {
+        padding: 12px 16px;
         &:not(:last-child):not(.ant-table-selection-column):not(
             .ant-table-row-expand-icon-cell
           ):not([colspan])::before {
@@ -118,6 +118,7 @@ const GlobalStyle = createGlobalStyle`
     }
     .ant-table-tbody > tr {
       > td {
+        padding: 8px 16px;
         .ant-btn {
           &:first-child {
             padding-left: 0;

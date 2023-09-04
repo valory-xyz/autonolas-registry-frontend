@@ -62,7 +62,7 @@ export const ServiceStatus = styled.div`
     color: ${COLOR.RED_1};
   }
   svg {
-    top: -2px;
+    top: -1px;
     margin-right: 6px;
     position: relative;
   }

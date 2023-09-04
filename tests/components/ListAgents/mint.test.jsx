@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { getMechMinterContract } from 'common-util/Contracts';
 import MintAgent from 'components/ListAgents/mint';
@@ -19,8 +19,6 @@ jest.mock('common-util/List/IpfsHashGenerationModal/helpers', () => ({
 
 describe('listAgents/mint.jsx', () => {
   it('should submit the form & mint the `Agent` successfully', async () => {
-    expect.hasAssertions();
-
     getMechMinterContract.mockImplementation(() => ({
       methods: {
         create: jest.fn(() => ({
@@ -38,6 +36,12 @@ describe('listAgents/mint.jsx', () => {
 
     // get hash
     userEvent.click(getByRole('button', { name: 'Generate Hash & File' }));
+
+    // wait for ipfs generation modal to open
+    await waitFor(() => {
+      getByText(/Generate IPFS Hash of Metadata File/i);
+    });
+
     fillIpfsGenerationModal();
 
     // other fields

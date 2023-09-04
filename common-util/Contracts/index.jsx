@@ -21,6 +21,19 @@ import {
   LOCAL_FORK_ID_POLYGON,
 } from 'util/constants';
 
+export const rpc = {
+  1: process.env.NEXT_PUBLIC_MAINNET_URL,
+  5: process.env.NEXT_PUBLIC_GOERLI_URL,
+  100: process.env.NEXT_PUBLIC_GNOSIS_URL,
+  137: process.env.NEXT_PUBLIC_POLYGON_URL,
+  10200: process.env.NEXT_PUBLIC_GNOSIS_CHIADO_URL,
+  80001: process.env.NEXT_PUBLIC_POLYGON_MUMBAI_URL,
+  31337: process.env.NEXT_PUBLIC_AUTONOLAS_URL,
+  [LOCAL_FORK_ID]: 'http://localhost:8545',
+  [LOCAL_FORK_ID_GNOSIS]: 'http://localhost:8545',
+  [LOCAL_FORK_ID_POLYGON]: 'http://localhost:8545',
+};
+
 const MAINNET_ADDRESSES = {
   agentRegistry: '0x2F1f7D38e4772884b88f3eCd8B6b9faCdC319112',
   componentRegistry: '0x15bd56669F57192a97dF41A2aa8f4403e9491776',
@@ -85,65 +98,78 @@ export const ADDRESSES = {
   [LOCAL_FORK_ID_POLYGON]: POLYGON_ADDRESSES,
 };
 
-export const getMyProvider = () => window.MODAL_PROVIDER
-  || window.web3?.currentProvider
-  || process.env.NEXT_PUBLIC_MAINNET_URL;
-
+/**
+ *
+ * @returns {Object} - web3 details
+ * @returns {Promise<ethers.JsonRpcSigner>} signer to sign the transaction
+ */
 export const getWeb3Details = () => {
+  const chainId = getChainId() || 1; // default to mainnet
+  const address = ADDRESSES[chainId];
+
   /**
    * web3 provider =
    * - wallect-connect provider or
    * - currentProvider by metamask or
    * - fallback to remote mainnet [remote node provider](https://web3js.readthedocs.io/en/v1.7.5/web3.html#example-remote-node-provider)
    */
-  const provider = new ethers.providers.Web3Provider(getMyProvider(), 'any');
+  const provider = new ethers.providers.Web3Provider(
+    window.MODAL_PROVIDER || window.ethereum,
+  );
 
-  const chainId = getChainId() || 1; // default to mainnet
-  const address = ADDRESSES[chainId];
+  // console.log({
+  //   a: window.MODAL_PROVIDER,
+  //   b: window.ethereum,
+  //   provider,
+  // });
+
+  // if MODAL_PROVIDER is set (means the user is logged-in), use the signer
+  // else use the provider
+  const providerOrSigner = provider.getSigner();
+
   return {
     address,
     chainId,
     provider,
+    signer: providerOrSigner,
   };
 };
 
 // returns the contract instance
-const getContract = (abi, contractAddress) => {
-  const { provider } = getWeb3Details();
-  // const contract = getContract(abi, address);
-  // return contract;
-
-  const contract = new ethers.Contract(
-    contractAddress,
-    abi,
-    provider.getSigner(),
-  );
-
+/**
+ *
+ * @param {Array} abi - abi of the contract
+ * @param {String} contractAddress - address of the contract
+ * @returns {ethers.Contract} - contract instance
+ */
+const getContract = async (abi, contractAddress) => {
+  const signer = await getWeb3Details().signer;
+  const contract = new ethers.Contract(contractAddress, abi, signer);
   return contract;
 };
 
-export const getComponentContract = () => {
+export const getComponentContract = async () => {
   const { address } = getWeb3Details();
   const { componentRegistry } = address;
-  const contract = getContract(
+  const contract = await getContract(
     COMPONENT_REGISTRY_CONTRACT.abi,
     componentRegistry,
   );
   return contract;
 };
 
-export const getAgentContract = () => {
+export const getAgentContract = async () => {
   const { address } = getWeb3Details();
   const { agentRegistry } = address;
-  const contract = getContract(AGENT_REGISTRY_CONTRACT.abi, agentRegistry);
+  const contract = await getContract(AGENT_REGISTRY_CONTRACT.abi, agentRegistry);
   return contract;
 };
 
-export const getMechMinterContract = () => {
+export const getMechMinterContract = async () => {
   const { address } = getWeb3Details();
   const { registriesManager } = address;
 
-  const contract = getContract(
+  const contract = await getContract(
     REGISTRIES_MANAGER_CONTRACT.abi,
     registriesManager,
   );
@@ -151,77 +177,92 @@ export const getMechMinterContract = () => {
   return contract;
 };
 
-export const getServiceContract = () => {
+/**
+ *
+ * @returns {Promise<ethers.Contract>} serviceRegistry contract
+ */
+export const getServiceContract = async () => {
   const { address, chainId } = getWeb3Details();
   if (isL1Network(chainId)) {
     const { serviceRegistry } = address;
-    return getContract(
+    const contract = await getContract(
       SERVICE_REGISTRY_CONTRACT.abi,
       serviceRegistry,
     );
+    return contract;
   }
 
   const { serviceRegistryL2 } = address;
-  return getContract(SERVICE_REGISTRY_L2.abi, serviceRegistryL2);
+  const contract = await getContract(
+    SERVICE_REGISTRY_L2.abi,
+    serviceRegistryL2,
+  );
+  return contract;
 };
 
-export const getServiceManagerContract = () => {
+/**
+ * @returns {ethers.Contract} serviceManager contract
+ */
+export const getServiceManagerContract = async () => {
   const { address } = getWeb3Details();
   const { serviceManagerToken } = address;
-  const contract = getContract(
+  const contract = await getContract(
     SERVICE_MANAGER_TOKEN_CONTRACT.abi,
     serviceManagerToken,
   );
   return contract;
 };
 
-export const getServiceManagerL2Contract = () => {
+/**
+ * @returns {ethers.Contract} serviceManager L2 contract
+ */
+export const getServiceManagerL2Contract = async () => {
   const { address } = getWeb3Details();
   const { serviceManager } = address;
-  const contract = getContract(
+  const contract = await getContract(
     SERVICE_MANAGER_CONTRACT.abi,
     serviceManager,
   );
   return contract;
 };
 
-export const getServiceRegistryTokenUtilityContract = () => {
+export const getServiceRegistryTokenUtilityContract = async () => {
   const { address } = getWeb3Details();
   const { serviceRegistryTokenUtility } = address;
-  const contract = getContract(
+  const contract = await getContract(
     SERVICE_REGISTRY_TOKEN_UTILITY_CONTRACT.abi,
     serviceRegistryTokenUtility,
   );
   return contract;
 };
 
-export const getOperatorWhitelistContract = () => {
+export const getOperatorWhitelistContract = async () => {
   const { address } = getWeb3Details();
   const { operatorWhitelist } = address;
-  const contract = getContract(
+  const contract = await getContract(
     OPERATOR_WHITELIST_CONTRACT.abi,
     operatorWhitelist,
   );
   return contract;
 };
 
-export const getGenericErc20Contract = (tokenAddress) => {
-  const contract = getContract(GENERIC_ERC20_CONTRACT.abi, tokenAddress);
+export const getGenericErc20Contract = async (tokenAddress) => {
+  const contract = await getContract(GENERIC_ERC20_CONTRACT.abi, tokenAddress);
   return contract;
 };
 
-export const getSignMessageLibContract = (address) => {
-  const contract = getContract(SIGN_MESSAGE_LIB_CONTRACT.abi, address);
+export const getSignMessageLibContract = async (address) => {
+  const contract = await getContract(SIGN_MESSAGE_LIB_CONTRACT.abi, address);
   return contract;
 };
 
-export const getServiceOwnerMultisigContract = (address) => {
-  const contract = getContract(GNOSIS_SAFE_CONTRACT.abi, address);
+export const getServiceOwnerMultisigContract = async (address) => {
+  const contract = await getContract(GNOSIS_SAFE_CONTRACT.abi, address);
   return contract;
 };
 
-export const getMultiSendContract = (address) => {
-  const contract = getContract(MULTI_SEND_CONTRACT.abi, address);
+export const getMultiSendContract = async (address) => {
+  const contract = await getContract(MULTI_SEND_CONTRACT.abi, address);
   return contract;
 };
 
@@ -267,19 +308,6 @@ export const safeMultiSend = {
   [LOCAL_FORK_ID]: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
   [LOCAL_FORK_ID_GNOSIS]: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
   [LOCAL_FORK_ID_POLYGON]: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
-};
-
-export const rpc = {
-  1: process.env.NEXT_PUBLIC_MAINNET_URL,
-  5: process.env.NEXT_PUBLIC_GOERLI_URL,
-  100: process.env.NEXT_PUBLIC_GNOSIS_URL,
-  137: process.env.NEXT_PUBLIC_POLYGON_URL,
-  10200: process.env.NEXT_PUBLIC_GNOSIS_CHIADO_URL,
-  80001: process.env.NEXT_PUBLIC_POLYGON_MUMBAI_URL,
-  31337: process.env.NEXT_PUBLIC_AUTONOLAS_URL,
-  [LOCAL_FORK_ID]: 'http://localhost:8545',
-  [LOCAL_FORK_ID_GNOSIS]: 'http://localhost:8545',
-  [LOCAL_FORK_ID_POLYGON]: 'http://localhost:8545',
 };
 
 export const FALLBACK_HANDLER = {

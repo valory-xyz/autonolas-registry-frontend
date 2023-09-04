@@ -1,3 +1,4 @@
+/* eslint-disable jest/max-expects */
 import React from 'react';
 import { useRouter } from 'next/router';
 import { render, waitFor } from '@testing-library/react';
@@ -14,11 +15,6 @@ import {
   getServiceOwner,
 } from 'components/ListServices/utils';
 import { wrapProvider, dummyAddress, mockV1Hash } from '../../helpers';
-
-jest.mock('next/router', () => ({
-  __esModule: true,
-  useRouter: jest.fn(() => ({})),
-}));
 
 jest.mock('common-util/List/IpfsHashGenerationModal/helpers', () => ({
   getIpfsHashHelper: jest.fn(() => mockV1Hash),
@@ -68,8 +64,8 @@ describe.skip('listServices/service.jsx', () => {
     }));
 
     useRouter.mockImplementation(() => ({ push: jest.fn() }));
-    getServiceDetails.mockImplementation(() => Promise.resolve(SERVICE_1));
-    getServiceOwner.mockImplementation(() => Promise.resolve(dummyAddress));
+    getServiceDetails.mockResolvedValue(SERVICE_1);
+    getServiceOwner.mockResolvedValue(dummyAddress);
     useRouter.mockImplementation(() => ({
       push: jest.fn(),
       query: { id: 1 },

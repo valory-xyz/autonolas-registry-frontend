@@ -1,10 +1,10 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Button, Typography, Alert, Switch,
 } from 'antd';
-import { ArrowUpRight, Circle } from 'react-feather';
+import { ArrowRightOutlined } from '@ant-design/icons';
 import get from 'lodash/get';
 import {
   DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS,
@@ -12,6 +12,7 @@ import {
   NA,
   NAV_TYPES,
 } from 'util/constants';
+import { Circle } from 'common-util/svg/Circle';
 import { isL1OnlyNetwork, isL1Network } from 'common-util/functions';
 import { NftImage } from './NFTImage';
 import { SetOperatorStatus, OperatorWhitelist } from './ServiceDetailsHelper';
@@ -40,6 +41,17 @@ export const HASH_DETAILS_STATE = {
   FAILED: 'FAILED',
 };
 
+const ArrowLink = memo(() => (
+  <ArrowRightOutlined
+    style={{
+      width: 14,
+      transform: 'rotate(320deg)',
+      position: 'relative',
+      top: '-4px',
+    }}
+  />
+));
+
 export const DetailsInfo = ({
   id,
   isOwner,
@@ -64,6 +76,7 @@ export const DetailsInfo = ({
   useEffect(() => {
     setSwitchValue(isWhiteListed);
   }, [isWhiteListed]);
+  const [isWhiteListingLoading, setIsWhiteListingLoading] = useState(false);
 
   // get operator whitelist
   const setOpWhitelist = async () => {
@@ -77,12 +90,16 @@ export const DetailsInfo = ({
 
     const getData = async () => {
       if (type === NAV_TYPES.SERVICE) {
-        const response = await getTokenDetailsRequest(id);
-        if (isMounted) {
-          setTokenAddress(response.token);
-        }
+        try {
+          const response = await getTokenDetailsRequest(id);
+          if (isMounted) {
+            setTokenAddress(response.token);
+          }
 
-        await setOpWhitelist(id);
+          await setOpWhitelist(id);
+        } catch (error) {
+          console.error(error);
+        }
       }
     };
 
@@ -112,7 +129,7 @@ export const DetailsInfo = ({
         href={getAutonolasTokenUri(tokenUri)}
       >
         View Hash&nbsp;
-        <ArrowUpRight size={16} />
+        <ArrowLink />
       </Link>
         &nbsp;•&nbsp;
       <Link
@@ -124,7 +141,7 @@ export const DetailsInfo = ({
         )}
       >
         View Code&nbsp;
-        <ArrowUpRight size={16} />
+        <ArrowLink />
       </Link>
     </>
   ) : null;
@@ -179,6 +196,7 @@ export const DetailsInfo = ({
         value: (
           <>
             {viewHashAndCode}
+            &nbsp;•&nbsp;
             {updateHashBtn}
           </>
         ),
@@ -258,19 +276,22 @@ export const DetailsInfo = ({
               checked={switchValue}
               checkedChildren="Enabled"
               unCheckedChildren="Disabled"
+              loading={isWhiteListingLoading}
               onChange={async (checked) => {
                 try {
+                  setIsWhiteListingLoading(true);
                   await setOperatorsCheckRequest({
                     account,
                     serviceId: id,
                     isChecked: checked,
                   });
                   setSwitchValue(checked);
+                  await setOpWhitelist();
                 } catch (error) {
                   console.error(error);
+                } finally {
+                  setIsWhiteListingLoading(false);
                 }
-
-                await setOpWhitelist();
               }}
             />
           </>

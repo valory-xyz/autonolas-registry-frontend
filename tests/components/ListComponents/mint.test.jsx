@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { getMechMinterContract } from 'common-util/Contracts';
 import MintComponent from 'components/ListComponents/mint';
@@ -38,6 +38,12 @@ describe('listComponents/mint.jsx', () => {
 
     // get hash
     userEvent.click(getByRole('button', { name: 'Generate Hash & File' }));
+
+    // wait for ipfs generation modal to open
+    await waitFor(() => {
+      getByText(/Generate IPFS Hash of Metadata File/i);
+    });
+
     fillIpfsGenerationModal();
 
     // other fields

@@ -24,7 +24,9 @@ const Agent = ({ account }) => {
       getHashes={() => getAgentHashes(id)}
       getTokenUri={() => getTokenUri(id)}
       getOwner={() => getAgentOwner(id)}
-      onUpdateHash={(newHash) => updateAgentHashes(account, id, newHash)}
+      onUpdateHash={async (newHash) => {
+        await updateAgentHashes(account, id, newHash);
+      }}
       onDependencyClick={(e) => router.push(`${URL.COMPONENTS}/${e}`)}
     />
   );

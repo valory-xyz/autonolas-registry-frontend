@@ -1,4 +1,4 @@
-/* eslint-disable no-param-reassign */
+// eslint-disable-next-line import/no-extraneous-dependencies
 const withBundleAnalyzer = require('@next/bundle-analyzer');
 
 /**
@@ -8,6 +8,11 @@ const nextConfig = {
   reactStrictMode: true,
   compiler: {
     styledComponents: true,
+  },
+  pages: {
+    '*': {
+      maxChunkSize: 30000,
+    },
   },
 };
 

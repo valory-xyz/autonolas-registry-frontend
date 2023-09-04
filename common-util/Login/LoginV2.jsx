@@ -61,49 +61,59 @@ export const LoginV2 = ({
     },
   });
 
-  useEffect(async () => {
-    try {
-      // This is the initial `provider` that is returned when
-      // using web3Modal to connect. Can be MetaMask or WalletConnect.
-      const modalProvider = connector?.options?.getProvider?.()
-        || (await connector?.getProvider?.());
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        // This is the initial `provider` that is returned when
+        // using web3Modal to connect. Can be MetaMask or WalletConnect.
+        const modalProvider = connector?.options?.getProvider?.()
+          || (await connector?.getProvider?.());
 
-      if (modalProvider) {
-        // *******************************************************
-        // ************ setting to the window object! ************
-        // *******************************************************
-        window.MODAL_PROVIDER = modalProvider;
+        if (modalProvider) {
+          // *******************************************************
+          // ************ setting to the window object! ************
+          // *******************************************************
+          window.MODAL_PROVIDER = modalProvider;
 
-        if (modalProvider?.on) {
-          // https://docs.ethers.io/v5/concepts/best-practices/#best-practices--network-changes
-          const handleChainChanged = () => {
-            window.location.reload();
-          };
+          if (modalProvider?.on) {
+            // https://docs.ethers.io/v5/concepts/best-practices/#best-practices--network-changes
+            const handleChainChanged = () => {
+              window.location.reload();
+            };
 
-          modalProvider.on('chainChanged', handleChainChanged);
+            modalProvider.on('chainChanged', handleChainChanged);
 
-          // cleanup
-          return () => {
-            if (modalProvider.removeListener) {
-              modalProvider.removeListener('chainChanged', handleChainChanged);
-            }
-          };
+            // cleanup
+            return () => {
+              if (modalProvider.removeListener) {
+                modalProvider.removeListener(
+                  'chainChanged',
+                  handleChainChanged,
+                );
+              }
+            };
+          }
         }
+
+        return () => null;
+      } catch (error) {
+        console.error(error);
+        return () => null;
       }
+    };
 
-      return undefined;
-    } catch (error) {
-      console.error(error);
-    }
-
-    return undefined;
+    getData();
   }, [connector]);
 
   return (
     <LoginContainer>
       <Web3NetworkSwitch />
       &nbsp;&nbsp;
-      <Web3Button balance="show" avatar="hide" icon={screens.xs ? 'hide' : 'show'} />
+      <Web3Button
+        balance="show"
+        avatar="hide"
+        icon={screens.xs ? 'hide' : 'show'}
+      />
       <Web3Modal
         projectId={projectId}
         ethereumClient={ethereumClient}

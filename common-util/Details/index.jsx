@@ -131,19 +131,18 @@ const Details = ({
             {`${capitalize(type)} ID ${id}`}
           </DetailsTitle>
         </div>
+
+        {/* Update button to be show only if the connected account is the owner */}
         <div className="right-content">
-          {/* Update button to be show only if the connected account is the owner */}
           {isOwner && type !== NAV_TYPES.SERVICE && (
-            <>
-              <Button
-                disabled={!handleUpdate}
-                type="primary"
-                ghost
-                onClick={onUpdate}
-              >
-                Update
-              </Button>
-            </>
+            <Button
+              disabled={!handleUpdate}
+              type="primary"
+              ghost
+              onClick={onUpdate}
+            >
+              Update
+            </Button>
           )}
         </div>
       </Header>

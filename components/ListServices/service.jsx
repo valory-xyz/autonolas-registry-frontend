@@ -15,7 +15,7 @@ import {
   getServiceManagerL2Contract,
 } from 'common-util/Contracts';
 import { isL1Network, isL1OnlyNetwork } from 'common-util/functions';
-import { sendTransaction } from 'common-util/functions/sendTransaction';
+import { triggerTransaction } from 'common-util/functions/triggerTransaction';
 import RegisterForm from './RegisterForm';
 import {
   getAgentParams,
@@ -60,7 +60,7 @@ const Service = ({ account }) => {
 
   /* helper functions */
   const handleSubmit = (values) => {
-    if (account) {
+    const submitData = async () => {
       setIsUpdating(true);
       setError(null);
 
@@ -69,8 +69,8 @@ const Service = ({ account }) => {
         : values.token;
 
       const contract = isL1Network(chainId)
-        ? getServiceManagerContract()
-        : getServiceManagerL2Contract();
+        ? await getServiceManagerContract()
+        : await getServiceManagerL2Contract();
 
       const commonParams = [
         `0x${values.hash}`,
@@ -86,7 +86,7 @@ const Service = ({ account }) => {
         : [...commonParams];
 
       const fn = contract.update(...params).send({ from: account });
-      sendTransaction(fn, account)
+      triggerTransaction(fn, account)
         .then(() => {
           notification.success({ message: 'Service Updated' });
         })
@@ -96,6 +96,10 @@ const Service = ({ account }) => {
         .finally(() => {
           setIsUpdating(false);
         });
+    };
+
+    if (account) {
+      submitData();
     }
   };
 

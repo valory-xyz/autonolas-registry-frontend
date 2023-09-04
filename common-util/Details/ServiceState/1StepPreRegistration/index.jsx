@@ -96,7 +96,7 @@ PreRegistration.propTypes = {
   getButton: PropTypes.func.isRequired,
   isOwner: PropTypes.bool.isRequired,
   isEthToken: PropTypes.bool.isRequired,
-  securityDeposit: PropTypes.string,
+  securityDeposit: PropTypes.oneOfType([PropTypes.string, PropTypes.shape({})]),
   updateDetails: PropTypes.func.isRequired,
 };
 

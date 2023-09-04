@@ -1,6 +1,6 @@
-/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable jest/no-conditional-in-test */
 /* eslint-disable no-await-in-loop */
-/* eslint-disable jest/expect-expect */
+import fetch from 'node-fetch';
 import {
   COMPONENT_REGISTRY_CONTRACT,
   AGENT_REGISTRY_CONTRACT,
@@ -17,8 +17,6 @@ import {
   multisigAddresses,
   multisigSameAddresses,
 } from 'common-util/Contracts';
-
-const fetch = require('node-fetch');
 
 const localArtifacts = [
   COMPONENT_REGISTRY_CONTRACT,

@@ -1,49 +1,45 @@
-import App from 'next/app';
 import Head from 'next/head';
 import { createWrapper } from 'next-redux-wrapper';
 import { ConfigProvider } from 'antd';
 import PropTypes from 'prop-types';
 
-import { WagmiConfig } from 'wagmi';
+/** wagmi config */
+import { WagmiConfig as WagmiConfigProvider } from 'wagmi';
+import { wagmiConfig } from 'common-util/Login/config';
+
+/** antd theme config */
+import Layout from 'components/Layout';
 import { themeConfig } from 'util/theme';
 import GlobalStyle from 'components/GlobalStyles';
-import Layout from 'components/Layout';
-import { wagmiConfig } from 'common-util/Login/config';
 import initStore from '../store';
 
-class MyApp extends App {
-  static async getInitialProps({ Component, ctx }) {
-    const pageProps = Component.getInitialProps
-      ? await Component.getInitialProps(ctx)
-      : {};
+const DESC = 'View and manage components, agents and services via the Autonolas on-chain registry.';
 
-    return { pageProps };
-  }
+const MyApp = ({ Component, pageProps }) => (
+  <>
+    <GlobalStyle />
+    <Head>
+      <title>Autonolas Registry</title>
+      <meta name="description" content={DESC} />
+    </Head>
+    <ConfigProvider theme={themeConfig}>
+      {/* <div>Hello world</div> */}
+      <WagmiConfigProvider config={wagmiConfig}>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </WagmiConfigProvider>
+    </ConfigProvider>
+  </>
+);
 
-  render() {
-    const { Component, pageProps } = this.props;
+MyApp.getInitialProps = async ({ Component, ctx }) => {
+  const pageProps = Component.getInitialProps
+    ? await Component.getInitialProps(ctx)
+    : {};
 
-    return (
-      <>
-        <GlobalStyle />
-        <Head>
-          <title>Autonolas Registry</title>
-          <meta
-            name="description"
-            content="View and manage components, agents and services via the Autonolas on-chain registry."
-          />
-        </Head>
-        <ConfigProvider theme={themeConfig}>
-          <WagmiConfig config={wagmiConfig}>
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
-          </WagmiConfig>
-        </ConfigProvider>
-      </>
-    );
-  }
-}
+  return { pageProps };
+};
 
 MyApp.propTypes = {
   Component: PropTypes.oneOfType([PropTypes.func, PropTypes.shape({})])
@@ -65,4 +61,10 @@ export default wrapper.withRedux(MyApp);
  * 2. themeProvider - https://ant.design/docs/react/customize-theme
  * 3. usage of antd icons
  * 4. try to check the performance with blank page
+ *
+ *
+ *
+ *
+ * OPTIMIZATION:
+ * https://github.com/vercel/next.js/discussions/13646#discussioncomment-5544203
  */
