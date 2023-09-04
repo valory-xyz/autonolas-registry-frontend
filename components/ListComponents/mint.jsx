@@ -42,7 +42,7 @@ const MintComponent = () => {
         console.error(e);
       }
 
-      const contract = getMechMinterContract();
+      const contract = await getMechMinterContract();
       const fn = contract
         .create(
           '0',

@@ -56,7 +56,7 @@ export const getListByAccount = async ({
 /**
  * call API once and return based on pagination
  */
-export const getMyListOnPagination = ({ total, nextPage, list }) => {
+export const getMyListOnPagination = ({ total, nextPage, list = [] }) => {
   const { first, last } = getFirstAndLastIndex(total, nextPage);
   const array = list.slice(first - 1, last);
   return array;
@@ -67,5 +67,5 @@ export const getMyListOnPagination = ({ total, nextPage, list }) => {
  */
 export const getTotalOfFilteredList = async ({ list }) => {
   const { length } = list || [];
-  return new Promise((resolve) => resolve(length));
+  return length;
 };

@@ -13,14 +13,13 @@ export const getComponentOwner = async (id) => {
   return owner;
 };
 
-// --------- utils ---------
 export const getComponentDetails = async (id) => {
   const contract = await getComponentContract();
   const information = await contract.getUnit(id);
   return information;
 };
 
-// totals
+// --------- contract methods ---------
 export const getTotalForAllComponents = async () => {
   const contract = await getComponentContract();
   const total = await contract.totalSupply();
@@ -34,7 +33,7 @@ export const getTotalForMyComponents = async (account) => {
 };
 
 export const getFilteredComponents = async (searchValue, account) => {
-  const contract = getComponentContract();
+  const contract = await getComponentContract();
   const total = await getTotalForAllComponents();
 
   return getListByAccount({
@@ -50,22 +49,12 @@ export const getComponents = async (total, nextPage) => {
   const contract = await getComponentContract();
 
   const allComponentsPromises = [];
-  // const mapUnitsPromises = [];
-  // const dependenciesPromises = [];
-
   const { first, last } = getFirstAndLastIndex(total, nextPage);
   for (let i = first; i <= last; i += 1) {
     allComponentsPromises.push(contract.getUnit(`${i}`));
-    // mapUnitsPromises.push(contract.mapUnits(`${i}`));
-    // dependenciesPromises.push(contract.getDependencies(`${i}`));
   }
 
   const components = await Promise.allSettled(allComponentsPromises);
-  // const a2 = await Promise.allSettled(mapUnitsPromises);
-  // const a3 = await Promise.allSettled(dependenciesPromises);
-  // console.log({ a2, a3, a4: a3.map((e) => e.value) });
-  // console.log('allComponentsPromises', components);
-
   const results = await Promise.all(
     components.map(async (info, i) => {
       const owner = await getComponentOwner(`${first + i}`);

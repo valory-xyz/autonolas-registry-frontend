@@ -7,6 +7,7 @@ import {
   Form, Input, Button, Select,
 } from 'antd';
 import { HASH_PREFIXES } from 'util/constants';
+import { notifyError } from 'common-util/functions';
 import { getIpfsHashHelper } from './helpers';
 import { CustomModal } from '../styles';
 
@@ -72,11 +73,17 @@ const IpfsModal = ({
   };
 
   const handleUpdate = () => {
-    form.validateFields().then(async (values) => {
-      const hash = await getNewHash(values);
-      onUpdateHash(hash);
-      if (callback) callback(hash);
-    });
+    form
+      .validateFields()
+      .then(async (values) => {
+        const hash = await getNewHash(values);
+        await onUpdateHash(hash);
+        if (callback) callback(hash);
+      })
+      .catch((e) => {
+        notifyError('Error updating hash');
+        console.error(e);
+      });
   };
 
   const handleOk = () => {
