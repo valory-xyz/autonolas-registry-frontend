@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Button, Typography, Input, notification, Form,
-} from 'antd/lib';
+} from 'antd';
 import { DynamicFieldsForm } from 'common-util/DynamicFieldsForm';
-import { addressValidator } from 'common-util/functions';
+import { addressValidator, notifyError } from 'common-util/functions';
 import {
   checkIfServiceIsWhitelisted,
   setOperatorsStatusesRequest,
@@ -41,7 +41,7 @@ export const OperatorWhitelist = ({ isWhiteListed, setOpWhitelist, id }) => {
       if (isValid) {
         notification.success({ message });
       } else {
-        notification.warn({ message });
+        notification.warning({ message });
       }
     } catch (error) {
       console.error(error);
@@ -103,11 +103,10 @@ export const SetOperatorStatus = ({ id, setOpWhitelist }) => {
         operatorStatuses: values.status.map((e) => e === 'true'),
       });
       await setOpWhitelist();
-      notification.success({
-        message: 'Operator status updated',
-      });
+      notification.success({ message: 'Operator status updated' });
     } catch (error) {
       console.error(error);
+      notifyError('Error occurred while updating operator status');
     } finally {
       setIsSubmitLoading(false);
     }

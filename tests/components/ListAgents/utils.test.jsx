@@ -13,20 +13,10 @@ describe('listAgents/utils.jsx', () => {
     expect.hasAssertions();
 
     getAgentContract.mockImplementation(() => ({
-      methods: {
-        totalSupply: jest.fn(() => ({
-          call: jest.fn(() => Promise.resolve(1)),
-        })),
-        balanceOf: jest.fn(() => ({
-          call: jest.fn(() => Promise.resolve(1)),
-        })),
-        getUnit: jest.fn(() => ({
-          call: jest.fn(() => Promise.resolve(AGENT_1)),
-        })),
-        ownerOf: jest.fn(() => ({
-          call: jest.fn(() => Promise.resolve(dummyAddress)),
-        })),
-      },
+      totalSupply: jest.fn(() => Promise.resolve(1)),
+      balanceOf: jest.fn(() => Promise.resolve(1)),
+      getUnit: jest.fn(() => Promise.resolve(AGENT_1)),
+      ownerOf: jest.fn(() => Promise.resolve(dummyAddress)),
     }));
 
     const result = await getFilteredAgents(dummyAddress);
@@ -37,17 +27,9 @@ describe('listAgents/utils.jsx', () => {
     expect.hasAssertions();
 
     getAgentContract.mockImplementation(() => ({
-      methods: {
-        totalSupply: jest.fn(() => ({
-          call: jest.fn(() => Promise.resolve(1)),
-        })),
-        getUnit: jest.fn(() => ({
-          call: jest.fn(() => Promise.resolve(AGENT_1)),
-        })),
-        ownerOf: jest.fn(() => ({
-          call: jest.fn(() => Promise.resolve(dummyAddress)),
-        })),
-      },
+      totalSupply: jest.fn(() => Promise.resolve(1)),
+      getUnit: jest.fn(() => Promise.resolve(AGENT_1)),
+      ownerOf: jest.fn(() => Promise.resolve(dummyAddress)),
     }));
 
     const result = await getAgents(1, 1);

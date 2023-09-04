@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Button, Divider, Typography } from 'antd/lib';
+import { Button, Divider, Typography } from 'antd';
 import { convertToEth, isL1OnlyNetwork } from 'common-util/functions';
 import {
   getBonds,

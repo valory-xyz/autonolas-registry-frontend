@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
   Form, Input, Table, Button,
-} from 'antd/lib';
+} from 'antd';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import get from 'lodash/get';

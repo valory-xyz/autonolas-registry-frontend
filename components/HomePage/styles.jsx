@@ -5,20 +5,14 @@ export const Container = styled.div``;
 
 export const HeaderRow = styled.div`
   margin-top: 4rem;
-  height: 60vh;
+  min-height: 60vh;
   .hero-title {
-    max-width: 24ch;
+    max-width: 21ch;
   }
   .lead {
     display: block;
     font-size: 24px;
     margin-bottom: 2rem;
-  }
-  .header-image {
-    width: 100%;
-    height: 100%;
-    background-size: contain;
-    background-repeat: no-repeat;
   }
 
   ${MEDIA_QUERY.mobileL} {

@@ -1,4 +1,4 @@
-import { Button } from 'antd/lib';
+import { Button } from 'antd';
 import PropTypes from 'prop-types';
 import { COLOR } from 'util/theme';
 
@@ -23,27 +23,5 @@ WhiteButton.propTypes = {
 };
 
 WhiteButton.defaultProps = {
-  children: null,
-};
-
-/**
- * @returns PurpleButton component
- */
-const purpleBtnStyle = {
-  color: COLOR.BLACK,
-  borderColor: COLOR.PURPLE,
-  backgroundColor: COLOR.PURPLE,
-};
-export const PurpleButton = ({ children, ...rest }) => (
-  <Button {...rest} style={purpleBtnStyle}>
-    {children}
-  </Button>
-);
-
-PurpleButton.propTypes = {
-  children: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
-};
-
-PurpleButton.defaultProps = {
   children: null,
 };

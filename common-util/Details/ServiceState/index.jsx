@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
   Button, Steps, Tooltip, Image,
-} from 'antd/lib';
+} from 'antd';
 import get from 'lodash/get';
 import { isL1OnlyNetwork } from 'common-util/functions';
 import { getServiceTableDataSource, onTerminate, checkIfEth } from './utils';

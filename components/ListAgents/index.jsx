@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import get from 'lodash/get';
-import { Tabs } from 'antd/lib';
+import { Tabs } from 'antd';
 import { useRouter } from 'next/router';
 import { URL, NAV_TYPES } from 'util/constants';
 import ListTable from 'common-util/List/ListTable';
@@ -152,56 +152,54 @@ const ListAgents = () => {
   };
 
   return (
-    <>
-      <Tabs
-        className="registry-tabs"
-        type="card"
-        activeKey={currentTab}
-        tabBarExtraContent={extraTabContent}
-        onChange={(e) => {
-          setCurrentTab(e);
+    <Tabs
+      className="registry-tabs"
+      type="card"
+      activeKey={currentTab}
+      tabBarExtraContent={extraTabContent}
+      onChange={(e) => {
+        setCurrentTab(e);
 
-          setList([]);
-          setTotal(0);
-          setCurrentPage(1);
-          setIsLoading(true);
+        setList([]);
+        setTotal(0);
+        setCurrentPage(1);
+        setIsLoading(true);
 
-          // clear the search
-          clearSearch();
+        // clear the search
+        clearSearch();
 
-          // update the URL to keep track of my-agents
-          router.push(
-            e === MY_AGENTS ? `${URL.AGENTS}#${MY_AGENTS}` : URL.AGENTS,
-          );
-        }}
-        items={[
-          {
-            key: ALL_AGENTS,
-            label: 'All',
-            children: <ListTable {...tableCommonProps} list={list} />,
-          },
-          {
-            key: MY_AGENTS,
-            label: 'My Agents',
-            children: (
-              <ListTable
-                {...tableCommonProps}
-                list={
-                  searchValue
-                    ? list
-                    : getMyListOnPagination({
-                      total,
-                      nextPage: currentPage,
-                      list,
-                    })
-                }
-                isAccountRequired
-              />
-            ),
-          },
-        ]}
-      />
-    </>
+        // update the URL to keep track of my-agents
+        router.push(
+          e === MY_AGENTS ? `${URL.AGENTS}#${MY_AGENTS}` : URL.AGENTS,
+        );
+      }}
+      items={[
+        {
+          key: ALL_AGENTS,
+          label: 'All',
+          children: <ListTable {...tableCommonProps} list={list} />,
+        },
+        {
+          key: MY_AGENTS,
+          label: 'My Agents',
+          children: (
+            <ListTable
+              {...tableCommonProps}
+              list={
+                searchValue
+                  ? list
+                  : getMyListOnPagination({
+                    total,
+                    nextPage: currentPage,
+                    list,
+                  })
+              }
+              isAccountRequired
+            />
+          ),
+        },
+      ]}
+    />
   );
 };
 

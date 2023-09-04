@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { Button, Form, Typography } from 'antd/lib';
+import { Button, Form, Typography } from 'antd';
 import { FormList } from './FormList';
 import { DynamicFormContainer } from './styles';
 

@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { ethers } from 'ethers';
 import {
   Button, Divider, Radio, Form, Input,
-} from 'antd/lib';
+} from 'antd';
 import PropTypes from 'prop-types';
 import get from 'lodash/get';
 
@@ -278,7 +278,7 @@ StepThreePayload.propTypes = {
   serviceId: PropTypes.string.isRequired,
   multisig: PropTypes.string.isRequired,
   owner: PropTypes.string.isRequired,
-  threshold: PropTypes.string.isRequired,
+  threshold: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   handleTerminate: PropTypes.func,
   getButton: PropTypes.func.isRequired,
   canShowMultisigSameAddress: PropTypes.bool,

@@ -3,7 +3,6 @@ import { createGlobalStyle } from 'styled-components';
 import { COLOR, OTHERS } from 'util/theme';
 
 const ANTD_COLOR = {
-  whiteColor: '#fff',
   borderColor: '#f0f0f0',
 };
 
@@ -56,14 +55,13 @@ const GlobalStyle = createGlobalStyle`
   }
 
   /* layout */
-  .ant-layout {
-    background: ${COLOR.WHITE};
-  }
   .ant-layout-header {
     display: flex;
     position: fixed;
     z-index: 10;
     width: 100%;
+    height: 64px;
+    line-height: 64px;
     .ant-menu {
       flex: 1;
       &.ant-menu-horizontal {
@@ -110,7 +108,6 @@ const GlobalStyle = createGlobalStyle`
   .ant-table {
     .ant-table-thead {
       > tr > th {
-        font-weight: normal;
         padding: 12px 16px;
         &:not(:last-child):not(.ant-table-selection-column):not(
             .ant-table-row-expand-icon-cell
@@ -121,10 +118,7 @@ const GlobalStyle = createGlobalStyle`
     }
     .ant-table-tbody > tr {
       > td {
-        padding: 12px 16px;
-        &.underline span {
-          text-decoration: underline;
-        }
+        padding: 8px 16px;
         .ant-btn {
           &:first-child {
             padding-left: 0;

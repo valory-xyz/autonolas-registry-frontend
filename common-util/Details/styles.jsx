@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Typography, Image } from 'antd/lib';
+import { Typography, Image } from 'antd';
 import { COLOR } from 'util/theme';
 
 export const DetailsTitle = styled(Typography.Title)`
@@ -62,7 +62,7 @@ export const ServiceStatus = styled.div`
     color: ${COLOR.RED_1};
   }
   svg {
-    top: -2px;
+    top: -1px;
     margin-right: 6px;
     position: relative;
   }

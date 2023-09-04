@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import {
   Input, Space, Button, Typography, Tooltip,
-} from 'antd/lib';
+} from 'antd';
 import { SearchOutlined, CopyOutlined } from '@ant-design/icons';
 import PropTypes from 'prop-types';
 
 import { NAV_TYPES, SERVICE_STATE, TOTAL_VIEW_COUNT } from 'util/constants';
+import { AddressLink } from '@autonolas/frontend-library';
 
 const { Text, Title } = Typography;
 const textStyle = { maxWidth: '100%' };
@@ -74,23 +75,26 @@ export const getTableColumns = (
         dataIndex: 'owner',
         key: 'owner',
         width: 160,
-        render: (text) => <EllipsisMiddle>{text}</EllipsisMiddle>,
+        render: (text) => (
+          <AddressLink text={text} suffixCount={isMobile ? 4 : 6} />
+        ),
       },
       {
         title: 'Hash',
         dataIndex: 'hash',
         key: 'hash',
-        width: 200,
+        width: 180,
         render: (text) => <EllipsisMiddle>{text}</EllipsisMiddle>,
+
       },
       {
         title: 'No. of component dependencies',
         dataIndex: 'dependency',
-        width: isMobile ? 70 : 180,
+        width: isMobile ? 70 : 300,
         key: 'dependency',
       },
       {
-        width: isMobile ? 40 : 200,
+        width: isMobile ? 40 : 120,
         title: 'Action',
         key: 'action',
         fixed: 'right',
@@ -118,7 +122,9 @@ export const getTableColumns = (
         dataIndex: 'owner',
         key: 'owner',
         width: 200,
-        render: (text) => <EllipsisMiddle>{text}</EllipsisMiddle>,
+        render: (text) => (
+          <AddressLink text={text} suffixCount={isMobile ? 4 : 6} />
+        ),
       },
       {
         title: 'State',

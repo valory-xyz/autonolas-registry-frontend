@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import { connect, useSelector } from 'react-redux';
-import { Typography, notification } from 'antd/lib';
+import { Typography, notification } from 'antd';
 import get from 'lodash/get';
 import {
   DEFAULT_SERVICE_CREATION_ETH_TOKEN,
@@ -15,7 +15,7 @@ import {
   getServiceManagerL2Contract,
 } from 'common-util/Contracts';
 import { isL1Network, isL1OnlyNetwork } from 'common-util/functions';
-import { sendTransaction } from 'common-util/functions/sendTransaction';
+import { triggerTransaction } from 'common-util/functions/triggerTransaction';
 import RegisterForm from './RegisterForm';
 import {
   getAgentParams,
@@ -60,7 +60,7 @@ const Service = ({ account }) => {
 
   /* helper functions */
   const handleSubmit = (values) => {
-    if (account) {
+    const submitData = async () => {
       setIsUpdating(true);
       setError(null);
 
@@ -69,8 +69,8 @@ const Service = ({ account }) => {
         : values.token;
 
       const contract = isL1Network(chainId)
-        ? getServiceManagerContract()
-        : getServiceManagerL2Contract();
+        ? await getServiceManagerContract()
+        : await getServiceManagerL2Contract();
 
       const commonParams = [
         `0x${values.hash}`,
@@ -85,8 +85,8 @@ const Service = ({ account }) => {
         ? [token, ...commonParams]
         : [...commonParams];
 
-      const fn = contract.methods.update(...params).send({ from: account });
-      sendTransaction(fn, account)
+      const fn = contract.update(...params).send({ from: account });
+      triggerTransaction(fn, account)
         .then(() => {
           notification.success({ message: 'Service Updated' });
         })
@@ -96,6 +96,10 @@ const Service = ({ account }) => {
         .finally(() => {
           setIsUpdating(false);
         });
+    };
+
+    if (account) {
+      submitData();
     }
   };
 

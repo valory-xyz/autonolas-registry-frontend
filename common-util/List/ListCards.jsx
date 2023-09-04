@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import get from 'lodash/get';
-import { Card } from 'antd/lib';
+import { Card } from 'antd';
 import { ListEmptyMessage, PrintJson } from 'common-util/List/ListCommon';
 import Loader from 'common-util/components/Loader';
 

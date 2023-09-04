@@ -11,12 +11,6 @@ import {
 import { useRouter } from 'next/router';
 import { wrapProvider, ACTIVE_TAB, getTableTd } from '../../helpers';
 
-// mocks for router & smart-contract functions
-jest.mock('next/router', () => ({
-  __esModule: true,
-  useRouter: jest.fn(),
-}));
-
 jest.mock('components/ListAgents/utils', () => ({
   getAgents: jest.fn(),
   getFilteredAgents: jest.fn(),
@@ -32,10 +26,10 @@ describe('listAgents/index.jsx', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     useRouter.mockImplementation(() => ({ push: jest.fn() }));
-    getAgents.mockImplementation(() => Promise.resolve([allAgentsResponse]));
-    getFilteredAgents.mockImplementation(() => Promise.resolve([myAgentsResponse]));
-    getTotalForAllAgents.mockImplementation(() => Promise.resolve(1));
-    getTotalForMyAgents.mockImplementation(() => Promise.resolve(1));
+    getAgents.mockResolvedValue([allAgentsResponse]);
+    getFilteredAgents.mockResolvedValue([myAgentsResponse]);
+    getTotalForAllAgents.mockResolvedValue(1);
+    getTotalForMyAgents.mockResolvedValue(1);
   });
 
   it('should render tabs with `All Tab` as active tab & Mint button', async () => {
@@ -45,18 +39,20 @@ describe('listAgents/index.jsx', () => {
     // check if the selected tab is `All` & has the correct content
     await waitFor(async () => expect(container.querySelector(ACTIVE_TAB).textContent).toBe('All'));
 
-    // ckecking Id, description column
-    expect(container.querySelector(getTableTd(1)).textContent).toBe('1');
-    expect(container.querySelector(getTableTd(4)).textContent).toBe(
-      allAgentsResponse.dependencies.length.toString(),
-    );
-    expect(getByRole('button', { name: 'View' })).toBeInTheDocument();
+    await waitFor(async () => {
+      // ckecking Id, description column
+      expect(container.querySelector(getTableTd(1)).textContent).toBe('1');
+      expect(container.querySelector(getTableTd(4)).textContent).toBe(
+        allAgentsResponse.dependencies.length.toString(),
+      );
+      expect(getByRole('button', { name: 'View' })).toBeInTheDocument();
 
-    // it should be called once
-    // expect(useRouter).toHaveBeenCalledTimes(1);
+      // it should be called once
+      // expect(useRouter).toHaveBeenCalledTimes(1);
 
-    // Mint button
-    expect(getByRole('button', { name: 'Mint' })).toBeInTheDocument();
+      // Mint button
+      expect(getByRole('button', { name: 'Mint' })).toBeInTheDocument();
+    });
   });
 
   it('should render tabs with `My Agents` as active tab & Mint button', async () => {

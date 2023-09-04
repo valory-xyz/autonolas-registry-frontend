@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import Web3 from 'web3';
+import { ethers } from 'ethers';
 import { useRouter } from 'next/router';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import get from 'lodash/get';
-import { Button, Form, Input } from 'antd/lib';
+import { Button, Form, Input } from 'antd';
 
 import { DEFAULT_SERVICE_CREATION_ETH_TOKEN } from 'util/constants';
 import { WhiteButton } from 'common-util/components/Button';
@@ -36,7 +36,7 @@ const RegisterForm = ({
   const router = useRouter();
   const id = get(router, 'query.id') || null;
 
-  useEffect(async () => {
+  useEffect(() => {
     if (account && ethTokenAddress && isL1Network(chainId)) {
       setFields([
         {
@@ -144,7 +144,7 @@ const RegisterForm = ({
             },
             () => ({
               validator(_, value) {
-                if (Web3.utils.isAddress(value)) return Promise.resolve();
+                if (ethers.utils.isAddress(value)) return Promise.resolve();
                 return Promise.reject(
                   new Error(
                     `Please input a valid address of the ${listType} Owner`,
@@ -189,7 +189,7 @@ const RegisterForm = ({
                 },
                 () => ({
                   validator(_, value) {
-                    if (Web3.utils.isAddress(value)) return Promise.resolve();
+                    if (ethers.utils.isAddress(value)) return Promise.resolve();
                     return Promise.reject(
                       new Error('Please input a valid address'),
                     );
@@ -365,7 +365,7 @@ RegisterForm.propTypes = {
     agentIds: PropTypes.arrayOf(PropTypes.string),
     agentNumSlots: PropTypes.arrayOf(PropTypes.string),
     agentParams: PropTypes.arrayOf(PropTypes.shape({})),
-    threshold: PropTypes.string,
+    threshold: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   }),
   handleSubmit: PropTypes.func.isRequired,
   handleCancel: PropTypes.func.isRequired,

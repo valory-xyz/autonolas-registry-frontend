@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
-import { Typography, notification } from 'antd/lib';
+import { Typography, notification } from 'antd';
 import RegisterForm from 'common-util/List/RegisterForm';
 import { AlertSuccess, AlertError } from 'common-util/List/ListCommon';
 import { getMechMinterContract } from 'common-util/Contracts';
-import { sendTransaction } from 'common-util/functions/sendTransaction';
+import { triggerTransaction } from 'common-util/functions/triggerTransaction';
 import { checkIfERC721Receive } from 'common-util/functions/requests';
 import { FormContainer } from '../styles';
 
@@ -40,9 +40,9 @@ const MintAgent = () => {
         console.error(e);
       }
 
-      const contract = getMechMinterContract(account);
+      const contract = await getMechMinterContract(account);
 
-      const fn = contract.methods
+      const fn = contract
         .create(
           '1',
           values.owner_address,
@@ -51,7 +51,7 @@ const MintAgent = () => {
         )
         .send({ from: account });
 
-      sendTransaction(fn, account)
+      triggerTransaction(fn, account)
         .then((result) => {
           setInformation(result);
           notification.success({ message: 'Agent minted' });

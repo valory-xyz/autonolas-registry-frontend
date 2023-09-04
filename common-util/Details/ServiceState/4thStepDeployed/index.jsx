@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
   Table, Space, Button, Grid,
-} from 'antd/lib';
+} from 'antd';
 import get from 'lodash/get';
 import { AddressLink } from 'common-util/AddressLink';
 import { setAgentInstancesAndOperators } from 'store/service/state/actions';

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import get from 'lodash/get';
-import { Tabs } from 'antd/lib';
+import { Tabs } from 'antd';
 import { useRouter } from 'next/router';
 import { URL, NAV_TYPES } from 'util/constants';
 import ListTable from 'common-util/List/ListTable';
@@ -11,6 +11,7 @@ import {
   isMyTab,
 } from 'common-util/List/ListTable/helpers';
 import { getMyListOnPagination } from 'common-util/ContractUtils/myList';
+import { notifyError } from 'common-util/functions';
 import {
   getComponents,
   getFilteredComponents,
@@ -76,6 +77,8 @@ const ListComponents = () => {
           }
         } catch (e) {
           console.error(e);
+        } finally {
+          setIsLoading(false);
         }
       }
     })();
@@ -106,6 +109,7 @@ const ListComponents = () => {
           }
         } catch (e) {
           console.error(e);
+          notifyError('Error fetching components');
         } finally {
           setIsLoading(false);
         }
@@ -134,6 +138,7 @@ const ListComponents = () => {
           setCurrentPage(1);
         } catch (e) {
           console.error(e);
+          notifyError('Error fetching components');
         } finally {
           setIsLoading(false);
         }
@@ -152,58 +157,56 @@ const ListComponents = () => {
   };
 
   return (
-    <>
-      <Tabs
-        className="registry-tabs"
-        type="card"
-        activeKey={currentTab}
-        tabBarExtraContent={extraTabContent}
-        onChange={(e) => {
-          setCurrentTab(e);
+    <Tabs
+      className="registry-tabs"
+      type="card"
+      activeKey={currentTab}
+      tabBarExtraContent={extraTabContent}
+      onChange={(e) => {
+        setCurrentTab(e);
 
-          setList([]);
-          setTotal(0);
-          setCurrentPage(1);
-          setIsLoading(true);
+        setList([]);
+        setTotal(0);
+        setCurrentPage(1);
+        setIsLoading(true);
 
-          // clear the search
-          clearSearch();
+        // clear the search
+        clearSearch();
 
-          // update the URL to keep track of my-components
-          router.push(
-            e === MY_COMPONENTS
-              ? `${URL.COMPONENTS}#${MY_COMPONENTS}`
-              : URL.COMPONENTS,
-          );
-        }}
-        items={[
-          {
-            key: ALL_COMPONENTS,
-            label: 'All',
-            children: <ListTable {...tableCommonProps} list={list} />,
-          },
-          {
-            label: 'My Components',
-            key: MY_COMPONENTS,
-            children: (
-              <ListTable
-                {...tableCommonProps}
-                list={
-                  searchValue
-                    ? list
-                    : getMyListOnPagination({
-                      total,
-                      nextPage: currentPage,
-                      list,
-                    })
-                }
-                isAccountRequired
-              />
-            ),
-          },
-        ]}
-      />
-    </>
+        // update the URL to keep track of my-components
+        router.push(
+          e === MY_COMPONENTS
+            ? `${URL.COMPONENTS}#${MY_COMPONENTS}`
+            : URL.COMPONENTS,
+        );
+      }}
+      items={[
+        {
+          key: ALL_COMPONENTS,
+          label: 'All',
+          children: <ListTable {...tableCommonProps} list={list} />,
+        },
+        {
+          label: 'My Components',
+          key: MY_COMPONENTS,
+          children: (
+            <ListTable
+              {...tableCommonProps}
+              list={
+                searchValue
+                  ? list
+                  : getMyListOnPagination({
+                    total,
+                    nextPage: currentPage,
+                    list,
+                  })
+              }
+              isAccountRequired
+            />
+          ),
+        },
+      ]}
+    />
   );
 };
 
