@@ -62,6 +62,7 @@ const GlobalStyle = createGlobalStyle`
     width: 100%;
     height: 64px;
     line-height: 64px;
+    padding: 0 50px;
     .ant-menu {
       flex: 1;
       &.ant-menu-horizontal {
