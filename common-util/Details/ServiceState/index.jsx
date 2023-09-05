@@ -5,7 +5,10 @@ import {
   Button, Steps, Tooltip, Image,
 } from 'antd';
 import get from 'lodash/get';
+import { useContractWrite, usePrepareContractWrite } from 'wagmi';
 import { isL1OnlyNetwork } from 'common-util/functions';
+import { ADDRESSES } from 'common-util/Contracts';
+import { SERVICE_MANAGER_TOKEN_CONTRACT } from 'common-util/AbiAndAddresses';
 import { getServiceTableDataSource, onTerminate, checkIfEth } from './utils';
 import StepPreRegistration from './1StepPreRegistration';
 import StepActiveRegistration from './2StepActiveRegistration';
@@ -85,10 +88,34 @@ export const ServiceState = ({
     );
   };
 
+  console.log({
+    a: ADDRESSES[chainId].serviceManagerToken,
+    b: SERVICE_MANAGER_TOKEN_CONTRACT.abi,
+  });
+
+  // const { config } = usePrepareContractWrite({
+  //   address: ADDRESSES[chainId].serviceManagerToken,
+  //   abi: SERVICE_MANAGER_TOKEN_CONTRACT.abi,
+  //   functionName: 'terminate',
+  // });
+  // const { writeAsync } = useContractWrite(config);
+
+  const {
+    data, isLoading, isSuccess, writeAsync,
+  } = useContractWrite({
+    address: ADDRESSES[chainId].serviceManagerToken,
+    abi: SERVICE_MANAGER_TOKEN_CONTRACT.abi,
+    functionName: 'terminate',
+  });
+  console.log({
+    data, isLoading, isSuccess,
+  });
+
   /* ----- common functions ----- */
   const handleTerminate = async () => {
     try {
-      await onTerminate(account, id);
+      // await onTerminate(account, id);
+      await writeAsync({ args: [id] });
       await updateDetails();
     } catch (e) {
       console.error(e);
