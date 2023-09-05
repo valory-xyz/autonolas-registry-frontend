@@ -8,7 +8,6 @@ import get from 'lodash/get';
 import { Button, Form, Input } from 'antd';
 
 import { DEFAULT_SERVICE_CREATION_ETH_TOKEN } from 'util/constants';
-import { WhiteButton } from 'common-util/components/Button';
 import { commaMessage, DependencyLabel } from 'common-util/List/ListCommon';
 import { FormItemHash } from 'common-util/List/RegisterForm/helpers';
 import IpfsHashGenerationModal from 'common-util/List/IpfsHashGenerationModal';
@@ -338,7 +337,11 @@ const RegisterForm = ({
         ) : (
           <RegisterFooter>
             <p>To mint, connect to wallet</p>
-            <WhiteButton onClick={handleCancel}>Cancel</WhiteButton>
+            {handleCancel && (
+              <Button type="default" onClick={handleCancel}>
+                Cancel
+              </Button>
+            )}
           </RegisterFooter>
         )}
       </Form>

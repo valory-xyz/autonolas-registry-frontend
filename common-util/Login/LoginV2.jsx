@@ -4,11 +4,18 @@ import { Web3Modal, Web3Button, Web3NetworkSwitch } from '@web3modal/react';
 import { useAccount, useNetwork, useBalance } from 'wagmi';
 import { COLOR } from '@autonolas/frontend-library';
 import { useDispatch } from 'react-redux';
+import styled from 'styled-components';
 import { setChainId } from 'store/setup/actions';
 import { getChainId } from 'common-util/functions';
 import { useScreen } from 'common-util/hooks';
 import { projectId, ethereumClient } from './config';
-import { LoginContainer } from './styles';
+
+const LoginContainer = styled.div`
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  line-height: normal;
+`;
 
 export const LoginV2 = ({
   onConnect: onConnectCb,

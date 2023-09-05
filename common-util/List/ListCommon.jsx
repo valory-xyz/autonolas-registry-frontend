@@ -1,11 +1,10 @@
 import PropTypes from 'prop-types';
 import Link from 'next/link';
-import { Alert } from 'antd';
+import { Alert, Button } from 'antd';
 import bs58 from 'bs58';
 import { ExportOutlined } from '@ant-design/icons';
-import { EmptyMessage, RegisterFooter } from 'components/styles';
 import { isL1Network } from 'common-util/functions';
-import { WhiteButton } from '../components/Button';
+import { EmptyMessage, RegisterFooter } from 'components/styles';
 
 // constants
 export const DEPENDENCY_IN_ASC = 'Agent IDs must be input in the order they were created (oldest first & newest last)';
@@ -94,7 +93,11 @@ DependencyLabel.defaultProps = { type: 'component', chainId: null };
 export const RegisterMessage = ({ handleCancel }) => (
   <RegisterFooter>
     <p>To mint, connect to wallet</p>
-    {handleCancel && <WhiteButton onClick={handleCancel}>Cancel</WhiteButton>}
+    {handleCancel && (
+      <Button type="default" onClick={handleCancel}>
+        Cancel
+      </Button>
+    )}
   </RegisterFooter>
 );
 RegisterMessage.propTypes = { handleCancel: PropTypes.func };
