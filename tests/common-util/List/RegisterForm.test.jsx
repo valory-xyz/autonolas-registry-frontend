@@ -12,6 +12,7 @@ jest.mock('common-util/List/IpfsHashGenerationModal/helpers', () => ({
   getIpfsHashHelper: jest.fn(() => mockV1Hash),
 }));
 
+// eslint-disable-next-line jest/no-disabled-tests
 describe.skip('<RegisterForm />', () => {
   it('should submit the form successfully', async () => {
     const { container, getByRole, getByText } = render(

@@ -11,6 +11,7 @@ jest.mock('common-util/List/IpfsHashGenerationModal/helpers', () => ({
 const callbackMock = jest.fn();
 const handleCancelMock = jest.fn();
 
+// eslint-disable-next-line jest/no-disabled-tests
 describe.skip('<IpfsHashGenerationModal />', () => {
   it('should render a hash generation modal and return Hash', async () => {
     expect.hasAssertions();
