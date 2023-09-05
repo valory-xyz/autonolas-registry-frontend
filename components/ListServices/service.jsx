@@ -41,18 +41,22 @@ const Service = ({ account }) => {
   useEffect(() => {
     (async () => {
       if (account) {
-        setAllLoading(true);
-        setServiceInfo({});
+        try {
+          setAllLoading(true);
+          setServiceInfo({});
 
-        const result = await getServiceDetails(id);
-        setAllLoading(false);
-        setServiceInfo(result);
+          const result = await getServiceDetails(id);
+          setAllLoading(false);
+          setServiceInfo(result);
 
-        // get token address for L1 only network
-        // because L2 network do not have token address
-        if (isL1OnlyNetwork(chainId)) {
-          const token = await getTokenAddressRequest(id);
-          setEthTokenAddress(token);
+          // get token address for L1 only network
+          // because L2 network do not have token address
+          if (isL1OnlyNetwork(chainId)) {
+            const token = await getTokenAddressRequest(id);
+            setEthTokenAddress(token);
+          }
+        } catch (e) {
+          console.error(e);
         }
       }
     })();

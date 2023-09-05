@@ -7,6 +7,7 @@ import { AlertSuccess, AlertError } from 'common-util/List/ListCommon';
 import { getMechMinterContract } from 'common-util/Contracts';
 import { triggerTransaction } from 'common-util/functions/triggerTransaction';
 import { checkIfERC721Receive } from 'common-util/functions/requests';
+import { notifyError } from 'common-util/functions';
 import { FormContainer } from '../styles';
 
 const { Title } = Typography;
@@ -59,6 +60,7 @@ const MintAgent = () => {
         .catch((e) => {
           setError(e);
           console.error(e);
+          notifyError('Error minting agent');
         })
         .finally(() => {
           setIsMinting(false);

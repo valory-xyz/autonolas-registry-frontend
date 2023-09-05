@@ -8,6 +8,7 @@ import {
 } from 'antd';
 import { NAV_TYPES } from 'util/constants';
 import Loader from 'common-util/components/Loader';
+import { notifyError } from 'common-util/functions';
 import IpfsHashGenerationModal from '../List/IpfsHashGenerationModal';
 import { NftImage } from './NFTImage';
 import { ServiceState } from './ServiceState';
@@ -53,16 +54,17 @@ const Details = ({
       setHashes(hashesResponse);
     } catch (e) {
       console.error(e);
-      throw e;
+      notifyError(`Error fetching ${type} hashes`);
     }
   };
 
   const updateDetails = useCallback(async () => {
     try {
-      const temp = await getDetails();
-      setInfo(temp);
+      const details = await getDetails();
+      setInfo(details);
     } catch (e) {
       console.error(e);
+      notifyError(`Error fetching ${type} details`);
     }
   }, []);
 
@@ -102,7 +104,7 @@ const Details = ({
           setMetadataState(HASH_DETAILS_STATE.LOADED);
         } catch (e) {
           setMetadataState(HASH_DETAILS_STATE.FAILED);
-          window.console.log('Error fetching metadata from IPFS');
+          notifyError('Error fetching metadata from IPFS');
           console.error(e);
         }
       }

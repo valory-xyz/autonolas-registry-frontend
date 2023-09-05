@@ -17,7 +17,7 @@ import {
   getServiceManagerL2Contract,
 } from 'common-util/Contracts';
 import { triggerTransaction } from 'common-util/functions/triggerTransaction';
-import { isL1Network } from 'common-util/functions';
+import { isL1Network, notifyError } from 'common-util/functions';
 import { checkIfERC721Receive } from 'common-util/functions/requests';
 import RegisterForm from './RegisterForm';
 import { getAgentParams } from './utils';
@@ -83,6 +83,7 @@ const MintService = ({ account }) => {
         .catch((e) => {
           setError(e);
           console.error(e);
+          notifyError('Error minting service');
         })
         .finally(() => {
           setIsMinting(false);

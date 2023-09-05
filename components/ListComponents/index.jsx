@@ -77,6 +77,7 @@ const ListComponents = () => {
           }
         } catch (e) {
           console.error(e);
+          notifyError('Error fetching components');
         } finally {
           setIsLoading(false);
         }
@@ -156,6 +157,10 @@ const ListComponents = () => {
     searchValue,
   };
 
+  const myComponents = searchValue
+    ? list
+    : getMyListOnPagination({ total, nextPage: currentPage, list });
+
   return (
     <Tabs
       className="registry-tabs"
@@ -192,15 +197,7 @@ const ListComponents = () => {
           children: (
             <ListTable
               {...tableCommonProps}
-              list={
-                searchValue
-                  ? list
-                  : getMyListOnPagination({
-                    total,
-                    nextPage: currentPage,
-                    list,
-                  })
-              }
+              list={myComponents}
               isAccountRequired
             />
           ),

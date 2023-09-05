@@ -11,6 +11,7 @@ import {
   isMyTab,
 } from 'common-util/List/ListTable/helpers';
 import { getMyListOnPagination } from 'common-util/ContractUtils/myList';
+import { notifyError } from 'common-util/functions';
 import {
   getAgents,
   getFilteredAgents,
@@ -76,6 +77,7 @@ const ListAgents = () => {
           }
         } catch (e) {
           console.error(e);
+          notifyError('Error fetching agents');
         }
       }
     })();
@@ -106,6 +108,7 @@ const ListAgents = () => {
           }
         } catch (e) {
           console.error(e);
+          notifyError('Error fetching agents');
         } finally {
           setIsLoading(false);
         }
@@ -134,6 +137,7 @@ const ListAgents = () => {
           setCurrentPage(1);
         } catch (e) {
           console.error(e);
+          notifyError('Error fetching agents');
         } finally {
           setIsLoading(false);
         }
@@ -150,6 +154,10 @@ const ListAgents = () => {
     onViewClick,
     searchValue,
   };
+
+  const myAgentsList = searchValue
+    ? list
+    : getMyListOnPagination({ total, nextPage: currentPage, list });
 
   return (
     <Tabs
@@ -185,15 +193,7 @@ const ListAgents = () => {
           children: (
             <ListTable
               {...tableCommonProps}
-              list={
-                searchValue
-                  ? list
-                  : getMyListOnPagination({
-                    total,
-                    nextPage: currentPage,
-                    list,
-                  })
-              }
+              list={myAgentsList}
               isAccountRequired
             />
           ),

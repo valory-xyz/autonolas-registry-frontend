@@ -3,7 +3,7 @@ import {
   getComponentContract,
 } from 'common-util/Contracts';
 import { getListByAccount } from 'common-util/ContractUtils/myList';
-import { getFirstAndLastIndex, notifySuccess } from 'common-util/functions';
+import { getFirstAndLastIndex } from 'common-util/functions';
 import { triggerTransaction } from 'common-util/functions/triggerTransaction';
 
 // --------- HELPER METHODS ---------
@@ -35,14 +35,14 @@ export const getTotalForMyComponents = async (account) => {
 export const getFilteredComponents = async (searchValue, account) => {
   const contract = await getComponentContract();
   const total = await getTotalForAllComponents();
-
-  return getListByAccount({
+  const list = await getListByAccount({
     searchValue,
     total,
     getUnit: contract.getUnit,
     getOwner: getComponentOwner,
     account,
   });
+  return list;
 };
 
 export const getComponents = async (total, nextPage) => {
@@ -77,7 +77,6 @@ export const updateComponentHashes = async (account, id, newHash) => {
   // 0 to indicate `components`
   const fn = await contract.updateHash('0', id, `0x${newHash}`);
   await triggerTransaction(fn, account);
-  notifySuccess('Hash updated');
 };
 
 export const getTokenUri = async (id) => {

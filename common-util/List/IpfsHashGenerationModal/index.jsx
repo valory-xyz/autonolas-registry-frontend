@@ -7,7 +7,7 @@ import {
   Form, Input, Button, Select,
 } from 'antd';
 import { HASH_PREFIXES } from 'util/constants';
-import { notifyError } from 'common-util/functions';
+import { notifyError, notifySuccess } from 'common-util/functions';
 import { getIpfsHashHelper } from './helpers';
 import { CustomModal } from '../styles';
 
@@ -78,7 +78,11 @@ const IpfsModal = ({
       .then(async (values) => {
         const hash = await getNewHash(values);
         await onUpdateHash(hash);
-        if (callback) callback(hash);
+        notifySuccess('Hash updated');
+
+        if (callback) {
+          callback(hash);
+        }
       })
       .catch((e) => {
         notifyError('Error updating hash');

@@ -11,6 +11,7 @@ import {
   isMyTab,
 } from 'common-util/List/ListTable/helpers';
 import { getMyListOnPagination } from 'common-util/ContractUtils/myList';
+import { notifyError } from 'common-util/functions';
 import {
   getServices,
   getFilteredServices,
@@ -84,6 +85,7 @@ const ListServices = () => {
           }
         } catch (e) {
           console.error(e);
+          notifyError('Error fetching services');
         }
       }
     })();
@@ -114,6 +116,7 @@ const ListServices = () => {
           }
         } catch (e) {
           console.error(e);
+          notifyError('Error fetching services');
         } finally {
           setIsLoading(false);
         }
@@ -142,6 +145,7 @@ const ListServices = () => {
           setCurrentPage(1);
         } catch (e) {
           console.error(e);
+          notifyError('Error fetching services');
         } finally {
           setIsLoading(false);
         }

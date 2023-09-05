@@ -6,8 +6,7 @@ import Image from 'next/image';
 import { Layout as AntdLayout, Typography } from 'antd';
 import { getNetworkName } from '@autonolas/frontend-library';
 import { isL1Network } from 'common-util/functions';
-import { useHelpers } from 'common-util/hooks';
-import { useScreen } from 'common-util/hooks/useScreen';
+import { useHelpers, useScreen } from 'common-util/hooks';
 import { CustomLayout, Logo, RightMenu } from './styles';
 
 const { Text } = Typography;

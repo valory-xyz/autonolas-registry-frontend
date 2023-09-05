@@ -1,5 +1,5 @@
 import { getMechMinterContract, getAgentContract } from 'common-util/Contracts';
-import { getFirstAndLastIndex, notifySuccess } from 'common-util/functions';
+import { getFirstAndLastIndex } from 'common-util/functions';
 import { getListByAccount } from 'common-util/ContractUtils/myList';
 import { triggerTransaction } from 'common-util/functions/triggerTransaction';
 
@@ -32,14 +32,14 @@ export const getTotalForMyAgents = async (account) => {
 export const getFilteredAgents = async (searchValue, account) => {
   const contract = await getAgentContract();
   const total = await getTotalForAllAgents();
-
-  return getListByAccount({
+  const list = await getListByAccount({
     searchValue,
     total,
     getUnit: contract.getUnit,
     getOwner: getAgentOwner,
     account,
   });
+  return list;
 };
 
 export const getAgents = async (total, nextPage) => {
@@ -77,7 +77,6 @@ export const updateAgentHashes = async (account, id, newHash) => {
     gasLimit: 1000000,
   });
   await triggerTransaction(fn, account);
-  notifySuccess('Hash updated');
 };
 
 export const getTokenUri = async (id) => {
