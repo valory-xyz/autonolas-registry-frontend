@@ -109,7 +109,7 @@ export const getWeb3Details = async () => {
   const provider = new ethers.providers.Web3Provider(
     window.MODAL_PROVIDER || window.ethereum,
   );
-  const providerOrSigner = provider.getSigner();
+  const providerOrSigner = await provider.getSigner();
 
   return {
     address,
@@ -127,7 +127,7 @@ export const getWeb3Details = async () => {
  * @returns {ethers.Contract} - contract instance
  */
 const getContract = async (abi, contractAddress) => {
-  const signer = await getWeb3Details().signer;
+  const { signer } = await getWeb3Details();
   const contract = new ethers.Contract(contractAddress, abi, signer);
   return contract;
 };
