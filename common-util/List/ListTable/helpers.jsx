@@ -1,12 +1,12 @@
 import { useState } from 'react';
+import PropTypes from 'prop-types';
 import {
   Input, Space, Button, Typography, Tooltip,
 } from 'antd';
 import { SearchOutlined, CopyOutlined } from '@ant-design/icons';
-import PropTypes from 'prop-types';
+import { AddressLink } from '@autonolas/frontend-library';
 
 import { NAV_TYPES, SERVICE_STATE, TOTAL_VIEW_COUNT } from 'util/constants';
-import { AddressLink } from '@autonolas/frontend-library';
 
 const { Text, Title } = Typography;
 const textStyle = { maxWidth: '100%' };
@@ -85,7 +85,6 @@ export const getTableColumns = (
         key: 'hash',
         width: 180,
         render: (text) => <EllipsisMiddle>{text}</EllipsisMiddle>,
-
       },
       {
         title: 'No. of component dependencies',

@@ -1,9 +1,11 @@
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Footer as CommonFooter } from '@autonolas/frontend-library';
+import {
+  Footer as CommonFooter,
+  getExplorerURL,
+} from '@autonolas/frontend-library';
 import { ADDRESSES } from 'common-util/Contracts';
-import { getExplorerURL } from 'common-util/AddressLink';
 import { isL1Network } from 'common-util/functions';
 import { useHelpers } from 'common-util/hooks';
 import Socials from './Socials';
