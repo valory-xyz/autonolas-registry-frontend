@@ -104,7 +104,6 @@ export const ADDRESSES = {
  * order of precedence is as follows:
  * 1. window.MODAL_PROVIDER - injected provider (done on Login.jsx)
  * 2. window.ethereum - metamask (or other wallet)
- * 3. process.env.NEXT_PUBLIC_MAINNET_URL - JSON RPC URL
  */
 export const getMyProvider = () => window.MODAL_PROVIDER || window.ethereum;
 
@@ -114,6 +113,8 @@ export const getMyProvider = () => window.MODAL_PROVIDER || window.ethereum;
 export const getWeb3Details = () => {
   const chainId = getChainId() || 1; // default to mainnet
   const address = ADDRESSES[chainId];
+
+  // if provider is null, we still show everything as in mainnet
   const provider = new Web3(getMyProvider() || rpc[chainId]);
 
   return {

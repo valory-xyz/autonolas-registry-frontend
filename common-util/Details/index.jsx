@@ -46,7 +46,7 @@ const Details = ({
     HASH_DETAILS_STATE.IS_LOADING,
   );
 
-  const isOwner = account.toLowerCase() === detailsOwner.toLowerCase();
+  const isOwner = account && account.toLowerCase() === detailsOwner.toLowerCase();
 
   const getUpdatedHashes = async () => {
     try {

@@ -1,6 +1,6 @@
-/* eslint-disable max-len */
-import compact from 'lodash/compact';
 import { ethers } from 'ethers';
+import compact from 'lodash/compact';
+import { DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS } from 'util/constants';
 import {
   ADDRESSES,
   getGenericErc20Contract,
@@ -9,9 +9,8 @@ import {
   getServiceManagerContract,
   getServiceRegistryTokenUtilityContract,
 } from 'common-util/Contracts';
-import { notifyError, notifySuccess } from 'common-util/functions';
-import { DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS } from 'util/constants';
 import { sendTransaction } from 'common-util/functions/sendTransaction';
+import { notifyError, notifySuccess } from 'common-util/functions';
 
 /* ----- helper functions ----- */
 
@@ -47,8 +46,8 @@ export const getBonds = async (id, tableDataSource) => {
      */
 
     const { bond, slots } = response.agentParams[i];
-    slotsArray.push(Number(slots));
-    bondsArray.push(Number(bond));
+    slotsArray.push(slots);
+    bondsArray.push(bond);
   }
 
   /**
@@ -259,13 +258,9 @@ export const onStep2RegisterAgents = async ({
   const contract = getServiceManagerContract();
   const { totalBonds } = await getBonds(serviceId, dataSource);
 
-  const fn = contract.methods.registerAgents(
-    serviceId,
-    agentInstances,
-    agentIds,
-    { from: account, value: `${totalBonds}` },
-  );
-
+  const fn = contract.methods
+    .registerAgents(serviceId, agentInstances, agentIds)
+    .send({ from: account, value: `${totalBonds}` });
   const response = await sendTransaction(fn, account);
   return response;
 };
