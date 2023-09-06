@@ -54,8 +54,8 @@ const MintService = ({ account }) => {
       }
 
       const contract = isL1Network(chainId)
-        ? await getServiceManagerContract()
-        : await getServiceManagerL2Contract();
+        ? getServiceManagerContract()
+        : getServiceManagerL2Contract();
 
       const commonParams = [
         `0x${values.hash}`,

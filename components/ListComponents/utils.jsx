@@ -8,37 +8,37 @@ import { sendTransaction } from 'common-util/functions/sendTransaction';
 
 // --------- HELPER METHODS ---------
 export const getComponentOwner = async (id) => {
-  const contract = await getComponentContract();
+  const contract = getComponentContract();
   const owner = await contract.methods.ownerOf(id).call();
   return owner;
 };
 
 export const getComponentDetails = async (id) => {
-  const contract = await getComponentContract();
+  const contract = getComponentContract();
   const information = await contract.methods.getUnit(id).call();
   return information;
 };
 
 // --------- CONTRACT METHODS ---------
 export const getTotalForAllComponents = async () => {
-  const contract = await getComponentContract();
+  const contract = getComponentContract();
   const total = await contract.methods.totalSupply().call();
   return total;
 };
 
 export const getTotalForMyComponents = async (account) => {
-  const contract = await getComponentContract();
+  const contract = getComponentContract();
   const balance = await contract.methods.balanceOf(account).call();
   return balance;
 };
 
 export const getFilteredComponents = async (searchValue, account) => {
-  const contract = await getComponentContract();
+  const contract = getComponentContract();
   const total = await getTotalForAllComponents();
   const list = await getListByAccount({
     searchValue,
     total,
-    getUnit: contract.methods.getUnit().call,
+    getUnit: contract.methods.getUnit,
     getOwner: getComponentOwner,
     account,
   });
@@ -46,7 +46,7 @@ export const getFilteredComponents = async (searchValue, account) => {
 };
 
 export const getComponents = async (total, nextPage) => {
-  const contract = await getComponentContract();
+  const contract = getComponentContract();
 
   const allComponentsPromises = [];
   const { first, last } = getFirstAndLastIndex(total, nextPage);
@@ -66,7 +66,7 @@ export const getComponents = async (total, nextPage) => {
 };
 
 export const getComponentHashes = async (id) => {
-  const contract = await getComponentContract();
+  const contract = getComponentContract();
   const response = await contract.methods.getUpdatedHashes(id).call();
   return response;
 };
@@ -83,7 +83,7 @@ export const updateComponentHashes = async (account, id, newHash) => {
 };
 
 export const getTokenUri = async (id) => {
-  const contract = await getComponentContract();
+  const contract = getComponentContract();
   const response = await contract.methods.tokenURI(id).call();
   return response;
 };

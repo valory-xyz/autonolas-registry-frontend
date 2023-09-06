@@ -83,7 +83,7 @@ export const getBonds = async (id, tableDataSource) => {
 
 /* ----- common functions ----- */
 export const onTerminate = async (account, id) => {
-  const contract = await getServiceManagerContract();
+  const contract = getServiceManagerContract();
   const fn = contract.methods.terminate(id).send({
     from: account,
   });
@@ -93,13 +93,13 @@ export const onTerminate = async (account, id) => {
 };
 
 export const getServiceOwner = async (id) => {
-  const contract = await getServiceContract();
+  const contract = getServiceContract();
   const response = await contract.methods.ownerOf(id).call();
   return response;
 };
 
 export const getTokenDetailsRequest = async (serviceId) => {
-  const contract = await getServiceRegistryTokenUtilityContract();
+  const contract = getServiceRegistryTokenUtilityContract();
   const deposit = await contract.methods
     .mapServiceIdTokenDeposit(serviceId)
     .call();
@@ -112,7 +112,7 @@ const hasSufficientTokenRequest = async ({ account, chainId, serviceId }) => {
    * - fetch the allowance of the token using the token address
    */
   const { token } = await getTokenDetailsRequest(serviceId);
-  const contract = await getGenericErc20Contract(token);
+  const contract = getGenericErc20Contract(token);
   const response = await contract.methods
     .allowance(account, ADDRESSES[chainId].serviceRegistryTokenUtility)
     .call();
@@ -124,7 +124,7 @@ const hasSufficientTokenRequest = async ({ account, chainId, serviceId }) => {
  */
 const approveToken = async ({ account, chainId, serviceId }) => {
   const { token } = await getTokenDetailsRequest(serviceId);
-  const contract = await getGenericErc20Contract(token);
+  const contract = getGenericErc20Contract(token);
   const fn = contract.methods
     .approve(
       ADDRESSES[chainId].serviceRegistryTokenUtility,
@@ -160,7 +160,7 @@ export const checkIfEth = async (id) => {
 // NOTE: this function is used only for testing
 export const mintTokenRequest = async ({ account, serviceId }) => {
   const { token } = await getTokenDetailsRequest(serviceId);
-  const contract = await getGenericErc20Contract(token);
+  const contract = getGenericErc20Contract(token);
   const fn = contract.methods
     .mint(account, ethers.utils.parseEther('1000'))
     .send({ from: account });
@@ -169,7 +169,7 @@ export const mintTokenRequest = async ({ account, serviceId }) => {
 };
 
 export const onActivateRegistration = async (account, id, deposit) => {
-  const contract = await getServiceManagerContract();
+  const contract = getServiceManagerContract();
   const fn = contract.methods.activateRegistration(id).send({
     from: account,
     value: deposit,
@@ -182,7 +182,7 @@ export const onActivateRegistration = async (account, id, deposit) => {
 
 /* ----- step 2 functions ----- */
 export const getServiceTableDataSource = async (id, agentIds) => {
-  const contract = await getServiceContract();
+  const contract = getServiceContract();
   const response = await getBonds(id);
   const { slots, bonds } = response;
   /**
@@ -218,7 +218,7 @@ export const checkIfAgentInstancesAreValid = async ({
   account,
   agentInstances,
 }) => {
-  const contract = await getServiceContract();
+  const contract = getServiceContract();
 
   // check if the operator is registered as an agent instance already
   const operator = await contract.methods
@@ -256,7 +256,7 @@ export const onStep2RegisterAgents = async ({
   agentInstances,
   dataSource,
 }) => {
-  const contract = await getServiceManagerContract();
+  const contract = getServiceManagerContract();
   const { totalBonds } = await getBonds(serviceId, dataSource);
 
   const fn = contract.methods.registerAgents(
@@ -271,7 +271,7 @@ export const onStep2RegisterAgents = async ({
 };
 
 export const getTokenBondRequest = async (id, source) => {
-  const contract = await getServiceRegistryTokenUtilityContract();
+  const contract = getServiceRegistryTokenUtilityContract();
   return Promise.all(
     (source || []).map(async ({ agentId }) => {
       const bond = await contract.methods.getAgentBond(id, agentId).call();
@@ -281,7 +281,7 @@ export const getTokenBondRequest = async (id, source) => {
 };
 
 export const getServiceAgentInstances = async (id) => {
-  const contract = await getServiceContract();
+  const contract = getServiceContract();
   const response = await contract.methods.getAgentInstances(id).call();
   return response?.agentInstances;
 };
@@ -292,7 +292,7 @@ export const onStep3Deploy = async (
   radioValue,
   payload = '0x',
 ) => {
-  const contract = await getServiceManagerContract();
+  const contract = getServiceManagerContract();
   const fn = contract.methods
     .deploy(id, radioValue, payload)
     .send({ from: account });
@@ -302,7 +302,7 @@ export const onStep3Deploy = async (
 
 /* ----- step 4 functions ----- */
 export const getAgentInstanceAndOperator = async (id) => {
-  const contract = await getServiceContract();
+  const contract = getServiceContract();
   const response = await contract.methods.getAgentInstances(id).call();
   const data = await Promise.all(
     (response?.agentInstances || []).map(async (key, index) => {
@@ -321,7 +321,7 @@ export const getAgentInstanceAndOperator = async (id) => {
 
 /* ----- step 5 functions ----- */
 export const onStep5Unbond = async (account, id) => {
-  const contract = await getServiceManagerContract();
+  const contract = getServiceManagerContract();
   const fn = contract.methods.unbond(id).send({ from: account });
   const response = await sendTransaction(fn, account);
   return response;

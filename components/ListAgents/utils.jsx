@@ -35,7 +35,7 @@ export const getFilteredAgents = async (searchValue, account) => {
   const list = await getListByAccount({
     searchValue,
     total,
-    getUnit: contract.methods.getUnit().call,
+    getUnit: contract.methods.getUnit,
     getOwner: getAgentOwner,
     account,
   });

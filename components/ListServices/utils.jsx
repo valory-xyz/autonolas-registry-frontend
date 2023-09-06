@@ -10,21 +10,21 @@ import { getTokenDetailsRequest } from 'common-util/Details/ServiceState/utils';
 
 // --------- HELPER METHODS ---------
 export const getServiceOwner = async (id) => {
-  const contract = await getServiceContract();
+  const contract = getServiceContract();
   const response = await contract.methods.ownerOf(id).call();
   return response;
 };
 
 // --------- utils ---------
 export const getServiceDetails = async (id) => {
-  const contract = await getServiceContract();
+  const contract = getServiceContract();
   const information = await contract.methods.getService(id).call();
   const owner = await getServiceOwner(id);
   return { ...information, owner };
 };
 
 export const getTotalForMyServices = async (account) => {
-  const contract = await getServiceContract();
+  const contract = getServiceContract();
   const total = await contract.methods.balanceOf(account).call();
   return total;
 };
@@ -33,13 +33,13 @@ export const getTotalForMyServices = async (account) => {
  * Function to return all services
  */
 export const getTotalForAllServices = async () => {
-  const contract = await getServiceContract();
+  const contract = getServiceContract();
   const total = await contract.methods.totalSupply().call();
   return total;
 };
 
 export const getServices = async (total, nextPage, fetchAll = false) => {
-  const contract = await getServiceContract();
+  const contract = getServiceContract();
 
   const existsPromises = [];
 
@@ -105,13 +105,13 @@ export const getAgentParams = (values) => {
 };
 
 export const getServiceHashes = async (id) => {
-  const contract = await getServiceContract();
+  const contract = getServiceContract();
   const information = await contract.methods.getPreviousHashes(id).call();
   return information;
 };
 
 export const getTokenUri = async (id) => {
-  const contract = await getServiceContract();
+  const contract = getServiceContract();
   const response = await contract.methods.tokenURI(id).call();
   return response;
 };

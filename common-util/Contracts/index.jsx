@@ -232,22 +232,22 @@ export const getOperatorWhitelistContract = () => {
   return contract;
 };
 
-export const getGenericErc20Contract = async (tokenAddress) => {
+export const getGenericErc20Contract = (tokenAddress) => {
   const contract = getContract(GENERIC_ERC20_CONTRACT.abi, tokenAddress);
   return contract;
 };
 
-export const getSignMessageLibContract = async (address) => {
+export const getSignMessageLibContract = (address) => {
   const contract = getContract(SIGN_MESSAGE_LIB_CONTRACT.abi, address);
   return contract;
 };
 
-export const getServiceOwnerMultisigContract = async (address) => {
+export const getServiceOwnerMultisigContract = (address) => {
   const contract = getContract(GNOSIS_SAFE_CONTRACT.abi, address);
   return contract;
 };
 
-export const getMultiSendContract = async (address) => {
+export const getMultiSendContract = (address) => {
   const contract = getContract(MULTI_SEND_CONTRACT.abi, address);
   return contract;
 };

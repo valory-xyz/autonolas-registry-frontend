@@ -18,7 +18,7 @@ export const checkIfERC721Receive = async (account, ownerAddress) => {
 
   if (isSafe) {
     try {
-      const contract = await getServiceOwnerMultisigContract(account);
+      const contract = getServiceOwnerMultisigContract(account);
       const threshold = await contract.getThreshold();
       const owners = await contract.getOwners();
 

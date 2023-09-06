@@ -114,7 +114,7 @@ export const handleMultisigSubmit = async ({
         nonce,
       );
 
-      const multisigContractServiceOwner = await getServiceOwnerMultisigContract(multisig);
+      const multisigContractServiceOwner = getServiceOwnerMultisigContract(multisig);
       const startingBlock = await provider.getBlockNumber();
 
       // Get the signature bytes based on the account address, since it had its tx pre-approved
