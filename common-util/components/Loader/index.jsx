@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { Button, Skeleton } from 'antd';
 import PropTypes from 'prop-types';
-import get from 'lodash/get';
 
 const Container = styled.div`
   min-height: 200px;
@@ -20,7 +19,7 @@ const DEFAULT_MESSAGE = 'Items couldn’t be loaded';
 
 const Loader = ({ isAccountRequired, notConnectedMessage, timeoutMessage }) => {
   const [seconds, setSeconds] = useState(TIMEOUT_IN_SECONDS);
-  const account = useSelector((state) => get(state, 'setup.account'));
+  const account = useSelector((state) => state?.setup?.account);
 
   useEffect(() => {
     let interval = null;

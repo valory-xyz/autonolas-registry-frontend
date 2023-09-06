@@ -1,7 +1,5 @@
 import React, { Fragment, useState } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import get from 'lodash/get';
 import isNil from 'lodash/isNil';
 import {
   Form, Input, Button, Select,
@@ -222,9 +220,4 @@ IpfsModal.defaultProps = {
   callback: null,
 };
 
-const mapStateToProps = (state) => {
-  const account = get(state, 'setup.account') || null;
-  return { account };
-};
-
-export default connect(mapStateToProps, {})(IpfsModal);
+export default IpfsModal;

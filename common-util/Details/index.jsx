@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import get from 'lodash/get';
+import { useSelector } from 'react-redux';
 import capitalize from 'lodash/capitalize';
 import {
   Row, Col, Button, Typography,
@@ -22,7 +21,6 @@ import { Header, DetailsTitle } from './styles';
 const { Text } = Typography;
 
 const Details = ({
-  account,
   id,
   type,
   getDetails,
@@ -39,6 +37,8 @@ const Details = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [detailsOwner, setDetailsOwner] = useState('');
   const [tokenUri, setTokenUri] = useState(null);
+
+  const account = useSelector((state) => state?.setup?.account);
 
   // metadata details
   const [metadata, setMetadata] = useState(null);
@@ -198,7 +198,6 @@ const Details = ({
 };
 
 Details.propTypes = {
-  account: PropTypes.string,
   id: PropTypes.string.isRequired,
   type: PropTypes.oneOf([
     NAV_TYPES.AGENT,
@@ -215,7 +214,6 @@ Details.propTypes = {
 };
 
 Details.defaultProps = {
-  account: '',
   handleUpdate: null,
   getHashes: () => {},
   getTokenUri: () => {},
@@ -224,9 +222,4 @@ Details.defaultProps = {
   onDependencyClick: () => {},
 };
 
-const mapStateToProps = (state) => {
-  const account = get(state, 'setup.account') || '';
-  return { account: account || '' };
-};
-
-export default connect(mapStateToProps, {})(Details);
+export default Details;

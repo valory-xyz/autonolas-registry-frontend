@@ -1,5 +1,4 @@
 import { ethers } from 'ethers';
-import get from 'lodash/get';
 import { getMyProvider } from 'common-util/Contracts';
 import {
   getChainId,
@@ -37,7 +36,7 @@ async function pollTransactionDetails(hash, chainId) {
       try {
         const response = await fetch(getUrl(hash, chainId));
         const json = await response.json();
-        const isSuccessful = get(json, 'isSuccessful');
+        const isSuccessful = json?.isSuccessful;
 
         if (isSuccessful) {
           window.console.log('Transaction details: ', json);

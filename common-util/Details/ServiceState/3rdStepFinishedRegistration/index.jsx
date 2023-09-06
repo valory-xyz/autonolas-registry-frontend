@@ -5,7 +5,6 @@ import {
   Button, Divider, Radio, Form, Input,
 } from 'antd';
 import PropTypes from 'prop-types';
-import get from 'lodash/get';
 
 import {
   FALLBACK_HANDLER,
@@ -34,7 +33,7 @@ const StepThreePayload = ({
   updateDetails,
 }) => {
   const account = useSelector((state) => state?.setup?.account);
-  const chainId = useSelector((state) => get(state, 'setup.chainId'));
+  const chainId = useSelector((state) => state?.setup?.chainId);
 
   const [form] = Form.useForm();
   const [radioValue, setRadioValue] = useState(null);

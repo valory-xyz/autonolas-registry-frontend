@@ -33,7 +33,7 @@ const RegisterForm = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [fields, setFields] = useState([]);
   const router = useRouter();
-  const id = get(router, 'query.id') || null;
+  const id = router?.query?.id;
 
   useEffect(() => {
     if (account && ethTokenAddress && isL1Network(chainId)) {

@@ -111,9 +111,7 @@ export const getMyProvider = () => window.MODAL_PROVIDER
   || process.env.NEXT_PUBLIC_MAINNET_URL;
 
 /**
- *
- * @returns {Web3<RegisteredSubscription>} - provider
- * @returns {Promise<ethers.JsonRpcSigner>} signer to sign the transaction
+ * returns the web3 details
  */
 export const getWeb3Details = () => {
   const chainId = getChainId() || 1; // default to mainnet
@@ -140,6 +138,9 @@ const getContract = (abi, contractAddress) => {
   return contract;
 };
 
+/**
+ * @returns componentRegistry contract
+ */
 export const getComponentContract = () => {
   const { address } = getWeb3Details();
   const { componentRegistry } = address;
@@ -150,6 +151,9 @@ export const getComponentContract = () => {
   return contract;
 };
 
+/**
+ * @returns agentRegistry contract
+ */
 export const getAgentContract = () => {
   const { address } = getWeb3Details();
   const { agentRegistry } = address;
@@ -157,6 +161,9 @@ export const getAgentContract = () => {
   return contract;
 };
 
+/**
+ * @returns registriesManager contract
+ */
 export const getMechMinterContract = () => {
   const { address } = getWeb3Details();
   const { registriesManager } = address;
@@ -212,6 +219,9 @@ export const getServiceManagerL2Contract = () => {
   return contract;
 };
 
+/**
+ * @returns serviceRegistryTokenUtility contract
+ */
 export const getServiceRegistryTokenUtilityContract = () => {
   const { address } = getWeb3Details();
   const { serviceRegistryTokenUtility } = address;
@@ -222,6 +232,9 @@ export const getServiceRegistryTokenUtilityContract = () => {
   return contract;
 };
 
+/**
+ * @returns operatorWhitelist contract
+ */
 export const getOperatorWhitelistContract = () => {
   const { address } = getWeb3Details();
   const { operatorWhitelist } = address;
@@ -232,21 +245,33 @@ export const getOperatorWhitelistContract = () => {
   return contract;
 };
 
+/**
+ * @returns generic erc20 contract
+ */
 export const getGenericErc20Contract = (tokenAddress) => {
   const contract = getContract(GENERIC_ERC20_CONTRACT.abi, tokenAddress);
   return contract;
 };
 
+/**
+ * @returns signMessageLib contract
+ */
 export const getSignMessageLibContract = (address) => {
   const contract = getContract(SIGN_MESSAGE_LIB_CONTRACT.abi, address);
   return contract;
 };
 
+/**
+ * @returns multisig contract
+ */
 export const getServiceOwnerMultisigContract = (address) => {
   const contract = getContract(GNOSIS_SAFE_CONTRACT.abi, address);
   return contract;
 };
 
+/**
+ * @returns multiSend contract
+ */
 export const getMultiSendContract = (address) => {
   const contract = getContract(MULTI_SEND_CONTRACT.abi, address);
   return contract;

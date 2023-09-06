@@ -3,7 +3,6 @@ import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import { connect, useSelector } from 'react-redux';
 import { Typography, notification } from 'antd';
-import get from 'lodash/get';
 import {
   DEFAULT_SERVICE_CREATION_ETH_TOKEN,
   DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS,
@@ -36,7 +35,7 @@ const Service = ({ account }) => {
   const [ethTokenAddress, setEthTokenAddress] = useState(null);
   const [isUpdating, setIsUpdating] = useState(false);
 
-  const id = get(router, 'query.id') || null;
+  const id = router?.query?.id;
 
   useEffect(() => {
     (async () => {

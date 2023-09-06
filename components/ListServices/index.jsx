@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import get from 'lodash/get';
 import { Tabs } from 'antd';
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
@@ -37,7 +36,7 @@ const ListServices = () => {
     setCurrentTab(isMyTab(hash) ? MY_SERVICES : ALL_SERVICES);
   }, [router.asPath]);
 
-  const account = useSelector((state) => get(state, 'setup.account'));
+  const account = useSelector((state) => state?.setup?.account);
 
   /**
    * extra tab content & view click
