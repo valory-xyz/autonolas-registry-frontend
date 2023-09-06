@@ -15,8 +15,8 @@ export const getComponentOwner = async (id) => {
 
 export const getComponentDetails = async (id) => {
   const contract = getComponentContract();
-  const information = await contract.methods.getUnit(id).call();
-  return information;
+  const response = await contract.methods.getUnit(id).call();
+  return response;
 };
 
 // --------- CONTRACT METHODS ---------

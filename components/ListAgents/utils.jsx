@@ -12,8 +12,8 @@ export const getAgentOwner = async (agentId) => {
 
 export const getAgentDetails = async (agentId) => {
   const contract = getAgentContract();
-  const information = await contract.methods.getUnit(agentId).call();
-  return information;
+  const response = await contract.methods.getUnit(agentId).call();
+  return response;
 };
 
 // --------- CONTRACT METHODS ---------
@@ -74,7 +74,6 @@ export const updateAgentHashes = async (account, id, newHash) => {
   // 0 to indicate `agents`
   const fn = contract.methods.updateHash('0', id, `0x${newHash}`).send({
     from: account,
-    gasLimit: 1000000,
   });
   await sendTransaction(fn, account);
   return null;

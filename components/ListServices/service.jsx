@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import { connect, useSelector } from 'react-redux';
-import { Typography, notification } from 'antd';
+import { Typography } from 'antd';
 import {
   DEFAULT_SERVICE_CREATION_ETH_TOKEN,
   DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS,
@@ -13,7 +13,9 @@ import {
   getServiceManagerContract,
   getServiceManagerL2Contract,
 } from 'common-util/Contracts';
-import { isL1Network, isL1OnlyNetwork } from 'common-util/functions';
+import {
+  isL1Network, isL1OnlyNetwork, notifyError, notifySuccess,
+} from 'common-util/functions';
 import { sendTransaction } from 'common-util/functions/sendTransaction';
 import RegisterForm from './RegisterForm';
 import {
@@ -91,10 +93,11 @@ const Service = ({ account }) => {
       const fn = contract.methods.update(...params).send({ from: account });
       sendTransaction(fn, account)
         .then(() => {
-          notification.success({ message: 'Service Updated' });
+          notifySuccess('Service Updated');
         })
         .catch((e) => {
           console.error(e);
+          notifyError('Error updating service');
         })
         .finally(() => {
           setIsUpdating(false);

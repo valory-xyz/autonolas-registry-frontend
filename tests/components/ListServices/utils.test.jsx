@@ -16,12 +16,26 @@ describe('listServices/utils.jsx', () => {
     expect.hasAssertions();
 
     getServiceContract.mockImplementation(() => ({
-      totalSupply: jest.fn(() => Promise.resolve(1)),
-      exists: jest.fn(() => Promise.resolve({ status: 'fulfilled', value: true })),
-      balanceOf: jest.fn(() => Promise.resolve(1)),
-      getService: jest.fn(() => Promise.resolve(SERVICE_1)),
-      getServiceState: jest.fn(() => Promise.resolve('0')),
-      ownerOf: jest.fn(() => Promise.resolve(dummyAddress)),
+      methods: {
+        totalSupply: jest.fn(() => ({
+          call: jest.fn(() => Promise.resolve(1)),
+        })),
+        exists: jest.fn(() => ({
+          call: jest.fn(() => Promise.resolve({ status: 'fulfilled', value: true })),
+        })),
+        balanceOf: jest.fn(() => ({
+          call: jest.fn(() => Promise.resolve(1)),
+        })),
+        getService: jest.fn(() => ({
+          call: jest.fn(() => Promise.resolve(SERVICE_1)),
+        })),
+        getServiceState: jest.fn(() => ({
+          call: jest.fn(() => Promise.resolve('0')),
+        })),
+        ownerOf: jest.fn(() => ({
+          call: jest.fn(() => Promise.resolve(dummyAddress)),
+        })),
+      },
     }));
 
     const result = await getFilteredServices(dummyAddress);
@@ -32,11 +46,23 @@ describe('listServices/utils.jsx', () => {
     expect.hasAssertions();
 
     getServiceContract.mockImplementation(() => ({
-      totalSupply: jest.fn(() => Promise.resolve(1)),
-      exists: jest.fn(() => Promise.resolve({ status: 'fulfilled', value: true })),
-      getService: jest.fn(() => Promise.resolve(SERVICE_1)),
-      getServiceState: jest.fn(() => Promise.resolve('0')),
-      ownerOf: jest.fn(() => Promise.resolve(dummyAddress)),
+      methods: {
+        totalSupply: jest.fn(() => ({
+          call: jest.fn(() => Promise.resolve(1)),
+        })),
+        exists: jest.fn(() => ({
+          call: jest.fn(() => Promise.resolve({ status: 'fulfilled', value: true })),
+        })),
+        getService: jest.fn(() => ({
+          call: jest.fn(() => Promise.resolve(SERVICE_1)),
+        })),
+        getServiceState: jest.fn(() => ({
+          call: jest.fn(() => Promise.resolve('0')),
+        })),
+        ownerOf: jest.fn(() => ({
+          call: jest.fn(() => Promise.resolve(dummyAddress)),
+        })),
+      },
     }));
 
     const result = await getServices(1, 1);

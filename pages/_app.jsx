@@ -23,7 +23,6 @@ const MyApp = ({ Component, pageProps }) => (
       <meta name="description" content={DESC} />
     </Head>
     <ConfigProvider theme={themeConfig}>
-      {/* <div>Hello world</div> */}
       <WagmiConfigProvider config={wagmiConfig}>
         <Layout>
           <Component {...pageProps} />

@@ -18,9 +18,9 @@ export const getServiceOwner = async (id) => {
 // --------- utils ---------
 export const getServiceDetails = async (id) => {
   const contract = getServiceContract();
-  const information = await contract.methods.getService(id).call();
+  const response = await contract.methods.getService(id).call();
   const owner = await getServiceOwner(id);
-  return { ...information, owner };
+  return { ...response, owner };
 };
 
 export const getTotalForMyServices = async (account) => {

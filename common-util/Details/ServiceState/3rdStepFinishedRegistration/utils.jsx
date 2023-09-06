@@ -8,7 +8,7 @@ import {
   rpc,
   getServiceOwnerMultisigContract,
   safeMultiSend,
-  getWeb3Details,
+  getMyProvider,
 } from 'common-util/Contracts';
 import { checkIfGnosisSafe } from 'common-util/functions';
 import safeContracts from '@gnosis.pm/safe-contracts';
@@ -93,7 +93,7 @@ export const handleMultisigSubmit = async ({
     nonce,
   );
 
-  const { provider } = await getWeb3Details();
+  const provider = getMyProvider();
   const isSafe = await checkIfGnosisSafe(account, provider);
 
   try {
@@ -157,7 +157,7 @@ export const handleMultisigSubmit = async ({
             handleStep3Deploy(radioValue, packedData);
           } else {
             // else wait until the hash is approved and then call deploy function
-            multisigContractServiceOwner
+            multisigContractServiceOwner.methods
               .approveHash(messageHash)
               .send({ from: account })
               .on('transactionHash', async (hash) => {

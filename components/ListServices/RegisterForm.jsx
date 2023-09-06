@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { ethers } from 'ethers';
 import { useRouter } from 'next/router';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 import PropTypes from 'prop-types';
@@ -12,7 +11,7 @@ import { commaMessage, DependencyLabel } from 'common-util/List/ListCommon';
 import { FormItemHash } from 'common-util/List/RegisterForm/helpers';
 import IpfsHashGenerationModal from 'common-util/List/IpfsHashGenerationModal';
 import { ComplexLabel } from 'common-util/List/styles';
-import { isL1Network } from 'common-util/functions';
+import { isL1Network, isValidAddress } from 'common-util/functions';
 import { RegisterFooter } from 'components/styles';
 
 export const FORM_NAME = 'serviceRegisterForm';
@@ -143,7 +142,7 @@ const RegisterForm = ({
             },
             () => ({
               validator(_, value) {
-                if (ethers.utils.isAddress(value)) return Promise.resolve();
+                if (isValidAddress(value)) return Promise.resolve();
                 return Promise.reject(
                   new Error(
                     `Please input a valid address of the ${listType} Owner`,
@@ -188,7 +187,7 @@ const RegisterForm = ({
                 },
                 () => ({
                   validator(_, value) {
-                    if (ethers.utils.isAddress(value)) return Promise.resolve();
+                    if (isValidAddress(value)) return Promise.resolve();
                     return Promise.reject(
                       new Error('Please input a valid address'),
                     );

@@ -32,10 +32,6 @@ const ListServices = () => {
     isMyTab(hash) ? MY_SERVICES : ALL_SERVICES,
   );
 
-  useEffect(() => {
-    setCurrentTab(isMyTab(hash) ? MY_SERVICES : ALL_SERVICES);
-  }, [router.asPath]);
-
   const account = useSelector((state) => state?.setup?.account);
 
   /**
