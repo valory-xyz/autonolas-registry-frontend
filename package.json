@@ -37,7 +37,8 @@
     "styled-components": "^6.0.7",
     "use-deep-compare-effect": "^1.8.1",
     "viem": "^0.3.35",
-    "wagmi": "^1.2.1"
+    "wagmi": "^1.2.1",
+    "web3": "^4.1.1"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.22.11",

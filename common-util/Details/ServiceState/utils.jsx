@@ -12,7 +12,7 @@ import {
 import { triggerTransaction } from 'common-util/functions/triggerTransaction';
 import { notifyError, notifySuccess } from 'common-util/functions';
 import { DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS } from 'util/constants';
-import { SERVICE_MANAGER_TOKEN_CONTRACT } from 'common-util/AbiAndAddresses';
+import { sendTransaction } from 'common-util/functions/sendTransaction';
 
 /* ----- helper functions ----- */
 
@@ -32,11 +32,16 @@ export const getNumberOfAgentAddress = (agentAddresses) => {
  *
  * @param {String} id serviceId
  * @param {Array} tableDataSource dataSource of the table and it can be null or undefined
- * @returns {Promise} { totalBonds, bondsArray, slotsArray }
+ * @returns {Promise<Object>} { totalBonds, bondsArray, slotsArray }
  */
 export const getBonds = async (id, tableDataSource) => {
-  const serviceContract = await getServiceContract();
-  const response = await serviceContract.getAgentParams(id);
+  console.log({ id, tableDataSource });
+
+  const serviceContract = getServiceContract();
+  console.log(serviceContract);
+
+  const response = await serviceContract.methods.getAgentParams(id).call();
+  console.log(response);
 
   const bondsArray = [];
   const slotsArray = [];
@@ -48,8 +53,8 @@ export const getBonds = async (id, tableDataSource) => {
      */
 
     const { bond, slots } = response.agentParams[i];
-    slotsArray.push(slots);
-    bondsArray.push(bond);
+    slotsArray.push(Number(slots));
+    bondsArray.push(Number(bond));
   }
 
   /**
@@ -84,43 +89,26 @@ export const getBonds = async (id, tableDataSource) => {
 
 /* ----- common functions ----- */
 export const onTerminate = async (account, id) => {
-  const provider = new ethers.providers.Web3Provider(
-    window.MODAL_PROVIDER,
-    // || window.ethereum,
-  );
-  const signer = provider.getSigner();
-
-  const contract = new ethers.Contract(
-    '0x1d333b46dB6e8FFd271b6C2D2B254868BD9A2dbd',
-    SERVICE_MANAGER_TOKEN_CONTRACT.abi,
-    signer,
-  );
-
-  // const contract = await getServiceManagerContract();
-  console.log(contract);
-
-  // const txResponse = await contract.activateRegistration(id, {
-  //   from: account,
-  //   value: deposit,
-  // });
-  const txResponse = await contract.terminate(id).send({
+  const contract = await getServiceManagerContract();
+  const fn = contract.methods.terminate(id).send({
     from: account,
   });
-  console.log(txResponse);
-  // const response = await triggerTransaction(txResponse, account);
+  const response = await sendTransaction(fn, account);
   notifySuccess('Terminated Successfully');
-  // return response;
+  return response;
 };
 
 export const getServiceOwner = async (id) => {
   const contract = await getServiceContract();
-  const response = await contract.ownerOf(id);
+  const response = await contract.methods.ownerOf(id).call();
   return response;
 };
 
 export const getTokenDetailsRequest = async (serviceId) => {
   const contract = await getServiceRegistryTokenUtilityContract();
-  const deposit = await contract.mapServiceIdTokenDeposit(serviceId);
+  const deposit = await contract.methods
+    .mapServiceIdTokenDeposit(serviceId)
+    .call();
   return deposit;
 };
 
@@ -131,10 +119,9 @@ const hasSufficientTokenRequest = async ({ account, chainId, serviceId }) => {
    */
   const { token } = await getTokenDetailsRequest(serviceId);
   const contract = await getGenericErc20Contract(token);
-  const response = contract.allowance(
-    account,
-    ADDRESSES[chainId].serviceRegistryTokenUtility,
-  );
+  const response = await contract.methods
+    .allowance(account, ADDRESSES[chainId].serviceRegistryTokenUtility)
+    .call();
   return !(ethers.BigNumber.from(response) < ethers.constants.MaxUint256);
 };
 
@@ -144,7 +131,7 @@ const hasSufficientTokenRequest = async ({ account, chainId, serviceId }) => {
 const approveToken = async ({ account, chainId, serviceId }) => {
   const { token } = await getTokenDetailsRequest(serviceId);
   const contract = await getGenericErc20Contract(token);
-  const txResponse = await contract.approve(
+  const txResponse = await contract.methods.approve(
     ADDRESSES[chainId].serviceRegistryTokenUtility,
     ethers.constants.MaxUint256,
   );
@@ -153,85 +140,50 @@ const approveToken = async ({ account, chainId, serviceId }) => {
   return response;
 };
 
-export const checkAndApproveToken = ({ account, chainId, serviceId }) => new Promise((resolve, reject) => {
-  hasSufficientTokenRequest({
+export const checkAndApproveToken = async ({ account, chainId, serviceId }) => {
+  const hasTokenBalance = await hasSufficientTokenRequest({
     account,
     chainId,
     serviceId,
-  })
-    .then((hasTokenBalance) => {
-      if (!hasTokenBalance) {
-        approveToken({
-          account,
-          chainId,
-          serviceId,
-        })
-          .then((response) => {
-            resolve(response);
-          })
-          .catch((e) => {
-            reject(e);
-          });
-      } else {
-        resolve();
-      }
-    })
-    .catch((e) => {
-      reject(e);
-    });
-});
+  });
+
+  if (!hasTokenBalance) {
+    const response = await approveToken({ account, chainId, serviceId });
+    return response;
+  }
+
+  return null;
+};
 
 /* ----- step 1 functions ----- */
-export const checkIfEth = (id) => new Promise((resolve, reject) => {
-  getTokenDetailsRequest(id)
-    .then((response) => {
-      resolve(response.token === DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS);
-    })
-    .catch((e) => {
-      reject(e);
-      notifyError('Error occured on checking token');
-    });
-});
+export const checkIfEth = async (id) => {
+  const { token } = await getTokenDetailsRequest(id);
+  return token === DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS;
+};
 
 // NOTE: this function is used only for testing
 export const mintTokenRequest = async ({ account, serviceId }) => {
   const { token } = await getTokenDetailsRequest(serviceId);
   const contract = await getGenericErc20Contract(token);
-  const txResponse = await contract.mint(
+  const txResponse = await contract.methods.mint(
     account,
     ethers.utils.parseEther('1000'),
   );
+  // TODO
   await triggerTransaction(txResponse, account);
   return null;
 };
 
 export const onActivateRegistration = async (account, id, deposit) => {
-  const provider = new ethers.providers.Web3Provider(
-    window.MODAL_PROVIDER,
-    // ||
-    // window.ethereum,
-  );
-  const signer = provider.getSigner();
-
-  const contract = new ethers.Contract(
-    '0x1d333b46dB6e8FFd271b6C2D2B254868BD9A2dbd',
-    SERVICE_MANAGER_TOKEN_CONTRACT.abi,
-    signer,
-  );
-
-  // const contract = await getServiceManagerContract();
-  console.log(contract);
-
-  const txResponse = await contract.activateRegistration(id, {
+  const contract = await getServiceManagerContract();
+  const fn = contract.methods.activateRegistration(id).send({
     from: account,
     value: deposit,
   });
-  console.log(txResponse);
 
-  return txResponse;
-  // const response = await triggerTransaction(txResponse, account);
-  // notifySuccess('Activated Successfully');
-  // return response;
+  const response = await sendTransaction(fn, account);
+  notifySuccess('Activated Successfully');
+  return response;
 };
 
 /* ----- step 2 functions ----- */
@@ -249,11 +201,14 @@ export const getServiceTableDataSource = async (id, agentIds) => {
    */
   const numAgentInstancesArray = await Promise.all(
     agentIds.map(async (agentId) => {
-      const info = await contract.getInstancesForAgentId(id, agentId);
+      const info = await contract.methods
+        .getInstancesForAgentId(id, agentId)
+        .call();
       return info.numAgentInstances;
     }),
   );
 
+  console.log(agentIds);
   const dateSource = agentIds.map((aid, i) => ({
     key: aid,
     agentId: aid,
@@ -263,6 +218,7 @@ export const getServiceTableDataSource = async (id, agentIds) => {
     agentAddresses: null,
   }));
 
+  console.log(dateSource);
   return dateSource;
 };
 
@@ -273,7 +229,9 @@ export const checkIfAgentInstancesAreValid = async ({
   const contract = await getServiceContract();
 
   // check if the operator is registered as an agent instance already
-  const operator = await contract.mapAgentInstanceOperators(account);
+  const operator = await contract.methods
+    .mapAgentInstanceOperators(account)
+    .call();
   if (operator !== DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS) {
     notifyError('The operator is registered as an agent instance already.');
     return false;
@@ -281,7 +239,9 @@ export const checkIfAgentInstancesAreValid = async ({
 
   // check if the agent instances are valid
   const ifValidPromiseArray = agentInstances.map(async (agentInstance) => {
-    const isValid = await contract.mapAgentInstanceOperators(agentInstance);
+    const isValid = await contract.methods
+      .mapAgentInstanceOperators(agentInstance)
+      .call();
     return isValid;
   });
 
@@ -307,13 +267,13 @@ export const onStep2RegisterAgents = async ({
   const contract = await getServiceManagerContract();
   const { totalBonds } = await getBonds(serviceId, dataSource);
 
-  const tx = await contract.registerAgents(
+  const tx = await contract.methods.registerAgents(
     serviceId,
     agentInstances,
     agentIds,
     {
       from: account,
-      value: `${totalBonds}`,
+      value: `${(totalBonds)}`,
     },
   );
 
@@ -326,7 +286,7 @@ export const getTokenBondRequest = async (id, source) => {
   const contract = await getServiceRegistryTokenUtilityContract();
   return Promise.all(
     (source || []).map(async ({ agentId }) => {
-      const bond = await contract.getAgentBond(id, agentId);
+      const bond = await contract.methods.getAgentBond(id, agentId).call();
       return bond;
     }),
   );
@@ -334,7 +294,7 @@ export const getTokenBondRequest = async (id, source) => {
 
 export const getServiceAgentInstances = async (id) => {
   const contract = await getServiceContract();
-  const response = await contract.getAgentInstances(id);
+  const response = await contract.methods.getAgentInstances(id).call();
   return response?.agentInstances;
 };
 
@@ -345,7 +305,7 @@ export const onStep3Deploy = async (
   payload = '0x',
 ) => {
   const contract = await getServiceManagerContract();
-  const tx = await contract.deploy(id, radioValue, payload);
+  const tx = await contract.methods.deploy(id, radioValue, payload);
   const response = triggerTransaction(tx, account);
   notifySuccess('Deployed Successfully');
   return response;
@@ -354,10 +314,12 @@ export const onStep3Deploy = async (
 /* ----- step 4 functions ----- */
 export const getAgentInstanceAndOperator = async (id) => {
   const contract = await getServiceContract();
-  const response = await contract.getAgentInstances(id);
+  const response = await contract.methods.getAgentInstances(id).call();
   const data = await Promise.all(
     (response?.agentInstances || []).map(async (key, index) => {
-      const operatorAddress = await contract.mapAgentInstanceOperators(key);
+      const operatorAddress = await contract.methods
+        .mapAgentInstanceOperators(key)
+        .call();
       return {
         id: `agent-instance-row-${index + 1}`,
         operatorAddress,
@@ -371,7 +333,7 @@ export const getAgentInstanceAndOperator = async (id) => {
 /* ----- step 5 functions ----- */
 export const onStep5Unbond = async (account, id) => {
   const contract = await getServiceManagerContract();
-  const tx = await contract.unbond(id);
+  const tx = await contract.methods.unbond(id);
   const response = await triggerTransaction(tx, account);
   notifySuccess('Unbonded Successfully');
   return response;
@@ -383,7 +345,9 @@ export const checkIfServiceRequiresWhiltelisting = async (serviceId) => {
   const contract = await getOperatorWhitelistContract();
   // if true: it is whitelisted by default
   // else we can whitelist using the input field
-  const response = await contract.mapServiceIdOperatorsCheck(serviceId);
+  const response = await contract.methods
+    .mapServiceIdOperatorsCheck(serviceId)
+    .call();
   return response;
 };
 
@@ -392,7 +356,9 @@ export const checkIfServiceIsWhitelisted = async (
   operatorAddress,
 ) => {
   const contract = await getOperatorWhitelistContract();
-  const response = contract.isOperatorWhitelisted(serviceId, operatorAddress);
+  const response = contract.methods
+    .isOperatorWhitelisted(serviceId, operatorAddress)
+    .call();
   return response;
 };
 
@@ -403,7 +369,7 @@ export const setOperatorsStatusesRequest = async ({
   operatorStatuses,
 }) => {
   const contract = await getOperatorWhitelistContract();
-  const fn = await contract.setOperatorsStatuses(
+  const fn = await contract.methods.setOperatorsStatuses(
     serviceId,
     operatorAddresses,
     operatorStatuses,
