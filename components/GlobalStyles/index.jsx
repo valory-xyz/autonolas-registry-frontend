@@ -1,6 +1,6 @@
 import { MEDIA_QUERY } from '@autonolas/frontend-library';
 import { createGlobalStyle } from 'styled-components';
-import { COLOR, OTHERS } from 'util/theme';
+import { COLOR } from 'util/theme';
 
 const ANTD_COLOR = {
   borderColor: '#f0f0f0',
@@ -129,10 +129,10 @@ const GlobalStyle = createGlobalStyle`
       &:last-child {
         td {
           &:first-child {
-            border-bottom-left-radius: ${OTHERS.borderRadius};
+            border-bottom-left-radius: 5px;
           }
           &:last-child {
-            border-bottom-right-radius: ${OTHERS.borderRadius};
+            border-bottom-right-radius: 5px;
           }
         }
       }

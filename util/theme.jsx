@@ -11,16 +11,6 @@ export const COLOR = {
   GREEN: '#52C41A',
 };
 
-export const BOX_SHADOW = {};
-
-export const TRANSITION = {
-  all: 'all 0.3s',
-};
-
-export const OTHERS = {
-  borderRadius: '5px',
-};
-
 /**
  * @type {import('antd').ThemeConfig}
  */

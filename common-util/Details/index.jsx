@@ -31,7 +31,7 @@ const Details = ({
   onUpdateHash,
   onDependencyClick,
 }) => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [info, setInfo] = useState({});
   const [hashes, setHashes] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -84,11 +84,11 @@ const Details = ({
         setTokenUri(tempTokenUri);
 
         await getUpdatedHashes();
-
-        setIsLoading(false);
       } catch (e) {
         console.error(e);
         notifyError(`Error fetching ${type} details`);
+      } finally {
+        setIsLoading(false);
       }
     })();
   }, [account, id]);
