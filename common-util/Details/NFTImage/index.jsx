@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import get from 'lodash/get';
 import { GATEWAY_URL, NAV_TYPES } from 'util/constants';
-import { useScreen } from 'common-util/hooks';
+import { useScreen } from 'common-util/hooks/useScreen';
 import { NftImageContainer } from '../styles';
 
 const DEFAULT_SIZE = { width: 500, height: 500 };

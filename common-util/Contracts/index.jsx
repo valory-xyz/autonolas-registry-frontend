@@ -106,9 +106,7 @@ export const ADDRESSES = {
  * 2. window.ethereum - metamask (or other wallet)
  * 3. process.env.NEXT_PUBLIC_MAINNET_URL - JSON RPC URL
  */
-export const getMyProvider = () => window.MODAL_PROVIDER
-  || window.ethereum
-  || process.env.NEXT_PUBLIC_MAINNET_URL;
+export const getMyProvider = () => window.MODAL_PROVIDER || window.ethereum;
 
 /**
  * returns the web3 details
@@ -116,9 +114,7 @@ export const getMyProvider = () => window.MODAL_PROVIDER
 export const getWeb3Details = () => {
   const chainId = getChainId() || 1; // default to mainnet
   const address = ADDRESSES[chainId];
-  const provider = new Web3(
-    window.MODAL_PROVIDER || window.ethereum || rpc[chainId],
-  );
+  const provider = new Web3(getMyProvider() || rpc[chainId]);
 
   return {
     address,

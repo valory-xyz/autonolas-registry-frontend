@@ -93,7 +93,7 @@ export const handleMultisigSubmit = async ({
     nonce,
   );
 
-  const provider = getMyProvider();
+  const provider = new ethers.providers.Web3Provider(getMyProvider(), 'any');
   const isSafe = await checkIfGnosisSafe(account, provider);
 
   try {

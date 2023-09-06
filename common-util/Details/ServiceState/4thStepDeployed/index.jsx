@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Table, Space, Button } from 'antd';
 import { AddressLink } from '@autonolas/frontend-library';
 import { setAgentInstancesAndOperators } from 'store/service/state/actions';
-import { useScreen } from 'common-util/hooks';
+import { useScreen } from 'common-util/hooks/useScreen';
 import { getAgentInstanceAndOperator, onTerminate } from '../utils';
 
 const Deployed = ({

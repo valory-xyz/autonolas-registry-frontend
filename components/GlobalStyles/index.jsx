@@ -169,6 +169,11 @@ const GlobalStyle = createGlobalStyle`
     background: ${COLOR.GREY_2};
   }
 
+  /* ant notification */
+  .ant-notification-notice-message {
+    margin-bottom: 0 !important;
+  }
+
   ${MEDIA_QUERY.mobileL} {
     .ant-table {
       .ant-table-thead {
