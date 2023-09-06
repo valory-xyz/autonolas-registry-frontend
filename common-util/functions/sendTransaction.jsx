@@ -1,8 +1,11 @@
 import { ethers } from 'ethers';
-import { isGnosis, isGoerli, isPolygon } from '@autonolas/frontend-library';
 import get from 'lodash/get';
 import { getMyProvider } from 'common-util/Contracts';
-import { safeSendTransactionNotification } from './index';
+import {
+  getChainId,
+  notifyError,
+  safeSendTransactionNotification,
+} from './index';
 
 /**
  * @returns {string} - url of gnosis-safe API.
@@ -11,11 +14,11 @@ import { safeSendTransactionNotification } from './index';
  */
 const getUrl = (hash, chainId) => {
   switch (chainId) {
-    case isGoerli(chainId):
+    case 5:
       return `${process.env.NEXT_PUBLIC_GNOSIS_SAFE_API_GOERLI}/${hash}`;
-    case isGnosis(chainId):
+    case 100:
       return `${process.env.NEXT_PUBLIC_GNOSIS_SAFE_API_GNOSIS}/${hash}`;
-    case isPolygon(chainId):
+    case 137:
       return `${process.env.NEXT_PUBLIC_GNOSIS_SAFE_API_POLYGON}/${hash}`;
     default:
       return `${process.env.NEXT_PUBLIC_GNOSIS_SAFE_API_MAINNET}/${hash}`;
@@ -80,7 +83,7 @@ export const sendTransaction = (
                * use `transactionHash`, get the hash, then poll until
                * it resolves with Output
                */
-            const chainId = (await window.WEB3_PROVIDER?.eth?.getChainId()) || 1;
+            const chainId = getChainId() || 1;
             pollTransactionDetails(safeTx, chainId)
               .then((receipt) => {
                 resolve(receipt);
@@ -90,22 +93,14 @@ export const sendTransaction = (
                 reject(e);
               });
           })
-          .catch((e) => {
-            reject(e);
-          });
+          .catch((e) => reject(e));
       } else {
         // usual send function
-        sendFn
-          .then((receipt) => {
-            resolve(receipt);
-          })
-          .catch((e) => {
-            reject(e);
-          });
+        sendFn.then((receipt) => resolve(receipt)).catch((e) => reject(e));
       }
     })
     .catch((e) => {
-      console.error('Error on fetching code');
+      notifyError('Error occurred while sending transaction');
       reject(e);
     });
 });

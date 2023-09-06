@@ -9,7 +9,6 @@ import {
   getServiceManagerContract,
   getServiceRegistryTokenUtilityContract,
 } from 'common-util/Contracts';
-import { triggerTransaction } from 'common-util/functions/triggerTransaction';
 import { notifyError, notifySuccess } from 'common-util/functions';
 import { DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS } from 'util/constants';
 import { sendTransaction } from 'common-util/functions/sendTransaction';
@@ -35,13 +34,8 @@ export const getNumberOfAgentAddress = (agentAddresses) => {
  * @returns {Promise<Object>} { totalBonds, bondsArray, slotsArray }
  */
 export const getBonds = async (id, tableDataSource) => {
-  console.log({ id, tableDataSource });
-
   const serviceContract = getServiceContract();
-  console.log(serviceContract);
-
   const response = await serviceContract.methods.getAgentParams(id).call();
-  console.log(response);
 
   const bondsArray = [];
   const slotsArray = [];
@@ -126,17 +120,19 @@ const hasSufficientTokenRequest = async ({ account, chainId, serviceId }) => {
 };
 
 /**
- * Approves
+ * Approves token
  */
 const approveToken = async ({ account, chainId, serviceId }) => {
   const { token } = await getTokenDetailsRequest(serviceId);
   const contract = await getGenericErc20Contract(token);
-  const txResponse = await contract.methods.approve(
-    ADDRESSES[chainId].serviceRegistryTokenUtility,
-    ethers.constants.MaxUint256,
-  );
+  const fn = contract.methods
+    .approve(
+      ADDRESSES[chainId].serviceRegistryTokenUtility,
+      ethers.constants.MaxUint256,
+    )
+    .send({ from: account });
 
-  const response = await triggerTransaction(txResponse, account);
+  const response = await sendTransaction(fn, account);
   return response;
 };
 
@@ -165,12 +161,10 @@ export const checkIfEth = async (id) => {
 export const mintTokenRequest = async ({ account, serviceId }) => {
   const { token } = await getTokenDetailsRequest(serviceId);
   const contract = await getGenericErc20Contract(token);
-  const txResponse = await contract.methods.mint(
-    account,
-    ethers.utils.parseEther('1000'),
-  );
-  // TODO
-  await triggerTransaction(txResponse, account);
+  const fn = contract.methods
+    .mint(account, ethers.utils.parseEther('1000'))
+    .send({ from: account });
+  await sendTransaction(fn, account);
   return null;
 };
 
@@ -208,7 +202,6 @@ export const getServiceTableDataSource = async (id, agentIds) => {
     }),
   );
 
-  console.log(agentIds);
   const dateSource = agentIds.map((aid, i) => ({
     key: aid,
     agentId: aid,
@@ -218,7 +211,6 @@ export const getServiceTableDataSource = async (id, agentIds) => {
     agentAddresses: null,
   }));
 
-  console.log(dateSource);
   return dateSource;
 };
 
@@ -267,18 +259,14 @@ export const onStep2RegisterAgents = async ({
   const contract = await getServiceManagerContract();
   const { totalBonds } = await getBonds(serviceId, dataSource);
 
-  const tx = await contract.methods.registerAgents(
+  const fn = contract.methods.registerAgents(
     serviceId,
     agentInstances,
     agentIds,
-    {
-      from: account,
-      value: `${(totalBonds)}`,
-    },
+    { from: account, value: `${totalBonds}` },
   );
 
-  const response = await triggerTransaction(tx, account);
-  notifySuccess('Registered Successfully');
+  const response = await sendTransaction(fn, account);
   return response;
 };
 
@@ -305,9 +293,10 @@ export const onStep3Deploy = async (
   payload = '0x',
 ) => {
   const contract = await getServiceManagerContract();
-  const tx = await contract.methods.deploy(id, radioValue, payload);
-  const response = triggerTransaction(tx, account);
-  notifySuccess('Deployed Successfully');
+  const fn = contract.methods
+    .deploy(id, radioValue, payload)
+    .send({ from: account });
+  const response = sendTransaction(fn, account);
   return response;
 };
 
@@ -333,16 +322,14 @@ export const getAgentInstanceAndOperator = async (id) => {
 /* ----- step 5 functions ----- */
 export const onStep5Unbond = async (account, id) => {
   const contract = await getServiceManagerContract();
-  const tx = await contract.methods.unbond(id);
-  const response = await triggerTransaction(tx, account);
-  notifySuccess('Unbonded Successfully');
+  const fn = contract.methods.unbond(id).send({ from: account });
+  const response = await sendTransaction(fn, account);
   return response;
 };
 
 /* ----- operator whitelist functions ----- */
-// convert above function to async/await
 export const checkIfServiceRequiresWhiltelisting = async (serviceId) => {
-  const contract = await getOperatorWhitelistContract();
+  const contract = getOperatorWhitelistContract();
   // if true: it is whitelisted by default
   // else we can whitelist using the input field
   const response = await contract.methods
@@ -355,8 +342,8 @@ export const checkIfServiceIsWhitelisted = async (
   serviceId,
   operatorAddress,
 ) => {
-  const contract = await getOperatorWhitelistContract();
-  const response = contract.methods
+  const contract = getOperatorWhitelistContract();
+  const response = await contract.methods
     .isOperatorWhitelisted(serviceId, operatorAddress)
     .call();
   return response;
@@ -368,14 +355,11 @@ export const setOperatorsStatusesRequest = async ({
   operatorAddresses,
   operatorStatuses,
 }) => {
-  const contract = await getOperatorWhitelistContract();
-  const fn = await contract.methods.setOperatorsStatuses(
-    serviceId,
-    operatorAddresses,
-    operatorStatuses,
-    true,
-  );
-  const response = await triggerTransaction(fn, account);
+  const contract = getOperatorWhitelistContract();
+  const fn = contract.methods
+    .setOperatorsStatuses(serviceId, operatorAddresses, operatorStatuses, true)
+    .send({ from: account });
+  const response = await sendTransaction(fn, account);
   return response;
 };
 
@@ -384,11 +368,10 @@ export const setOperatorsCheckRequest = async ({
   serviceId,
   isChecked,
 }) => {
-  const contract = await getOperatorWhitelistContract();
-  const txResponse = contract['setOperatorsCheck(uint256,bool)'](
-    serviceId,
-    isChecked,
-  );
-  const response = await triggerTransaction(txResponse, account);
+  const contract = getOperatorWhitelistContract();
+  const fn = contract.methods
+    .setOperatorsCheck(serviceId, isChecked)
+    .send({ from: account });
+  const response = await sendTransaction(fn, account);
   return response;
 };

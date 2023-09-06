@@ -5,7 +5,7 @@ import { Typography, notification } from 'antd';
 import RegisterForm from 'common-util/List/RegisterForm';
 import { AlertSuccess, AlertError } from 'common-util/List/ListCommon';
 import { getMechMinterContract } from 'common-util/Contracts';
-import { triggerTransaction } from 'common-util/functions/triggerTransaction';
+import { sendTransaction } from 'common-util/functions/sendTransaction';
 import { checkIfERC721Receive } from 'common-util/functions/requests';
 import { notifyError } from 'common-util/functions';
 import { FormContainer } from '../styles';
@@ -43,8 +43,8 @@ const MintComponent = () => {
         console.error(e);
       }
 
-      const contract = await getMechMinterContract();
-      const fn = contract
+      const contract = getMechMinterContract();
+      const fn = contract.methods
         .create(
           '0',
           values.owner_address,
@@ -53,7 +53,7 @@ const MintComponent = () => {
         )
         .send({ from: account });
 
-      triggerTransaction(fn, account)
+      sendTransaction(fn, account)
         .then((result) => {
           setInformation(result);
           notification.success({ message: 'Component minted' });

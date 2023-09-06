@@ -80,8 +80,12 @@ export const DetailsInfo = ({
 
   // get operator whitelist
   const setOpWhitelist = async () => {
-    const whiteListRes = await checkIfServiceRequiresWhiltelisting(id);
-    setIsWhiteListed(whiteListRes);
+    try {
+      const whiteListRes = await checkIfServiceRequiresWhiltelisting(id);
+      setIsWhiteListed(whiteListRes);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   // get token address for service on load
@@ -112,6 +116,7 @@ export const DetailsInfo = ({
 
   const updateHashBtn = isOwner ? (
     <>
+      &nbsp;•&nbsp;
       {onUpdateHash && (
         <Button type="primary" ghost onClick={() => setIsModalVisible(true)}>
           Update Hash
@@ -196,7 +201,6 @@ export const DetailsInfo = ({
         value: (
           <>
             {viewHashAndCode}
-            &nbsp;•&nbsp;
             {updateHashBtn}
           </>
         ),

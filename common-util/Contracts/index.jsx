@@ -99,6 +99,13 @@ export const ADDRESSES = {
   [LOCAL_FORK_ID_POLYGON]: POLYGON_ADDRESSES,
 };
 
+/**
+ *
+ * order of precedence is as follows:
+ * 1. window.MODAL_PROVIDER - injected provider (done on Login.jsx)
+ * 2. window.ethereum - metamask (or other wallet)
+ * 3. process.env.NEXT_PUBLIC_MAINNET_URL - JSON RPC URL
+ */
 export const getMyProvider = () => window.MODAL_PROVIDER
   || window.ethereum
   || process.env.NEXT_PUBLIC_MAINNET_URL;
@@ -133,8 +140,8 @@ const getContract = (abi, contractAddress) => {
   return contract;
 };
 
-export const getComponentContract = async () => {
-  const { address } = await getWeb3Details();
+export const getComponentContract = () => {
+  const { address } = getWeb3Details();
   const { componentRegistry } = address;
   const contract = getContract(
     COMPONENT_REGISTRY_CONTRACT.abi,
@@ -143,15 +150,15 @@ export const getComponentContract = async () => {
   return contract;
 };
 
-export const getAgentContract = async () => {
-  const { address } = await getWeb3Details();
+export const getAgentContract = () => {
+  const { address } = getWeb3Details();
   const { agentRegistry } = address;
   const contract = getContract(AGENT_REGISTRY_CONTRACT.abi, agentRegistry);
   return contract;
 };
 
-export const getMechMinterContract = async () => {
-  const { address } = await getWeb3Details();
+export const getMechMinterContract = () => {
+  const { address } = getWeb3Details();
   const { registriesManager } = address;
 
   const contract = getContract(
@@ -164,7 +171,7 @@ export const getMechMinterContract = async () => {
 
 /**
  *
- * @returns {Promise<ethers.Contract>} serviceRegistry contract
+ * @returns serviceRegistry contract
  */
 export const getServiceContract = () => {
   const { address, chainId } = getWeb3Details();
@@ -183,7 +190,7 @@ export const getServiceContract = () => {
 };
 
 /**
- * @returns {ethers.Contract} serviceManager contract
+ * @returns serviceManager contract
  */
 export const getServiceManagerContract = () => {
   const { address } = getWeb3Details();
@@ -196,17 +203,17 @@ export const getServiceManagerContract = () => {
 };
 
 /**
- * @returns {ethers.Contract} serviceManager L2 contract
+ * @returns serviceManager L2 contract
  */
-export const getServiceManagerL2Contract = async () => {
-  const { address } = await getWeb3Details();
+export const getServiceManagerL2Contract = () => {
+  const { address } = getWeb3Details();
   const { serviceManager } = address;
   const contract = getContract(SERVICE_MANAGER_CONTRACT.abi, serviceManager);
   return contract;
 };
 
-export const getServiceRegistryTokenUtilityContract = async () => {
-  const { address } = await getWeb3Details();
+export const getServiceRegistryTokenUtilityContract = () => {
+  const { address } = getWeb3Details();
   const { serviceRegistryTokenUtility } = address;
   const contract = getContract(
     SERVICE_REGISTRY_TOKEN_UTILITY_CONTRACT.abi,
@@ -215,8 +222,8 @@ export const getServiceRegistryTokenUtilityContract = async () => {
   return contract;
 };
 
-export const getOperatorWhitelistContract = async () => {
-  const { address } = await getWeb3Details();
+export const getOperatorWhitelistContract = () => {
+  const { address } = getWeb3Details();
   const { operatorWhitelist } = address;
   const contract = getContract(
     OPERATOR_WHITELIST_CONTRACT.abi,

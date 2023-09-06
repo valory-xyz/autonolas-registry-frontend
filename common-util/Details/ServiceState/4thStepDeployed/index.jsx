@@ -1,10 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import {
-  Table, Space, Button,
-} from 'antd';
-import get from 'lodash/get';
+import { Table, Space, Button } from 'antd';
 import { AddressLink } from '@autonolas/frontend-library';
 import { setAgentInstancesAndOperators } from 'store/service/state/actions';
 import { useScreen } from 'common-util/hooks';
@@ -21,7 +18,9 @@ const Deployed = ({
   updateDetails,
 }) => {
   const dispatch = useDispatch();
-  const data = useSelector((state) => get(state, 'service.serviceState.agentInstancesAndOperators'));
+  const data = useSelector(
+    (state) => state?.service?.serviceState?.agentInstancesAndOperators,
+  );
   const account = useSelector((state) => state?.setup?.account);
   const [isTerminating, setIsTerminating] = useState(false);
   const { isMobile } = useScreen();

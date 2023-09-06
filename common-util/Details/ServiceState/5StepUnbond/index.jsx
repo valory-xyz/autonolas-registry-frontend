@@ -2,20 +2,23 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Button } from 'antd';
-import get from 'lodash/get';
+import { notifySuccess } from 'common-util/functions';
 import { onStep5Unbond } from '../utils';
 
 const Unbond = ({
   serviceId, updateDetails, getButton, getOtherBtnProps,
 }) => {
   const account = useSelector((state) => state?.setup?.account);
-  const operators = useSelector((state) => get(state, 'service.serviceState.agentInstancesAndOperators'));
+  const operators = useSelector(
+    (state) => state?.service?.serviceState?.agentInstancesAndOperators,
+  );
   const [isUnbonding, setIsUnbonding] = useState(false);
 
   const onUnbond = async () => {
     try {
       setIsUnbonding(true);
       await onStep5Unbond(account, serviceId);
+      notifySuccess('Unbonded Successfully');
       await updateDetails();
     } catch (e) {
       console.error(e);

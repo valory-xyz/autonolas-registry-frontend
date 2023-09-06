@@ -1,5 +1,5 @@
-import { getFirstAndLastIndex } from 'common-util/functions';
 import includes from 'lodash/includes';
+import { getFirstAndLastIndex } from 'common-util/functions';
 
 export const filterByOwner = (results, { searchValue, account }) => (results || []).filter((e) => {
   const search = (searchValue || '').trim().toLowerCase();
@@ -23,35 +23,28 @@ export const getListByAccount = async ({
   getUnit,
   getOwner,
   account,
-}) => new Promise((resolve, reject) => {
-  try {
-    const allListPromise = [];
-    for (let i = 1; i <= total; i += 1) {
-      const id = `${i}`;
-      const result = getUnit(id);
-      allListPromise.push(result);
-    }
-
-    Promise.all(allListPromise).then(async (componentsList) => {
-      const results = await Promise.all(
-        componentsList.map(async (info, i) => {
-          const id = `${i + 1}`;
-          const owner = await getOwner(id);
-          return { ...info, id, owner };
-        }),
-      );
-
-      const filteredResults = filterByOwner(results, {
-        searchValue,
-        account,
-      });
-      resolve(filteredResults);
-    });
-  } catch (e) {
-    console.error(e);
-    reject(e);
+}) => {
+  const allListPromise = [];
+  for (let i = 1; i <= total; i += 1) {
+    const id = `${i}`;
+    const result = getUnit(id);
+    allListPromise.push(result);
   }
-});
+
+  const result = Promise.all(allListPromise).then(async (componentsList) => {
+    const results = await Promise.all(
+      componentsList.map(async (info, i) => {
+        const id = `${i + 1}`;
+        const owner = await getOwner(id);
+        return { ...info, id, owner };
+      }),
+    );
+
+    return filterByOwner(results, { searchValue, account });
+  });
+
+  return result;
+};
 
 /**
  * call API once and return based on pagination

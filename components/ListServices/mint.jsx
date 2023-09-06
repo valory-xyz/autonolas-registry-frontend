@@ -16,7 +16,7 @@ import {
   getServiceManagerContract,
   getServiceManagerL2Contract,
 } from 'common-util/Contracts';
-import { triggerTransaction } from 'common-util/functions/triggerTransaction';
+import { sendTransaction } from 'common-util/functions/sendTransaction';
 import { isL1Network, notifyError } from 'common-util/functions';
 import { checkIfERC721Receive } from 'common-util/functions/requests';
 import RegisterForm from './RegisterForm';
@@ -74,8 +74,8 @@ const MintService = ({ account }) => {
         ]
         : [values.owner_address, ...commonParams];
 
-      const fn = contract.create(...params).send({ from: account });
-      triggerTransaction(fn, account)
+      const fn = contract.methods.create(...params).send({ from: account });
+      sendTransaction(fn, account)
         .then((result) => {
           setInformation(result);
           notification.success({ message: 'Service minted' });

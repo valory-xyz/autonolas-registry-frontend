@@ -6,6 +6,7 @@ import {
   convertToEth,
   isL1OnlyNetwork,
   notifyError,
+  notifySuccess,
 } from 'common-util/functions';
 import {
   getBonds,
@@ -129,6 +130,7 @@ const ActiveRegistration = ({
           agentInstances,
           dataSource,
         });
+        notifySuccess('Registered Successfully');
         await updateDetails();
       }
     } catch (e) {

@@ -1,41 +1,41 @@
 import { getMechMinterContract, getAgentContract } from 'common-util/Contracts';
 import { getFirstAndLastIndex } from 'common-util/functions';
 import { getListByAccount } from 'common-util/ContractUtils/myList';
-import { triggerTransaction } from 'common-util/functions/triggerTransaction';
+import { sendTransaction } from 'common-util/functions/sendTransaction';
 
 // --------- HELPER METHODS ---------
 export const getAgentOwner = async (agentId) => {
-  const contract = await getAgentContract();
-  const owner = await contract.ownerOf(agentId);
+  const contract = getAgentContract();
+  const owner = await contract.methods.ownerOf(agentId).call();
   return owner;
 };
 
 export const getAgentDetails = async (agentId) => {
-  const contract = await getAgentContract();
-  const information = await contract.getUnit(agentId);
+  const contract = getAgentContract();
+  const information = await contract.methods.getUnit(agentId).call();
   return information;
 };
 
-// --------- contract methods ---------
+// --------- CONTRACT METHODS ---------
 export const getTotalForAllAgents = async () => {
-  const contract = await getAgentContract();
-  const total = await contract.totalSupply();
+  const contract = getAgentContract();
+  const total = await contract.methods.totalSupply().call();
   return total;
 };
 
 export const getTotalForMyAgents = async (account) => {
-  const contract = await getAgentContract();
-  const total = await contract.balanceOf(account);
+  const contract = getAgentContract();
+  const total = await contract.methods.balanceOf(account).call();
   return total;
 };
 
 export const getFilteredAgents = async (searchValue, account) => {
-  const contract = await getAgentContract();
+  const contract = getAgentContract();
   const total = await getTotalForAllAgents();
   const list = await getListByAccount({
     searchValue,
     total,
-    getUnit: contract.getUnit,
+    getUnit: contract.methods.getUnit().call,
     getOwner: getAgentOwner,
     account,
   });
@@ -43,12 +43,12 @@ export const getFilteredAgents = async (searchValue, account) => {
 };
 
 export const getAgents = async (total, nextPage) => {
-  const contract = await getAgentContract();
+  const contract = getAgentContract();
 
   const allAgentsPromises = [];
   const { first, last } = getFirstAndLastIndex(total, nextPage);
   for (let i = first; i <= last; i += 1) {
-    allAgentsPromises.push(contract.getUnit(`${i}`));
+    allAgentsPromises.push(contract.methods.getUnit(`${i}`).call());
   }
 
   const agents = await Promise.allSettled(allAgentsPromises);
@@ -63,24 +63,25 @@ export const getAgents = async (total, nextPage) => {
 };
 
 export const getAgentHashes = async (id) => {
-  const contract = await getAgentContract();
-  const response = await contract.getUpdatedHashes(id);
+  const contract = getAgentContract();
+  const response = await contract.methods.getUpdatedHashes(id).call();
   return response;
 };
 
 export const updateAgentHashes = async (account, id, newHash) => {
-  const contract = await getMechMinterContract();
+  const contract = getMechMinterContract();
 
   // 0 to indicate `agents`
-  const fn = await contract.updateHash('0', id, `0x${newHash}`, {
+  const fn = contract.methods.updateHash('0', id, `0x${newHash}`).send({
     from: account,
     gasLimit: 1000000,
   });
-  await triggerTransaction(fn, account);
+  await sendTransaction(fn, account);
+  return null;
 };
 
 export const getTokenUri = async (id) => {
-  const contract = await getAgentContract();
-  const response = await contract.tokenURI(id);
+  const contract = getAgentContract();
+  const response = await contract.methods.tokenURI(id).call();
   return response;
 };

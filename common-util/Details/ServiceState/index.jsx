@@ -36,7 +36,6 @@ export const ServiceState = ({
   const threshold = get(details, 'threshold') || '';
   const owner = get(details, 'owner') || '';
   const securityDeposit = get(details, 'securityDeposit');
-  console.log(details);
 
   useEffect(() => {
     let isMounted = true;

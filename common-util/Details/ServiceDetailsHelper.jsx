@@ -2,13 +2,14 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
-  Button, Typography, Input, notification, Form,
+  Button, Typography, Input, Form,
 } from 'antd';
 import { DynamicFieldsForm } from 'common-util/DynamicFieldsForm';
 import {
   addressValidator,
   notifyError,
   notifySuccess,
+  notifyWarning,
 } from 'common-util/functions';
 import {
   checkIfServiceIsWhitelisted,
@@ -42,11 +43,8 @@ export const OperatorWhitelist = ({ isWhiteListed, setOpWhitelist, id }) => {
       const message = `Operator ${values.operatorAddress} is ${
         isValid ? '' : 'NOT'
       } whitelisted`;
-      if (isValid) {
-        notification.success({ message });
-      } else {
-        notification.warning({ message });
-      }
+      if (isValid) notifySuccess(message);
+      else notifyWarning(message);
     } catch (error) {
       console.error(error);
     } finally {
