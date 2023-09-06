@@ -17,6 +17,7 @@ import {
   getTotalForAllServices,
   getTotalForMyServices,
 } from './utils';
+import { getChainId } from 'common-util/functions';
 
 const ALL_SERVICES = 'all-services';
 const MY_SERVICES = 'my-services';
@@ -27,6 +28,7 @@ const ListServices = () => {
   const [currentTab, setCurrentTab] = useState(
     isMyTab(hash) ? MY_SERVICES : ALL_SERVICES,
   );
+  const chainId = getChainId() || 1; // default to mainnet
 
   const account = useSelector((state) => get(state, 'setup.account'));
 
@@ -153,6 +155,7 @@ const ListServices = () => {
 
   return (
     <>
+    {chainId}
       <Tabs
         className="registry-tabs"
         type="card"

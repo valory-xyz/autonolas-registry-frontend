@@ -109,6 +109,7 @@ export const getWeb3Details = () => {
    */
   const web3 = new Web3(getMyProvider());
   const chainId = getChainId() || 1; // default to mainnet
+  console.log(chainId)
   const address = ADDRESSES[chainId];
   return { web3, address, chainId };
 };

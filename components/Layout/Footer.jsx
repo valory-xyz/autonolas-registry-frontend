@@ -31,8 +31,8 @@ const ContractInfo = () => {
       return {
         registryText: 'ComponentRegistry',
         managerText: 'RegistriesManager',
-        registry: addresses.componentRegistry,
-        manager: addresses.registriesManager,
+        registry: addresses?.componentRegistry,
+        manager: addresses?.registriesManager,
       };
     }
 
@@ -40,8 +40,8 @@ const ContractInfo = () => {
       return {
         registryText: 'AgentRegistry',
         managerText: 'RegistriesManager',
-        registry: addresses.agentRegistry,
-        manager: addresses.registriesManager,
+        registry: addresses?.agentRegistry,
+        manager: addresses?.registriesManager,
       };
     }
 
@@ -49,8 +49,8 @@ const ContractInfo = () => {
       return {
         registryText: 'ServiceRegistry',
         managerText: 'ServiceManager',
-        registry: addresses.serviceRegistry,
-        manager: addresses.serviceManager,
+        registry: addresses?.serviceRegistry,
+        manager: addresses?.serviceManager,
       };
     }
 

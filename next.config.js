@@ -2,6 +2,12 @@
 const withAntdLess = require('next-plugin-antd-less');
 const path = require('path');
 
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+});
+
+module.exports = withBundleAnalyzer({});
+
 module.exports = {
   ...withAntdLess({
     reactStrictMode: true,

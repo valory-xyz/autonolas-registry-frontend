@@ -59,20 +59,24 @@ export const getTotalForMyServices = (account) => new Promise((resolve, reject) 
  */
 export const getTotalForAllServices = () => new Promise((resolve, reject) => {
   const contract = getServiceContract();
+  console.log('contract', contract)
   contract.methods
     .totalSupply()
     .call()
     .then((response) => {
       resolve(response);
+      console.log('response', response)
     })
     .catch((e) => {
-      notifyError('Error while fetching total supply');
+      notifyError('Error while fetching services');
       reject(e);
     });
 });
 
 export const getServices = (total, nextPage, fetchAll = false) => new Promise((resolve, reject) => {
   const contract = getServiceContract();
+
+  console.log('contract address', contract)
 
   try {
     const existsPromises = [];
