@@ -5,10 +5,11 @@ import {
   Button, Steps, Tooltip, Image,
 } from 'antd';
 import get from 'lodash/get';
-import { useContractWrite, usePrepareContractWrite } from 'wagmi';
+// import { useContractWrite, usePrepareContractWrite } from 'wagmi';
 import { isL1OnlyNetwork } from 'common-util/functions';
-import { ADDRESSES } from 'common-util/Contracts';
-import { SERVICE_MANAGER_TOKEN_CONTRACT } from 'common-util/AbiAndAddresses';
+// import { ADDRESSES } from 'common-util/Contracts';
+// import { SERVICE_MANAGER_TOKEN_CONTRACT } from 'common-util/AbiAndAddresses';
+import { pollTransactionDetails } from 'common-util/functions/triggerTransaction';
 import { getServiceTableDataSource, onTerminate, checkIfEth } from './utils';
 import StepPreRegistration from './1StepPreRegistration';
 import StepActiveRegistration from './2StepActiveRegistration';
@@ -19,6 +20,7 @@ import Unbond from './5StepUnbond';
 import { SERVICE_STATE_HELPER_LABELS } from './helpers';
 import { InfoSubHeader } from '../styles';
 import { GenericLabel, ServiceStateContainer } from './styles';
+import { useServiceSendTx } from './useSendTx';
 
 export const ServiceState = ({
   account,
@@ -88,10 +90,10 @@ export const ServiceState = ({
     );
   };
 
-  console.log({
-    a: ADDRESSES[chainId].serviceManagerToken,
-    b: SERVICE_MANAGER_TOKEN_CONTRACT.abi,
-  });
+  // console.log({
+  //   a: ADDRESSES[chainId].serviceManagerToken,
+  //   b: SERVICE_MANAGER_TOKEN_CONTRACT.abi,
+  // });
 
   // const { config } = usePrepareContractWrite({
   //   address: ADDRESSES[chainId].serviceManagerToken,
@@ -100,22 +102,29 @@ export const ServiceState = ({
   // });
   // const { writeAsync } = useContractWrite(config);
 
-  const {
-    data, isLoading, isSuccess, writeAsync,
-  } = useContractWrite({
-    address: ADDRESSES[chainId].serviceManagerToken,
-    abi: SERVICE_MANAGER_TOKEN_CONTRACT.abi,
-    functionName: 'terminate',
-  });
-  console.log({
-    data, isLoading, isSuccess,
-  });
+  // const {
+  //   data, isLoading, isSuccess, writeAsync,
+  // } = useContractWrite({
+  //   address: ADDRESSES[chainId].serviceManagerToken,
+  //   abi: SERVICE_MANAGER_TOKEN_CONTRACT.abi,
+  //   functionName: 'terminate',
+  // });
+  // console.log({
+  //   data, isLoading, isSuccess,
+  // });
 
   /* ----- common functions ----- */
+  const { onTerminateRequest, terminateResponse } = useServiceSendTx();
+  console.log(terminateResponse);
   const handleTerminate = async () => {
     try {
+      const tx = await onTerminateRequest({ args: [id] });
+      console.log({ tx });
+
+      await pollTransactionDetails(tx.hash, chainId);
+
       // await onTerminate(account, id);
-      await writeAsync({ args: [id] });
+      // await writeAsync({ args: [id] });
       await updateDetails();
     } catch (e) {
       console.error(e);

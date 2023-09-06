@@ -12,6 +12,7 @@ import {
 import { triggerTransaction } from 'common-util/functions/triggerTransaction';
 import { notifyError, notifySuccess } from 'common-util/functions';
 import { DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS } from 'util/constants';
+import { SERVICE_MANAGER_TOKEN_CONTRACT } from 'common-util/AbiAndAddresses';
 
 /* ----- helper functions ----- */
 
@@ -83,14 +84,32 @@ export const getBonds = async (id, tableDataSource) => {
 
 /* ----- common functions ----- */
 export const onTerminate = async (account, id) => {
-  const contract = await getServiceManagerContract();
-  const txResponse = await contract.terminate(id, {
+  const provider = new ethers.providers.Web3Provider(
+    window.MODAL_PROVIDER,
+    // || window.ethereum,
+  );
+  const signer = provider.getSigner();
+
+  const contract = new ethers.Contract(
+    '0x1d333b46dB6e8FFd271b6C2D2B254868BD9A2dbd',
+    SERVICE_MANAGER_TOKEN_CONTRACT.abi,
+    signer,
+  );
+
+  // const contract = await getServiceManagerContract();
+  console.log(contract);
+
+  // const txResponse = await contract.activateRegistration(id, {
+  //   from: account,
+  //   value: deposit,
+  // });
+  const txResponse = await contract.terminate(id).send({
     from: account,
-    gasLimit: 1000000,
   });
-  const response = await triggerTransaction(txResponse, account);
+  console.log(txResponse);
+  // const response = await triggerTransaction(txResponse, account);
   notifySuccess('Terminated Successfully');
-  return response;
+  // return response;
 };
 
 export const getServiceOwner = async (id) => {
@@ -187,13 +206,32 @@ export const mintTokenRequest = async ({ account, serviceId }) => {
 };
 
 export const onActivateRegistration = async (account, id, deposit) => {
-  const contract = await getServiceManagerContract();
+  const provider = new ethers.providers.Web3Provider(
+    window.MODAL_PROVIDER,
+    // ||
+    // window.ethereum,
+  );
+  const signer = provider.getSigner();
+
+  const contract = new ethers.Contract(
+    '0x1d333b46dB6e8FFd271b6C2D2B254868BD9A2dbd',
+    SERVICE_MANAGER_TOKEN_CONTRACT.abi,
+    signer,
+  );
+
+  // const contract = await getServiceManagerContract();
+  console.log(contract);
+
   const txResponse = await contract.activateRegistration(id, {
+    from: account,
     value: deposit,
   });
-  const response = await triggerTransaction(txResponse, account);
-  notifySuccess('Activated Successfully');
-  return response;
+  console.log(txResponse);
+
+  return txResponse;
+  // const response = await triggerTransaction(txResponse, account);
+  // notifySuccess('Activated Successfully');
+  // return response;
 };
 
 /* ----- step 2 functions ----- */

@@ -24,7 +24,7 @@ const getUrl = (hash, chainId) => {
 /**
  * poll gnosis-safe API every 3 seconds
  */
-async function pollTransactionDetails(hash, chainId) {
+export async function pollTransactionDetails(hash, chainId) {
   return new Promise((resolve, reject) => {
     /* eslint-disable-next-line consistent-return */
     const interval = setInterval(async () => {

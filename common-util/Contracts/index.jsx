@@ -103,13 +103,15 @@ export const ADDRESSES = {
  * @returns {Object} - web3 details
  * @returns {Promise<ethers.JsonRpcSigner>} signer to sign the transaction
  */
-export const getWeb3Details = async () => {
+export const getWeb3Details = () => {
   const chainId = getChainId() || 1; // default to mainnet
   const address = ADDRESSES[chainId];
   const provider = new ethers.providers.Web3Provider(
-    window.MODAL_PROVIDER || window.ethereum,
+    window.MODAL_PROVIDER
+    || window.ethereum,
   );
-  const providerOrSigner = await provider.getSigner();
+  const providerOrSigner = provider.getSigner();
+  // console.log({ providerOrSigner });
 
   return {
     address,
@@ -126,9 +128,10 @@ export const getWeb3Details = async () => {
  * @param {String} contractAddress - address of the contract
  * @returns {ethers.Contract} - contract instance
  */
-const getContract = async (abi, contractAddress) => {
-  const { signer } = await getWeb3Details();
+const getContract = (abi, contractAddress) => {
+  const { signer } = getWeb3Details();
   const contract = new ethers.Contract(contractAddress, abi, signer);
+  console.log(signer);
   return contract;
 };
 
@@ -190,10 +193,10 @@ export const getServiceContract = async () => {
 /**
  * @returns {ethers.Contract} serviceManager contract
  */
-export const getServiceManagerContract = async () => {
-  const { address } = await getWeb3Details();
+export const getServiceManagerContract = () => {
+  const { address } = getWeb3Details();
   const { serviceManagerToken } = address;
-  const contract = await getContract(
+  const contract = getContract(
     SERVICE_MANAGER_TOKEN_CONTRACT.abi,
     serviceManagerToken,
   );
