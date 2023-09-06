@@ -15,7 +15,7 @@ import {
   getServiceManagerL2Contract,
 } from 'common-util/Contracts';
 import { isL1Network, isL1OnlyNetwork } from 'common-util/functions';
-import { triggerTransaction } from 'common-util/functions/triggerTransaction';
+import { sendTransaction } from 'common-util/functions/sendTransaction';
 import RegisterForm from './RegisterForm';
 import {
   getAgentParams,
@@ -89,8 +89,8 @@ const Service = ({ account }) => {
         ? [token, ...commonParams]
         : [...commonParams];
 
-      const fn = contract.update(...params).send({ from: account });
-      triggerTransaction(fn, account)
+      const fn = contract.methods.update(...params).send({ from: account });
+      sendTransaction(fn, account)
         .then(() => {
           notification.success({ message: 'Service Updated' });
         })

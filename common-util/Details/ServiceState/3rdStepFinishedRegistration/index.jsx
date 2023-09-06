@@ -12,6 +12,7 @@ import {
   multisigAddresses,
   multisigSameAddresses,
 } from 'common-util/Contracts';
+import { notifySuccess } from 'common-util/functions';
 import { getServiceAgentInstances, onStep3Deploy } from '../utils';
 import { handleMultisigSubmit } from './utils';
 import { RadioLabel } from '../styles';
@@ -44,6 +45,7 @@ const StepThreePayload = ({
     try {
       setIsSubmitting(true);
       await onStep3Deploy(account, serviceId, radioValuePassed, payload);
+      notifySuccess('Deployed Successfully');
       await updateDetails();
     } catch (e) {
       console.error(e);

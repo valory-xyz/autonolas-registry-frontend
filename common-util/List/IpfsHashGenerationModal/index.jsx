@@ -59,7 +59,8 @@ const IpfsModal = ({
 
       return hash;
     } catch (error) {
-      window.console.log(error);
+      console.error(error);
+      notifyError('Error generating hash');
     } finally {
       setIsHashLoading(false); // off the loader and close the `Modal`
     }
@@ -72,27 +73,23 @@ const IpfsModal = ({
     if (callback) callback(hash);
   };
 
-  const handleUpdate = () => {
-    form
-      .validateFields()
-      .then(async (values) => {
-        const hash = await getNewHash(values);
-        await onUpdateHash(hash);
-        notifySuccess('Hash updated');
+  const handleUpdate = async () => {
+    try {
+      const values = form.validateFields();
+      const hash = await getNewHash(values);
+      await onUpdateHash(hash);
+      notifySuccess('Hash updated');
 
-        if (callback) {
-          callback(hash);
-        }
-      })
-      .catch((e) => {
-        notifyError('Error updating hash');
-        console.error(e);
-      });
+      if (callback) {
+        callback(hash);
+      }
+    } catch (e) {
+      notifyError('Error updating hash');
+      console.error(e);
+    }
   };
 
-  const handleOk = () => {
-    form.submit();
-  };
+  const handleOk = () => form.submit();
 
   return (
     <CustomModal

@@ -5,7 +5,7 @@ import { GATEWAY_URL, NAV_TYPES } from 'util/constants';
 import { useScreen } from 'common-util/hooks';
 import { NftImageContainer } from '../styles';
 
-const DEFAULT_SIZE = { width: 600, height: 600 };
+const DEFAULT_SIZE = { width: 500, height: 500 };
 const SMALL_SIZE = { width: 300, height: 300 };
 
 export const NftImage = ({ metadata, type }) => {

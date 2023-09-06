@@ -69,6 +69,7 @@ export const ServiceStatus = styled.div`
 `;
 
 export const SectionContainer = styled.div`
+  margin-right: 1rem;
   ${EachSection} {
     &:first-child {
       border-top-left-radius: 1rem;
@@ -81,6 +82,6 @@ export const SectionContainer = styled.div`
     }
   }
   .ant-form-item-label > label {
-    left: -4px
+    left: -4px;
   }
 `;

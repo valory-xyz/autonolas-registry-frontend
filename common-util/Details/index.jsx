@@ -88,6 +88,7 @@ const Details = ({
         setIsLoading(false);
       } catch (e) {
         console.error(e);
+        notifyError(`Error fetching ${type} details`);
       }
     })();
   }, [account, id]);
@@ -104,8 +105,8 @@ const Details = ({
           setMetadataState(HASH_DETAILS_STATE.LOADED);
         } catch (e) {
           setMetadataState(HASH_DETAILS_STATE.FAILED);
-          notifyError('Error fetching metadata from IPFS');
           console.error(e);
+          notifyError('Error fetching metadata from IPFS');
         }
       }
     })();

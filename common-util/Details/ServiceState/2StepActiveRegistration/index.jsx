@@ -2,7 +2,12 @@ import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Button, Divider, Typography } from 'antd';
-import { convertToEth, isL1OnlyNetwork } from 'common-util/functions';
+import {
+  convertToEth,
+  isL1OnlyNetwork,
+  notifyError,
+  notifySuccess,
+} from 'common-util/functions';
 import {
   getBonds,
   getTokenBondRequest,
@@ -44,12 +49,15 @@ const ActiveRegistration = ({
     (async () => {
       if (serviceId) {
         try {
-          const response = await getBonds(serviceId, dataSource);
+          const { totalBonds: totalBondsRes } = await getBonds(
+            serviceId,
+            dataSource,
+          );
           if (isMounted) {
-            setTotalBond(response.totalBonds);
+            setTotalBond(totalBondsRes);
           }
         } catch (error) {
-          window.console.log('Error while fetching bonds');
+          notifyError('Error while fetching bonds');
           console.error(error);
         }
       }
@@ -122,6 +130,7 @@ const ActiveRegistration = ({
           agentInstances,
           dataSource,
         });
+        notifySuccess('Registered Successfully');
         await updateDetails();
       }
     } catch (e) {

@@ -29,6 +29,7 @@ export const safeSendTransactionNotification = () => notification.warning({
 
 export const notifySuccess = (message = 'Successful') => notification.success({ message });
 export const notifyError = (message = 'Some error occured') => notification.error({ message });
+export const notifyWarning = (message = 'Some error occured') => notification.error({ message });
 
 // functions
 export const getChainId = (chainId = null) => {

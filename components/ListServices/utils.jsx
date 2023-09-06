@@ -11,21 +11,21 @@ import { getTokenDetailsRequest } from 'common-util/Details/ServiceState/utils';
 // --------- HELPER METHODS ---------
 export const getServiceOwner = async (id) => {
   const contract = await getServiceContract();
-  const response = await contract.ownerOf(id);
+  const response = await contract.methods.ownerOf(id).call();
   return response;
 };
 
 // --------- utils ---------
 export const getServiceDetails = async (id) => {
   const contract = await getServiceContract();
-  const information = await contract.getService(id);
+  const information = await contract.methods.getService(id).call();
   const owner = await getServiceOwner(id);
   return { ...information, owner };
 };
 
 export const getTotalForMyServices = async (account) => {
   const contract = await getServiceContract();
-  const total = await contract.balanceOf(account);
+  const total = await contract.methods.balanceOf(account).call();
   return total;
 };
 
@@ -34,7 +34,7 @@ export const getTotalForMyServices = async (account) => {
  */
 export const getTotalForAllServices = async () => {
   const contract = await getServiceContract();
-  const total = await contract.totalSupply();
+  const total = await contract.methods.totalSupply().call();
   return total;
 };
 
@@ -47,7 +47,7 @@ export const getServices = async (total, nextPage, fetchAll = false) => {
   const last = fetchAll ? total : Math.min(nextPage * TOTAL_VIEW_COUNT, total);
 
   for (let i = first; i <= last; i += 1) {
-    const result = contract.exists(`${i}`);
+    const result = contract.methods.exists(`${i}`).call();
     existsPromises.push(result);
   }
 
@@ -106,13 +106,13 @@ export const getAgentParams = (values) => {
 
 export const getServiceHashes = async (id) => {
   const contract = await getServiceContract();
-  const information = await contract.getPreviousHashes(id);
+  const information = await contract.methods.getPreviousHashes(id).call();
   return information;
 };
 
 export const getTokenUri = async (id) => {
   const contract = await getServiceContract();
-  const response = await contract.tokenURI(id);
+  const response = await contract.methods.tokenURI(id).call();
   return response;
 };
 

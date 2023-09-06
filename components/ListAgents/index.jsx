@@ -93,8 +93,8 @@ const ListAgents = () => {
           // All agents
           if (currentTab === ALL_AGENTS) {
             setList([]);
-            const everyComps = await getAgents(total, currentPage);
-            setList(everyComps);
+            const everyAgents = await getAgents(total, currentPage);
+            setList(everyAgents);
           }
 
           /**

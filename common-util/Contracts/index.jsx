@@ -1,4 +1,5 @@
-import { ethers } from 'ethers';
+/* eslint-disable import/no-extraneous-dependencies */
+import Web3 from 'web3';
 import {
   REGISTRIES_MANAGER_CONTRACT,
   AGENT_REGISTRY_CONTRACT,
@@ -100,63 +101,67 @@ export const ADDRESSES = {
 
 /**
  *
- * @returns {Object} - web3 details
+ * order of precedence is as follows:
+ * 1. window.MODAL_PROVIDER - injected provider (done on Login.jsx)
+ * 2. window.ethereum - metamask (or other wallet)
+ * 3. process.env.NEXT_PUBLIC_MAINNET_URL - JSON RPC URL
+ */
+export const getMyProvider = () => window.MODAL_PROVIDER
+  || window.ethereum
+  || process.env.NEXT_PUBLIC_MAINNET_URL;
+
+/**
+ *
+ * @returns {Web3<RegisteredSubscription>} - provider
  * @returns {Promise<ethers.JsonRpcSigner>} signer to sign the transaction
  */
-export const getWeb3Details = async () => {
+export const getWeb3Details = () => {
   const chainId = getChainId() || 1; // default to mainnet
   const address = ADDRESSES[chainId];
-  const provider = new ethers.providers.Web3Provider(
-    window.MODAL_PROVIDER || window.ethereum,
+  const provider = new Web3(
+    window.MODAL_PROVIDER || window.ethereum || rpc[chainId],
   );
-  const providerOrSigner = await provider.getSigner();
 
   return {
     address,
     chainId,
     provider,
-    signer: providerOrSigner,
   };
 };
 
-// returns the contract instance
 /**
- *
+ * returns the contract instance
  * @param {Array} abi - abi of the contract
  * @param {String} contractAddress - address of the contract
- * @returns {ethers.Contract} - contract instance
  */
-const getContract = async (abi, contractAddress) => {
-  const { signer } = await getWeb3Details();
-  const contract = new ethers.Contract(contractAddress, abi, signer);
+const getContract = (abi, contractAddress) => {
+  const { provider } = getWeb3Details();
+  const contract = new provider.eth.Contract(abi, contractAddress);
   return contract;
 };
 
-export const getComponentContract = async () => {
-  const { address } = await getWeb3Details();
+export const getComponentContract = () => {
+  const { address } = getWeb3Details();
   const { componentRegistry } = address;
-  const contract = await getContract(
+  const contract = getContract(
     COMPONENT_REGISTRY_CONTRACT.abi,
     componentRegistry,
   );
   return contract;
 };
 
-export const getAgentContract = async () => {
-  const { address } = await getWeb3Details();
+export const getAgentContract = () => {
+  const { address } = getWeb3Details();
   const { agentRegistry } = address;
-  const contract = await getContract(
-    AGENT_REGISTRY_CONTRACT.abi,
-    agentRegistry,
-  );
+  const contract = getContract(AGENT_REGISTRY_CONTRACT.abi, agentRegistry);
   return contract;
 };
 
-export const getMechMinterContract = async () => {
-  const { address } = await getWeb3Details();
+export const getMechMinterContract = () => {
+  const { address } = getWeb3Details();
   const { registriesManager } = address;
 
-  const contract = await getContract(
+  const contract = getContract(
     REGISTRIES_MANAGER_CONTRACT.abi,
     registriesManager,
   );
@@ -166,13 +171,13 @@ export const getMechMinterContract = async () => {
 
 /**
  *
- * @returns {Promise<ethers.Contract>} serviceRegistry contract
+ * @returns serviceRegistry contract
  */
-export const getServiceContract = async () => {
-  const { address, chainId } = await getWeb3Details();
+export const getServiceContract = () => {
+  const { address, chainId } = getWeb3Details();
   if (isL1Network(chainId)) {
     const { serviceRegistry } = address;
-    const contract = await getContract(
+    const contract = getContract(
       SERVICE_REGISTRY_CONTRACT.abi,
       serviceRegistry,
     );
@@ -180,20 +185,17 @@ export const getServiceContract = async () => {
   }
 
   const { serviceRegistryL2 } = address;
-  const contract = await getContract(
-    SERVICE_REGISTRY_L2.abi,
-    serviceRegistryL2,
-  );
+  const contract = getContract(SERVICE_REGISTRY_L2.abi, serviceRegistryL2);
   return contract;
 };
 
 /**
- * @returns {ethers.Contract} serviceManager contract
+ * @returns serviceManager contract
  */
-export const getServiceManagerContract = async () => {
-  const { address } = await getWeb3Details();
+export const getServiceManagerContract = () => {
+  const { address } = getWeb3Details();
   const { serviceManagerToken } = address;
-  const contract = await getContract(
+  const contract = getContract(
     SERVICE_MANAGER_TOKEN_CONTRACT.abi,
     serviceManagerToken,
   );
@@ -201,32 +203,29 @@ export const getServiceManagerContract = async () => {
 };
 
 /**
- * @returns {ethers.Contract} serviceManager L2 contract
+ * @returns serviceManager L2 contract
  */
-export const getServiceManagerL2Contract = async () => {
-  const { address } = await getWeb3Details();
+export const getServiceManagerL2Contract = () => {
+  const { address } = getWeb3Details();
   const { serviceManager } = address;
-  const contract = await getContract(
-    SERVICE_MANAGER_CONTRACT.abi,
-    serviceManager,
-  );
+  const contract = getContract(SERVICE_MANAGER_CONTRACT.abi, serviceManager);
   return contract;
 };
 
-export const getServiceRegistryTokenUtilityContract = async () => {
-  const { address } = await getWeb3Details();
+export const getServiceRegistryTokenUtilityContract = () => {
+  const { address } = getWeb3Details();
   const { serviceRegistryTokenUtility } = address;
-  const contract = await getContract(
+  const contract = getContract(
     SERVICE_REGISTRY_TOKEN_UTILITY_CONTRACT.abi,
     serviceRegistryTokenUtility,
   );
   return contract;
 };
 
-export const getOperatorWhitelistContract = async () => {
-  const { address } = await getWeb3Details();
+export const getOperatorWhitelistContract = () => {
+  const { address } = getWeb3Details();
   const { operatorWhitelist } = address;
-  const contract = await getContract(
+  const contract = getContract(
     OPERATOR_WHITELIST_CONTRACT.abi,
     operatorWhitelist,
   );
@@ -234,22 +233,22 @@ export const getOperatorWhitelistContract = async () => {
 };
 
 export const getGenericErc20Contract = async (tokenAddress) => {
-  const contract = await getContract(GENERIC_ERC20_CONTRACT.abi, tokenAddress);
+  const contract = getContract(GENERIC_ERC20_CONTRACT.abi, tokenAddress);
   return contract;
 };
 
 export const getSignMessageLibContract = async (address) => {
-  const contract = await getContract(SIGN_MESSAGE_LIB_CONTRACT.abi, address);
+  const contract = getContract(SIGN_MESSAGE_LIB_CONTRACT.abi, address);
   return contract;
 };
 
 export const getServiceOwnerMultisigContract = async (address) => {
-  const contract = await getContract(GNOSIS_SAFE_CONTRACT.abi, address);
+  const contract = getContract(GNOSIS_SAFE_CONTRACT.abi, address);
   return contract;
 };
 
 export const getMultiSendContract = async (address) => {
-  const contract = await getContract(MULTI_SEND_CONTRACT.abi, address);
+  const contract = getContract(MULTI_SEND_CONTRACT.abi, address);
   return contract;
 };
 
