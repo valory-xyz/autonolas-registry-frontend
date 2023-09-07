@@ -94,23 +94,28 @@ export const getMyProvider = () => {
     console.error('No provider found');
   }
 
+  // connected via wallet-connect
   if (window?.MODAL_PROVIDER) {
     const walletConnectChainId = Number(window.MODAL_PROVIDER.chainId);
-    const isSupportedChainId = getIsValidChainId(walletConnectChainId);
 
     // if logged in via wallet-connect but chainId is not supported,
     // default to mainnet (ie. Use JSON-RPC provider)
-    return isSupportedChainId
+    return getIsValidChainId(walletConnectChainId)
       ? window.MODAL_PROVIDER
       : process.env.NEXT_PUBLIC_MAINNET_URL;
   }
 
-  // fallback to mainnet if chainId is not supported
-  const walletChainId = window?.ethereum?.chainId;
-  const isSupportedWalletChainId = getIsValidChainId(walletChainId);
-  return isSupportedWalletChainId
-    ? window?.ethereum
-    : process.env.NEXT_PUBLIC_MAINNET_URL;
+  // NOT logged in but has wallet installed.
+  // If chainId is not supported, default to mainnet (ie. Use JSON-RPC provider)
+  if (window?.ethereum?.chainId) {
+    const walletChainId = Number(window.ethereum.chainId);
+    return getIsValidChainId(walletChainId)
+      ? window?.ethereum
+      : process.env.NEXT_PUBLIC_MAINNET_URL;
+  }
+
+  // fallback to mainnet JSON RPC provider
+  return process.env.NEXT_PUBLIC_MAINNET_URL;
 };
 
 export const getWeb3Details = () => {
@@ -123,8 +128,6 @@ export const getWeb3Details = () => {
   const web3 = new Web3(getMyProvider());
   const chainId = getChainId();
   const address = ADDRESSES[chainId];
-
-  console.log({ getWeb3DetailsChainId: chainId });
 
   return { web3, address, chainId };
 };
