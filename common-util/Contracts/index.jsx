@@ -91,18 +91,26 @@ export const ADDRESSES = {
 
 export const getMyProvider = () => {
   if (typeof window === 'undefined') {
-    window.console.warn('provider not found');
+    console.error('No provider found');
   }
 
-  if (window.MODAL_PROVIDER) return window.MODAL_PROVIDER;
+  if (window?.MODAL_PROVIDER) {
+    const walletConnectChainId = Number(window.MODAL_PROVIDER.chainId);
+    const isSupportedChainId = getIsValidChainId(walletConnectChainId);
+
+    // if logged in via wallet-connect but chainId is not supported,
+    // default to mainnet (ie. Use JSON-RPC provider)
+    return isSupportedChainId
+      ? window.MODAL_PROVIDER
+      : process.env.NEXT_PUBLIC_MAINNET_URL;
+  }
 
   // fallback to mainnet if chainId is not supported
   const walletChainId = window?.ethereum?.chainId;
-  const fallbackProvider = getIsValidChainId(walletChainId)
+  const isSupportedWalletChainId = getIsValidChainId(walletChainId);
+  return isSupportedWalletChainId
     ? window?.ethereum
     : process.env.NEXT_PUBLIC_MAINNET_URL;
-
-  return fallbackProvider;
 };
 
 export const getWeb3Details = () => {

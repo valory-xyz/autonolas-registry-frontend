@@ -1,7 +1,11 @@
 import { ethers } from 'ethers';
 import { notification } from 'antd/lib';
 import { STAGING_CHAIN_ID } from '@autonolas/frontend-library';
-import { TOTAL_VIEW_COUNT, LOCAL_FORK_ID } from 'util/constants';
+import {
+  TOTAL_VIEW_COUNT,
+  LOCAL_FORK_ID,
+  DEFAULT_CHAIN_ID,
+} from 'util/constants';
 import { SUPPORTED_CHAINS } from 'common-util/Login';
 
 export const convertToEth = (value) => ethers.utils.formatEther(value);
@@ -44,6 +48,11 @@ export const getIsValidChainId = (chainId) => {
 export const getChainId = (chainId = null) => {
   if (typeof window === 'undefined') return chainId;
 
+  const getChainIdHelper = (chainIdPassed) => {
+    const chain = Number(chainIdPassed);
+    return getIsValidChainId(chain) ? chain : DEFAULT_CHAIN_ID;
+  };
+
   // connect via wallet-connect
   if (window?.MODAL_PROVIDER?.chainId) {
     const walletConnectChainId = Number(window.MODAL_PROVIDER.chainId);
@@ -53,7 +62,7 @@ export const getChainId = (chainId = null) => {
 
     console.log({ walletConnectChainId, isSupportedChainId });
 
-    return isSupportedChainId ? walletConnectChainId : 1;
+    return isSupportedChainId ? walletConnectChainId : DEFAULT_CHAIN_ID;
   }
 
   /**
@@ -63,7 +72,9 @@ export const getChainId = (chainId = null) => {
    */
   const walletChainId = Number(window?.ethereum?.chainId);
   const isSupportedWalletChainId = getIsValidChainId(walletChainId);
-  const fallbackChainId = isSupportedWalletChainId ? walletChainId : 1;
+  const fallbackChainId = isSupportedWalletChainId
+    ? walletChainId
+    : DEFAULT_CHAIN_ID;
 
   console.log({ walletChainId, isSupportedWalletChainId, fallbackChainId });
 
