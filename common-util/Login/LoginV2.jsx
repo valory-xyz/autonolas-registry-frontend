@@ -35,11 +35,9 @@ export const LoginV2 = ({
        */
       setTimeout(() => {
         const tempChainId = getChainId();
-        window.CHAIN_ID = tempChainId;
         dispatch(setChainId(tempChainId));
       }, 100);
     } else {
-      window.CHAIN_ID = chainId;
       dispatch(setChainId(chainId));
     }
   }, [chainId]);

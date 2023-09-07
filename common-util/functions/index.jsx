@@ -2,6 +2,7 @@ import { ethers } from 'ethers';
 import { notification } from 'antd/lib';
 import { STAGING_CHAIN_ID } from '@autonolas/frontend-library';
 import { TOTAL_VIEW_COUNT, LOCAL_FORK_ID } from 'util/constants';
+import { SUPPORTED_CHAINS } from 'common-util/Login';
 
 export const convertToEth = (value) => ethers.utils.formatEther(value);
 
@@ -30,15 +31,52 @@ export const safeSendTransactionNotification = () => notification.warning({
 export const notifySuccess = (message = 'Successful') => notification.success({ message });
 export const notifyError = (message = 'Some error occured') => notification.error({ message });
 
-// functions
+export const getIsValidChainId = (chainId) => {
+  if (!chainId) return false;
+  return SUPPORTED_CHAINS.some((e) => e.id === Number(chainId));
+};
+
+/**
+ *
+ * @param {Number} chainId
+ * @returns {Number} valid chainId & defaults to mainnet if chainId is not supported
+ */
 export const getChainId = (chainId = null) => {
   if (typeof window === 'undefined') return chainId;
-  return Number(
-    chainId
-      || window?.CHAIN_ID // this is set in LoginV2.jsx (once wallet is connected)
-      || window?.MODAL_PROVIDER?.chainId // set by web3modal
-      || window?.ethereum?.chainId, // set by metamask (useful when wallet is not connected)
-  );
+
+  // connect via wallet-connect
+  if (window?.MODAL_PROVIDER?.chainId) {
+    const walletConnectChainId = Number(window.MODAL_PROVIDER.chainId);
+
+    // if logged in via wallet-connect but chainId is not supported, default to mainnet
+    const isSupportedChainId = getIsValidChainId(walletConnectChainId);
+
+    console.log({ walletConnectChainId, isSupportedChainId });
+
+    return isSupportedChainId ? walletConnectChainId : 1;
+  }
+
+  /**
+   * NOT logged in via wallet-connect but has wallet (eg. metamask)
+   * window?.ethereum?.chainId is chainId set by wallet (eg. metamask)
+   * If chainId is not supported, default to mainnet
+   */
+  const walletChainId = Number(window?.ethereum?.chainId);
+  const isSupportedWalletChainId = getIsValidChainId(walletChainId);
+  const fallbackChainId = isSupportedWalletChainId ? walletChainId : 1;
+
+  console.log({ walletChainId, isSupportedWalletChainId, fallbackChainId });
+
+  return fallbackChainId;
+
+  // const finalChainID = Number(
+  //   chainId
+  //     || window?.MODAL_PROVIDER?.chainId // set by web3modal
+  //     || fallbackChainId,
+  // );
+
+  // console.log({ finalChainID });
+  // return finalChainID;
 };
 
 export const isL1OnlyNetwork = (chainId) => {

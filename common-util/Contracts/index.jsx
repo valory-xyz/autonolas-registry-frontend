@@ -14,7 +14,11 @@ import {
   GENERIC_ERC20_CONTRACT,
   OPERATOR_WHITELIST_CONTRACT,
 } from 'common-util/AbiAndAddresses';
-import { isL1Network, getChainId } from 'common-util/functions';
+import {
+  isL1Network,
+  getChainId,
+  getIsValidChainId,
+} from 'common-util/functions';
 import {
   LOCAL_FORK_ID,
   LOCAL_FORK_ID_GNOSIS,
@@ -85,9 +89,21 @@ export const ADDRESSES = {
   [LOCAL_FORK_ID_POLYGON]: POLYGON_ADDRESSES,
 };
 
-export const getMyProvider = () => window.MODAL_PROVIDER
-  || window.web3?.currentProvider
-  || process.env.NEXT_PUBLIC_MAINNET_URL;
+export const getMyProvider = () => {
+  if (typeof window === 'undefined') {
+    window.console.warn('provider not found');
+  }
+
+  if (window.MODAL_PROVIDER) return window.MODAL_PROVIDER;
+
+  // fallback to mainnet if chainId is not supported
+  const walletChainId = window?.ethereum?.chainId;
+  const fallbackProvider = getIsValidChainId(walletChainId)
+    ? window?.ethereum
+    : process.env.NEXT_PUBLIC_MAINNET_URL;
+
+  return fallbackProvider;
+};
 
 export const getWeb3Details = () => {
   /**
@@ -99,6 +115,9 @@ export const getWeb3Details = () => {
   const web3 = new Web3(getMyProvider());
   const chainId = getChainId();
   const address = ADDRESSES[chainId];
+
+  console.log({ getWeb3DetailsChainId: chainId });
+
   return { web3, address, chainId };
 };
 
