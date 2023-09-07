@@ -35,11 +35,8 @@ export const LoginV2 = ({
        */
       setTimeout(() => {
         const tempChainId = getChainId();
-        if (!tempChainId) {
-          window.console.warn('chainId is undefined setting it to mainnet (1)');
-        }
-        window.CHAIN_ID = tempChainId || 1;
-        dispatch(setChainId(tempChainId || 1));
+        window.CHAIN_ID = tempChainId;
+        dispatch(setChainId(tempChainId));
       }, 100);
     } else {
       window.CHAIN_ID = chainId;
@@ -110,7 +107,11 @@ export const LoginV2 = ({
     <LoginContainer>
       <Web3NetworkSwitch />
       &nbsp;&nbsp;
-      <Web3Button balance="show" avatar="hide" icon={screens.xs ? 'hide' : 'show'} />
+      <Web3Button
+        balance="show"
+        avatar="hide"
+        icon={screens.xs ? 'hide' : 'show'}
+      />
       <Web3Modal
         projectId={projectId}
         ethereumClient={ethereumClient}

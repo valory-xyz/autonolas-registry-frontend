@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import get from 'lodash/get';
 import { getMyProvider } from 'common-util/Contracts';
-import { safeSendTransactionNotification } from './index';
+import { getChainId, safeSendTransactionNotification } from './index';
 
 const getUrl = (hash, chainId) => {
   if (chainId === 5) {
@@ -68,7 +68,7 @@ export const sendTransaction = (
                * use `transactionHash`, get the hash, then poll until
                * it resolves with Output
                */
-            const chainId = (await window.WEB3_PROVIDER?.eth?.getChainId()) || 1;
+            const chainId = getChainId();
             pollTransactionDetails(safeTx, chainId)
               .then((receipt) => {
                 resolve(receipt);

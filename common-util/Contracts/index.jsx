@@ -97,7 +97,7 @@ export const getWeb3Details = () => {
    * - fallback to remote mainnet [remote node provider](https://web3js.readthedocs.io/en/v1.7.5/web3.html#example-remote-node-provider)
    */
   const web3 = new Web3(getMyProvider());
-  const chainId = getChainId() || 1; // default to mainnet
+  const chainId = getChainId();
   const address = ADDRESSES[chainId];
   return { web3, address, chainId };
 };
