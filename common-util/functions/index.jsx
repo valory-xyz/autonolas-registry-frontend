@@ -40,8 +40,11 @@ export const getIsValidChainId = (chainId) => {
   return SUPPORTED_CHAINS.some((e) => e.id === Number(chainId));
 };
 
-// internal helper function to get chainId,
-// if chainId is not supported, default to mainnet
+/**
+ * helper function to get chainId, if chainId is not supported, default to mainnet
+ * @param {number | string} chainIdPassed valid chainId
+ * @returns
+ */
 export const getChainIdOrDefaultToMainnet = (chainIdPassed) => {
   if (!chainIdPassed) {
     throw new Error('chainId is not passed');
@@ -65,10 +68,10 @@ export const getChainId = (chainId = null) => {
     return getChainIdOrDefaultToMainnet(walletConnectChainId);
   }
 
-  // NOT logged in but has wallet installed.
-  // window?.ethereum?.chainId is chainId set by wallet (eg. metamask)
+  // NOT logged in but has wallet installed (eg. metamask).
+  // window?.ethereum?.chainId is chainId set by wallet
   if (window?.ethereum?.chainId) {
-    const walletChainId = window?.ethereum?.chainId;
+    const walletChainId = window.ethereum.chainId;
     return getChainIdOrDefaultToMainnet(walletChainId);
   }
 

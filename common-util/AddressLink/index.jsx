@@ -63,7 +63,7 @@ const getRedirectLink = (text, isIpfsLink) => {
   }
 
   const isTransaction = /^0x([A-Fa-f0-9]{64})$/.test(text);
-  const chainId = getChainId(); // default to mainnet
+  const chainId = getChainId();
   const explorerUrl = getExplorerURL(chainId);
 
   return isTransaction

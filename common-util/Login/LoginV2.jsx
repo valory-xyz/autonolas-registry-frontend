@@ -7,7 +7,10 @@ import { Grid } from 'antd/lib';
 import { COLOR } from '@autonolas/frontend-library';
 import { useDispatch } from 'react-redux';
 import { setChainId } from 'store/setup/actions';
-import { getChainId } from 'common-util/functions';
+import {
+  getChainId,
+  getChainIdOrDefaultToMainnet,
+} from 'common-util/functions';
 import { projectId, ethereumClient } from './config';
 import { LoginContainer } from './styles';
 
@@ -38,7 +41,8 @@ export const LoginV2 = ({
         dispatch(setChainId(tempChainId));
       }, 100);
     } else {
-      dispatch(setChainId(chainId));
+      const tempChainId = getChainIdOrDefaultToMainnet(chainId);
+      dispatch(setChainId(tempChainId));
     }
   }, [chainId]);
 

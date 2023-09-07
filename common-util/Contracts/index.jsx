@@ -105,7 +105,7 @@ export const getMyProvider = () => {
       : process.env.NEXT_PUBLIC_MAINNET_URL;
   }
 
-  // NOT logged in but has wallet installed.
+  // NOT logged in but has wallet installed (eg. Metamask).
   // If chainId is not supported, default to mainnet (ie. Use JSON-RPC provider)
   if (window?.ethereum?.chainId) {
     const walletChainId = Number(window.ethereum.chainId);
