@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import get from 'lodash/get';
-import { Tabs } from 'antd/lib';
+import { Tabs } from 'antd';
 import { useRouter } from 'next/router';
 import { URL, NAV_TYPES } from 'util/constants';
 import ListTable from 'common-util/List/ListTable';
@@ -11,6 +10,7 @@ import {
   isMyTab,
 } from 'common-util/List/ListTable/helpers';
 import { getMyListOnPagination } from 'common-util/ContractUtils/myList';
+import { notifyError } from 'common-util/functions';
 import {
   getAgents,
   getFilteredAgents,
@@ -28,7 +28,7 @@ const ListAgents = () => {
     isMyTab(hash) ? MY_AGENTS : ALL_AGENTS,
   );
 
-  const account = useSelector((state) => get(state, 'setup.account'));
+  const account = useSelector((state) => state?.setup?.account);
 
   /**
    * extra tab content & view click
@@ -76,6 +76,7 @@ const ListAgents = () => {
           }
         } catch (e) {
           console.error(e);
+          notifyError('Error fetching agents');
         }
       }
     })();
@@ -91,8 +92,8 @@ const ListAgents = () => {
           // All agents
           if (currentTab === ALL_AGENTS) {
             setList([]);
-            const everyComps = await getAgents(total, currentPage);
-            setList(everyComps);
+            const everyAgents = await getAgents(total, currentPage);
+            setList(everyAgents);
           }
 
           /**
@@ -106,6 +107,7 @@ const ListAgents = () => {
           }
         } catch (e) {
           console.error(e);
+          notifyError('Error fetching agents');
         } finally {
           setIsLoading(false);
         }
@@ -134,6 +136,7 @@ const ListAgents = () => {
           setCurrentPage(1);
         } catch (e) {
           console.error(e);
+          notifyError('Error fetching agents');
         } finally {
           setIsLoading(false);
         }
@@ -151,57 +154,51 @@ const ListAgents = () => {
     searchValue,
   };
 
+  const myAgentsList = searchValue
+    ? list
+    : getMyListOnPagination({ total, nextPage: currentPage, list });
+
   return (
-    <>
-      <Tabs
-        className="registry-tabs"
-        type="card"
-        activeKey={currentTab}
-        tabBarExtraContent={extraTabContent}
-        onChange={(e) => {
-          setCurrentTab(e);
+    <Tabs
+      className="registry-tabs"
+      type="card"
+      activeKey={currentTab}
+      tabBarExtraContent={extraTabContent}
+      onChange={(e) => {
+        setCurrentTab(e);
 
-          setList([]);
-          setTotal(0);
-          setCurrentPage(1);
-          setIsLoading(true);
+        setList([]);
+        setTotal(0);
+        setCurrentPage(1);
+        setIsLoading(true);
 
-          // clear the search
-          clearSearch();
+        // clear the search
+        clearSearch();
 
-          // update the URL to keep track of my-agents
-          router.push(
-            e === MY_AGENTS ? `${URL.AGENTS}#${MY_AGENTS}` : URL.AGENTS,
-          );
-        }}
-        items={[
-          {
-            key: ALL_AGENTS,
-            label: 'All',
-            children: <ListTable {...tableCommonProps} list={list} />,
-          },
-          {
-            key: MY_AGENTS,
-            label: 'My Agents',
-            children: (
-              <ListTable
-                {...tableCommonProps}
-                list={
-                  searchValue
-                    ? list
-                    : getMyListOnPagination({
-                      total,
-                      nextPage: currentPage,
-                      list,
-                    })
-                }
-                isAccountRequired
-              />
-            ),
-          },
-        ]}
-      />
-    </>
+        // update the URL to keep track of my-agents
+        router.push(
+          e === MY_AGENTS ? `${URL.AGENTS}#${MY_AGENTS}` : URL.AGENTS,
+        );
+      }}
+      items={[
+        {
+          key: ALL_AGENTS,
+          label: 'All',
+          children: <ListTable {...tableCommonProps} list={list} />,
+        },
+        {
+          key: MY_AGENTS,
+          label: 'My Agents',
+          children: (
+            <ListTable
+              {...tableCommonProps}
+              list={myAgentsList}
+              isAccountRequired
+            />
+          ),
+        },
+      ]}
+    />
   );
 };
 

@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import { connect, useSelector } from 'react-redux';
-import { Typography, notification } from 'antd/lib';
-import get from 'lodash/get';
+import { Typography } from 'antd';
 import {
   DEFAULT_SERVICE_CREATION_ETH_TOKEN,
   DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS,
@@ -14,7 +13,9 @@ import {
   getServiceManagerContract,
   getServiceManagerL2Contract,
 } from 'common-util/Contracts';
-import { isL1Network, isL1OnlyNetwork } from 'common-util/functions';
+import {
+  isL1Network, isL1OnlyNetwork, notifyError, notifySuccess,
+} from 'common-util/functions';
 import { sendTransaction } from 'common-util/functions/sendTransaction';
 import RegisterForm from './RegisterForm';
 import {
@@ -36,23 +37,27 @@ const Service = ({ account }) => {
   const [ethTokenAddress, setEthTokenAddress] = useState(null);
   const [isUpdating, setIsUpdating] = useState(false);
 
-  const id = get(router, 'query.id') || null;
+  const id = router?.query?.id;
 
   useEffect(() => {
     (async () => {
       if (account) {
-        setAllLoading(true);
-        setServiceInfo({});
+        try {
+          setAllLoading(true);
+          setServiceInfo({});
 
-        const result = await getServiceDetails(id);
-        setAllLoading(false);
-        setServiceInfo(result);
+          const result = await getServiceDetails(id);
+          setAllLoading(false);
+          setServiceInfo(result);
 
-        // get token address for L1 only network
-        // because L2 network do not have token address
-        if (isL1OnlyNetwork(chainId)) {
-          const token = await getTokenAddressRequest(id);
-          setEthTokenAddress(token);
+          // get token address for L1 only network
+          // because L2 network do not have token address
+          if (isL1OnlyNetwork(chainId)) {
+            const token = await getTokenAddressRequest(id);
+            setEthTokenAddress(token);
+          }
+        } catch (e) {
+          console.error(e);
         }
       }
     })();
@@ -60,7 +65,7 @@ const Service = ({ account }) => {
 
   /* helper functions */
   const handleSubmit = (values) => {
-    if (account) {
+    const submitData = async () => {
       setIsUpdating(true);
       setError(null);
 
@@ -88,14 +93,19 @@ const Service = ({ account }) => {
       const fn = contract.methods.update(...params).send({ from: account });
       sendTransaction(fn, account)
         .then(() => {
-          notification.success({ message: 'Service Updated' });
+          notifySuccess('Service updated');
         })
         .catch((e) => {
           console.error(e);
+          notifyError('Error updating service');
         })
         .finally(() => {
           setIsUpdating(false);
         });
+    };
+
+    if (account) {
+      submitData();
     }
   };
 

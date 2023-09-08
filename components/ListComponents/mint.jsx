@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
-import { Typography, notification } from 'antd/lib';
+import { Typography } from 'antd';
 import RegisterForm from 'common-util/List/RegisterForm';
 import { AlertSuccess, AlertError } from 'common-util/List/ListCommon';
 import { getMechMinterContract } from 'common-util/Contracts';
 import { sendTransaction } from 'common-util/functions/sendTransaction';
 import { checkIfERC721Receive } from 'common-util/functions/requests';
+import { notifyError, notifySuccess } from 'common-util/functions';
 import { FormContainer } from '../styles';
 
 const { Title } = Typography;
@@ -55,11 +56,12 @@ const MintComponent = () => {
       sendTransaction(fn, account)
         .then((result) => {
           setInformation(result);
-          notification.success({ message: 'Component minted' });
+          notifySuccess('Component minted');
         })
         .catch((e) => {
           setError(e);
           console.error(e);
+          notifyError('Error minting component');
         })
         .finally(() => {
           setIsMinting(false);

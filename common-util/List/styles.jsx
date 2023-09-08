@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { COLOR } from 'util/theme';
-import { Modal } from 'antd/lib';
+import { Modal } from 'antd';
 
 export const RegisterFooter = styled.div`
   display: flex;

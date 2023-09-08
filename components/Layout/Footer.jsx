@@ -1,8 +1,11 @@
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { Footer as CommonFooter } from '@autonolas/frontend-library';
+import Image from 'next/image';
+import {
+  Footer as CommonFooter,
+  getExplorerURL,
+} from '@autonolas/frontend-library';
 import { ADDRESSES } from 'common-util/Contracts';
-import { getExplorerURL } from 'common-util/AddressLink';
 import { isL1Network } from 'common-util/functions';
 import { useHelpers } from 'common-util/hooks';
 import Socials from './Socials';
@@ -83,11 +86,11 @@ const ContractInfo = () => {
       {!PATHS_NOT_TO_SHOW.includes(pathname) && isValidChainId && (
         <>
           <div>
-            <img
-              alt="Etherscan link"
+            <Image
+              src="/images/etherscan-logo.svg"
               width={18}
               height={18}
-              src="/images/etherscan-logo.svg"
+              alt="Etherscan link"
             />
             <span>Contracts</span>
           </div>

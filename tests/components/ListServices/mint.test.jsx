@@ -1,10 +1,9 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { getServiceManagerContract } from 'common-util/Contracts';
 import MintService from 'components/ListServices/mint';
 import { FORM_NAME } from 'components/ListServices/RegisterForm';
-// import { act } from 'react-dom/test-utils';
 import { wrapProvider, dummyAddress, mockV1Hash } from '../../helpers';
 import { fillIpfsGenerationModal } from '../../helpers/prefillForm';
 
@@ -22,17 +21,13 @@ describe('listServices/mint.jsx', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     getServiceManagerContract.mockImplementation(() => ({
-      methods: {
-        create: jest.fn(() => ({
-          send: jest.fn(() => Promise.resolve(NEW_SERVICE)),
-        })),
-      },
+      create: jest.fn(() => ({
+        send: jest.fn(() => Promise.resolve(NEW_SERVICE)),
+      })),
     }));
   });
 
   it('should submit the form successfully', async () => {
-    expect.hasAssertions();
-
     const {
       container, getByText, getByRole, getByTestId,
     } = render(
@@ -43,6 +38,12 @@ describe('listServices/mint.jsx', () => {
 
     // get hash
     userEvent.click(getByTestId('generate-hash-file'));
+
+    // wait for ipfs generation modal to open
+    await waitFor(() => {
+      getByText(/Generate IPFS Hash of Metadata File/i);
+    });
+
     fillIpfsGenerationModal();
 
     // other fields

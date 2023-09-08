@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
 import { useSelector } from 'react-redux';
-import { Menu } from 'antd/lib';
+import { useRouter } from 'next/router';
+import { Menu } from 'antd';
 import { isL1Network } from 'common-util/functions';
 
 const items = [

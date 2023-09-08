@@ -1,22 +1,26 @@
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import get from 'lodash/get';
-import { Tabs } from 'antd/lib';
+import { Tabs } from 'antd';
 import { useRouter } from 'next/router';
+import dynamic from 'next/dynamic';
 import { URL, NAV_TYPES } from 'util/constants';
-import ListTable from 'common-util/List/ListTable';
 import {
   useExtraTabContent,
   getHash,
   isMyTab,
 } from 'common-util/List/ListTable/helpers';
 import { getMyListOnPagination } from 'common-util/ContractUtils/myList';
+import { notifyError } from 'common-util/functions';
 import {
   getServices,
   getFilteredServices,
   getTotalForAllServices,
   getTotalForMyServices,
 } from './utils';
+
+const ListTable = dynamic(() => import('common-util/List/ListTable'), {
+  ssr: false,
+});
 
 const ALL_SERVICES = 'all-services';
 const MY_SERVICES = 'my-services';
@@ -28,7 +32,7 @@ const ListServices = () => {
     isMyTab(hash) ? MY_SERVICES : ALL_SERVICES,
   );
 
-  const account = useSelector((state) => get(state, 'setup.account'));
+  const account = useSelector((state) => state?.setup?.account);
 
   /**
    * extra tab content & view click
@@ -76,6 +80,7 @@ const ListServices = () => {
           }
         } catch (e) {
           console.error(e);
+          notifyError('Error fetching services');
         }
       }
     })();
@@ -106,6 +111,7 @@ const ListServices = () => {
           }
         } catch (e) {
           console.error(e);
+          notifyError('Error fetching services');
         } finally {
           setIsLoading(false);
         }
@@ -134,6 +140,7 @@ const ListServices = () => {
           setCurrentPage(1);
         } catch (e) {
           console.error(e);
+          notifyError('Error fetching services');
         } finally {
           setIsLoading(false);
         }
@@ -151,58 +158,52 @@ const ListServices = () => {
     searchValue,
   };
 
+  const myServiceList = searchValue
+    ? list
+    : getMyListOnPagination({ total, nextPage: currentPage, list });
+
   return (
-    <>
-      <Tabs
-        className="registry-tabs"
-        type="card"
-        activeKey={currentTab}
-        tabBarExtraContent={extraTabContent}
-        onChange={(e) => {
-          setCurrentTab(e);
+    <Tabs
+      className="registry-tabs"
+      type="card"
+      activeKey={currentTab}
+      tabBarExtraContent={extraTabContent}
+      onChange={(e) => {
+        setCurrentTab(e);
 
-          setList([]);
-          setTotal(0);
-          setCurrentPage(1);
-          setIsLoading(true);
+        setList([]);
+        setTotal(0);
+        setCurrentPage(1);
+        setIsLoading(true);
 
-          // clear the search
-          clearSearch();
+        // clear the search
+        clearSearch();
 
-          // update the URL to keep track of my-services
-          router.push(
-            e === MY_SERVICES ? `${URL.SERVICES}#${MY_SERVICES}` : URL.SERVICES,
-          );
-        }}
-        items={[
-          {
-            key: ALL_SERVICES,
-            label: 'All',
-            children: <ListTable {...tableCommonProps} list={list} />,
-          },
-          {
-            key: MY_SERVICES,
-            label: 'My Services',
-            children: (
-              <ListTable
-                {...tableCommonProps}
-                list={
-                  searchValue
-                    ? list
-                    : getMyListOnPagination({
-                      total,
-                      nextPage: currentPage,
-                      list,
-                    })
-                }
-                onUpdateClick={(serviceId) => router.push(`${URL.UPDATE_SERVICE}/${serviceId}`)}
-                isAccountRequired
-              />
-            ),
-          },
-        ]}
-      />
-    </>
+        // update the URL to keep track of my-services
+        router.push(
+          e === MY_SERVICES ? `${URL.SERVICES}#${MY_SERVICES}` : URL.SERVICES,
+        );
+      }}
+      items={[
+        {
+          key: ALL_SERVICES,
+          label: 'All',
+          children: <ListTable {...tableCommonProps} list={list} />,
+        },
+        {
+          key: MY_SERVICES,
+          label: 'My Services',
+          children: (
+            <ListTable
+              {...tableCommonProps}
+              list={myServiceList}
+              onUpdateClick={(serviceId) => router.push(`${URL.UPDATE_SERVICE}/${serviceId}`)}
+              isAccountRequired
+            />
+          ),
+        },
+      ]}
+    />
   );
 };
 

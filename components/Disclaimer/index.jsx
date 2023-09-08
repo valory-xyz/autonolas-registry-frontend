@@ -1,4 +1,4 @@
-import { Typography } from 'antd/lib';
+import { Typography } from 'antd';
 import styled from 'styled-components';
 
 const { Title, Paragraph } = Typography;

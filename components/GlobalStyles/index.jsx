@@ -1,9 +1,8 @@
 import { MEDIA_QUERY } from '@autonolas/frontend-library';
 import { createGlobalStyle } from 'styled-components';
-import { COLOR, OTHERS } from 'util/theme';
+import { COLOR } from 'util/theme';
 
 const ANTD_COLOR = {
-  whiteColor: '#fff',
   borderColor: '#f0f0f0',
 };
 
@@ -56,14 +55,14 @@ const GlobalStyle = createGlobalStyle`
   }
 
   /* layout */
-  .ant-layout {
-    background: ${COLOR.WHITE};
-  }
   .ant-layout-header {
     display: flex;
     position: fixed;
     z-index: 10;
     width: 100%;
+    height: 64px;
+    line-height: 64px;
+    padding: 0 50px;
     .ant-menu {
       flex: 1;
       &.ant-menu-horizontal {
@@ -110,7 +109,6 @@ const GlobalStyle = createGlobalStyle`
   .ant-table {
     .ant-table-thead {
       > tr > th {
-        font-weight: normal;
         padding: 12px 16px;
         &:not(:last-child):not(.ant-table-selection-column):not(
             .ant-table-row-expand-icon-cell
@@ -121,10 +119,7 @@ const GlobalStyle = createGlobalStyle`
     }
     .ant-table-tbody > tr {
       > td {
-        padding: 12px 16px;
-        &.underline span {
-          text-decoration: underline;
-        }
+        padding: 8px 16px;
         .ant-btn {
           &:first-child {
             padding-left: 0;
@@ -134,10 +129,10 @@ const GlobalStyle = createGlobalStyle`
       &:last-child {
         td {
           &:first-child {
-            border-bottom-left-radius: ${OTHERS.borderRadius};
+            border-bottom-left-radius: 5px;
           }
           &:last-child {
-            border-bottom-right-radius: ${OTHERS.borderRadius};
+            border-bottom-right-radius: 5px;
           }
         }
       }
@@ -172,6 +167,11 @@ const GlobalStyle = createGlobalStyle`
   /* ant image */
   .ant-image-preview-wrap {
     background: ${COLOR.GREY_2};
+  }
+
+  /* ant notification */
+  .ant-notification-notice-message {
+    margin-bottom: 0 !important;
   }
 
   ${MEDIA_QUERY.mobileL} {

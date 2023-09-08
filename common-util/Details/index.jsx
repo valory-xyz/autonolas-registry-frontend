@@ -1,13 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import get from 'lodash/get';
+import { useSelector } from 'react-redux';
 import capitalize from 'lodash/capitalize';
 import {
   Row, Col, Button, Typography,
-} from 'antd/lib';
+} from 'antd';
 import { NAV_TYPES } from 'util/constants';
 import Loader from 'common-util/components/Loader';
+import { notifyError } from 'common-util/functions';
 import IpfsHashGenerationModal from '../List/IpfsHashGenerationModal';
 import { NftImage } from './NFTImage';
 import { ServiceState } from './ServiceState';
@@ -21,7 +21,6 @@ import { Header, DetailsTitle } from './styles';
 const { Text } = Typography;
 
 const Details = ({
-  account,
   id,
   type,
   getDetails,
@@ -32,12 +31,14 @@ const Details = ({
   onUpdateHash,
   onDependencyClick,
 }) => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [info, setInfo] = useState({});
   const [hashes, setHashes] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [detailsOwner, setDetailsOwner] = useState('');
   const [tokenUri, setTokenUri] = useState(null);
+
+  const account = useSelector((state) => state?.setup?.account);
 
   // metadata details
   const [metadata, setMetadata] = useState(null);
@@ -45,7 +46,7 @@ const Details = ({
     HASH_DETAILS_STATE.IS_LOADING,
   );
 
-  const isOwner = account.toLowerCase() === detailsOwner.toLowerCase();
+  const isOwner = account && account.toLowerCase() === detailsOwner.toLowerCase();
 
   const getUpdatedHashes = async () => {
     try {
@@ -53,16 +54,17 @@ const Details = ({
       setHashes(hashesResponse);
     } catch (e) {
       console.error(e);
-      throw e;
+      notifyError(`Error fetching ${type} hashes`);
     }
   };
 
   const updateDetails = useCallback(async () => {
     try {
-      const temp = await getDetails();
-      setInfo(temp);
+      const details = await getDetails();
+      setInfo(details);
     } catch (e) {
       console.error(e);
+      notifyError(`Error fetching ${type} details`);
     }
   }, []);
 
@@ -82,10 +84,11 @@ const Details = ({
         setTokenUri(tempTokenUri);
 
         await getUpdatedHashes();
-
-        setIsLoading(false);
       } catch (e) {
         console.error(e);
+        notifyError(`Error fetching ${type} details`);
+      } finally {
+        setIsLoading(false);
       }
     })();
   }, [account, id]);
@@ -102,8 +105,8 @@ const Details = ({
           setMetadataState(HASH_DETAILS_STATE.LOADED);
         } catch (e) {
           setMetadataState(HASH_DETAILS_STATE.FAILED);
-          window.console.log('Error fetching metadata from IPFS');
           console.error(e);
+          notifyError('Error fetching metadata from IPFS');
         }
       }
     })();
@@ -131,19 +134,18 @@ const Details = ({
             {`${capitalize(type)} ID ${id}`}
           </DetailsTitle>
         </div>
+
+        {/* Update button to be show only if the connected account is the owner */}
         <div className="right-content">
-          {/* Update button to be show only if the connected account is the owner */}
           {isOwner && type !== NAV_TYPES.SERVICE && (
-            <>
-              <Button
-                disabled={!handleUpdate}
-                type="primary"
-                ghost
-                onClick={onUpdate}
-              >
-                Update
-              </Button>
-            </>
+            <Button
+              disabled={!handleUpdate}
+              type="primary"
+              ghost
+              onClick={onUpdate}
+            >
+              Update
+            </Button>
           )}
         </div>
       </Header>
@@ -196,7 +198,6 @@ const Details = ({
 };
 
 Details.propTypes = {
-  account: PropTypes.string,
   id: PropTypes.string.isRequired,
   type: PropTypes.oneOf([
     NAV_TYPES.AGENT,
@@ -213,7 +214,6 @@ Details.propTypes = {
 };
 
 Details.defaultProps = {
-  account: '',
   handleUpdate: null,
   getHashes: () => {},
   getTokenUri: () => {},
@@ -222,9 +222,4 @@ Details.defaultProps = {
   onDependencyClick: () => {},
 };
 
-const mapStateToProps = (state) => {
-  const account = get(state, 'setup.account') || '';
-  return { account: account || '' };
-};
-
-export default connect(mapStateToProps, {})(Details);
+export default Details;

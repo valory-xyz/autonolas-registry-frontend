@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { notification } from 'antd/lib';
+import { notification } from 'antd';
 import { STAGING_CHAIN_ID } from '@autonolas/frontend-library';
 import { TOTAL_VIEW_COUNT, LOCAL_FORK_ID } from 'util/constants';
 
@@ -29,16 +29,18 @@ export const safeSendTransactionNotification = () => notification.warning({
 
 export const notifySuccess = (message = 'Successful') => notification.success({ message });
 export const notifyError = (message = 'Some error occured') => notification.error({ message });
+export const notifyWarning = (message = 'Some error occured') => notification.error({ message });
 
 // functions
 export const getChainId = (chainId = null) => {
   if (typeof window === 'undefined') return chainId;
-  return Number(
-    chainId
-      || window?.CHAIN_ID // this is set in LoginV2.jsx (once wallet is connected)
-      || window?.MODAL_PROVIDER?.chainId // set by web3modal
-      || window?.ethereum?.chainId, // set by metamask (useful when wallet is not connected)
-  );
+
+  const currentChainId = chainId
+    || window?.CHAIN_ID // this is set in LoginV2.jsx (once wallet is connected)
+    || window?.MODAL_PROVIDER?.chainId // set by web3modal
+    || window?.ethereum?.chainId; // set by metamask (useful when wallet is not connected)
+
+  return currentChainId ? Number(currentChainId) : null;
 };
 
 export const isL1OnlyNetwork = (chainId) => {

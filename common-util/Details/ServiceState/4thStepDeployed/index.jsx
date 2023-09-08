@@ -1,15 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import {
-  Table, Space, Button, Grid,
-} from 'antd/lib';
-import get from 'lodash/get';
-import { AddressLink } from 'common-util/AddressLink';
+import { Table, Space, Button } from 'antd';
+import { AddressLink } from '@autonolas/frontend-library';
 import { setAgentInstancesAndOperators } from 'store/service/state/actions';
+import { useScreen } from 'common-util/hooks/useScreen';
 import { getAgentInstanceAndOperator, onTerminate } from '../utils';
-
-const { useBreakpoint } = Grid;
 
 const Deployed = ({
   serviceId,
@@ -22,11 +18,12 @@ const Deployed = ({
   updateDetails,
 }) => {
   const dispatch = useDispatch();
-  const data = useSelector((state) => get(state, 'service.serviceState.agentInstancesAndOperators'));
+  const data = useSelector(
+    (state) => state?.service?.serviceState?.agentInstancesAndOperators,
+  );
   const account = useSelector((state) => state?.setup?.account);
   const [isTerminating, setIsTerminating] = useState(false);
-  const screens = useBreakpoint();
-  const isMobile = screens.xs || screens.sm;
+  const { isMobile } = useScreen();
 
   useEffect(() => {
     let isMounted = true;
@@ -68,7 +65,7 @@ const Deployed = ({
                 dataIndex: 'agentInstance',
                 key: 'agentInstance',
                 render: (text) => (
-                  <AddressLink text={text} suffixCount={isMobile ? 4 : 10} />
+                  <AddressLink text={text} suffixCount={isMobile ? 4 : 6} />
                 ),
               },
               {
@@ -76,7 +73,7 @@ const Deployed = ({
                 dataIndex: 'operatorAddress',
                 key: 'operatorAddress',
                 render: (text) => (
-                  <AddressLink text={text} suffixCount={isMobile ? 4 : 10} />
+                  <AddressLink text={text} suffixCount={isMobile ? 4 : 6} />
                 ),
               },
             ]}
