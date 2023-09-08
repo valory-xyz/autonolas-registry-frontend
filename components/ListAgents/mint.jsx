@@ -55,7 +55,7 @@ const MintAgent = () => {
       sendTransaction(fn, account)
         .then((result) => {
           setInformation(result);
-          notifySuccess({ message: 'Agent minted' });
+          notifySuccess('Agent minted');
         })
         .catch((e) => {
           setError(e);

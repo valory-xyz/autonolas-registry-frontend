@@ -18,7 +18,7 @@ const Unbond = ({
     try {
       setIsUnbonding(true);
       await onStep5Unbond(account, serviceId);
-      notifySuccess('Unbonded Successfully');
+      notifySuccess('Unbonded');
       await updateDetails();
     } catch (e) {
       console.error(e);

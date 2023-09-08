@@ -93,7 +93,7 @@ const Service = ({ account }) => {
       const fn = contract.methods.update(...params).send({ from: account });
       sendTransaction(fn, account)
         .then(() => {
-          notifySuccess('Service Updated');
+          notifySuccess('Service updated');
         })
         .catch((e) => {
           console.error(e);

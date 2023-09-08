@@ -323,7 +323,7 @@ export const onStep5Unbond = async (account, id) => {
 };
 
 /* ----- operator whitelist functions ----- */
-export const checkIfServiceRequiresWhiltelisting = async (serviceId) => {
+export const checkIfServiceRequiresWhitelisting = async (serviceId) => {
   const contract = getOperatorWhitelistContract();
   // if true: it is whitelisted by default
   // else we can whitelist using the input field

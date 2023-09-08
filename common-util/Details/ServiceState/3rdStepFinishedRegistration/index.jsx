@@ -44,7 +44,7 @@ const StepThreePayload = ({
     try {
       setIsSubmitting(true);
       await onStep3Deploy(account, serviceId, radioValuePassed, payload);
-      notifySuccess('Deployed Successfully');
+      notifySuccess('Deployed');
       await updateDetails();
     } catch (e) {
       console.error(e);

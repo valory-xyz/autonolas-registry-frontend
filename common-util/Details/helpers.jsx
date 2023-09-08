@@ -19,7 +19,7 @@ import { SetOperatorStatus, OperatorWhitelist } from './ServiceDetailsHelper';
 import {
   getTokenDetailsRequest,
   setOperatorsCheckRequest,
-  checkIfServiceRequiresWhiltelisting,
+  checkIfServiceRequiresWhitelisting,
 } from './ServiceState/utils';
 import {
   SubTitle,
@@ -81,7 +81,7 @@ export const DetailsInfo = ({
   // get operator whitelist
   const setOpWhitelist = async () => {
     try {
-      const whiteListRes = await checkIfServiceRequiresWhiltelisting(id);
+      const whiteListRes = await checkIfServiceRequiresWhitelisting(id);
       setIsWhiteListed(whiteListRes);
     } catch (error) {
       console.error(error);
