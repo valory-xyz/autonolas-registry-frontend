@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { Button, Form, Input } from 'antd/lib';
+import { Button, Form, Input } from 'antd';
 import isNil from 'lodash/isNil';
-import { WhiteButton } from 'common-util/components/Button';
 import { isValidAddress } from 'common-util/functions';
 import IpfsHashGenerationModal from '../IpfsHashGenerationModal';
 import { DependencyLabel } from '../ListCommon';
@@ -156,7 +155,11 @@ const RegisterForm = ({
         ) : (
           <RegisterFooter>
             <p>To mint, connect to wallet</p>
-            <WhiteButton onClick={handleCancel}>Cancel</WhiteButton>
+            {handleCancel && (
+              <Button type="default" onClick={handleCancel}>
+                Cancel
+              </Button>
+            )}
           </RegisterFooter>
         )}
       </Form>

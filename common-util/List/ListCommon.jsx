@@ -1,11 +1,10 @@
 import PropTypes from 'prop-types';
 import Link from 'next/link';
-import { Alert } from 'antd/lib';
+import { Alert, Button } from 'antd';
 import bs58 from 'bs58';
-import { ExternalLink } from 'react-feather';
-import { EmptyMessage, RegisterFooter } from 'components/styles';
+import { ExportOutlined } from '@ant-design/icons';
 import { isL1Network } from 'common-util/functions';
-import { WhiteButton } from '../components/Button';
+import { EmptyMessage, RegisterFooter } from 'components/styles';
 
 // constants
 export const DEPENDENCY_IN_ASC = 'Agent IDs must be input in the order they were created (oldest first & newest last)';
@@ -35,7 +34,7 @@ export const getIpfsHashFromBytes32 = (bytes32Hex) => {
 // ----------- components -----------
 export const MyLink = ({ children, href, ...linkProps }) => (
   <Link {...linkProps} href={href}>
-    <a href={href}>{children}</a>
+    {children}
   </Link>
 );
 MyLink.propTypes = {
@@ -65,7 +64,7 @@ export const DependencyLabel = ({ type, chainId }) => {
           IDs on&nbsp;
           <MyLink href="/agents">
             Agents
-            <ExternalLink size={12} />
+            <ExportOutlined style={{ width: 14 }} />
           </MyLink>
           &nbsp;page.&nbsp;
           {dependencyHelperText}
@@ -76,7 +75,7 @@ export const DependencyLabel = ({ type, chainId }) => {
           &nbsp;
           <MyLink href="/components">
             Components
-            <ExternalLink size={12} />
+            <ExportOutlined style={{ width: 14 }} />
           </MyLink>
           &nbsp;page.&nbsp;
           {dependencyHelperText}
@@ -94,7 +93,11 @@ DependencyLabel.defaultProps = { type: 'component', chainId: null };
 export const RegisterMessage = ({ handleCancel }) => (
   <RegisterFooter>
     <p>To mint, connect to wallet</p>
-    {handleCancel && <WhiteButton onClick={handleCancel}>Cancel</WhiteButton>}
+    {handleCancel && (
+      <Button type="default" onClick={handleCancel}>
+        Cancel
+      </Button>
+    )}
   </RegisterFooter>
 );
 RegisterMessage.propTypes = { handleCancel: PropTypes.func };

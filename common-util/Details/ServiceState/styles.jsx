@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Typography } from 'antd/lib';
+import { Typography } from 'antd';
 import { MEDIA_QUERY } from '@autonolas/frontend-library';
 import { COLOR } from 'util/theme';
 

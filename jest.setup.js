@@ -1,5 +1,5 @@
 /* eslint-disable jest/require-hook */
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom/jest-globals';
 
 // https:// jestjs.io/docs/manual-mocks#mocking-methods-which-are-not-implemented-in-jsdom
 Object.defineProperty(window, 'matchMedia', {
@@ -22,4 +22,9 @@ jest.mock('ipfs-only-hash', () => ({
 
 jest.mock('common-util/Login', () => ({
   SUPPORTED_CHAINS: [{ id: 1 }],
+}));
+
+jest.mock('next/router', () => ({
+  __esModule: true,
+  useRouter: jest.fn(),
 }));

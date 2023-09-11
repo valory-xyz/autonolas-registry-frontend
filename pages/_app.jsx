@@ -1,48 +1,44 @@
-import App from 'next/app';
 import Head from 'next/head';
 import { createWrapper } from 'next-redux-wrapper';
+import { ConfigProvider } from 'antd';
 import PropTypes from 'prop-types';
 
-import { WagmiConfig } from 'wagmi';
-import GlobalStyle from 'components/GlobalStyles';
-import Layout from 'components/Layout';
+/** wagmi config */
+import { WagmiConfig as WagmiConfigProvider } from 'wagmi';
 import { wagmiConfig } from 'common-util/Login/config';
+
+/** antd theme config */
+import Layout from 'components/Layout';
+import { themeConfig } from 'util/theme';
+import GlobalStyle from 'components/GlobalStyles';
 import initStore from '../store';
 
-/* eslint-disable-next-line jest/require-hook */
-require('../styles/variables.less');
+const DESC = 'View and manage components, agents and services via the Autonolas on-chain registry.';
 
-class MyApp extends App {
-  static async getInitialProps({ Component, ctx }) {
-    const pageProps = Component.getInitialProps
-      ? await Component.getInitialProps(ctx)
-      : {};
+const MyApp = ({ Component, pageProps }) => (
+  <>
+    <GlobalStyle />
+    <Head>
+      <title>Autonolas Registry</title>
+      <meta name="description" content={DESC} />
+    </Head>
+    <ConfigProvider theme={themeConfig}>
+      <WagmiConfigProvider config={wagmiConfig}>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </WagmiConfigProvider>
+    </ConfigProvider>
+  </>
+);
 
-    return { pageProps };
-  }
+MyApp.getInitialProps = async ({ Component, ctx }) => {
+  const pageProps = Component.getInitialProps
+    ? await Component.getInitialProps(ctx)
+    : {};
 
-  render() {
-    const { Component, pageProps } = this.props;
-
-    return (
-      <>
-        <GlobalStyle />
-        <Head>
-          <title>Autonolas Registry</title>
-          <meta
-            name="description"
-            content="View and manage components, agents and services via the Autonolas on-chain registry."
-          />
-        </Head>
-        <WagmiConfig config={wagmiConfig}>
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
-        </WagmiConfig>
-      </>
-    );
-  }
-}
+  return { pageProps };
+};
 
 MyApp.propTypes = {
   Component: PropTypes.oneOfType([PropTypes.func, PropTypes.shape({})])

@@ -61,6 +61,7 @@ describe('<AlertSuccess />', () => {
     const { getByText } = render(
       <AlertSuccess type={type} information={input} />,
     );
+    // eslint-disable-next-line jest/no-conditional-in-test
     if (type) {
       expect(getByText(`${type} minted`)).toBeInTheDocument();
     } else {

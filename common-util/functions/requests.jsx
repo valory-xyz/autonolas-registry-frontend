@@ -3,7 +3,6 @@ import { DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS } from 'util/constants';
 import {
   getServiceOwnerMultisigContract,
   getMyProvider,
-  getWeb3Details,
 } from 'common-util/Contracts';
 import { checkIfGnosisSafe, notifyError } from './index';
 
@@ -25,8 +24,7 @@ export const checkIfERC721Receive = async (account, ownerAddress) => {
       const owners = await contract.methods.getOwners().call();
 
       if (Number(threshold) > 0 && owners.length > 0) {
-        const { web3 } = getWeb3Details();
-        const contents = await web3.eth.getStorageAt(
+        const contents = await provider.getStorageAt(
           account,
           FALLBACK_HANDLER_STORAGE_SLOT,
         );

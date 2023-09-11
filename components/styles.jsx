@@ -35,6 +35,9 @@ export const FormContainer = styled.div`
   .ant-typography {
     color: ${COLOR.PRIMARY};
   }
+  h2 {
+    margin-top: 0rem;
+  }
 `;
 
 export const RegisterFooter = styled.div`

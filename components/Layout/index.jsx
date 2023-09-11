@@ -2,25 +2,28 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
-import { Layout as AntdLayout, Typography } from 'antd/lib';
+import Image from 'next/image';
+import { Layout as AntdLayout, Typography } from 'antd';
 import { getNetworkName } from '@autonolas/frontend-library';
 import { isL1Network } from 'common-util/functions';
-import { useHelpers } from 'common-util/hooks';
-import Login from '../Login';
-import Footer from './Footer';
+import { useHelpers, useScreen } from 'common-util/hooks';
 import { CustomLayout, Logo, RightMenu } from './styles';
 
 const { Text } = Typography;
 
-const LogoSvg = dynamic(() => import('common-util/svg/logo'), { ssr: false });
+const Login = dynamic(() => import('../Login'), { ssr: false });
 const NavigationMenu = dynamic(() => import('./Menu'), { ssr: false });
+const Footer = dynamic(() => import('./Footer'), { ssr: false });
 
 const { Header, Content } = AntdLayout;
+
+const PAGES_TO_LOAD_WITHOUT_CHAINID = ['/', '/disclaimer'];
 
 const Layout = ({ children }) => {
   const router = useRouter();
   const { chainId, isValidChainId } = useHelpers();
   const path = router?.pathname || '';
+  const { isMobile } = useScreen();
 
   useEffect(() => {
     if (chainId && !isL1Network(chainId)) {
@@ -34,9 +37,16 @@ const Layout = ({ children }) => {
 
   const logo = (
     <Logo onClick={() => router.push('/')} data-testid="protocol-logo">
-      <LogoSvg />
+      <Image
+        priority
+        src="/images/logo.svg"
+        height={32}
+        width={32}
+        alt="Autonolas"
+      />
+
       <span>
-        {isValidChainId ? (
+        {isValidChainId && !isMobile ? (
           <Text>{`Registry on ${getNetworkName(chainId)}`}</Text>
         ) : (
           'Registry'
@@ -57,8 +67,11 @@ const Layout = ({ children }) => {
 
       <Content className="site-layout">
         <div className="site-layout-background">
-          {/* chainId has to be set in redux before rendering any components */}
-          {chainId ? children : null}
+          {/* chainId has to be set in redux before rendering any components OR
+          the page doesn't depends on the chain Id */}
+          {chainId || PAGES_TO_LOAD_WITHOUT_CHAINID.some((e) => e === path)
+            ? children
+            : null}
         </div>
       </Content>
 

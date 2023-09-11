@@ -4,10 +4,9 @@ import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
   Form, Input, Table, Button,
-} from 'antd/lib';
+} from 'antd';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
-import get from 'lodash/get';
 import { URL } from 'util/constants';
 import { isL1Network, isValidAddress } from 'common-util/functions';
 
@@ -62,7 +61,7 @@ const EditableCell = ({
   }, [record]);
 
   let childNode = children;
-  const slots = get(record, 'availableSlots') || 0;
+  const slots = record?.availableSlots || 0;
 
   // if there are no slots, the input should be disabled
   const isInputDisabled = isDisabled || !slots;

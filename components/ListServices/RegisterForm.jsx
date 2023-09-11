@@ -1,19 +1,17 @@
 import { useEffect, useState } from 'react';
-import Web3 from 'web3';
 import { useRouter } from 'next/router';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import get from 'lodash/get';
-import { Button, Form, Input } from 'antd/lib';
+import { Button, Form, Input } from 'antd';
 
 import { DEFAULT_SERVICE_CREATION_ETH_TOKEN } from 'util/constants';
-import { WhiteButton } from 'common-util/components/Button';
 import { commaMessage, DependencyLabel } from 'common-util/List/ListCommon';
 import { FormItemHash } from 'common-util/List/RegisterForm/helpers';
 import IpfsHashGenerationModal from 'common-util/List/IpfsHashGenerationModal';
 import { ComplexLabel } from 'common-util/List/styles';
-import { isL1Network } from 'common-util/functions';
+import { isL1Network, isValidAddress } from 'common-util/functions';
 import { RegisterFooter } from 'components/styles';
 
 export const FORM_NAME = 'serviceRegisterForm';
@@ -34,9 +32,9 @@ const RegisterForm = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [fields, setFields] = useState([]);
   const router = useRouter();
-  const id = get(router, 'query.id') || null;
+  const id = router?.query?.id;
 
-  useEffect(async () => {
+  useEffect(() => {
     if (account && ethTokenAddress && isL1Network(chainId)) {
       setFields([
         {
@@ -144,7 +142,7 @@ const RegisterForm = ({
             },
             () => ({
               validator(_, value) {
-                if (Web3.utils.isAddress(value)) return Promise.resolve();
+                if (isValidAddress(value)) return Promise.resolve();
                 return Promise.reject(
                   new Error(
                     `Please input a valid address of the ${listType} Owner`,
@@ -189,7 +187,7 @@ const RegisterForm = ({
                 },
                 () => ({
                   validator(_, value) {
-                    if (Web3.utils.isAddress(value)) return Promise.resolve();
+                    if (isValidAddress(value)) return Promise.resolve();
                     return Promise.reject(
                       new Error('Please input a valid address'),
                     );
@@ -338,7 +336,11 @@ const RegisterForm = ({
         ) : (
           <RegisterFooter>
             <p>To mint, connect to wallet</p>
-            <WhiteButton onClick={handleCancel}>Cancel</WhiteButton>
+            {handleCancel && (
+              <Button type="default" onClick={handleCancel}>
+                Cancel
+              </Button>
+            )}
           </RegisterFooter>
         )}
       </Form>
@@ -365,7 +367,7 @@ RegisterForm.propTypes = {
     agentIds: PropTypes.arrayOf(PropTypes.string),
     agentNumSlots: PropTypes.arrayOf(PropTypes.string),
     agentParams: PropTypes.arrayOf(PropTypes.shape({})),
-    threshold: PropTypes.string,
+    threshold: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   }),
   handleSubmit: PropTypes.func.isRequired,
   handleCancel: PropTypes.func.isRequired,

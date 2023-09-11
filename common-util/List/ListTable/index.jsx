@@ -1,11 +1,10 @@
 import PropTypes from 'prop-types';
-import { Table, Grid } from 'antd/lib';
+import { Table } from 'antd';
 import { TOTAL_VIEW_COUNT } from 'util/constants';
 import { ListEmptyMessage } from 'common-util/List/ListCommon';
 import Loader from 'common-util/components/Loader';
+import { useScreen } from 'common-util/hooks/useScreen';
 import { getData, getTableColumns } from './helpers';
-
-const { useBreakpoint } = Grid;
 
 const ListTable = ({
   isLoading,
@@ -24,8 +23,7 @@ const ListTable = ({
    * no pagination on search as we won't know total beforehand
    */
   const isPaginationRequired = !searchValue;
-  const screens = useBreakpoint();
-  const isMobile = screens.xs || screens.sm;
+  const { isMobile } = useScreen();
 
   const { scrollX } = extra;
 
@@ -46,6 +44,12 @@ const ListTable = ({
     isMobile,
   });
   const dataSource = getData(type, list, { current: currentPage });
+  const pagination = {
+    total,
+    current: currentPage,
+    defaultPageSize: TOTAL_VIEW_COUNT,
+    onChange: (e) => setCurrentPage(e),
+  };
 
   return (
     <>
@@ -55,16 +59,7 @@ const ListTable = ({
         <Table
           columns={columns}
           dataSource={dataSource}
-          pagination={
-            isPaginationRequired
-              ? {
-                total,
-                current: currentPage,
-                defaultPageSize: TOTAL_VIEW_COUNT,
-                onChange: (e) => setCurrentPage(e),
-              }
-              : false
-          }
+          pagination={isPaginationRequired ? pagination : false}
           scroll={{ x: scrollX || 1200 }}
           rowKey={(record) => `${type}-row-${record.id}`}
         />
@@ -84,9 +79,7 @@ ListTable.propTypes = {
   isAccountRequired: PropTypes.bool,
   onViewClick: PropTypes.func,
   onUpdateClick: PropTypes.func,
-  extra: PropTypes.shape({
-    scrollX: PropTypes.number,
-  }),
+  extra: PropTypes.shape({ scrollX: PropTypes.number }),
 };
 
 ListTable.defaultProps = {

@@ -1,3 +1,4 @@
+/* eslint-disable jest/max-expects */
 import React from 'react';
 import { render, waitFor } from '@testing-library/react';
 import { GATEWAY_URL } from 'util/constants';
@@ -56,18 +57,18 @@ const dummyIpfs = {
 const unmockedFetch = global.fetch;
 
 describe('listAgents/details.jsx', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-    getAgentDetails.mockImplementation(() => Promise.resolve(dummyDetails));
-    getAgentHashes.mockImplementation(() => Promise.resolve(dummyHashes));
-    getAgentOwner.mockImplementation(() => Promise.resolve(dummyDetails.owner));
-    getTokenUri.mockImplementation(() => Promise.resolve(dummyDetails.tokenUrl));
-  });
-
   beforeAll(() => {
     global.fetch = () => Promise.resolve({
       json: () => Promise.resolve(dummyIpfs),
     });
+  });
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    getAgentDetails.mockResolvedValue(dummyDetails);
+    getAgentHashes.mockResolvedValue(dummyHashes);
+    getAgentOwner.mockResolvedValue(dummyDetails.owner);
+    getTokenUri.mockResolvedValue(dummyDetails.tokenUrl);
   });
 
   afterAll(() => {

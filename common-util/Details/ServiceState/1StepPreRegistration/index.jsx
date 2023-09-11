@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
-import { Button, Space } from 'antd/lib';
+import { Button, Space } from 'antd';
 import { URL } from 'util/constants';
 
 import { isLocalNetwork } from 'common-util/functions';
@@ -96,7 +96,7 @@ PreRegistration.propTypes = {
   getButton: PropTypes.func.isRequired,
   isOwner: PropTypes.bool.isRequired,
   isEthToken: PropTypes.bool.isRequired,
-  securityDeposit: PropTypes.string,
+  securityDeposit: PropTypes.oneOfType([PropTypes.string, PropTypes.shape({})]),
   updateDetails: PropTypes.func.isRequired,
 };
 

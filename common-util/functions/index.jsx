@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { notification } from 'antd/lib';
+import { notification } from 'antd';
 import { STAGING_CHAIN_ID } from '@autonolas/frontend-library';
 import {
   TOTAL_VIEW_COUNT,
@@ -34,6 +34,7 @@ export const safeSendTransactionNotification = () => notification.warning({
 
 export const notifySuccess = (message = 'Successful') => notification.success({ message });
 export const notifyError = (message = 'Some error occured') => notification.error({ message });
+export const notifyWarning = (message = 'Some error occured') => notification.error({ message });
 
 export const getIsValidChainId = (chainId) => {
   if (!chainId) return false;

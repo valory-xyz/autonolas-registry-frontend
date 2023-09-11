@@ -3,15 +3,15 @@ import { useSelector } from 'react-redux';
 import { ethers } from 'ethers';
 import {
   Button, Divider, Radio, Form, Input,
-} from 'antd/lib';
+} from 'antd';
 import PropTypes from 'prop-types';
-import get from 'lodash/get';
 
 import {
   FALLBACK_HANDLER,
   multisigAddresses,
   multisigSameAddresses,
 } from 'common-util/Contracts';
+import { notifySuccess } from 'common-util/functions';
 import { getServiceAgentInstances, onStep3Deploy } from '../utils';
 import { handleMultisigSubmit } from './utils';
 import { RadioLabel } from '../styles';
@@ -33,7 +33,7 @@ const StepThreePayload = ({
   updateDetails,
 }) => {
   const account = useSelector((state) => state?.setup?.account);
-  const chainId = useSelector((state) => get(state, 'setup.chainId'));
+  const chainId = useSelector((state) => state?.setup?.chainId);
 
   const [form] = Form.useForm();
   const [radioValue, setRadioValue] = useState(null);
@@ -44,6 +44,7 @@ const StepThreePayload = ({
     try {
       setIsSubmitting(true);
       await onStep3Deploy(account, serviceId, radioValuePassed, payload);
+      notifySuccess('Deployed');
       await updateDetails();
     } catch (e) {
       console.error(e);
@@ -278,7 +279,7 @@ StepThreePayload.propTypes = {
   serviceId: PropTypes.string.isRequired,
   multisig: PropTypes.string.isRequired,
   owner: PropTypes.string.isRequired,
-  threshold: PropTypes.string.isRequired,
+  threshold: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   handleTerminate: PropTypes.func,
   getButton: PropTypes.func.isRequired,
   canShowMultisigSameAddress: PropTypes.bool,

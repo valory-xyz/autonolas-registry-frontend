@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { connect, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
-import { Typography, notification } from 'antd/lib';
+import { Typography } from 'antd';
 import {
   DEFAULT_SERVICE_CREATION_ETH_TOKEN,
   DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS,
@@ -17,7 +17,7 @@ import {
   getServiceManagerL2Contract,
 } from 'common-util/Contracts';
 import { sendTransaction } from 'common-util/functions/sendTransaction';
-import { isL1Network } from 'common-util/functions';
+import { isL1Network, notifyError, notifySuccess } from 'common-util/functions';
 import { checkIfERC721Receive } from 'common-util/functions/requests';
 import RegisterForm from './RegisterForm';
 import { getAgentParams } from './utils';
@@ -78,11 +78,12 @@ const MintService = ({ account }) => {
       sendTransaction(fn, account)
         .then((result) => {
           setInformation(result);
-          notification.success({ message: 'Service minted' });
+          notifySuccess('Service minted');
         })
         .catch((e) => {
           setError(e);
           console.error(e);
+          notifyError('Error minting service');
         })
         .finally(() => {
           setIsMinting(false);

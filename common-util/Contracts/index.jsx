@@ -25,6 +25,19 @@ import {
   LOCAL_FORK_ID_POLYGON,
 } from 'util/constants';
 
+export const rpc = {
+  1: process.env.NEXT_PUBLIC_MAINNET_URL,
+  5: process.env.NEXT_PUBLIC_GOERLI_URL,
+  100: process.env.NEXT_PUBLIC_GNOSIS_URL,
+  137: process.env.NEXT_PUBLIC_POLYGON_URL,
+  10200: process.env.NEXT_PUBLIC_GNOSIS_CHIADO_URL,
+  80001: process.env.NEXT_PUBLIC_POLYGON_MUMBAI_URL,
+  31337: process.env.NEXT_PUBLIC_AUTONOLAS_URL,
+  [LOCAL_FORK_ID]: 'http://localhost:8545',
+  [LOCAL_FORK_ID_GNOSIS]: 'http://localhost:8545',
+  [LOCAL_FORK_ID_POLYGON]: 'http://localhost:8545',
+};
+
 const MAINNET_ADDRESSES = {
   agentRegistry: '0x2F1f7D38e4772884b88f3eCd8B6b9faCdC319112',
   componentRegistry: '0x15bd56669F57192a97dF41A2aa8f4403e9491776',
@@ -118,13 +131,10 @@ export const getMyProvider = () => {
   return process.env.NEXT_PUBLIC_MAINNET_URL;
 };
 
+/**
+ * returns the web3 details
+ */
 export const getWeb3Details = () => {
-  /**
-   * web3 provider =
-   * - wallect-connect provider or
-   * - currentProvider by metamask or
-   * - fallback to remote mainnet [remote node provider](https://web3js.readthedocs.io/en/v1.7.5/web3.html#example-remote-node-provider)
-   */
   const web3 = new Web3(getMyProvider());
   const chainId = getChainId();
   const address = ADDRESSES[chainId];
@@ -132,31 +142,48 @@ export const getWeb3Details = () => {
   return { web3, address, chainId };
 };
 
+/**
+ * returns the contract instance
+ * @param {Array} abi - abi of the contract
+ * @param {String} contractAddress - address of the contract
+ */
+const getContract = (abi, contractAddress) => {
+  const { web3 } = getWeb3Details();
+  const contract = new web3.eth.Contract(abi, contractAddress);
+  return contract;
+};
+
+/**
+ * @returns componentRegistry contract
+ */
 export const getComponentContract = () => {
-  const { web3, address } = getWeb3Details();
+  const { address } = getWeb3Details();
   const { componentRegistry } = address;
-  const contract = new web3.eth.Contract(
+  const contract = getContract(
     COMPONENT_REGISTRY_CONTRACT.abi,
     componentRegistry,
   );
   return contract;
 };
 
+/**
+ * @returns agentRegistry contract
+ */
 export const getAgentContract = () => {
-  const { web3, address } = getWeb3Details();
+  const { address } = getWeb3Details();
   const { agentRegistry } = address;
-  const contract = new web3.eth.Contract(
-    AGENT_REGISTRY_CONTRACT.abi,
-    agentRegistry,
-  );
+  const contract = getContract(AGENT_REGISTRY_CONTRACT.abi, agentRegistry);
   return contract;
 };
 
+/**
+ * @returns registriesManager contract
+ */
 export const getMechMinterContract = () => {
-  const { web3, address } = getWeb3Details();
+  const { address } = getWeb3Details();
   const { registriesManager } = address;
 
-  const contract = new web3.eth.Contract(
+  const contract = getContract(
     REGISTRIES_MANAGER_CONTRACT.abi,
     registriesManager,
   );
@@ -164,87 +191,104 @@ export const getMechMinterContract = () => {
   return contract;
 };
 
+/**
+ *
+ * @returns serviceRegistry contract
+ */
 export const getServiceContract = () => {
-  const { web3, address, chainId } = getWeb3Details();
+  const { address, chainId } = getWeb3Details();
   if (isL1Network(chainId)) {
     const { serviceRegistry } = address;
-    return new web3.eth.Contract(
+    const contract = getContract(
       SERVICE_REGISTRY_CONTRACT.abi,
       serviceRegistry,
     );
+    return contract;
   }
 
   const { serviceRegistryL2 } = address;
-  return new web3.eth.Contract(SERVICE_REGISTRY_L2.abi, serviceRegistryL2);
+  const contract = getContract(SERVICE_REGISTRY_L2.abi, serviceRegistryL2);
+  return contract;
 };
 
+/**
+ * @returns serviceManager contract
+ */
 export const getServiceManagerContract = () => {
-  const { web3, address } = getWeb3Details();
+  const { address } = getWeb3Details();
   const { serviceManagerToken } = address;
-  const contract = new web3.eth.Contract(
+  const contract = getContract(
     SERVICE_MANAGER_TOKEN_CONTRACT.abi,
     serviceManagerToken,
   );
   return contract;
 };
 
+/**
+ * @returns serviceManager L2 contract
+ */
 export const getServiceManagerL2Contract = () => {
-  const { web3, address } = getWeb3Details();
+  const { address } = getWeb3Details();
   const { serviceManager } = address;
-  const contract = new web3.eth.Contract(
-    SERVICE_MANAGER_CONTRACT.abi,
-    serviceManager,
-  );
+  const contract = getContract(SERVICE_MANAGER_CONTRACT.abi, serviceManager);
   return contract;
 };
 
+/**
+ * @returns serviceRegistryTokenUtility contract
+ */
 export const getServiceRegistryTokenUtilityContract = () => {
-  const { web3, address } = getWeb3Details();
+  const { address } = getWeb3Details();
   const { serviceRegistryTokenUtility } = address;
-  const contract = new web3.eth.Contract(
+  const contract = getContract(
     SERVICE_REGISTRY_TOKEN_UTILITY_CONTRACT.abi,
     serviceRegistryTokenUtility,
   );
   return contract;
 };
 
+/**
+ * @returns operatorWhitelist contract
+ */
 export const getOperatorWhitelistContract = () => {
-  const { web3, address } = getWeb3Details();
+  const { address } = getWeb3Details();
   const { operatorWhitelist } = address;
-  const contract = new web3.eth.Contract(
+  const contract = getContract(
     OPERATOR_WHITELIST_CONTRACT.abi,
     operatorWhitelist,
   );
   return contract;
 };
 
+/**
+ * @returns generic erc20 contract
+ */
 export const getGenericErc20Contract = (tokenAddress) => {
-  const { web3 } = getWeb3Details();
-  const contract = new web3.eth.Contract(
-    GENERIC_ERC20_CONTRACT.abi,
-    tokenAddress,
-  );
+  const contract = getContract(GENERIC_ERC20_CONTRACT.abi, tokenAddress);
   return contract;
 };
 
+/**
+ * @returns signMessageLib contract
+ */
 export const getSignMessageLibContract = (address) => {
-  const { web3 } = getWeb3Details();
-  const contract = new web3.eth.Contract(
-    SIGN_MESSAGE_LIB_CONTRACT.abi,
-    address,
-  );
+  const contract = getContract(SIGN_MESSAGE_LIB_CONTRACT.abi, address);
   return contract;
 };
 
+/**
+ * @returns multisig contract
+ */
 export const getServiceOwnerMultisigContract = (address) => {
-  const { web3 } = getWeb3Details();
-  const contract = new web3.eth.Contract(GNOSIS_SAFE_CONTRACT.abi, address);
+  const contract = getContract(GNOSIS_SAFE_CONTRACT.abi, address);
   return contract;
 };
 
+/**
+ * @returns multiSend contract
+ */
 export const getMultiSendContract = (address) => {
-  const { web3 } = getWeb3Details();
-  const contract = new web3.eth.Contract(MULTI_SEND_CONTRACT.abi, address);
+  const contract = getContract(MULTI_SEND_CONTRACT.abi, address);
   return contract;
 };
 
@@ -290,19 +334,6 @@ export const safeMultiSend = {
   [LOCAL_FORK_ID]: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
   [LOCAL_FORK_ID_GNOSIS]: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
   [LOCAL_FORK_ID_POLYGON]: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
-};
-
-export const rpc = {
-  1: process.env.NEXT_PUBLIC_MAINNET_URL,
-  5: process.env.NEXT_PUBLIC_GOERLI_URL,
-  100: process.env.NEXT_PUBLIC_GNOSIS_URL,
-  137: process.env.NEXT_PUBLIC_POLYGON_URL,
-  10200: process.env.NEXT_PUBLIC_GNOSIS_CHIADO_URL,
-  80001: process.env.NEXT_PUBLIC_POLYGON_MUMBAI_URL,
-  31337: process.env.NEXT_PUBLIC_AUTONOLAS_URL,
-  [LOCAL_FORK_ID]: 'http://localhost:8545',
-  [LOCAL_FORK_ID_GNOSIS]: 'http://localhost:8545',
-  [LOCAL_FORK_ID_POLYGON]: 'http://localhost:8545',
 };
 
 export const FALLBACK_HANDLER = {

@@ -1,7 +1,5 @@
 import { useRouter } from 'next/router';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import get from 'lodash/get';
+import { useSelector } from 'react-redux';
 import { URL } from 'util/constants';
 import Details from 'common-util/Details';
 import {
@@ -12,9 +10,10 @@ import {
   getTokenUri,
 } from './utils';
 
-const Component = ({ account }) => {
+const Component = () => {
   const router = useRouter();
-  const id = get(router, 'query.id') || null;
+  const id = router?.query?.id;
+  const account = useSelector((state) => state?.setup?.account);
 
   return (
     <Details
@@ -24,23 +23,12 @@ const Component = ({ account }) => {
       getHashes={() => getComponentHashes(id)}
       getOwner={() => getComponentOwner(id)}
       getTokenUri={() => getTokenUri(id)}
-      onUpdateHash={(newHash) => updateComponentHashes(account, id, newHash)}
+      onUpdateHash={async (newHash) => {
+        await updateComponentHashes(account, id, newHash);
+      }}
       onDependencyClick={(e) => router.push(`${URL.COMPONENTS}/${e}`)}
     />
   );
 };
 
-Component.propTypes = {
-  account: PropTypes.string,
-};
-
-Component.defaultProps = {
-  account: null,
-};
-
-const mapStateToProps = (state) => {
-  const account = get(state, 'setup.account') || null;
-  return { account };
-};
-
-export default connect(mapStateToProps, {})(Component);
+export default Component;

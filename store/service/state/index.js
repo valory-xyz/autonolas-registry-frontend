@@ -4,11 +4,11 @@ const initialState = {
   agentInstancesAndOperators: [],
 };
 
-const serviceState = (state = initialState, action) => {
-  switch (action.type) {
+const serviceState = (state = initialState, { type, data } = {}) => {
+  switch (type) {
     case syncTypes.SET_AGENT_INSTANCES_AND_OPERATORS:
     case syncTypes.SET_STORE_STATE: {
-      return { ...state, ...action.data };
+      return { ...state, ...data };
     }
 
     default:
