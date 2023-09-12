@@ -82,7 +82,7 @@ export const sendTransaction = (
                * use `transactionHash`, get the hash, then poll until
                * it resolves with Output
                */
-            const chainId = getChainId() || 1;
+            const chainId = getChainId();
             pollTransactionDetails(safeTx, chainId)
               .then((receipt) => {
                 resolve(receipt);

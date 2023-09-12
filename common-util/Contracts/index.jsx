@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import Web3 from 'web3';
 import {
   REGISTRIES_MANAGER_CONTRACT,
@@ -15,7 +14,11 @@ import {
   GENERIC_ERC20_CONTRACT,
   OPERATOR_WHITELIST_CONTRACT,
 } from 'common-util/AbiAndAddresses';
-import { isL1Network, getChainId } from 'common-util/functions';
+import {
+  isL1Network,
+  getChainId,
+  getIsValidChainId,
+} from 'common-util/functions';
 import {
   LOCAL_FORK_ID,
   LOCAL_FORK_ID_GNOSIS,
@@ -99,29 +102,44 @@ export const ADDRESSES = {
   [LOCAL_FORK_ID_POLYGON]: POLYGON_ADDRESSES,
 };
 
-/**
- *
- * order of precedence is as follows:
- * 1. window.MODAL_PROVIDER - injected provider (done on Login.jsx)
- * 2. window.ethereum - metamask (or other wallet)
- */
-export const getMyProvider = () => window.MODAL_PROVIDER || window.ethereum;
+export const getMyProvider = () => {
+  if (typeof window === 'undefined') {
+    console.error('No provider found');
+  }
+
+  // connected via wallet-connect
+  if (window?.MODAL_PROVIDER) {
+    const walletConnectChainId = Number(window.MODAL_PROVIDER.chainId);
+
+    // if logged in via wallet-connect but chainId is not supported,
+    // default to mainnet (ie. Use JSON-RPC provider)
+    return getIsValidChainId(walletConnectChainId)
+      ? window.MODAL_PROVIDER
+      : process.env.NEXT_PUBLIC_MAINNET_URL;
+  }
+
+  // NOT logged in but has wallet installed (eg. Metamask).
+  // If chainId is not supported, default to mainnet (ie. Use JSON-RPC provider)
+  if (window?.ethereum?.chainId) {
+    const walletChainId = Number(window.ethereum.chainId);
+    return getIsValidChainId(walletChainId)
+      ? window?.ethereum
+      : process.env.NEXT_PUBLIC_MAINNET_URL;
+  }
+
+  // fallback to mainnet JSON RPC provider
+  return process.env.NEXT_PUBLIC_MAINNET_URL;
+};
 
 /**
  * returns the web3 details
  */
 export const getWeb3Details = () => {
-  const chainId = getChainId() || 1; // default to mainnet
+  const web3 = new Web3(getMyProvider());
+  const chainId = getChainId();
   const address = ADDRESSES[chainId];
 
-  // if provider is null, we still show everything as in mainnet
-  const provider = new Web3(getMyProvider() || rpc[chainId]);
-
-  return {
-    address,
-    chainId,
-    provider,
-  };
+  return { web3, address, chainId };
 };
 
 /**
@@ -130,8 +148,8 @@ export const getWeb3Details = () => {
  * @param {String} contractAddress - address of the contract
  */
 const getContract = (abi, contractAddress) => {
-  const { provider } = getWeb3Details();
-  const contract = new provider.eth.Contract(abi, contractAddress);
+  const { web3 } = getWeb3Details();
+  const contract = new web3.eth.Contract(abi, contractAddress);
   return contract;
 };
 

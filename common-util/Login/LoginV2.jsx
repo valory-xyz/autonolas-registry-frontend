@@ -6,7 +6,10 @@ import { COLOR } from '@autonolas/frontend-library';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { setChainId } from 'store/setup/actions';
-import { getChainId } from 'common-util/functions';
+import {
+  getChainId,
+  getChainIdOrDefaultToMainnet,
+} from 'common-util/functions';
 import { useScreen } from 'common-util/hooks';
 import { projectId, ethereumClient } from './config';
 
@@ -39,15 +42,11 @@ export const LoginV2 = ({
        */
       setTimeout(() => {
         const tempChainId = getChainId();
-        if (!tempChainId) {
-          window.console.warn('chainId is undefined setting it to mainnet (1)');
-        }
-        window.CHAIN_ID = tempChainId || 1;
-        dispatch(setChainId(tempChainId || 1));
+        dispatch(setChainId(tempChainId));
       }, 100);
     } else {
-      window.CHAIN_ID = chainId;
-      dispatch(setChainId(chainId));
+      const tempChainId = getChainIdOrDefaultToMainnet(chainId);
+      dispatch(setChainId(tempChainId));
     }
   }, [chainId]);
 

@@ -1,7 +1,12 @@
 import { ethers } from 'ethers';
 import { notification } from 'antd';
 import { STAGING_CHAIN_ID } from '@autonolas/frontend-library';
-import { TOTAL_VIEW_COUNT, LOCAL_FORK_ID } from 'util/constants';
+import {
+  TOTAL_VIEW_COUNT,
+  LOCAL_FORK_ID,
+  DEFAULT_CHAIN_ID,
+} from 'util/constants';
+import { SUPPORTED_CHAINS } from 'common-util/Login';
 
 export const convertToEth = (value) => ethers.utils.formatEther(value);
 
@@ -31,16 +36,48 @@ export const notifySuccess = (message = 'Successful') => notification.success({ 
 export const notifyError = (message = 'Some error occured') => notification.error({ message });
 export const notifyWarning = (message = 'Some error occured') => notification.error({ message });
 
-// functions
+export const getIsValidChainId = (chainId) => {
+  if (!chainId) return false;
+  return SUPPORTED_CHAINS.some((e) => e.id === Number(chainId));
+};
+
+/**
+ * helper function to get chainId, if chainId is not supported, default to mainnet
+ * @param {number | string} chainIdPassed valid chainId
+ * @returns
+ */
+export const getChainIdOrDefaultToMainnet = (chainIdPassed) => {
+  if (!chainIdPassed) {
+    throw new Error('chainId is not passed');
+  }
+
+  const chain = Number(chainIdPassed);
+  return getIsValidChainId(chain) ? chain : DEFAULT_CHAIN_ID;
+};
+
+/**
+ *
+ * @param {Number} chainId
+ * @returns {Number} valid chainId & defaults to mainnet if chainId is not supported
+ */
 export const getChainId = (chainId = null) => {
   if (typeof window === 'undefined') return chainId;
 
-  const currentChainId = chainId
-    || window?.CHAIN_ID // this is set in LoginV2.jsx (once wallet is connected)
-    || window?.MODAL_PROVIDER?.chainId // set by web3modal
-    || window?.ethereum?.chainId; // set by metamask (useful when wallet is not connected)
+  // connected via wallet-connect
+  if (window?.MODAL_PROVIDER?.chainId) {
+    const walletConnectChainId = window.MODAL_PROVIDER.chainId;
+    return getChainIdOrDefaultToMainnet(walletConnectChainId);
+  }
 
-  return currentChainId ? Number(currentChainId) : null;
+  // NOT logged in but has wallet installed (eg. metamask).
+  // window?.ethereum?.chainId is chainId set by wallet
+  if (window?.ethereum?.chainId) {
+    const walletChainId = window.ethereum.chainId;
+    return getChainIdOrDefaultToMainnet(walletChainId);
+  }
+
+  // has no wallet (eg. incognito mode or no wallet installed)
+  return DEFAULT_CHAIN_ID;
 };
 
 export const isL1OnlyNetwork = (chainId) => {

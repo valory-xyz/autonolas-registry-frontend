@@ -20,6 +20,10 @@ jest.mock('ipfs-only-hash', () => ({
   of: jest.fn(),
 }));
 
+jest.mock('common-util/Login', () => ({
+  SUPPORTED_CHAINS: [{ id: 1 }],
+}));
+
 jest.mock('next/router', () => ({
   __esModule: true,
   useRouter: jest.fn(),
