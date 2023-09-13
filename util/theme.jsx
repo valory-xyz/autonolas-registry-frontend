@@ -26,8 +26,8 @@ export const themeConfig = {
   },
   components: {
     Layout: {
-      colorBgHeader: COLOR.WHITE,
-      colorBgBody: COLOR.WHITE,
+      headerBg: COLOR.WHITE,
+      bodyBg: COLOR.WHITE,
     },
     Tabs: {
       motionDurationMid: '0.1s',
