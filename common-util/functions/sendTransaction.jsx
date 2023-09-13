@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { getMyProvider } from 'common-util/Contracts';
+import { getCustomProvider } from 'common-util/Contracts';
 import {
   getChainId,
   notifyError,
@@ -58,7 +58,10 @@ export const sendTransaction = (
   sendFn,
   account = window?.MODAL_PROVIDER?.accounts[0],
 ) => new Promise((resolve, reject) => {
-  const provider = new ethers.providers.Web3Provider(getMyProvider(), 'any');
+  const provider = new ethers.providers.Web3Provider(
+    getCustomProvider(),
+    'any',
+  );
 
   provider
     .getCode(account)

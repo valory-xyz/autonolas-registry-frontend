@@ -102,7 +102,7 @@ export const ADDRESSES = {
   [LOCAL_FORK_ID_POLYGON]: POLYGON_ADDRESSES,
 };
 
-export const getMyProvider = () => {
+export const getCustomProvider = () => {
   if (typeof window === 'undefined') {
     console.error('No provider found');
   }
@@ -135,7 +135,7 @@ export const getMyProvider = () => {
  * returns the web3 details
  */
 export const getWeb3Details = () => {
-  const web3 = new Web3(getMyProvider());
+  const web3 = new Web3(getCustomProvider());
   const chainId = getChainId();
   const address = ADDRESSES[chainId];
 

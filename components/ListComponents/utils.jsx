@@ -3,7 +3,7 @@ import {
   getComponentContract,
 } from 'common-util/Contracts';
 import { getListByAccount } from 'common-util/ContractUtils/myList';
-import { getFirstAndLastIndex } from 'common-util/functions';
+import { getFirstAndLastIndex } from 'common-util/List/functions';
 import { sendTransaction } from 'common-util/functions/sendTransaction';
 
 // --------- HELPER METHODS ---------

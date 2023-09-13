@@ -1,5 +1,5 @@
 import includes from 'lodash/includes';
-import { getFirstAndLastIndex } from 'common-util/functions';
+import { getFirstAndLastIndex } from 'common-util/List/functions';
 
 export const filterByOwner = (results, { searchValue, account }) => (results || []).filter((e) => {
   const search = (searchValue || '').trim().toLowerCase();
