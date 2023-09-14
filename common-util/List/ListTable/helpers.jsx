@@ -9,10 +9,6 @@ import { NAV_TYPES, SERVICE_STATE, TOTAL_VIEW_COUNT } from 'util/constants';
 
 const { Title } = Typography;
 
-/**
- * helper functions
- */
-
 export const getTableColumns = (
   type,
   { onViewClick, onUpdateClick, isMobile },

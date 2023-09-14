@@ -54,11 +54,3 @@ export const getMyListOnPagination = ({ total, nextPage, list = [] }) => {
   const array = list.slice(first - 1, last);
   return array;
 };
-
-/**
- * call API once and return based on pagination
- */
-export const getTotalOfFilteredList = async ({ list }) => {
-  const { length } = list || [];
-  return length;
-};

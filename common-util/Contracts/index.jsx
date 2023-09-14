@@ -23,7 +23,7 @@ import {
   LOCAL_FORK_ID_POLYGON,
 } from 'util/constants';
 
-export const rpc = {
+export const RPC_URLS = {
   1: process.env.NEXT_PUBLIC_MAINNET_URL,
   5: process.env.NEXT_PUBLIC_GOERLI_URL,
   100: process.env.NEXT_PUBLIC_GNOSIS_URL,
