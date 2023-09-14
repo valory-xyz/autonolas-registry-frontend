@@ -1,51 +1,13 @@
 import { useState } from 'react';
-import PropTypes from 'prop-types';
 import {
-  Input, Space, Button, Typography, Tooltip,
+  Input, Space, Button, Typography,
 } from 'antd';
-import { SearchOutlined, CopyOutlined } from '@ant-design/icons';
-import { AddressLink, getTrimmedText } from '@autonolas/frontend-library';
+import { SearchOutlined } from '@ant-design/icons';
+import { AddressLink } from '@autonolas/frontend-library';
 
 import { NAV_TYPES, SERVICE_STATE, TOTAL_VIEW_COUNT } from 'util/constants';
 
-const { Text, Title } = Typography;
-const textStyle = { maxWidth: '100%' };
-
-/**
- * helper components
- */
-
-export const EllipsisMiddle = ({ suffixCount, children, ...rest }) => {
-  if (typeof children !== 'string') return <>{children}</>;
-
-  if (children.length <= 12) return <Text {...rest}>{children}</Text>;
-
-  /**
-   * truncate only if the character exceeds more than 12
-   */
-  return (
-    <Text style={textStyle} {...rest}>
-      {getTrimmedText(children, suffixCount)}
-      <Tooltip title="Copy">
-        &nbsp;
-        <Button
-          onClick={() => navigator.clipboard.writeText(children)}
-          icon={<CopyOutlined />}
-        />
-      </Tooltip>
-    </Text>
-  );
-};
-
-EllipsisMiddle.propTypes = {
-  suffixCount: PropTypes.number,
-  children: PropTypes.string,
-};
-
-EllipsisMiddle.defaultProps = {
-  suffixCount: 6,
-  children: '',
-};
+const { Title } = Typography;
 
 /**
  * helper functions
@@ -77,7 +39,9 @@ export const getTableColumns = (
         dataIndex: 'hash',
         key: 'hash',
         width: 180,
-        render: (text) => <EllipsisMiddle>{text}</EllipsisMiddle>,
+        render: (text) => (
+          <AddressLink text={text} suffixCount={isMobile ? 4 : 6} isIpfsLink />
+        ),
       },
       {
         title: 'No. of component dependencies',

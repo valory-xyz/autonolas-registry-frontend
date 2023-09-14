@@ -1,5 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import { ethers } from 'ethers';
+import safeContracts from '@gnosis.pm/safe-contracts';
 import {
   GNOSIS_SAFE_CONTRACT,
   MULTI_SEND_CONTRACT,
@@ -8,10 +9,8 @@ import {
   rpc,
   getServiceOwnerMultisigContract,
   safeMultiSend,
-  getCustomProvider,
 } from 'common-util/Contracts';
-import { checkIfGnosisSafe } from 'common-util/functions';
-import safeContracts from '@gnosis.pm/safe-contracts';
+import { checkIfGnosisSafe, getEthersProvider } from 'common-util/functions';
 import { isHashApproved } from './helpers';
 
 const ZEROS_24 = '0'.repeat(24);
@@ -93,7 +92,7 @@ export const handleMultisigSubmit = async ({
     nonce,
   );
 
-  const provider = new ethers.providers.Web3Provider(getCustomProvider(), 'any');
+  const provider = getEthersProvider();
   const isSafe = await checkIfGnosisSafe(account, provider);
 
   try {

@@ -4,7 +4,7 @@ import {
 } from 'common-util/Contracts';
 import { getListByAccount } from 'common-util/ContractUtils/myList';
 import { getFirstAndLastIndex } from 'common-util/List/functions';
-import { sendTransaction } from 'common-util/functions/sendTransaction';
+import { sendTransaction } from 'common-util/functions';
 
 // --------- HELPER METHODS ---------
 export const getComponentOwner = async (id) => {

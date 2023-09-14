@@ -1,40 +1,28 @@
 import {
   isValidAddress,
-  getChainIdOrDefaultToMainnet as getChainIdOrDefaultToMainnetFn,
+  getProvider as getProviderFn,
+  getEthersProvider as getEthersProviderFn,
   getChainId as getChainIdFn,
-  notifyWarning,
+  getChainIdOrDefaultToMainnet as getChainIdOrDefaultToMainnetFn,
+  getIsValidChainId as getIsValidChainIdFn,
+  sendTransaction as sendTransactionFn,
 } from '@autonolas/frontend-library';
-
 import { SUPPORTED_CHAINS } from 'common-util/Login';
 
-// Nofitications
-export const safeSendTransactionNotification = () => notifyWarning({
-  message: 'Please submit the transaction in your safe app.',
-});
+export const getProvider = () => getProviderFn(SUPPORTED_CHAINS);
 
-export const getIsValidChainId = (chainId) => {
-  if (!chainId) return false;
-  return SUPPORTED_CHAINS.some((e) => e.id === Number(chainId));
-};
+export const getEthersProvider = () => getEthersProviderFn(SUPPORTED_CHAINS);
 
-/**
- * helper function to get chainId, if chainId is not supported, default to mainnet
- * @param {number | string} chainIdPassed valid chainId
- * @returns
- */
-export const getChainIdOrDefaultToMainnet = (chainIdPassed) => {
-  const x = getChainIdOrDefaultToMainnetFn(SUPPORTED_CHAINS, chainIdPassed);
+export const getIsValidChainId = (chainId) => getIsValidChainIdFn(SUPPORTED_CHAINS, chainId);
+
+export const getChainIdOrDefaultToMainnet = (chainId) => {
+  const x = getChainIdOrDefaultToMainnetFn(SUPPORTED_CHAINS, chainId);
   return x;
 };
 
-/**
- *
- * @param {Number} chainId
- * @returns {Number} valid chainId & defaults to mainnet if chainId is not supported
- */
 export const getChainId = (chainId = null) => getChainIdFn(SUPPORTED_CHAINS, chainId);
 
-export const isLocalNetwork = (chainId) => getChainId(chainId) === 31337;
+export const sendTransaction = (fn, account) => sendTransactionFn(fn, account, SUPPORTED_CHAINS);
 
 export const addressValidator = () => ({
   validator(_, value) {

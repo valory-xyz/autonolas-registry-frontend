@@ -20,7 +20,7 @@ import {
   getServiceManagerContract,
   getServiceManagerL2Contract,
 } from 'common-util/Contracts';
-import { sendTransaction } from 'common-util/functions/sendTransaction';
+import { sendTransaction } from 'common-util/functions';
 import RegisterForm from './RegisterForm';
 import {
   getAgentParams,

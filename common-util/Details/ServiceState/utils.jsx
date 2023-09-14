@@ -11,7 +11,7 @@ import {
   getServiceManagerContract,
   getServiceRegistryTokenUtilityContract,
 } from 'common-util/Contracts';
-import { sendTransaction } from 'common-util/functions/sendTransaction';
+import { sendTransaction } from 'common-util/functions';
 
 /* ----- helper functions ----- */
 

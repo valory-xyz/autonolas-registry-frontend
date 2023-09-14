@@ -7,7 +7,7 @@ import { notifyError, notifySuccess } from '@autonolas/frontend-library';
 import RegisterForm from 'common-util/List/RegisterForm';
 import { AlertSuccess, AlertError } from 'common-util/List/ListCommon';
 import { getMechMinterContract } from 'common-util/Contracts';
-import { sendTransaction } from 'common-util/functions/sendTransaction';
+import { sendTransaction } from 'common-util/functions';
 import { checkIfERC721Receive } from 'common-util/functions/requests';
 import { FormContainer } from '../styles';
 
