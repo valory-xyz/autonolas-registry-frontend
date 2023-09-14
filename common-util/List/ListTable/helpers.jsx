@@ -4,7 +4,7 @@ import {
   Input, Space, Button, Typography, Tooltip,
 } from 'antd';
 import { SearchOutlined, CopyOutlined } from '@ant-design/icons';
-import { AddressLink } from '@autonolas/frontend-library';
+import { AddressLink, getTrimmedText } from '@autonolas/frontend-library';
 
 import { NAV_TYPES, SERVICE_STATE, TOTAL_VIEW_COUNT } from 'util/constants';
 
@@ -14,13 +14,6 @@ const textStyle = { maxWidth: '100%' };
 /**
  * helper components
  */
-
-export const getTrimmedText = (str, suffixCount) => {
-  const text = str.trim();
-  const frontText = text.slice(0, suffixCount);
-  const backText = text.slice(text.length - suffixCount, text.length);
-  return `${frontText}...${backText}`;
-};
 
 export const EllipsisMiddle = ({ suffixCount, children, ...rest }) => {
   if (typeof children !== 'string') return <>{children}</>;

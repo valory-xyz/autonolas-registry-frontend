@@ -3,6 +3,8 @@ import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import { connect, useSelector } from 'react-redux';
 import { Typography } from 'antd';
+import { isL1Network } from '@autonolas/frontend-library';
+
 import {
   DEFAULT_SERVICE_CREATION_ETH_TOKEN,
   DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS,
@@ -14,7 +16,9 @@ import {
   getServiceManagerL2Contract,
 } from 'common-util/Contracts';
 import {
-  isL1Network, isL1OnlyNetwork, notifyError, notifySuccess,
+  isL1OnlyNetwork,
+  notifyError,
+  notifySuccess,
 } from 'common-util/functions';
 import { sendTransaction } from 'common-util/functions/sendTransaction';
 import RegisterForm from './RegisterForm';

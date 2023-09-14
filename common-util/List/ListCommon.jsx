@@ -3,7 +3,8 @@ import Link from 'next/link';
 import { Alert, Button } from 'antd';
 import bs58 from 'bs58';
 import { ExportOutlined } from '@ant-design/icons';
-import { isL1Network } from 'common-util/functions';
+import { isL1Network } from '@autonolas/frontend-library';
+
 import { EmptyMessage, RegisterFooter } from 'components/styles';
 
 // constants

@@ -1,4 +1,6 @@
 import Web3 from 'web3';
+import { isL1Network } from '@autonolas/frontend-library';
+
 import {
   REGISTRIES_MANAGER_CONTRACT,
   AGENT_REGISTRY_CONTRACT,
@@ -14,11 +16,7 @@ import {
   GENERIC_ERC20_CONTRACT,
   OPERATOR_WHITELIST_CONTRACT,
 } from 'common-util/AbiAndAddresses';
-import {
-  isL1Network,
-  getChainId,
-  getIsValidChainId,
-} from 'common-util/functions';
+import { getChainId, getIsValidChainId } from 'common-util/functions';
 import {
   LOCAL_FORK_ID,
   LOCAL_FORK_ID_GNOSIS,

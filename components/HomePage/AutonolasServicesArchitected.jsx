@@ -1,8 +1,9 @@
 import { useSelector } from 'react-redux';
 import { Col, Row, Typography } from 'antd';
 import Link from 'next/link';
+import { isL1Network } from '@autonolas/frontend-library';
+
 import { URL } from 'util/constants';
-import { isL1Network } from 'common-util/functions';
 import { useScreen } from 'common-util/hooks/useScreen';
 import Image from 'next/image';
 import { ContentRow } from './styles';
