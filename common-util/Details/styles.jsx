@@ -54,8 +54,8 @@ export const NftImageContainer = styled(Image)`
 export const ServiceStatus = styled.div`
   display: inline-block;
   &.active svg {
-    fill: ${COLOR.GREEN_3}; // TODO: move to 4
-    color: ${COLOR.GREEN_3}; // TODO: move to 4
+    fill: ${COLOR.GREEN_4};
+    color: ${COLOR.GREEN_4};
   }
   &.inactive svg {
     fill: ${COLOR.RED};
