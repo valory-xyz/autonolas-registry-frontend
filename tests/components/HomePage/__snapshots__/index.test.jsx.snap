@@ -9,23 +9,23 @@ exports[`<HomePage> should render homepage 1`] = `
       class="styles__HeaderRow-sc-4qo35f-1 llnNb row-1"
     >
       <div
-        class="ant-row css-dev-only-do-not-override-17a39f8"
+        class="ant-row css-dev-only-do-not-override-18iikkb"
       >
         <div
-          class="ant-col ant-col-14 ant-col-offset-2 css-dev-only-do-not-override-17a39f8"
+          class="ant-col ant-col-14 ant-col-offset-2 css-dev-only-do-not-override-18iikkb"
         >
           <h1
-            class="ant-typography hero-title css-dev-only-do-not-override-17a39f8"
+            class="ant-typography hero-title css-dev-only-do-not-override-18iikkb"
           >
              Mint and manage your services, agents and components.
           </h1>
           <span
-            class="ant-typography lead css-dev-only-do-not-override-17a39f8"
+            class="ant-typography lead css-dev-only-do-not-override-18iikkb"
           >
             The easiest way to interact with the Autonolas on-chain registry.
           </span>
           <a
-            class="ant-btn css-dev-only-do-not-override-17a39f8 ant-btn-primary ant-btn-lg"
+            class="ant-btn css-dev-only-do-not-override-18iikkb ant-btn-primary ant-btn-lg"
             href="/components"
           >
             <span>
@@ -34,7 +34,7 @@ exports[`<HomePage> should render homepage 1`] = `
           </a>
         </div>
         <div
-          class="ant-col ant-col-8 css-dev-only-do-not-override-17a39f8"
+          class="ant-col ant-col-8 css-dev-only-do-not-override-18iikkb"
         >
           <img
             alt="Autonomous Agent Service Architecture"
@@ -54,15 +54,15 @@ exports[`<HomePage> should render homepage 1`] = `
       class="styles__ContentRow-sc-4qo35f-2 cbTHzi row-2"
     >
       <h3
-        class="ant-typography title css-dev-only-do-not-override-17a39f8"
+        class="ant-typography title css-dev-only-do-not-override-18iikkb"
       >
         How are Autonolas services architected?
       </h3>
       <div
-        class="ant-row ant-row-middle each-service css-dev-only-do-not-override-17a39f8"
+        class="ant-row ant-row-middle each-service css-dev-only-do-not-override-18iikkb"
       >
         <div
-          class="ant-col column column-1 ant-col-xs-10 ant-col-md-12 css-dev-only-do-not-override-17a39f8"
+          class="ant-col column column-1 ant-col-xs-10 ant-col-md-12 css-dev-only-do-not-override-18iikkb"
         >
           <img
             alt="They manage how the service is set up. Service owners define the business model of their services, and charge DAOs to use them."
@@ -77,15 +77,15 @@ exports[`<HomePage> should render homepage 1`] = `
           />
         </div>
         <div
-          class="ant-col column column-2 ant-col-xs-14 ant-col-md-12 css-dev-only-do-not-override-17a39f8"
+          class="ant-col column column-2 ant-col-xs-14 ant-col-md-12 css-dev-only-do-not-override-18iikkb"
         >
           <h4
-            class="ant-typography css-dev-only-do-not-override-17a39f8"
+            class="ant-typography css-dev-only-do-not-override-18iikkb"
           >
             Service owners mint and manage complete agent services
           </h4>
           <span
-            class="ant-typography description css-dev-only-do-not-override-17a39f8"
+            class="ant-typography description css-dev-only-do-not-override-18iikkb"
           >
             They manage how the service is set up. Service owners define the business model of their services, and charge DAOs to use them.
           </span>
@@ -98,10 +98,10 @@ exports[`<HomePage> should render homepage 1`] = `
         </div>
       </div>
       <div
-        class="ant-row ant-row-middle each-service css-dev-only-do-not-override-17a39f8"
+        class="ant-row ant-row-middle each-service css-dev-only-do-not-override-18iikkb"
       >
         <div
-          class="ant-col column column-1 ant-col-xs-10 ant-col-md-12 css-dev-only-do-not-override-17a39f8"
+          class="ant-col column column-1 ant-col-xs-10 ant-col-md-12 css-dev-only-do-not-override-18iikkb"
         >
           <img
             alt="Services are run by multiple  software agents, each with an independent operator. Developers can author full agents, and these can be composed by service owners."
@@ -116,15 +116,15 @@ exports[`<HomePage> should render homepage 1`] = `
           />
         </div>
         <div
-          class="ant-col column column-2 ant-col-xs-14 ant-col-md-12 css-dev-only-do-not-override-17a39f8"
+          class="ant-col column column-2 ant-col-xs-14 ant-col-md-12 css-dev-only-do-not-override-18iikkb"
         >
           <h4
-            class="ant-typography css-dev-only-do-not-override-17a39f8"
+            class="ant-typography css-dev-only-do-not-override-18iikkb"
           >
             Services are made of agents
           </h4>
           <span
-            class="ant-typography description css-dev-only-do-not-override-17a39f8"
+            class="ant-typography description css-dev-only-do-not-override-18iikkb"
           >
             Services are run by multiple  software agents, each with an independent operator. Developers can author full agents, and these can be composed by service owners.
           </span>
@@ -137,10 +137,10 @@ exports[`<HomePage> should render homepage 1`] = `
         </div>
       </div>
       <div
-        class="ant-row ant-row-middle each-service css-dev-only-do-not-override-17a39f8"
+        class="ant-row ant-row-middle each-service css-dev-only-do-not-override-18iikkb"
       >
         <div
-          class="ant-col column column-1 ant-col-xs-10 ant-col-md-12 css-dev-only-do-not-override-17a39f8"
+          class="ant-col column column-1 ant-col-xs-10 ant-col-md-12 css-dev-only-do-not-override-18iikkb"
         >
           <img
             alt="Components are smaller blocks of code which can be reused by agent developers."
@@ -155,15 +155,15 @@ exports[`<HomePage> should render homepage 1`] = `
           />
         </div>
         <div
-          class="ant-col column column-2 ant-col-xs-14 ant-col-md-12 css-dev-only-do-not-override-17a39f8"
+          class="ant-col column column-2 ant-col-xs-14 ant-col-md-12 css-dev-only-do-not-override-18iikkb"
         >
           <h4
-            class="ant-typography css-dev-only-do-not-override-17a39f8"
+            class="ant-typography css-dev-only-do-not-override-18iikkb"
           >
             Each agent is made of components
           </h4>
           <span
-            class="ant-typography description css-dev-only-do-not-override-17a39f8"
+            class="ant-typography description css-dev-only-do-not-override-18iikkb"
           >
             Components are smaller blocks of code which can be reused by agent developers.
           </span>
