@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { Typography, Image } from 'antd';
-import { COLOR } from 'util/theme';
+import { COLOR } from '@autonolas/frontend-library';
 
 export const DetailsTitle = styled(Typography.Title)`
   text-transform: capitalize;
@@ -54,12 +54,12 @@ export const NftImageContainer = styled(Image)`
 export const ServiceStatus = styled.div`
   display: inline-block;
   &.active svg {
-    fill: ${COLOR.GREEN};
-    color: ${COLOR.GREEN};
+    fill: ${COLOR.GREEN_3}; // TODO: move to 4
+    color: ${COLOR.GREEN_3}; // TODO: move to 4
   }
   &.inactive svg {
-    fill: ${COLOR.RED_1};
-    color: ${COLOR.RED_1};
+    fill: ${COLOR.RED};
+    color: ${COLOR.RED};
   }
   svg {
     top: -1px;

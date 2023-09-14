@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { COLOR } from 'util/theme';
+import { COLOR } from '@autonolas/frontend-library';
 
 export const EmptyMessage = styled.div`
   min-height: 60vh;
