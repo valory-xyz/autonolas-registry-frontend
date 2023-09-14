@@ -4,8 +4,9 @@ import isNil from 'lodash/isNil';
 import {
   Form, Input, Button, Select,
 } from 'antd';
+import { notifyError, notifySuccess } from '@autonolas/frontend-library';
+
 import { HASH_PREFIXES } from 'util/constants';
-import { notifyError, notifySuccess } from 'common-util/functions';
 import { getIpfsHashHelper } from './helpers';
 import { CustomModal } from '../styles';
 

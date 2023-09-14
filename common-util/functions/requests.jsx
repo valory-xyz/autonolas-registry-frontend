@@ -1,10 +1,12 @@
 import { ethers } from 'ethers';
+import { notifyError } from '@autonolas/frontend-library';
+
 import { DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS } from 'util/constants';
 import {
   getServiceOwnerMultisigContract,
   getCustomProvider,
 } from 'common-util/Contracts';
-import { checkIfGnosisSafe, notifyError } from './index';
+import { checkIfGnosisSafe } from './index';
 
 const FALLBACK_HANDLER_STORAGE_SLOT = '0x6c9a6c4a39284e37ed1cf53d337577d14212a4870fb976a4366c693b939918d5';
 

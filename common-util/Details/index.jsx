@@ -5,9 +5,10 @@ import capitalize from 'lodash/capitalize';
 import {
   Row, Col, Button, Typography,
 } from 'antd';
+import { notifyError } from '@autonolas/frontend-library';
+
 import { NAV_TYPES } from 'util/constants';
 import Loader from 'common-util/components/Loader';
-import { notifyError } from 'common-util/functions';
 import IpfsHashGenerationModal from '../List/IpfsHashGenerationModal';
 import { NftImage } from './NFTImage';
 import { ServiceState } from './ServiceState';

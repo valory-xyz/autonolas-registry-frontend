@@ -5,7 +5,8 @@ import {
   Button, Steps, Tooltip, Image,
 } from 'antd';
 import get from 'lodash/get';
-import { isL1OnlyNetwork } from 'common-util/functions';
+import { isL1OnlyNetwork } from '@autonolas/frontend-library';
+
 import { getServiceTableDataSource, onTerminate, checkIfEth } from './utils';
 import StepPreRegistration from './1StepPreRegistration';
 import StepActiveRegistration from './2StepActiveRegistration';

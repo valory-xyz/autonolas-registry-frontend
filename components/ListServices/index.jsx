@@ -3,6 +3,8 @@ import { useSelector } from 'react-redux';
 import { Tabs } from 'antd';
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
+import { notifyError } from '@autonolas/frontend-library';
+
 import { URL, NAV_TYPES } from 'util/constants';
 import {
   useExtraTabContent,
@@ -10,7 +12,6 @@ import {
   isMyTab,
 } from 'common-util/List/ListTable/helpers';
 import { getMyListOnPagination } from 'common-util/ContractUtils/myList';
-import { notifyError } from 'common-util/functions';
 import {
   getServices,
   getFilteredServices,

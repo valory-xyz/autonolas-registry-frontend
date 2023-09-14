@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Button } from 'antd';
-import { notifySuccess } from 'common-util/functions';
+import { notifySuccess } from '@autonolas/frontend-library';
+
 import { onStep5Unbond } from '../utils';
 
 const Unbond = ({

@@ -1,5 +1,7 @@
 import { ethers } from 'ethers';
 import compact from 'lodash/compact';
+import { notifySuccess, notifyError } from '@autonolas/frontend-library';
+
 import { DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS } from 'util/constants';
 import {
   ADDRESSES,
@@ -10,7 +12,6 @@ import {
   getServiceRegistryTokenUtilityContract,
 } from 'common-util/Contracts';
 import { sendTransaction } from 'common-util/functions/sendTransaction';
-import { notifyError, notifySuccess } from 'common-util/functions';
 
 /* ----- helper functions ----- */
 

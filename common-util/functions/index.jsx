@@ -1,20 +1,16 @@
-import { ethers } from 'ethers';
-import { notification } from 'antd';
-import { STAGING_CHAIN_ID, isValidAddress } from '@autonolas/frontend-library';
+import {
+  isValidAddress,
+  getChainIdOrDefaultToMainnet as getChainIdOrDefaultToMainnetFn,
+  getChainId as getChainIdFn,
+  notifyWarning,
+} from '@autonolas/frontend-library';
 
-import { LOCAL_FORK_ID, DEFAULT_CHAIN_ID } from 'util/constants';
 import { SUPPORTED_CHAINS } from 'common-util/Login';
 
-export const convertToEth = (value) => ethers.utils.formatEther(value);
-
 // Nofitications
-export const safeSendTransactionNotification = () => notification.warning({
+export const safeSendTransactionNotification = () => notifyWarning({
   message: 'Please submit the transaction in your safe app.',
 });
-
-export const notifySuccess = (message = 'Successful') => notification.success({ message });
-export const notifyError = (message = 'Some error occured') => notification.error({ message });
-export const notifyWarning = (message = 'Some error occured') => notification.error({ message });
 
 export const getIsValidChainId = (chainId) => {
   if (!chainId) return false;
@@ -27,12 +23,8 @@ export const getIsValidChainId = (chainId) => {
  * @returns
  */
 export const getChainIdOrDefaultToMainnet = (chainIdPassed) => {
-  if (!chainIdPassed) {
-    throw new Error('chainId is not passed');
-  }
-
-  const chain = Number(chainIdPassed);
-  return getIsValidChainId(chain) ? chain : DEFAULT_CHAIN_ID;
+  const x = getChainIdOrDefaultToMainnetFn(SUPPORTED_CHAINS, chainIdPassed);
+  return x;
 };
 
 /**
@@ -40,35 +32,7 @@ export const getChainIdOrDefaultToMainnet = (chainIdPassed) => {
  * @param {Number} chainId
  * @returns {Number} valid chainId & defaults to mainnet if chainId is not supported
  */
-export const getChainId = (chainId = null) => {
-  if (typeof window === 'undefined') return chainId;
-
-  // connected via wallet-connect
-  if (window?.MODAL_PROVIDER?.chainId) {
-    const walletConnectChainId = window.MODAL_PROVIDER.chainId;
-    return getChainIdOrDefaultToMainnet(walletConnectChainId);
-  }
-
-  // NOT logged in but has wallet installed (eg. metamask).
-  // window?.ethereum?.chainId is chainId set by wallet
-  if (window?.ethereum?.chainId) {
-    const walletChainId = window.ethereum.chainId;
-    return getChainIdOrDefaultToMainnet(walletChainId);
-  }
-
-  // has no wallet (eg. incognito mode or no wallet installed)
-  return DEFAULT_CHAIN_ID;
-};
-
-export const isL1OnlyNetwork = (chainId) => {
-  const chain = getChainId(chainId);
-  return (
-    chain === 1
-    || chain === 5
-    || chain === STAGING_CHAIN_ID
-    || chain === LOCAL_FORK_ID
-  );
-};
+export const getChainId = (chainId = null) => getChainIdFn(SUPPORTED_CHAINS, chainId);
 
 export const isLocalNetwork = (chainId) => getChainId(chainId) === 31337;
 

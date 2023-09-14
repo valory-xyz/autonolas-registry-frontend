@@ -3,7 +3,11 @@ import { connect, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import { Typography } from 'antd';
-import { isL1Network } from '@autonolas/frontend-library';
+import {
+  isL1Network,
+  notifyError,
+  notifySuccess,
+} from '@autonolas/frontend-library';
 
 import {
   DEFAULT_SERVICE_CREATION_ETH_TOKEN,
@@ -19,7 +23,6 @@ import {
   getServiceManagerL2Contract,
 } from 'common-util/Contracts';
 import { sendTransaction } from 'common-util/functions/sendTransaction';
-import { notifyError, notifySuccess } from 'common-util/functions';
 import { checkIfERC721Receive } from 'common-util/functions/requests';
 import RegisterForm from './RegisterForm';
 import { getAgentParams } from './utils';

@@ -1,10 +1,8 @@
 import { ethers } from 'ethers';
+import { notifyError } from '@autonolas/frontend-library';
+
 import { getCustomProvider } from 'common-util/Contracts';
-import {
-  getChainId,
-  notifyError,
-  safeSendTransactionNotification,
-} from './index';
+import { getChainId, safeSendTransactionNotification } from './index';
 
 /**
  * @returns {string} - url of gnosis-safe API.

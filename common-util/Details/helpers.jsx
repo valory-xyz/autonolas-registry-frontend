@@ -6,7 +6,7 @@ import {
 } from 'antd';
 import { ArrowRightOutlined } from '@ant-design/icons';
 import get from 'lodash/get';
-import { isL1Network } from '@autonolas/frontend-library';
+import { isL1Network, isL1OnlyNetwork } from '@autonolas/frontend-library';
 
 import {
   DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS,
@@ -15,7 +15,6 @@ import {
   NAV_TYPES,
 } from 'util/constants';
 import { Circle } from 'common-util/svg/Circle';
-import { isL1OnlyNetwork } from 'common-util/functions';
 import { NftImage } from './NFTImage';
 import { SetOperatorStatus, OperatorWhitelist } from './ServiceDetailsHelper';
 import {

@@ -2,12 +2,13 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 import { Typography } from 'antd';
+import { notifyError, notifySuccess } from '@autonolas/frontend-library';
+
 import RegisterForm from 'common-util/List/RegisterForm';
 import { AlertSuccess, AlertError } from 'common-util/List/ListCommon';
 import { getMechMinterContract } from 'common-util/Contracts';
 import { sendTransaction } from 'common-util/functions/sendTransaction';
 import { checkIfERC721Receive } from 'common-util/functions/requests';
-import { notifyError, notifySuccess } from 'common-util/functions';
 import { FormContainer } from '../styles';
 
 const { Title } = Typography;
