@@ -7,11 +7,12 @@ import {
   getIsValidChainId as getIsValidChainIdFn,
   sendTransaction as sendTransactionFn,
 } from '@autonolas/frontend-library';
+import { rpc } from 'common-util/Contracts';
 import { SUPPORTED_CHAINS } from 'common-util/Login';
 
-export const getProvider = () => getProviderFn(SUPPORTED_CHAINS);
+export const getProvider = () => getProviderFn(SUPPORTED_CHAINS, rpc);
 
-export const getEthersProvider = () => getEthersProviderFn(SUPPORTED_CHAINS);
+export const getEthersProvider = () => getEthersProviderFn(SUPPORTED_CHAINS, rpc);
 
 export const getIsValidChainId = (chainId) => getIsValidChainIdFn(SUPPORTED_CHAINS, chainId);
 
@@ -22,7 +23,10 @@ export const getChainIdOrDefaultToMainnet = (chainId) => {
 
 export const getChainId = (chainId = null) => getChainIdFn(SUPPORTED_CHAINS, chainId);
 
-export const sendTransaction = (fn, account) => sendTransactionFn(fn, account, SUPPORTED_CHAINS);
+export const sendTransaction = (fn, account) => sendTransactionFn(fn, account, {
+  supportedChains: SUPPORTED_CHAINS,
+  rpcUrls: rpc,
+});
 
 export const addressValidator = () => ({
   validator(_, value) {
