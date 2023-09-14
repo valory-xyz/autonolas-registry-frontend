@@ -1,5 +1,3 @@
-export const NA = 'n/a';
-
 export const URL = {
   root: '/',
   AGENTS: '/agents',

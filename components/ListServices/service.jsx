@@ -8,13 +8,13 @@ import {
   isL1OnlyNetwork,
   notifySuccess,
   notifyError,
+  Loader,
 } from '@autonolas/frontend-library';
 
 import {
   DEFAULT_SERVICE_CREATION_ETH_TOKEN,
   DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS,
 } from 'util/constants';
-import Loader from 'common-util/components/Loader';
 import { convertStringToArray, AlertError } from 'common-util/List/ListCommon';
 import {
   getServiceManagerContract,
