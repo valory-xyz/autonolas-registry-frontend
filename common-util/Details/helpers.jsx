@@ -227,6 +227,9 @@ export const DetailsInfo = ({
 
   const getServiceValues = () => {
     const serviceState = ['2', '3', '4'].includes(get(info, 'state'));
+
+    console.log({ info, serviceState });
+
     const serviceDetailsList = [
       {
         dataTestId: 'hashes-list',

@@ -17,6 +17,9 @@ export const getServiceOwner = async (id) => {
 
 // --------- utils ---------
 export const getServiceDetails = async (id) => {
+  console.log({ id });
+  if (!id) return Promise.reject(new Error('No service id provided'));
+
   const contract = getServiceContract();
   const response = await contract.methods.getService(id).call();
   const owner = await getServiceOwner(id);
