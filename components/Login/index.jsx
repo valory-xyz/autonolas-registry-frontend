@@ -1,45 +1,47 @@
 import { useEffect } from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
 import { useAccount, useNetwork, useBalance } from 'wagmi';
 import {
-  setUserAccount as setUserAccountFn,
-  setUserBalance as setUserBalanceFn,
-  setErrorMessage as setErrorMessageFn,
-  setLogout as setLogoutFn,
-} from 'store/setup/actions';
-import { LoginV2 as LoginComponent } from 'common-util/Login';
-
-const Login = ({
   setUserAccount,
   setUserBalance,
   setErrorMessage,
+  setChainId,
   setLogout,
-}) => {
+} from 'store/setup/actions';
+import { LoginV2 as LoginComponent } from 'common-util/Login';
+
+const Login = () => {
+  const dispatch = useDispatch();
   const { address } = useAccount();
   const { chain } = useNetwork();
   const { data } = useBalance({ address, chainId: chain?.id });
 
   useEffect(() => {
     if (address) {
-      setUserAccount(address);
-      setUserBalance(data?.formatted);
+      dispatch(setUserAccount(address));
+      dispatch(setUserBalance(data?.formatted));
     } else {
-      setLogout();
+      dispatch(setLogout());
     }
   }, [address]);
 
+  useEffect(() => {
+    if (chain?.id) {
+      dispatch(setChainId(chain.id));
+    }
+  }, [chain?.id]);
+
   const onConnect = (response) => {
-    setUserAccount(response.address);
-    setUserBalance(response.balance);
+    dispatch(setUserAccount(response.address));
+    dispatch(setUserBalance(response.balance));
   };
 
   const onDisconnect = () => {
-    setLogout();
+    dispatch(setLogout());
   };
 
   const onError = (error) => {
-    setErrorMessage(error);
+    dispatch(setErrorMessage(error));
   };
 
   return (
@@ -53,20 +55,4 @@ const Login = ({
   );
 };
 
-Login.propTypes = {
-  setUserAccount: PropTypes.func.isRequired,
-  setUserBalance: PropTypes.func.isRequired,
-  setErrorMessage: PropTypes.func.isRequired,
-  setLogout: PropTypes.func.isRequired,
-};
-
-Login.defaultProps = {};
-
-const mapDispatchToProps = {
-  setUserAccount: setUserAccountFn,
-  setUserBalance: setUserBalanceFn,
-  setErrorMessage: setErrorMessageFn,
-  setLogout: setLogoutFn,
-};
-
-export default connect(null, mapDispatchToProps)(Login);
+export default Login;

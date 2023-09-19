@@ -22,7 +22,11 @@ export const getServiceDetails = async (id) => {
 
   const contract = getServiceContract();
   const response = await contract.methods.getService(id).call();
+  console.log('service details response: ', { response });
+
   const owner = await getServiceOwner(id);
+  console.log('service owner: ', { owner });
+
   return { ...response, owner };
 };
 

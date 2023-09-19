@@ -8,8 +8,8 @@ import { WagmiConfig as WagmiConfigProvider } from 'wagmi';
 import { wagmiConfig } from 'common-util/Login/config';
 
 /** antd theme config */
-import Layout from 'components/Layout';
 import { themeConfig } from 'util/theme';
+import Layout from 'components/Layout';
 import GlobalStyle from 'components/GlobalStyles';
 import initStore from '../store';
 
