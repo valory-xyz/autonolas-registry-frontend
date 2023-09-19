@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { Menu } from 'antd';
-import { isL1Network } from 'common-util/functions';
+import { isL1Network } from '@autonolas/frontend-library';
+
 import { useHelpers } from 'common-util/hooks';
 
 const items = [

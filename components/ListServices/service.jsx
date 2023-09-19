@@ -4,19 +4,23 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Typography } from 'antd';
 import {
+  isL1Network,
+  isL1OnlyNetwork,
+  notifySuccess,
+  notifyError,
+  Loader,
+} from '@autonolas/frontend-library';
+
+import {
   DEFAULT_SERVICE_CREATION_ETH_TOKEN,
   DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS,
 } from 'util/constants';
-import Loader from 'common-util/components/Loader';
 import { convertStringToArray, AlertError } from 'common-util/List/ListCommon';
 import {
   getServiceManagerContract,
   getServiceManagerL2Contract,
 } from 'common-util/Contracts';
-import {
-  isL1Network, isL1OnlyNetwork, notifyError, notifySuccess,
-} from 'common-util/functions';
-import { sendTransaction } from 'common-util/functions/sendTransaction';
+import { sendTransaction } from 'common-util/functions';
 import { useHelpers } from 'common-util/hooks';
 import RegisterForm from './RegisterForm';
 import {

@@ -3,8 +3,8 @@ import {
   getComponentContract,
 } from 'common-util/Contracts';
 import { getListByAccount } from 'common-util/ContractUtils/myList';
-import { getFirstAndLastIndex } from 'common-util/functions';
-import { sendTransaction } from 'common-util/functions/sendTransaction';
+import { getFirstAndLastIndex } from 'common-util/List/functions';
+import { sendTransaction } from 'common-util/functions';
 
 // --------- HELPER METHODS ---------
 export const getComponentOwner = async (id) => {

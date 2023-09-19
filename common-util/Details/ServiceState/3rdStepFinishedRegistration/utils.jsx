@@ -1,17 +1,16 @@
 /* eslint-disable no-underscore-dangle */
 import { ethers } from 'ethers';
+import safeContracts from '@gnosis.pm/safe-contracts';
 import {
   GNOSIS_SAFE_CONTRACT,
   MULTI_SEND_CONTRACT,
 } from 'common-util/AbiAndAddresses';
 import {
-  rpc,
+  RPC_URLS,
   getServiceOwnerMultisigContract,
   safeMultiSend,
-  getMyProvider,
 } from 'common-util/Contracts';
-import { checkIfGnosisSafe } from 'common-util/functions';
-import safeContracts from '@gnosis.pm/safe-contracts';
+import { checkIfGnosisSafe, getEthersProvider } from 'common-util/functions';
 import { isHashApproved } from './helpers';
 
 const ZEROS_24 = '0'.repeat(24);
@@ -45,7 +44,7 @@ export const handleMultisigSubmit = async ({
   const multisigContract = new ethers.Contract(
     multisig,
     GNOSIS_SAFE_CONTRACT.abi,
-    ethers.getDefaultProvider(rpc[chainId]),
+    ethers.getDefaultProvider(RPC_URLS[chainId]),
   );
 
   const nonce = await multisigContract.nonce();
@@ -84,7 +83,7 @@ export const handleMultisigSubmit = async ({
   const multiSendContract = new ethers.Contract(
     safeMultiSend[chainId][0],
     MULTI_SEND_CONTRACT.abi,
-    ethers.getDefaultProvider(rpc[chainId]),
+    ethers.getDefaultProvider(RPC_URLS[chainId]),
   );
 
   const safeTx = safeContracts.buildMultiSendSafeTx(
@@ -93,7 +92,7 @@ export const handleMultisigSubmit = async ({
     nonce,
   );
 
-  const provider = new ethers.providers.Web3Provider(getMyProvider(), 'any');
+  const provider = getEthersProvider();
   const isSafe = await checkIfGnosisSafe(account, provider);
 
   try {

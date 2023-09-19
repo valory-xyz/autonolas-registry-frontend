@@ -4,13 +4,13 @@ import {
   Button, Divider, Radio, Form, Input,
 } from 'antd';
 import PropTypes from 'prop-types';
+import { notifySuccess } from '@autonolas/frontend-library';
 
 import {
   FALLBACK_HANDLER,
   multisigAddresses,
   multisigSameAddresses,
 } from 'common-util/Contracts';
-import { notifySuccess } from 'common-util/functions';
 import { useHelpers } from 'common-util/hooks';
 import { getServiceAgentInstances, onStep3Deploy } from '../utils';
 import { handleMultisigSubmit } from './utils';

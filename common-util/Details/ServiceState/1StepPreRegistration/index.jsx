@@ -2,9 +2,9 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import { Button, Space } from 'antd';
+import { isLocalNetwork } from '@autonolas/frontend-library';
 
 import { URL } from 'util/constants';
-import { isLocalNetwork } from 'common-util/functions';
 import { useHelpers } from 'common-util/hooks';
 import {
   checkAndApproveToken,

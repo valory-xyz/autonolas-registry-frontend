@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { Button, Form, Input } from 'antd';
 import isNil from 'lodash/isNil';
-import { isValidAddress } from 'common-util/functions';
+import { isValidAddress } from '@autonolas/frontend-library';
+
 import IpfsHashGenerationModal from '../IpfsHashGenerationModal';
 import { DependencyLabel } from '../ListCommon';
 import { FormItemHash } from './helpers';

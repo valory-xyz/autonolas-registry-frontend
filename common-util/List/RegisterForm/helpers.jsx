@@ -57,5 +57,3 @@ FormItemHash.defaultProps = {
   listType: '',
   hashValue: null,
 };
-
-export const getX = () => {};

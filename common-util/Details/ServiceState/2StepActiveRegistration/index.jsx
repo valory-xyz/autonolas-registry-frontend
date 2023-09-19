@@ -7,7 +7,8 @@ import {
   isL1OnlyNetwork,
   notifyError,
   notifySuccess,
-} from 'common-util/functions';
+} from '@autonolas/frontend-library';
+
 import { useHelpers } from 'common-util/hooks';
 import {
   getBonds,
