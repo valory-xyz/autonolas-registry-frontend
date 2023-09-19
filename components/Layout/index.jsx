@@ -4,9 +4,13 @@ import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
 import Image from 'next/image';
 import { Layout as AntdLayout, Typography } from 'antd';
-import { getNetworkName, isL1Network } from '@autonolas/frontend-library';
+import {
+  getNetworkName,
+  isL1Network,
+  useScreen,
+} from '@autonolas/frontend-library';
 
-import { useHelpers, useScreen } from 'common-util/hooks';
+import { useHelpers } from 'common-util/hooks';
 import { CustomLayout, Logo, RightMenu } from './styles';
 
 const { Text } = Typography;
