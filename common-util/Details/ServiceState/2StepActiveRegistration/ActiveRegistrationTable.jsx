@@ -5,12 +5,11 @@ import {
   Form, Input, Table, Button,
 } from 'antd';
 import { useRouter } from 'next/router';
-import { isL1Network } from '@autonolas/frontend-library';
+import { isL1Network, isValidAddress } from '@autonolas/frontend-library';
 import styled from 'styled-components';
 
 import { URL } from 'util/constants';
 import { useHelpers } from 'common-util/hooks';
-import { isValidAddress } from 'common-util/functions';
 
 const TableContainer = styled.div`
   .ant-form-item-explain-error {
