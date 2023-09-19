@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
 import get from 'lodash/get';
 import { Button, Form, Input } from 'antd';
 
@@ -12,6 +11,7 @@ import { FormItemHash } from 'common-util/List/RegisterForm/helpers';
 import IpfsHashGenerationModal from 'common-util/List/IpfsHashGenerationModal';
 import { ComplexLabel } from 'common-util/List/styles';
 import { isL1Network, isValidAddress } from 'common-util/functions';
+import { useHelpers } from 'common-util/hooks';
 import { RegisterFooter } from 'components/styles';
 
 export const FORM_NAME = 'serviceRegisterForm';
@@ -25,8 +25,7 @@ const RegisterForm = ({
   handleSubmit,
   handleCancel,
 }) => {
-  const account = useSelector((state) => state?.setup?.account);
-  const chainId = useSelector((state) => state?.setup?.chainId);
+  const { account, chainId } = useHelpers();
 
   const [form] = Form.useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -247,7 +246,7 @@ const RegisterForm = ({
           label={(
             <ComplexLabel>
               Canonical agent Ids
-              <DependencyLabel type="service" chainId={chainId} />
+              <DependencyLabel type="service" />
             </ComplexLabel>
           )}
           rules={[

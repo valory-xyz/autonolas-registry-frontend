@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import { Button, Space } from 'antd';
-import { URL } from 'util/constants';
 
+import { URL } from 'util/constants';
 import { isLocalNetwork } from 'common-util/functions';
+import { useHelpers } from 'common-util/hooks';
 import {
   checkAndApproveToken,
   mintTokenRequest,
@@ -22,8 +22,7 @@ const PreRegistration = ({
   updateDetails,
 }) => {
   const router = useRouter();
-  const account = useSelector((state) => state?.setup?.account);
-  const chainId = useSelector((state) => state?.setup?.chainId);
+  const { account, chainId } = useHelpers();
   const [isActivating, setIsUpdateLoading] = useState(false);
 
   const handleStep1Registration = async () => {

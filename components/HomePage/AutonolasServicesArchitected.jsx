@@ -1,10 +1,11 @@
-import { useSelector } from 'react-redux';
 import { Col, Row, Typography } from 'antd';
 import Link from 'next/link';
+import Image from 'next/image';
+
 import { URL } from 'util/constants';
 import { isL1Network } from 'common-util/functions';
 import { useScreen } from 'common-util/hooks/useScreen';
-import Image from 'next/image';
+import { useHelpers } from 'common-util/hooks';
 import { ContentRow } from './styles';
 
 const { Title, Text } = Typography;
@@ -31,7 +32,7 @@ const LIST = [
 ];
 
 export const AutonolasServicesArchitected = () => {
-  const chainId = useSelector((state) => state?.setup?.chainId);
+  const { chainId } = useHelpers();
   const { isMobile } = useScreen();
 
   return (

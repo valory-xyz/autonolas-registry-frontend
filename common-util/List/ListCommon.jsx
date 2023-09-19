@@ -5,6 +5,7 @@ import bs58 from 'bs58';
 import { ExportOutlined } from '@ant-design/icons';
 import { isL1Network } from 'common-util/functions';
 import { EmptyMessage, RegisterFooter } from 'components/styles';
+import { useHelpers } from 'common-util/hooks';
 
 // constants
 export const DEPENDENCY_IN_ASC = 'Agent IDs must be input in the order they were created (oldest first & newest last)';
@@ -44,7 +45,8 @@ MyLink.propTypes = {
 
 export const commaMessage = 'Each comma must be followed by a space ("1, 2" not "1,2").';
 
-export const DependencyLabel = ({ type, chainId }) => {
+export const DependencyLabel = ({ type }) => {
+  const { chainId } = useHelpers();
   const dependencyHelperText = `Must be in ascending order – newest ${
     type === 'service' ? 'agents' : 'components'
   } last, oldest first. ${commaMessage}`;
@@ -86,9 +88,8 @@ export const DependencyLabel = ({ type, chainId }) => {
 };
 DependencyLabel.propTypes = {
   type: PropTypes.string,
-  chainId: PropTypes.number,
 };
-DependencyLabel.defaultProps = { type: 'component', chainId: null };
+DependencyLabel.defaultProps = { type: 'component' };
 
 export const RegisterMessage = ({ handleCancel }) => (
   <RegisterFooter>

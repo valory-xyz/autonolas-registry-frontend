@@ -1,16 +1,16 @@
 import { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
   Button, Steps, Tooltip, Image,
 } from 'antd';
 import get from 'lodash/get';
+
 import { isL1OnlyNetwork } from 'common-util/functions';
+import { useHelpers } from 'common-util/hooks';
 import { getServiceTableDataSource, onTerminate, checkIfEth } from './utils';
 import StepPreRegistration from './1StepPreRegistration';
 import StepActiveRegistration from './2StepActiveRegistration';
 import StepFinishedRegistration from './3rdStepFinishedRegistration';
-
 import Deployed from './4thStepDeployed';
 import Unbond from './5StepUnbond';
 import { SERVICE_STATE_HELPER_LABELS } from './helpers';
@@ -28,7 +28,7 @@ export const ServiceState = ({
   const [dataSource, setDataSource] = useState([]);
   const [isEthToken, setIsEthToken] = useState(true); // by default, assume it's an eth token
   const [isStateImageVisible, setIsStateImageVisible] = useState(false);
-  const chainId = useSelector((state) => state?.setup?.chainId);
+  const { chainId } = useHelpers();
 
   const status = get(details, 'state');
   const agentIds = get(details, 'agentIds');

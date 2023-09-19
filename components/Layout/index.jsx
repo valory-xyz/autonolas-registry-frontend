@@ -28,7 +28,7 @@ const Layout = ({ children }) => {
   useEffect(() => {
     if (chainId && !isL1Network(chainId)) {
       // redirect to services page if user is on components or agents page
-      // and chainId is gnosis
+      // and chainId is not L1
       if (path.includes('/components') || path.includes('/agents')) {
         router.push('/services');
       }

@@ -1,6 +1,4 @@
 import { useState } from 'react';
-import { connect, useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import { Typography } from 'antd';
 import {
@@ -19,15 +17,16 @@ import {
 import { sendTransaction } from 'common-util/functions/sendTransaction';
 import { isL1Network, notifyError, notifySuccess } from 'common-util/functions';
 import { checkIfERC721Receive } from 'common-util/functions/requests';
+import { useHelpers } from 'common-util/hooks';
 import RegisterForm from './RegisterForm';
 import { getAgentParams } from './utils';
 import { FormContainer } from '../styles';
 
 const { Title } = Typography;
 
-const MintService = ({ account }) => {
+const MintService = () => {
   const router = useRouter();
-  const chainId = useSelector((state) => state?.setup?.chainId);
+  const { account, chainId } = useHelpers();
 
   const [isMinting, setIsMinting] = useState(false);
   const [error, setError] = useState(null);
@@ -112,17 +111,4 @@ const MintService = ({ account }) => {
   );
 };
 
-MintService.propTypes = {
-  account: PropTypes.string,
-};
-
-MintService.defaultProps = {
-  account: null,
-};
-
-const mapStateToProps = (state) => {
-  const { account } = state.setup;
-  return { account };
-};
-
-export default connect(mapStateToProps, {})(MintService);
+export default MintService;

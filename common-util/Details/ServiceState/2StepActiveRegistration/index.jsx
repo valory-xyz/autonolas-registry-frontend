@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Button, Divider, Typography } from 'antd';
+
 import {
   convertToEth,
   isL1OnlyNetwork,
   notifyError,
   notifySuccess,
 } from 'common-util/functions';
+import { useHelpers } from 'common-util/hooks';
 import {
   getBonds,
   getTokenBondRequest,
@@ -33,8 +34,7 @@ const ActiveRegistration = ({
   isEthToken,
   updateDetails,
 }) => {
-  const account = useSelector((state) => state?.setup?.account);
-  const chainId = useSelector((state) => state?.setup?.chainId);
+  const { account, chainId } = useHelpers();
 
   const [totalBonds, setTotalBond] = useState(null);
   const [ethTokenBonds, setEthTokenBonds] = useState([]);

@@ -1,19 +1,20 @@
-import { useSelector } from 'react-redux';
 import {
   Button, Col, Row, Typography,
 } from 'antd';
 import Link from 'next/link';
 import Image from 'next/image';
+
 import { URL } from 'util/constants';
 import { isL1Network } from 'common-util/functions';
 import { useScreen } from 'common-util/hooks/useScreen';
+import { useHelpers } from 'common-util/hooks';
 import { AutonolasServicesArchitected } from './AutonolasServicesArchitected';
 import { Container, HeaderRow } from './styles';
 
 const { Title, Text } = Typography;
 
 const HomePage = () => {
-  const chainId = useSelector((state) => state?.setup?.chainId);
+  const { chainId } = useHelpers();
   const { isMobile } = useScreen();
 
   return (

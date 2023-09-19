@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import React, { useContext, useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
   Form, Input, Table, Button,
@@ -9,6 +8,7 @@ import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import { URL } from 'util/constants';
 import { isL1Network, isValidAddress } from 'common-util/functions';
+import { useHelpers } from 'common-util/hooks';
 
 const TableContainer = styled.div`
   .ant-form-item-explain-error {
@@ -149,8 +149,8 @@ const ActiveRegistrationTable = ({
   isDisabled,
   setIsValidAgentAddress,
 }) => {
-  const chainId = useSelector((state) => state?.setup?.chainId);
   const router = useRouter();
+  const { chainId } = useHelpers();
 
   // event if one of the agent instance addresses is present,
   // it is okay to NOT have other agent instance addresses

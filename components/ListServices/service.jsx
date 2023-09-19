@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
-import { connect, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import { Typography } from 'antd';
 import {
   DEFAULT_SERVICE_CREATION_ETH_TOKEN,
@@ -17,6 +17,7 @@ import {
   isL1Network, isL1OnlyNetwork, notifyError, notifySuccess,
 } from 'common-util/functions';
 import { sendTransaction } from 'common-util/functions/sendTransaction';
+import { useHelpers } from 'common-util/hooks';
 import RegisterForm from './RegisterForm';
 import {
   getAgentParams,
@@ -29,7 +30,7 @@ const { Title } = Typography;
 
 const Service = ({ account }) => {
   const router = useRouter();
-  const chainId = useSelector((state) => state?.setup?.chainId);
+  const { chainId } = useHelpers();
 
   const [isAllLoading, setAllLoading] = useState(false);
   const [serviceInfo, setServiceInfo] = useState({});

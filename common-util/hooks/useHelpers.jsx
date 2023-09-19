@@ -9,5 +9,6 @@ export const useHelpers = () => {
     chainId,
     account,
     isValidChainId: getIsValidChainId(chainId),
+    isL1Network: chainId === 1 || chainId === null,
   };
 };
