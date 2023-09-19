@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { COLOR } from 'util/theme';
+import { COLOR } from '@autonolas/frontend-library';
 import { Modal } from 'antd';
 
 export const RegisterFooter = styled.div`
@@ -31,11 +31,5 @@ export const ComplexLabel = styled.div`
 export const CustomModal = styled(Modal)`
   .ant-typography {
     margin: 0;
-  }
-`;
-
-export const YourHashContainer = styled.div`
-  p {
-    margin: 0 0 0.5rem 0;
   }
 `;

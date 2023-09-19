@@ -1,10 +1,8 @@
-import { ethers } from 'ethers';
+import { notifyError } from '@autonolas/frontend-library';
+
 import { DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS } from 'util/constants';
-import {
-  getServiceOwnerMultisigContract,
-  getMyProvider,
-} from 'common-util/Contracts';
-import { checkIfGnosisSafe, notifyError } from './index';
+import { getServiceOwnerMultisigContract } from 'common-util/Contracts';
+import { checkIfGnosisSafe, getEthersProvider } from './index';
 
 const FALLBACK_HANDLER_STORAGE_SLOT = '0x6c9a6c4a39284e37ed1cf53d337577d14212a4870fb976a4366c693b939918d5';
 
@@ -14,7 +12,7 @@ const FALLBACK_HANDLER_STORAGE_SLOT = '0x6c9a6c4a39284e37ed1cf53d337577d14212a48
  * @returns {Promise<boolean>} true if the owner address can mint
  */
 export const checkIfERC721Receive = async (account, ownerAddress) => {
-  const provider = new ethers.providers.Web3Provider(getMyProvider(), 'any');
+  const provider = getEthersProvider();
   const isSafe = await checkIfGnosisSafe(account, provider);
 
   if (isSafe) {

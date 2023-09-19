@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 import { Menu } from 'antd';
-import { isL1Network } from 'common-util/functions';
+import { isL1Network } from '@autonolas/frontend-library';
 
 const items = [
   { label: 'Components', key: 'components' },

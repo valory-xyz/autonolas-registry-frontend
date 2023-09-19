@@ -1,5 +1,5 @@
 import includes from 'lodash/includes';
-import { getFirstAndLastIndex } from 'common-util/functions';
+import { getFirstAndLastIndex } from 'common-util/List/functions';
 
 export const filterByOwner = (results, { searchValue, account }) => (results || []).filter((e) => {
   const search = (searchValue || '').trim().toLowerCase();
@@ -53,12 +53,4 @@ export const getMyListOnPagination = ({ total, nextPage, list = [] }) => {
   const { first, last } = getFirstAndLastIndex(total, nextPage);
   const array = list.slice(first - 1, last);
   return array;
-};
-
-/**
- * call API once and return based on pagination
- */
-export const getTotalOfFilteredList = async ({ list }) => {
-  const { length } = list || [];
-  return length;
 };

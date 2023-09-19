@@ -9,8 +9,8 @@ import { wagmiConfig } from 'common-util/Login/config';
 
 /** antd theme config */
 import Layout from 'components/Layout';
-import { themeConfig } from 'util/theme';
 import GlobalStyle from 'components/GlobalStyles';
+import { THEME_CONFIG } from '@autonolas/frontend-library';
 import initStore from '../store';
 
 const DESC = 'View and manage components, agents and services via the Autonolas on-chain registry.';
@@ -22,7 +22,7 @@ const MyApp = ({ Component, pageProps }) => (
       <title>Autonolas Registry</title>
       <meta name="description" content={DESC} />
     </Head>
-    <ConfigProvider theme={themeConfig}>
+    <ConfigProvider theme={THEME_CONFIG}>
       <WagmiConfigProvider config={wagmiConfig}>
         <Layout>
           <Component {...pageProps} />

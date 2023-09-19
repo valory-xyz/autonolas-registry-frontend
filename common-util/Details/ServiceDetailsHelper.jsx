@@ -4,13 +4,14 @@ import { useSelector } from 'react-redux';
 import {
   Button, Typography, Input, Form,
 } from 'antd';
-import { DynamicFieldsForm } from 'common-util/DynamicFieldsForm';
 import {
-  addressValidator,
   notifyError,
   notifySuccess,
   notifyWarning,
-} from 'common-util/functions';
+} from '@autonolas/frontend-library';
+
+import { DynamicFieldsForm } from 'common-util/DynamicFieldsForm';
+import { addressValidator } from 'common-util/functions';
 import {
   checkIfServiceIsWhitelisted,
   setOperatorsStatusesRequest,

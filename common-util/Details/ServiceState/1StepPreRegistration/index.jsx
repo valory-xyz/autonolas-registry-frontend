@@ -3,9 +3,9 @@ import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import { Button, Space } from 'antd';
-import { URL } from 'util/constants';
+import { isLocalNetwork } from '@autonolas/frontend-library';
 
-import { isLocalNetwork } from 'common-util/functions';
+import { URL } from 'util/constants';
 import {
   checkAndApproveToken,
   mintTokenRequest,

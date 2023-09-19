@@ -1,4 +1,6 @@
 import Web3 from 'web3';
+import { isL1Network } from '@autonolas/frontend-library';
+
 import {
   REGISTRIES_MANAGER_CONTRACT,
   AGENT_REGISTRY_CONTRACT,
@@ -14,18 +16,14 @@ import {
   GENERIC_ERC20_CONTRACT,
   OPERATOR_WHITELIST_CONTRACT,
 } from 'common-util/AbiAndAddresses';
-import {
-  isL1Network,
-  getChainId,
-  getIsValidChainId,
-} from 'common-util/functions';
+import { getChainId, getProvider } from 'common-util/functions';
 import {
   LOCAL_FORK_ID,
   LOCAL_FORK_ID_GNOSIS,
   LOCAL_FORK_ID_POLYGON,
 } from 'util/constants';
 
-export const rpc = {
+export const RPC_URLS = {
   1: process.env.NEXT_PUBLIC_MAINNET_URL,
   5: process.env.NEXT_PUBLIC_GOERLI_URL,
   100: process.env.NEXT_PUBLIC_GNOSIS_URL,
@@ -102,40 +100,11 @@ export const ADDRESSES = {
   [LOCAL_FORK_ID_POLYGON]: POLYGON_ADDRESSES,
 };
 
-export const getMyProvider = () => {
-  if (typeof window === 'undefined') {
-    console.error('No provider found');
-  }
-
-  // connected via wallet-connect
-  if (window?.MODAL_PROVIDER) {
-    const walletConnectChainId = Number(window.MODAL_PROVIDER.chainId);
-
-    // if logged in via wallet-connect but chainId is not supported,
-    // default to mainnet (ie. Use JSON-RPC provider)
-    return getIsValidChainId(walletConnectChainId)
-      ? window.MODAL_PROVIDER
-      : process.env.NEXT_PUBLIC_MAINNET_URL;
-  }
-
-  // NOT logged in but has wallet installed (eg. Metamask).
-  // If chainId is not supported, default to mainnet (ie. Use JSON-RPC provider)
-  if (window?.ethereum?.chainId) {
-    const walletChainId = Number(window.ethereum.chainId);
-    return getIsValidChainId(walletChainId)
-      ? window?.ethereum
-      : process.env.NEXT_PUBLIC_MAINNET_URL;
-  }
-
-  // fallback to mainnet JSON RPC provider
-  return process.env.NEXT_PUBLIC_MAINNET_URL;
-};
-
 /**
  * returns the web3 details
  */
 export const getWeb3Details = () => {
-  const web3 = new Web3(getMyProvider());
+  const web3 = new Web3(getProvider());
   const chainId = getChainId();
   const address = ADDRESSES[chainId];
 

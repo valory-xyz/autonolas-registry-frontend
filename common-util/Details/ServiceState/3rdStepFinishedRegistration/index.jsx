@@ -1,17 +1,17 @@
 import { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { ethers } from 'ethers';
 import {
   Button, Divider, Radio, Form, Input,
 } from 'antd';
 import PropTypes from 'prop-types';
+import { notifySuccess } from '@autonolas/frontend-library';
 
 import {
   FALLBACK_HANDLER,
   multisigAddresses,
   multisigSameAddresses,
 } from 'common-util/Contracts';
-import { notifySuccess } from 'common-util/functions';
+import { useHelpers } from 'common-util/hooks';
 import { getServiceAgentInstances, onStep3Deploy } from '../utils';
 import { handleMultisigSubmit } from './utils';
 import { RadioLabel } from '../styles';
@@ -32,8 +32,7 @@ const StepThreePayload = ({
   getButton,
   updateDetails,
 }) => {
-  const account = useSelector((state) => state?.setup?.account);
-  const chainId = useSelector((state) => state?.setup?.chainId);
+  const { account, chainId } = useHelpers();
 
   const [form] = Form.useForm();
   const [radioValue, setRadioValue] = useState(null);
@@ -279,7 +278,8 @@ StepThreePayload.propTypes = {
   serviceId: PropTypes.string.isRequired,
   multisig: PropTypes.string.isRequired,
   owner: PropTypes.string.isRequired,
-  threshold: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  threshold: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+    .isRequired,
   handleTerminate: PropTypes.func,
   getButton: PropTypes.func.isRequired,
   canShowMultisigSameAddress: PropTypes.bool,

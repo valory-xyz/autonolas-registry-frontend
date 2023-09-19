@@ -3,7 +3,6 @@ import { render } from '@testing-library/react';
 import {
   convertStringToArray,
   ListEmptyMessage,
-  PrintJson,
   AlertSuccess,
   AlertError,
 } from 'common-util/List/ListCommon';
@@ -31,17 +30,6 @@ describe('<ListEmptyMessage />', () => {
   ])('expects valid type (input=$input)', ({ input, output }) => {
     expect.hasAssertions();
     const { getByText } = render(<ListEmptyMessage type={input} />);
-    expect(getByText(output)).toBeInTheDocument();
-  });
-});
-
-describe('<PrintJson />', () => {
-  it.each([
-    { input: { name: 'Valory' }, output: /"name": "Valory"/ },
-    { input: {}, output: /{}/ },
-  ])('expects valid object (input=$input)', ({ input, output }) => {
-    expect.hasAssertions();
-    const { getByText } = render(<PrintJson value={input} />);
     expect(getByText(output)).toBeInTheDocument();
   });
 });

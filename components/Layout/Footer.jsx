@@ -4,9 +4,9 @@ import Image from 'next/image';
 import {
   Footer as CommonFooter,
   getExplorerURL,
+  isL1Network,
 } from '@autonolas/frontend-library';
 import { ADDRESSES } from 'common-util/Contracts';
-import { isL1Network } from 'common-util/functions';
 import { useHelpers } from 'common-util/hooks';
 import Socials from './Socials';
 import { ContractsInfoContainer } from './styles';
