@@ -2,7 +2,7 @@ import {
   isValidAddress,
   getProvider as getProviderFn,
   getEthersProvider as getEthersProviderFn,
-  // getChainId as getChainIdFn,
+  getChainId as getChainIdFn,
   getChainIdOrDefaultToMainnet as getChainIdOrDefaultToMainnetFn,
   getIsValidChainId as getIsValidChainIdFn,
   sendTransaction as sendTransactionFn,
@@ -19,43 +19,6 @@ export const getIsValidChainId = (chainId) => getIsValidChainIdFn(SUPPORTED_CHAI
 export const getChainIdOrDefaultToMainnet = (chainId) => {
   const x = getChainIdOrDefaultToMainnetFn(SUPPORTED_CHAINS, chainId);
   return x;
-};
-
-export const getModalProvider = () => window?.MODAL_PROVIDER;
-export const getWindowEthereum = () => window?.ethereum;
-export const getChainIdFn = (supportedChains, chainId) => {
-  // if window is undefined, we are in server side
-  // return undefined
-  if (typeof window === 'undefined') {
-    console.error('No provider found');
-    return undefined;
-  }
-
-  // if chainId is provided, return it
-  if (chainId) {
-    return Number(chainId);
-  }
-
-  // connected via wallet-connect
-  const walletProvider = getModalProvider();
-  if (walletProvider?.chainId) {
-    const walletConnectChainId = walletProvider.chainId;
-    return getChainIdOrDefaultToMainnetFn(
-      supportedChains,
-      walletConnectChainId,
-    );
-  }
-
-  // NOT logged in but has wallet installed (eg. metamask).
-  // window?.ethereum?.chainId is chainId set by wallet
-  const windowEthereum = getWindowEthereum();
-  if (windowEthereum?.chainId) {
-    const walletChainId = windowEthereum.chainId;
-    return getChainIdOrDefaultToMainnetFn(supportedChains, walletChainId);
-  }
-
-  // has no wallet (eg. incognito mode or no wallet installed)
-  return supportedChains[0].id;
 };
 
 export const getChainId = (chainId = null) => getChainIdFn(SUPPORTED_CHAINS, chainId);
