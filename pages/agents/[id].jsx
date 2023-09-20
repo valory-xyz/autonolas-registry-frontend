@@ -1,3 +1,7 @@
-import Agent from 'components/ListAgents/details';
+import dynamic from 'next/dynamic';
 
-export default Agent;
+const AgentDetails = dynamic(() => import('components/ListAgents/details'), {
+  ssr: false,
+});
+
+export default AgentDetails;
