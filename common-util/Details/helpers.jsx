@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import { memo, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 import {
   Button, Typography, Alert, Switch,
 } from 'antd';
@@ -66,9 +65,7 @@ export const DetailsInfo = ({
   setIsModalVisible,
   onDependencyClick,
 }) => {
-  const { chainId } = useHelpers();
-
-  const account = useSelector((state) => state?.setup?.account);
+  const { account, chainId } = useHelpers();
   const [tokenAddress, setTokenAddress] = useState(null);
 
   // switch state

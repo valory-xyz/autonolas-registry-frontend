@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { Tabs } from 'antd';
 import { useRouter } from 'next/router';
 import { notifyError } from '@autonolas/frontend-library';
@@ -12,6 +11,7 @@ import {
   isMyTab,
 } from 'common-util/List/ListTable/helpers';
 import { getMyListOnPagination } from 'common-util/ContractUtils/myList';
+import { useHelpers } from 'common-util/hooks';
 import {
   getComponents,
   getFilteredComponents,
@@ -29,7 +29,7 @@ const ListComponents = () => {
     isMyTab(hash) ? MY_COMPONENTS : ALL_COMPONENTS,
   );
 
-  const account = useSelector((state) => state?.setup?.account);
+  const { account } = useHelpers();
 
   /**
    * extra tab content & view click

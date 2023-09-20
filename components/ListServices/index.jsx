@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { Tabs } from 'antd';
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
@@ -12,6 +11,7 @@ import {
   isMyTab,
 } from 'common-util/List/ListTable/helpers';
 import { getMyListOnPagination } from 'common-util/ContractUtils/myList';
+import { useHelpers } from 'common-util/hooks';
 import {
   getServices,
   getFilteredServices,
@@ -33,7 +33,7 @@ const ListServices = () => {
     isMyTab(hash) ? MY_SERVICES : ALL_SERVICES,
   );
 
-  const account = useSelector((state) => state?.setup?.account);
+  const { account } = useHelpers();
 
   /**
    * extra tab content & view click

@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 import { Typography } from 'antd';
 import { notifyError, notifySuccess } from '@autonolas/frontend-library';
@@ -9,12 +8,13 @@ import { AlertSuccess, AlertError } from 'common-util/List/ListCommon';
 import { getMechMinterContract } from 'common-util/Contracts';
 import { sendTransaction } from 'common-util/functions';
 import { checkIfERC721Receive } from 'common-util/functions/requests';
+import { useHelpers } from 'common-util/hooks';
 import { FormContainer } from '../styles';
 
 const { Title } = Typography;
 
 const MintAgent = () => {
-  const account = useSelector((state) => state?.setup?.account);
+  const { account } = useHelpers();
   const [isMinting, setIsMinting] = useState(false);
   const [error, setError] = useState(null);
   const [information, setInformation] = useState(null);

@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
 import capitalize from 'lodash/capitalize';
 import {
   Row, Col, Button, Typography,
@@ -8,6 +7,7 @@ import {
 import { notifyError, Loader } from '@autonolas/frontend-library';
 
 import { NAV_TYPES } from 'util/constants';
+import { useHelpers } from 'common-util/hooks';
 import IpfsHashGenerationModal from '../List/IpfsHashGenerationModal';
 import { NftImage } from './NFTImage';
 import { ServiceState } from './ServiceState';
@@ -38,7 +38,7 @@ const Details = ({
   const [detailsOwner, setDetailsOwner] = useState('');
   const [tokenUri, setTokenUri] = useState(null);
 
-  const account = useSelector((state) => state?.setup?.account);
+  const { account } = useHelpers();
 
   // metadata details
   const [metadata, setMetadata] = useState(null);
