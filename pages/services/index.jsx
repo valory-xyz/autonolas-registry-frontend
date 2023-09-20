@@ -1,5 +1,7 @@
-'use client';
+import dynamic from 'next/dynamic';
 
-import Services from 'components/ListServices';
+const ListServices = dynamic(() => import('components/ListServices'), {
+  ssr: false,
+});
 
-export default Services;
+export default ListServices;
