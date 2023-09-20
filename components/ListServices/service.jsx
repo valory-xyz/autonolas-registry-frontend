@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Typography } from 'antd';
 import {
-  isL1Network,
   isL1OnlyNetwork,
   notifySuccess,
   notifyError,
@@ -34,7 +33,7 @@ const { Title } = Typography;
 
 const Service = ({ account }) => {
   const router = useRouter();
-  const { chainId } = useHelpers();
+  const { chainId, isL1Network } = useHelpers();
 
   const [isAllLoading, setAllLoading] = useState(false);
   const [serviceInfo, setServiceInfo] = useState({});
@@ -66,7 +65,7 @@ const Service = ({ account }) => {
         }
       }
     })();
-  }, [account]);
+  }, [account, chainId]);
 
   /* helper functions */
   const handleSubmit = (values) => {
@@ -78,7 +77,7 @@ const Service = ({ account }) => {
         ? DEFAULT_SERVICE_CREATION_ETH_TOKEN
         : values.token;
 
-      const contract = isL1Network(chainId)
+      const contract = isL1Network
         ? getServiceManagerContract()
         : getServiceManagerL2Contract();
 
@@ -91,9 +90,7 @@ const Service = ({ account }) => {
       ];
 
       // token wil be passed only for L1
-      const params = isL1Network(chainId)
-        ? [token, ...commonParams]
-        : [...commonParams];
+      const params = isL1Network ? [token, ...commonParams] : [...commonParams];
 
       const fn = contract.methods.update(...params).send({ from: account });
       sendTransaction(fn, account)

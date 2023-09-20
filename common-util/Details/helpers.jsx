@@ -5,7 +5,7 @@ import {
 } from 'antd';
 import { ArrowRightOutlined } from '@ant-design/icons';
 import get from 'lodash/get';
-import { isL1Network, isL1OnlyNetwork, NA } from '@autonolas/frontend-library';
+import { NA } from '@autonolas/frontend-library';
 
 import {
   DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS,
@@ -65,7 +65,7 @@ export const DetailsInfo = ({
   setIsModalVisible,
   onDependencyClick,
 }) => {
-  const { account, chainId } = useHelpers();
+  const { account, isL1Network, isL1OnlyNetwork } = useHelpers();
   const [tokenAddress, setTokenAddress] = useState(null);
 
   // switch state
@@ -105,12 +105,12 @@ export const DetailsInfo = ({
       }
     };
 
-    if (id && isL1OnlyNetwork(chainId)) getData();
+    if (id && isL1OnlyNetwork) getData();
 
     return () => {
       isMounted = false;
     };
-  }, [id]);
+  }, [id, isL1OnlyNetwork]);
 
   const updateHashBtn = isOwner ? (
     <>
@@ -259,7 +259,7 @@ export const DetailsInfo = ({
 
     // show token address only if it is not ETH
     if (
-      isL1Network(chainId)
+      isL1Network
       && tokenAddress !== DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS
     ) {
       serviceDetailsList.push({
@@ -269,7 +269,7 @@ export const DetailsInfo = ({
     }
 
     // operator whitelisting is only available for service & L1 networks
-    if (isL1OnlyNetwork(chainId)) {
+    if (isL1OnlyNetwork) {
       serviceDetailsList.push({
         title: (
           <>

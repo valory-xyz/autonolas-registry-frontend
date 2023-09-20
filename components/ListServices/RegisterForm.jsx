@@ -4,7 +4,7 @@ import useDeepCompareEffect from 'use-deep-compare-effect';
 import PropTypes from 'prop-types';
 import get from 'lodash/get';
 import { Button, Form, Input } from 'antd';
-import { isValidAddress, isL1Network } from '@autonolas/frontend-library';
+import { isValidAddress } from '@autonolas/frontend-library';
 
 import { DEFAULT_SERVICE_CREATION_ETH_TOKEN } from 'util/constants';
 import { commaMessage, DependencyLabel } from 'common-util/List/ListCommon';
@@ -25,7 +25,7 @@ const RegisterForm = ({
   handleSubmit,
   handleCancel,
 }) => {
-  const { account, chainId } = useHelpers();
+  const { account, isL1Network } = useHelpers();
 
   const [form] = Form.useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -34,7 +34,7 @@ const RegisterForm = ({
   const id = router?.query?.id;
 
   useEffect(() => {
-    if (account && ethTokenAddress && isL1Network(chainId)) {
+    if (account && ethTokenAddress && isL1Network) {
       setFields([
         {
           name: ['token'],
@@ -42,7 +42,7 @@ const RegisterForm = ({
         },
       ]);
     }
-  }, [account, ethTokenAddress]);
+  }, [account, isL1Network, ethTokenAddress]);
 
   const onGenerateHash = (generatedHash) => {
     setFields([
@@ -167,7 +167,7 @@ const RegisterForm = ({
         </Form.Item>
 
         {/* generic token visible only to L1 networks */}
-        {isL1Network(chainId) && (
+        {isL1Network && (
           <>
             <Form.Item
               label="ERC20 token address"

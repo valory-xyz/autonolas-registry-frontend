@@ -5,7 +5,7 @@ import {
   Form, Input, Table, Button,
 } from 'antd';
 import { useRouter } from 'next/router';
-import { isL1Network, isValidAddress } from '@autonolas/frontend-library';
+import { isValidAddress } from '@autonolas/frontend-library';
 import styled from 'styled-components';
 
 import { URL } from 'util/constants';
@@ -151,7 +151,7 @@ const ActiveRegistrationTable = ({
   setIsValidAgentAddress,
 }) => {
   const router = useRouter();
-  const { chainId } = useHelpers();
+  const { isL1Network } = useHelpers();
 
   // event if one of the agent instance addresses is present,
   // it is okay to NOT have other agent instance addresses
@@ -172,7 +172,7 @@ const ActiveRegistrationTable = ({
       render: (text) => (
         <Button
           type="link"
-          disabled={!isL1Network(chainId)}
+          disabled={!isL1Network}
           onClick={() => router.push(`${URL.AGENTS}/${text}`)}
         >
           {text}

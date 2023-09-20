@@ -33,7 +33,7 @@ const ListServices = () => {
     isMyTab(hash) ? MY_SERVICES : ALL_SERVICES,
   );
 
-  const { account } = useHelpers();
+  const { account, chainId } = useHelpers();
 
   /**
    * extra tab content & view click
@@ -85,7 +85,7 @@ const ListServices = () => {
         }
       }
     })();
-  }, [account, currentTab, searchValue]);
+  }, [account, chainId, currentTab, searchValue]);
 
   useEffect(() => {
     (async () => {
@@ -118,7 +118,7 @@ const ListServices = () => {
         }
       }
     })();
-  }, [account, total, currentPage]);
+  }, [account, chainId, total, currentPage]);
 
   /**
    * Search (All services, My Services)
@@ -147,7 +147,7 @@ const ListServices = () => {
         }
       }
     })();
-  }, [account, searchValue]);
+  }, [account, chainId, searchValue]);
 
   const tableCommonProps = {
     type: NAV_TYPES.SERVICE,

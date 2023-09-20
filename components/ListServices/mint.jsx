@@ -1,11 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { Typography } from 'antd';
-import {
-  isL1Network,
-  notifyError,
-  notifySuccess,
-} from '@autonolas/frontend-library';
+import { notifyError, notifySuccess } from '@autonolas/frontend-library';
 
 import {
   DEFAULT_SERVICE_CREATION_ETH_TOKEN,
@@ -31,7 +27,7 @@ const { Title } = Typography;
 
 const MintService = () => {
   const router = useRouter();
-  const { account, chainId } = useHelpers();
+  const { account, isL1Network } = useHelpers();
 
   const [isMinting, setIsMinting] = useState(false);
   const [error, setError] = useState(null);
@@ -57,7 +53,7 @@ const MintService = () => {
         console.error(e);
       }
 
-      const contract = isL1Network(chainId)
+      const contract = isL1Network
         ? getServiceManagerContract()
         : getServiceManagerL2Contract();
 
@@ -68,7 +64,7 @@ const MintService = () => {
         values.threshold,
       ];
 
-      const params = isL1Network(chainId)
+      const params = isL1Network
         ? [
           values.owner_address,
           values.token === DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS

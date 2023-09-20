@@ -1,7 +1,6 @@
 import { Col, Row, Typography } from 'antd';
 import Link from 'next/link';
 import Image from 'next/image';
-import { isL1Network } from '@autonolas/frontend-library';
 
 import { URL } from 'util/constants';
 import { useScreen } from 'common-util/hooks/useScreen';
@@ -32,7 +31,7 @@ const LIST = [
 ];
 
 export const AutonolasServicesArchitected = () => {
-  const { chainId } = useHelpers();
+  const { isL1Network } = useHelpers();
   const { isMobile } = useScreen();
 
   return (
@@ -67,7 +66,7 @@ export const AutonolasServicesArchitected = () => {
               <Link href={link} legacyBehavior>{`View all ${type}`}</Link>
             ) : (
               <>
-                {isL1Network(chainId) ? (
+                {isL1Network ? (
                   <Link href={link} legacyBehavior>{`View all ${type}`}</Link>
                 ) : (
                   <Text disabled>

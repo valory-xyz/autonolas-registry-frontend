@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import Link from 'next/link';
 import { Alert, Button } from 'antd';
 import { ExportOutlined } from '@ant-design/icons';
-import { isL1Network } from '@autonolas/frontend-library';
 
 import { EmptyMessage, RegisterFooter } from 'components/styles';
 import { useHelpers } from 'common-util/hooks';
@@ -29,7 +28,7 @@ MyLink.propTypes = {
 export const commaMessage = 'Each comma must be followed by a space ("1, 2" not "1,2").';
 
 export const DependencyLabel = ({ type }) => {
-  const { chainId } = useHelpers();
+  const { isL1Network } = useHelpers();
   const dependencyHelperText = `Must be in ascending order – newest ${
     type === 'service' ? 'agents' : 'components'
   } last, oldest first. ${commaMessage}`;
@@ -38,7 +37,7 @@ export const DependencyLabel = ({ type }) => {
     <div className="label-helper-text">
       {type === 'service' ? (
         <>
-          {!isL1Network(chainId) && (
+          {!isL1Network && (
             <>
               (Make sure your agent ID is already registered in the Agent
               Registry on ethereum)
