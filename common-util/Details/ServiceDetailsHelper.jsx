@@ -20,7 +20,7 @@ import {
 const { Text } = Typography;
 
 export const OperatorWhitelist = ({ isWhiteListed, setOpWhitelist, id }) => {
-  const { account } = useHelpers();
+  const { account, chainId } = useHelpers();
   const [form] = Form.useForm();
 
   const [isCheckLoading, setIsCheckLoading] = useState(false);
@@ -31,7 +31,7 @@ export const OperatorWhitelist = ({ isWhiteListed, setOpWhitelist, id }) => {
     };
 
     if (id) getData();
-  }, [id]);
+  }, [id, chainId]);
 
   const onCheck = async (values) => {
     try {

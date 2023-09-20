@@ -29,7 +29,7 @@ const ListComponents = () => {
     isMyTab(hash) ? MY_COMPONENTS : ALL_COMPONENTS,
   );
 
-  const { account } = useHelpers();
+  const { account, chainId } = useHelpers();
 
   /**
    * extra tab content & view click
@@ -83,7 +83,7 @@ const ListComponents = () => {
         }
       }
     })();
-  }, [account, currentTab, searchValue]);
+  }, [account, chainId, currentTab, searchValue]);
 
   // fetch the list (without search)
   useEffect(() => {
@@ -116,7 +116,7 @@ const ListComponents = () => {
         }
       }
     })();
-  }, [account, total, currentPage]);
+  }, [account, chainId, total, currentPage]);
 
   /**
    * Search (All components, My Components)
@@ -145,7 +145,7 @@ const ListComponents = () => {
         }
       }
     })();
-  }, [account, searchValue]);
+  }, [account, chainId, searchValue]);
 
   const tableCommonProps = {
     type: NAV_TYPES.COMPONENT,

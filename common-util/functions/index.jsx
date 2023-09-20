@@ -36,7 +36,7 @@ export const getChainIdFn = (supportedChains, chainId) => {
     return Number(chainId);
   }
 
-  console.log('getChainIdFn', { chainId });
+  // console.log('getChainIdFn', { chainId });
 
   // connected via wallet-connect
   const walletProvider = getModalProvider();
@@ -48,7 +48,7 @@ export const getChainIdFn = (supportedChains, chainId) => {
     );
   }
 
-  console.log('getChainIdFn', { walletProvider });
+  console.log('getChainIdFn - walletProvider', { walletProvider });
 
   // NOT logged in but has wallet installed (eg. metamask).
   // window?.ethereum?.chainId is chainId set by wallet
@@ -56,11 +56,9 @@ export const getChainIdFn = (supportedChains, chainId) => {
   if (windowEthereum?.chainId) {
     const walletChainId = windowEthereum.chainId;
 
-    console.log('getChainIdFn - walletChainId', { walletChainId });
+    console.log('getChainIdFn - windowEthereum', { walletChainId });
     return getChainIdOrDefaultToMainnetFn(supportedChains, walletChainId);
   }
-
-  console.log('getChainIdFn', { windowEthereum });
 
   console.log('getChainIdFn - END', { id: supportedChains[0].id });
 

@@ -20,10 +20,10 @@ const Deployed = ({
   updateDetails,
 }) => {
   const dispatch = useDispatch();
+  const { account, chainId } = useHelpers();
   const data = useSelector(
     (state) => state?.service?.serviceState?.agentInstancesAndOperators,
   );
-  const { account } = useHelpers();
   const [isTerminating, setIsTerminating] = useState(false);
   const { isMobile } = useScreen();
 
@@ -42,7 +42,7 @@ const Deployed = ({
     return () => {
       isMounted = false;
     };
-  }, [serviceId, currentStep]);
+  }, [serviceId, chainId, currentStep]);
 
   const handleTerminate = async () => {
     try {

@@ -29,7 +29,7 @@ const ListAgents = () => {
     isMyTab(hash) ? MY_AGENTS : ALL_AGENTS,
   );
 
-  const { account } = useHelpers();
+  const { account, chainId } = useHelpers();
 
   /**
    * extra tab content & view click
@@ -81,7 +81,7 @@ const ListAgents = () => {
         }
       }
     })();
-  }, [account, currentTab, searchValue]);
+  }, [account, chainId, currentTab, searchValue]);
 
   // fetch the list (without search)
   useEffect(() => {
@@ -114,7 +114,7 @@ const ListAgents = () => {
         }
       }
     })();
-  }, [account, total, currentPage]);
+  }, [account, chainId, total, currentPage]);
 
   /**
    * Search (All agents, My agents)
@@ -143,7 +143,7 @@ const ListAgents = () => {
         }
       }
     })();
-  }, [account, searchValue]);
+  }, [account, chainId, searchValue]);
 
   const tableCommonProps = {
     type: NAV_TYPES.AGENT,

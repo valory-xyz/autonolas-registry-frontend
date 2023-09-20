@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Divider, Typography } from 'antd';
-
 import {
   convertToEth,
-  isL1OnlyNetwork,
   notifyError,
   notifySuccess,
 } from '@autonolas/frontend-library';
@@ -35,7 +33,7 @@ const ActiveRegistration = ({
   isEthToken,
   updateDetails,
 }) => {
-  const { account, chainId } = useHelpers();
+  const { account, chainId, isL1OnlyNetwork } = useHelpers();
 
   const [totalBonds, setTotalBond] = useState(null);
   const [ethTokenBonds, setEthTokenBonds] = useState([]);
@@ -63,7 +61,7 @@ const ActiveRegistration = ({
         }
       }
 
-      if (serviceId && !isEthToken && isL1OnlyNetwork(chainId)) {
+      if (serviceId && !isEthToken && isL1OnlyNetwork) {
         const response = await getTokenBondRequest(serviceId, dataSource);
         setEthTokenBonds(response);
       }
@@ -72,7 +70,7 @@ const ActiveRegistration = ({
     return () => {
       isMounted = false;
     };
-  }, [serviceId, dataSource]);
+  }, [chainId, isL1OnlyNetwork, serviceId, dataSource]);
 
   const handleStep2RegisterAgents = async () => {
     const trimArray = (string) => (string || [])

@@ -89,7 +89,7 @@ const StepThreePayload = ({
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [serviceId, chainId]);
 
   const onFinishFailed = (errorInfo) => {
     console.log('Failed:', errorInfo); /* eslint-disable-line no-console */

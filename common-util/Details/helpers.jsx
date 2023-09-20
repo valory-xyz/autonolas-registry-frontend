@@ -105,7 +105,9 @@ export const DetailsInfo = ({
       }
     };
 
-    if (id && isL1OnlyNetwork) getData();
+    if (id && isL1OnlyNetwork) {
+      getData();
+    }
 
     return () => {
       isMounted = false;

@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Typography } from 'antd';
 import {
-  isL1OnlyNetwork,
   notifySuccess,
   notifyError,
   Loader,
@@ -33,7 +32,7 @@ const { Title } = Typography;
 
 const Service = ({ account }) => {
   const router = useRouter();
-  const { chainId, isL1Network } = useHelpers();
+  const { chainId, isL1Network, isL1OnlyNetwork } = useHelpers();
 
   const [isAllLoading, setAllLoading] = useState(false);
   const [serviceInfo, setServiceInfo] = useState({});
@@ -56,7 +55,7 @@ const Service = ({ account }) => {
 
           // get token address for L1 only network
           // because L2 network do not have token address
-          if (isL1OnlyNetwork(chainId)) {
+          if (isL1OnlyNetwork) {
             const token = await getTokenAddressRequest(id);
             setEthTokenAddress(token);
           }
@@ -65,7 +64,7 @@ const Service = ({ account }) => {
         }
       }
     })();
-  }, [account, chainId]);
+  }, [account, chainId, isL1OnlyNetwork]);
 
   /* helper functions */
   const handleSubmit = (values) => {
