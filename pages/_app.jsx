@@ -8,13 +8,10 @@ import { WagmiConfig as WagmiConfigProvider } from 'wagmi';
 import { wagmiConfig } from 'common-util/Login/config';
 
 /** antd theme config */
-// import dynamic from 'next/dynamic';
 import Layout from 'components/Layout';
 import GlobalStyle from 'components/GlobalStyles';
 import { THEME_CONFIG } from '@autonolas/frontend-library';
 import initStore from '../store';
-
-// const Layout = dynamic(() => import('components/Layout'), { ssr: false });
 
 const DESC = 'View and manage components, agents and services via the Autonolas on-chain registry.';
 

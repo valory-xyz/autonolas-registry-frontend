@@ -166,7 +166,6 @@ export const getMechMinterContract = () => {
  */
 export const getServiceContract = () => {
   const { address, chainId } = getWeb3Details();
-
   if (isL1Network(chainId)) {
     const { serviceRegistry } = address;
     const contract = getContract(

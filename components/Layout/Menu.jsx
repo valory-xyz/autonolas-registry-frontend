@@ -12,7 +12,7 @@ const items = [
 const serviceItem = [{ label: 'Services', key: 'services' }];
 
 const NavigationMenu = () => {
-  const { chainId, isL1Network } = useHelpers();
+  const { isL1Network } = useHelpers();
   const router = useRouter();
   const [selectedMenu, setSelectedMenu] = useState([]);
   const { pathname } = router;
@@ -29,8 +29,6 @@ const NavigationMenu = () => {
     router.push(`/${key}`);
     setSelectedMenu(key);
   };
-
-  console.log('chain in Layout menu', { chainId });
 
   return (
     <Menu
