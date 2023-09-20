@@ -14,6 +14,7 @@ import {
   NAV_TYPES,
 } from 'util/constants';
 import { Circle } from 'common-util/svg/Circle';
+import { useHelpers } from 'common-util/hooks';
 import { NftImage } from './NFTImage';
 import { SetOperatorStatus, OperatorWhitelist } from './ServiceDetailsHelper';
 import {
@@ -65,7 +66,7 @@ export const DetailsInfo = ({
   setIsModalVisible,
   onDependencyClick,
 }) => {
-  const chainId = useSelector((state) => state?.setup?.chainId);
+  const { chainId } = useHelpers();
 
   const account = useSelector((state) => state?.setup?.account);
   const [tokenAddress, setTokenAddress] = useState(null);
@@ -227,8 +228,6 @@ export const DetailsInfo = ({
 
   const getServiceValues = () => {
     const serviceState = ['2', '3', '4'].includes(get(info, 'state'));
-
-    console.log({ info, serviceState });
 
     const serviceDetailsList = [
       {
