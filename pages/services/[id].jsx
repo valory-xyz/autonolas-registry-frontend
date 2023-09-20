@@ -1,5 +1,10 @@
-'use client';
+import dynamic from 'next/dynamic';
 
-import ServiceDetails from 'components/ListServices/details';
+const ServiceDetails = dynamic(
+  () => import('components/ListServices/details'),
+  {
+    ssr: false,
+  },
+);
 
 export default ServiceDetails;

@@ -1,5 +1,7 @@
-'use client';
+import dynamic from 'next/dynamic';
 
-import MintService from 'components/ListServices/mint';
+const MintService = dynamic(() => import('components/ListServices/mint'), {
+  ssr: false,
+});
 
 export default MintService;
