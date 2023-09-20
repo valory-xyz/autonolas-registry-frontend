@@ -1,7 +1,10 @@
-import dynamic from 'next/dynamic';
+'use client';
 
-const Service = dynamic(() => import('components/ListServices/details'), {
-  ssr: false,
-});
+import ServiceDetails from 'components/ListServices/details';
+
+const Service = () => {
+  console.log('hello service');
+  return <ServiceDetails />;
+};
 
 export default Service;
