@@ -1,3 +1,7 @@
-import Service from 'components/ListServices/details';
+import dynamic from 'next/dynamic';
+
+const Service = dynamic(() => import('components/ListServices/details'), {
+  ssr: false,
+});
 
 export default Service;
