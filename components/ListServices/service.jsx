@@ -14,10 +14,7 @@ import {
   DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS,
 } from 'util/constants';
 import { convertStringToArray, AlertError } from 'common-util/List/ListCommon';
-import {
-  getServiceManagerContract,
-  getServiceManagerL2Contract,
-} from 'common-util/Contracts';
+import { getServiceManagerContract } from 'common-util/Contracts';
 import { sendTransaction } from 'common-util/functions';
 import { useHelpers } from 'common-util/hooks';
 import RegisterForm from './RegisterForm';
@@ -76,9 +73,7 @@ const Service = ({ account }) => {
         ? DEFAULT_SERVICE_CREATION_ETH_TOKEN
         : values.token;
 
-      const contract = isL1Network
-        ? getServiceManagerContract()
-        : getServiceManagerL2Contract();
+      const contract = getServiceManagerContract();
 
       const commonParams = [
         `0x${values.hash}`,
