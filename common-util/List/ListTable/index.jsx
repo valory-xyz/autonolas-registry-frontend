@@ -49,6 +49,7 @@ const ListTable = ({
     current: currentPage,
     defaultPageSize: TOTAL_VIEW_COUNT,
     onChange: (e) => setCurrentPage(e),
+    showSizeChanger: false,
   };
 
   return (
