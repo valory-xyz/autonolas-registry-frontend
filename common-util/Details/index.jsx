@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
 import capitalize from 'lodash/capitalize';
 import {
   Row, Col, Button, Typography,
@@ -8,6 +7,7 @@ import {
 import { notifyError, Loader } from '@autonolas/frontend-library';
 
 import { NAV_TYPES } from 'util/constants';
+import { useHelpers } from 'common-util/hooks';
 import IpfsHashGenerationModal from '../List/IpfsHashGenerationModal';
 import { NftImage } from './NFTImage';
 import { ServiceState } from './ServiceState';
@@ -38,7 +38,7 @@ const Details = ({
   const [detailsOwner, setDetailsOwner] = useState('');
   const [tokenUri, setTokenUri] = useState(null);
 
-  const account = useSelector((state) => state?.setup?.account);
+  const { account, chainId } = useHelpers();
 
   // metadata details
   const [metadata, setMetadata] = useState(null);
@@ -48,7 +48,7 @@ const Details = ({
 
   const isOwner = account && account.toLowerCase() === detailsOwner.toLowerCase();
 
-  const getUpdatedHashes = async () => {
+  const getUpdatedHashes = useCallback(async () => {
     try {
       const hashesResponse = await getHashes();
       setHashes(hashesResponse);
@@ -56,7 +56,7 @@ const Details = ({
       console.error(e);
       notifyError(`Error fetching ${type} hashes`);
     }
-  };
+  }, [chainId]);
 
   const updateDetails = useCallback(async () => {
     try {
@@ -66,7 +66,7 @@ const Details = ({
       console.error(e);
       notifyError(`Error fetching ${type} details`);
     }
-  }, []);
+  }, [chainId]);
 
   useEffect(() => {
     (async () => {
@@ -91,7 +91,7 @@ const Details = ({
         setIsLoading(false);
       }
     })();
-  }, [account, id]);
+  }, [account, chainId, id]);
 
   useEffect(() => {
     (async () => {

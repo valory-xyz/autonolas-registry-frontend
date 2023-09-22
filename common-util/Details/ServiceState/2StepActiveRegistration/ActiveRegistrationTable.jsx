@@ -1,16 +1,15 @@
 /* eslint-disable react/prop-types */
 import React, { useContext, useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
   Form, Input, Table, Button,
 } from 'antd';
 import { useRouter } from 'next/router';
-import { isL1Network } from '@autonolas/frontend-library';
+import { isValidAddress } from '@autonolas/frontend-library';
 import styled from 'styled-components';
 
 import { URL } from 'util/constants';
-import { isValidAddress } from 'common-util/functions';
+import { useHelpers } from 'common-util/hooks';
 
 const TableContainer = styled.div`
   .ant-form-item-explain-error {
@@ -151,8 +150,8 @@ const ActiveRegistrationTable = ({
   isDisabled,
   setIsValidAgentAddress,
 }) => {
-  const chainId = useSelector((state) => state?.setup?.chainId);
   const router = useRouter();
+  const { isL1Network } = useHelpers();
 
   // event if one of the agent instance addresses is present,
   // it is okay to NOT have other agent instance addresses
@@ -173,7 +172,7 @@ const ActiveRegistrationTable = ({
       render: (text) => (
         <Button
           type="link"
-          disabled={!isL1Network(chainId)}
+          disabled={!isL1Network}
           onClick={() => router.push(`${URL.AGENTS}/${text}`)}
         >
           {text}

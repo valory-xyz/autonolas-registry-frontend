@@ -19,12 +19,13 @@ _Put an `x` in the boxes that apply_
 
 _Put an `x` in the boxes that apply._
 
-- [ ] I am making a pull request against the `staging` branch (left side). Also you should start your branch off our `staging`.
-- [ ] Lint and unit tests pass locally with my changes and CI passes too
-- [ ] I have added tests that prove my fix is effective or that my feature works
-- [ ] I have checked that code coverage does not decrease.
-- [ ] I have added necessary documentation (if appropriate)
-- [ ] Any dependent changes have been merged and published in downstream modules
+- [ ] My pull request is targeted against the main branch (left side), and I've started my branch from our main.
+- [ ] I've ensured that linting and unit tests pass locally with my changes, and CI also passes successfully.
+- [ ] I've included tests to validate the effectiveness of my fix or to demonstrate that my feature functions correctly.
+- [ ] I've verified that my changes do not reduce code coverage.
+- [ ] I've added any necessary documentation as needed.
+- [ ] I've confirmed that any dependent changes have been merged and published in downstream modules.
+- [ ] If the onload page involves contract interaction, I've ensured it is client-side rendered using next/dynamic.
 
 ## Further comments
 

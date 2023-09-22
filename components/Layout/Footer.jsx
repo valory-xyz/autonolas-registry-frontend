@@ -4,7 +4,6 @@ import Image from 'next/image';
 import {
   Footer as CommonFooter,
   getExplorerURL,
-  isL1Network,
 } from '@autonolas/frontend-library';
 import { ADDRESSES } from 'common-util/Contracts';
 import { useHelpers } from 'common-util/hooks';
@@ -15,7 +14,7 @@ import { ContractsInfoContainer } from './styles';
 const PATHS_NOT_TO_SHOW = ['/', '/disclaimer'];
 
 const ContractInfo = () => {
-  const { isValidChainId, chainId } = useHelpers();
+  const { isValidChainId, chainId, isL1Network } = useHelpers();
   const router = useRouter();
 
   const { pathname } = router;
@@ -47,10 +46,10 @@ const ContractInfo = () => {
       return {
         registryText: 'ServiceRegistry',
         managerText: 'ServiceManager',
-        registry: isL1Network(chainId)
+        registry: isL1Network
           ? addresses.serviceRegistry
           : addresses.serviceRegistryL2,
-        manager: isL1Network(chainId)
+        manager: isL1Network
           ? addresses.serviceManagerToken
           : addresses.serviceManager,
       };

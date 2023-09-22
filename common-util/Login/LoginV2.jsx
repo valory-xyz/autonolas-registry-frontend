@@ -43,7 +43,7 @@ export const LoginV2 = ({
       setTimeout(() => {
         const tempChainId = getChainId();
         dispatch(setChainId(tempChainId));
-      }, 100);
+      }, 0);
     } else {
       const tempChainId = getChainIdOrDefaultToMainnet(chainId);
       dispatch(setChainId(tempChainId));

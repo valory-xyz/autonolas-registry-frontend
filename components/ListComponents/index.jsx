@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { Tabs } from 'antd';
 import { useRouter } from 'next/router';
 import { notifyError } from '@autonolas/frontend-library';
@@ -12,6 +11,7 @@ import {
   isMyTab,
 } from 'common-util/List/ListTable/helpers';
 import { getMyListOnPagination } from 'common-util/ContractUtils/myList';
+import { useHelpers } from 'common-util/hooks';
 import {
   getComponents,
   getFilteredComponents,
@@ -29,7 +29,7 @@ const ListComponents = () => {
     isMyTab(hash) ? MY_COMPONENTS : ALL_COMPONENTS,
   );
 
-  const account = useSelector((state) => state?.setup?.account);
+  const { account, chainId } = useHelpers();
 
   /**
    * extra tab content & view click
@@ -83,7 +83,7 @@ const ListComponents = () => {
         }
       }
     })();
-  }, [account, currentTab, searchValue]);
+  }, [account, chainId, currentTab, searchValue]);
 
   // fetch the list (without search)
   useEffect(() => {
@@ -116,7 +116,7 @@ const ListComponents = () => {
         }
       }
     })();
-  }, [account, total, currentPage]);
+  }, [account, chainId, total, currentPage]);
 
   /**
    * Search (All components, My Components)
@@ -145,7 +145,7 @@ const ListComponents = () => {
         }
       }
     })();
-  }, [account, searchValue]);
+  }, [account, chainId, searchValue]);
 
   const tableCommonProps = {
     type: NAV_TYPES.COMPONENT,

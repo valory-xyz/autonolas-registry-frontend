@@ -1,13 +1,7 @@
 import { useState } from 'react';
-import { connect, useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import { Typography } from 'antd';
-import {
-  isL1Network,
-  notifyError,
-  notifySuccess,
-} from '@autonolas/frontend-library';
+import { notifyError, notifySuccess } from '@autonolas/frontend-library';
 
 import {
   DEFAULT_SERVICE_CREATION_ETH_TOKEN,
@@ -24,15 +18,16 @@ import {
 } from 'common-util/Contracts';
 import { sendTransaction } from 'common-util/functions';
 import { checkIfERC721Receive } from 'common-util/functions/requests';
+import { useHelpers } from 'common-util/hooks';
 import RegisterForm from './RegisterForm';
 import { getAgentParams } from './utils';
 import { FormContainer } from '../styles';
 
 const { Title } = Typography;
 
-const MintService = ({ account }) => {
+const MintService = () => {
   const router = useRouter();
-  const chainId = useSelector((state) => state?.setup?.chainId);
+  const { account, isL1Network } = useHelpers();
 
   const [isMinting, setIsMinting] = useState(false);
   const [error, setError] = useState(null);
@@ -58,7 +53,7 @@ const MintService = ({ account }) => {
         console.error(e);
       }
 
-      const contract = isL1Network(chainId)
+      const contract = isL1Network
         ? getServiceManagerContract()
         : getServiceManagerL2Contract();
 
@@ -69,7 +64,7 @@ const MintService = ({ account }) => {
         values.threshold,
       ];
 
-      const params = isL1Network(chainId)
+      const params = isL1Network
         ? [
           values.owner_address,
           values.token === DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS
@@ -117,17 +112,4 @@ const MintService = ({ account }) => {
   );
 };
 
-MintService.propTypes = {
-  account: PropTypes.string,
-};
-
-MintService.defaultProps = {
-  account: null,
-};
-
-const mapStateToProps = (state) => {
-  const { account } = state.setup;
-  return { account };
-};
-
-export default connect(mapStateToProps, {})(MintService);
+export default MintService;

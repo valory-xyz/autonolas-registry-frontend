@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
 import { Button, Form, Input } from 'antd';
 import isNil from 'lodash/isNil';
 import { isValidAddress } from '@autonolas/frontend-library';
 
+import { useHelpers } from 'common-util/hooks';
 import IpfsHashGenerationModal from '../IpfsHashGenerationModal';
 import { DependencyLabel } from '../ListCommon';
 import { FormItemHash } from './helpers';
@@ -15,7 +15,7 @@ export const FORM_NAME = 'register_form';
 const RegisterForm = ({
   isLoading, listType, handleSubmit, handleCancel,
 }) => {
-  const account = useSelector((state) => state?.setup?.account);
+  const { account } = useHelpers();
 
   const [form] = Form.useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);

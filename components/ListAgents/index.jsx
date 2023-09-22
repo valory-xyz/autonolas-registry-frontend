@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { Tabs } from 'antd';
 import { useRouter } from 'next/router';
 import { notifyError } from '@autonolas/frontend-library';
@@ -12,6 +11,7 @@ import {
   isMyTab,
 } from 'common-util/List/ListTable/helpers';
 import { getMyListOnPagination } from 'common-util/ContractUtils/myList';
+import { useHelpers } from 'common-util/hooks';
 import {
   getAgents,
   getFilteredAgents,
@@ -29,7 +29,7 @@ const ListAgents = () => {
     isMyTab(hash) ? MY_AGENTS : ALL_AGENTS,
   );
 
-  const account = useSelector((state) => state?.setup?.account);
+  const { account, chainId } = useHelpers();
 
   /**
    * extra tab content & view click
@@ -81,7 +81,7 @@ const ListAgents = () => {
         }
       }
     })();
-  }, [account, currentTab, searchValue]);
+  }, [account, chainId, currentTab, searchValue]);
 
   // fetch the list (without search)
   useEffect(() => {
@@ -114,7 +114,7 @@ const ListAgents = () => {
         }
       }
     })();
-  }, [account, total, currentPage]);
+  }, [account, chainId, total, currentPage]);
 
   /**
    * Search (All agents, My agents)
@@ -143,7 +143,7 @@ const ListAgents = () => {
         }
       }
     })();
-  }, [account, searchValue]);
+  }, [account, chainId, searchValue]);
 
   const tableCommonProps = {
     type: NAV_TYPES.AGENT,

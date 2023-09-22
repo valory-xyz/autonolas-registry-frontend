@@ -1,12 +1,11 @@
 /* eslint-disable react/prop-types */
 import { memo, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 import {
   Button, Typography, Alert, Switch,
 } from 'antd';
 import { ArrowRightOutlined } from '@ant-design/icons';
 import get from 'lodash/get';
-import { isL1Network, isL1OnlyNetwork, NA } from '@autonolas/frontend-library';
+import { NA } from '@autonolas/frontend-library';
 
 import {
   DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS,
@@ -14,6 +13,7 @@ import {
   NAV_TYPES,
 } from 'util/constants';
 import { Circle } from 'common-util/svg/Circle';
+import { useHelpers } from 'common-util/hooks';
 import { NftImage } from './NFTImage';
 import { SetOperatorStatus, OperatorWhitelist } from './ServiceDetailsHelper';
 import {
@@ -65,9 +65,7 @@ export const DetailsInfo = ({
   setIsModalVisible,
   onDependencyClick,
 }) => {
-  const chainId = useSelector((state) => state?.setup?.chainId);
-
-  const account = useSelector((state) => state?.setup?.account);
+  const { account, isL1Network, isL1OnlyNetwork } = useHelpers();
   const [tokenAddress, setTokenAddress] = useState(null);
 
   // switch state
@@ -107,12 +105,14 @@ export const DetailsInfo = ({
       }
     };
 
-    if (id && isL1OnlyNetwork(chainId)) getData();
+    if (id && isL1OnlyNetwork) {
+      getData();
+    }
 
     return () => {
       isMounted = false;
     };
-  }, [id]);
+  }, [id, isL1OnlyNetwork]);
 
   const updateHashBtn = isOwner ? (
     <>
@@ -227,6 +227,7 @@ export const DetailsInfo = ({
 
   const getServiceValues = () => {
     const serviceState = ['2', '3', '4'].includes(get(info, 'state'));
+
     const serviceDetailsList = [
       {
         dataTestId: 'hashes-list',
@@ -260,7 +261,7 @@ export const DetailsInfo = ({
 
     // show token address only if it is not ETH
     if (
-      isL1Network(chainId)
+      isL1Network
       && tokenAddress !== DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS
     ) {
       serviceDetailsList.push({
@@ -270,7 +271,7 @@ export const DetailsInfo = ({
     }
 
     // operator whitelisting is only available for service & L1 networks
-    if (isL1OnlyNetwork(chainId)) {
+    if (isL1OnlyNetwork) {
       serviceDetailsList.push({
         title: (
           <>

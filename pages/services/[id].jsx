@@ -1,3 +1,10 @@
-import Service from 'components/ListServices/details';
+import dynamic from 'next/dynamic';
 
-export default Service;
+const ServiceDetails = dynamic(
+  () => import('components/ListServices/details'),
+  {
+    ssr: false,
+  },
+);
+
+export default ServiceDetails;

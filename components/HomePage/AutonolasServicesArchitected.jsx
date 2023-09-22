@@ -1,11 +1,10 @@
-import { useSelector } from 'react-redux';
 import { Col, Row, Typography } from 'antd';
 import Link from 'next/link';
-import { isL1Network } from '@autonolas/frontend-library';
+import Image from 'next/image';
 
 import { URL } from 'util/constants';
 import { useScreen } from 'common-util/hooks/useScreen';
-import Image from 'next/image';
+import { useHelpers } from 'common-util/hooks';
 import { ContentRow } from './styles';
 
 const { Title, Text } = Typography;
@@ -32,7 +31,7 @@ const LIST = [
 ];
 
 export const AutonolasServicesArchitected = () => {
-  const chainId = useSelector((state) => state?.setup?.chainId);
+  const { isL1Network } = useHelpers();
   const { isMobile } = useScreen();
 
   return (
@@ -67,7 +66,7 @@ export const AutonolasServicesArchitected = () => {
               <Link href={link} legacyBehavior>{`View all ${type}`}</Link>
             ) : (
               <>
-                {isL1Network(chainId) ? (
+                {isL1Network ? (
                   <Link href={link} legacyBehavior>{`View all ${type}`}</Link>
                 ) : (
                   <Text disabled>

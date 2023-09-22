@@ -1,7 +1,8 @@
 import { useRouter } from 'next/router';
-import { useSelector } from 'react-redux';
+
 import { URL } from 'util/constants';
 import Details from 'common-util/Details';
+import { useHelpers } from 'common-util/hooks';
 import {
   getComponentDetails,
   getComponentHashes,
@@ -13,7 +14,7 @@ import {
 const Component = () => {
   const router = useRouter();
   const id = router?.query?.id;
-  const account = useSelector((state) => state?.setup?.account);
+  const { account } = useHelpers();
 
   return (
     <Details

@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 import {
   Button, Typography, Input, Form,
 } from 'antd';
@@ -12,6 +11,7 @@ import {
 
 import { DynamicFieldsForm } from 'common-util/DynamicFieldsForm';
 import { addressValidator } from 'common-util/functions';
+import { useHelpers } from 'common-util/hooks';
 import {
   checkIfServiceIsWhitelisted,
   setOperatorsStatusesRequest,
@@ -20,7 +20,7 @@ import {
 const { Text } = Typography;
 
 export const OperatorWhitelist = ({ isWhiteListed, setOpWhitelist, id }) => {
-  const account = useSelector((state) => state?.setup?.account);
+  const { account, chainId } = useHelpers();
   const [form] = Form.useForm();
 
   const [isCheckLoading, setIsCheckLoading] = useState(false);
@@ -31,7 +31,7 @@ export const OperatorWhitelist = ({ isWhiteListed, setOpWhitelist, id }) => {
     };
 
     if (id) getData();
-  }, [id]);
+  }, [id, chainId]);
 
   const onCheck = async (values) => {
     try {
@@ -93,7 +93,7 @@ export const OperatorWhitelist = ({ isWhiteListed, setOpWhitelist, id }) => {
 };
 
 export const SetOperatorStatus = ({ id, setOpWhitelist }) => {
-  const account = useSelector((state) => state?.setup?.account);
+  const { account } = useHelpers();
   const [isSubmitLoading, setIsSubmitLoading] = useState(false);
 
   const onSubmit = async (values) => {

@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
-import { connect, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import { Typography } from 'antd';
 import {
-  isL1Network,
-  isL1OnlyNetwork,
   notifySuccess,
   notifyError,
   Loader,
@@ -21,6 +19,7 @@ import {
   getServiceManagerL2Contract,
 } from 'common-util/Contracts';
 import { sendTransaction } from 'common-util/functions';
+import { useHelpers } from 'common-util/hooks';
 import RegisterForm from './RegisterForm';
 import {
   getAgentParams,
@@ -33,7 +32,7 @@ const { Title } = Typography;
 
 const Service = ({ account }) => {
   const router = useRouter();
-  const chainId = useSelector((state) => state?.setup?.chainId);
+  const { chainId, isL1Network, isL1OnlyNetwork } = useHelpers();
 
   const [isAllLoading, setAllLoading] = useState(false);
   const [serviceInfo, setServiceInfo] = useState({});
@@ -56,7 +55,7 @@ const Service = ({ account }) => {
 
           // get token address for L1 only network
           // because L2 network do not have token address
-          if (isL1OnlyNetwork(chainId)) {
+          if (isL1OnlyNetwork) {
             const token = await getTokenAddressRequest(id);
             setEthTokenAddress(token);
           }
@@ -65,7 +64,7 @@ const Service = ({ account }) => {
         }
       }
     })();
-  }, [account]);
+  }, [account, chainId, isL1OnlyNetwork]);
 
   /* helper functions */
   const handleSubmit = (values) => {
@@ -77,7 +76,7 @@ const Service = ({ account }) => {
         ? DEFAULT_SERVICE_CREATION_ETH_TOKEN
         : values.token;
 
-      const contract = isL1Network(chainId)
+      const contract = isL1Network
         ? getServiceManagerContract()
         : getServiceManagerL2Contract();
 
@@ -90,9 +89,7 @@ const Service = ({ account }) => {
       ];
 
       // token wil be passed only for L1
-      const params = isL1Network(chainId)
-        ? [token, ...commonParams]
-        : [...commonParams];
+      const params = isL1Network ? [token, ...commonParams] : [...commonParams];
 
       const fn = contract.methods.update(...params).send({ from: account });
       sendTransaction(fn, account)

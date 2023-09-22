@@ -1,3 +1,10 @@
-import Component from 'components/ListComponents/details';
+import dynamic from 'next/dynamic';
 
-export default Component;
+const ComponentDetails = dynamic(
+  () => import('components/ListComponents/details'),
+  {
+    ssr: false,
+  },
+);
+
+export default ComponentDetails;

@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 import { Menu } from 'antd';
-import { isL1Network } from '@autonolas/frontend-library';
+
+import { useHelpers } from 'common-util/hooks';
 
 const items = [
   { label: 'Components', key: 'components' },
@@ -12,7 +12,7 @@ const items = [
 const serviceItem = [{ label: 'Services', key: 'services' }];
 
 const NavigationMenu = () => {
-  const chainId = useSelector((state) => state?.setup?.chainId);
+  const { isL1Network } = useHelpers();
   const router = useRouter();
   const [selectedMenu, setSelectedMenu] = useState([]);
   const { pathname } = router;
@@ -35,7 +35,7 @@ const NavigationMenu = () => {
       theme="light"
       mode="horizontal"
       selectedKeys={[selectedMenu]}
-      items={isL1Network(chainId) ? [...items, ...serviceItem] : serviceItem}
+      items={isL1Network ? [...items, ...serviceItem] : serviceItem}
       onClick={handleMenuItemClick}
     />
   );

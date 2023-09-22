@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
   Button, Steps, Tooltip, Image,
 } from 'antd';
 import get from 'lodash/get';
-import { isL1OnlyNetwork } from '@autonolas/frontend-library';
 
+import { useHelpers } from 'common-util/hooks';
 import { getServiceTableDataSource, onTerminate, checkIfEth } from './utils';
 import StepPreRegistration from './1StepPreRegistration';
 import StepActiveRegistration from './2StepActiveRegistration';
@@ -39,7 +38,7 @@ export const ServiceState = ({
   const [dataSource, setDataSource] = useState([]);
   const [isEthToken, setIsEthToken] = useState(true); // by default, assume it's an eth token
   const [isStateImageVisible, setIsStateImageVisible] = useState(false);
-  const chainId = useSelector((state) => state?.setup?.chainId);
+  const { chainId, isL1OnlyNetwork } = useHelpers();
 
   const status = get(details, 'state');
   const agentIds = get(details, 'agentIds');
@@ -59,7 +58,7 @@ export const ServiceState = ({
       }
 
       // if valid service id, check if it's an eth token
-      if (id && chainId && isL1OnlyNetwork(chainId)) {
+      if (id && chainId && isL1OnlyNetwork) {
         const isEth = await checkIfEth(id);
         if (isMounted) {
           setIsEthToken(isEth);
@@ -70,7 +69,7 @@ export const ServiceState = ({
     return () => {
       isMounted = false;
     };
-  }, [id, agentIds, chainId]);
+  }, [id, agentIds, chainId, isL1OnlyNetwork]);
 
   useEffect(() => {
     setCurrentStep(Number(status) - 1);

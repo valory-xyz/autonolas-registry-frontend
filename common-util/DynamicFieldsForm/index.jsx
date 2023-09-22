@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
 import { Button, Form, Typography } from 'antd';
+
+import { useHelpers } from 'common-util/hooks';
 import { FormList } from './FormList';
 import { DynamicFormContainer } from './styles';
 
@@ -14,7 +15,7 @@ export const DynamicFieldsForm = ({
   submitButtonText,
   onSubmit,
 }) => {
-  const account = useSelector((state) => state?.setup?.account);
+  const { account } = useHelpers();
   const [form] = Form.useForm();
 
   const onFinish = async (values) => {

@@ -4,11 +4,7 @@ import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
 import Image from 'next/image';
 import { Layout as AntdLayout, Typography } from 'antd';
-import {
-  getNetworkName,
-  isL1Network,
-  useScreen,
-} from '@autonolas/frontend-library';
+import { getNetworkName, useScreen } from '@autonolas/frontend-library';
 
 import { useHelpers } from 'common-util/hooks';
 import { CustomLayout, Logo, RightMenu } from './styles';
@@ -25,19 +21,19 @@ const PAGES_TO_LOAD_WITHOUT_CHAINID = ['/', '/disclaimer'];
 
 const Layout = ({ children }) => {
   const router = useRouter();
-  const { chainId, isValidChainId } = useHelpers();
+  const { chainId, isL1Network, isValidChainId } = useHelpers();
   const path = router?.pathname || '';
   const { isMobile } = useScreen();
 
   useEffect(() => {
-    if (chainId && !isL1Network(chainId)) {
+    if (chainId && !isL1Network) {
       // redirect to services page if user is on components or agents page
-      // and chainId is gnosis
+      // and chainId is not L1
       if (path.includes('/components') || path.includes('/agents')) {
         router.push('/services');
       }
     }
-  }, [chainId]);
+  }, [chainId, isL1Network]);
 
   const logo = (
     <Logo onClick={() => router.push('/')} data-testid="protocol-logo">

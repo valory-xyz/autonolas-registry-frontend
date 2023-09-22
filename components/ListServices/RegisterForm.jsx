@@ -2,15 +2,15 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
 import get from 'lodash/get';
 import { Button, Form, Input } from 'antd';
-import { isValidAddress, isL1Network } from '@autonolas/frontend-library';
+import { isValidAddress } from '@autonolas/frontend-library';
 
 import { DEFAULT_SERVICE_CREATION_ETH_TOKEN } from 'util/constants';
 import { commaMessage, DependencyLabel } from 'common-util/List/ListCommon';
 import { FormItemHash } from 'common-util/List/RegisterForm/helpers';
 import IpfsHashGenerationModal from 'common-util/List/IpfsHashGenerationModal';
+import { useHelpers } from 'common-util/hooks';
 import { ComplexLabel } from 'common-util/List/styles';
 import { RegisterFooter } from 'components/styles';
 
@@ -25,8 +25,7 @@ const RegisterForm = ({
   handleSubmit,
   handleCancel,
 }) => {
-  const account = useSelector((state) => state?.setup?.account);
-  const chainId = useSelector((state) => state?.setup?.chainId);
+  const { account, isL1Network } = useHelpers();
 
   const [form] = Form.useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -35,7 +34,7 @@ const RegisterForm = ({
   const id = router?.query?.id;
 
   useEffect(() => {
-    if (account && ethTokenAddress && isL1Network(chainId)) {
+    if (account && ethTokenAddress && isL1Network) {
       setFields([
         {
           name: ['token'],
@@ -43,7 +42,7 @@ const RegisterForm = ({
         },
       ]);
     }
-  }, [account, ethTokenAddress]);
+  }, [account, isL1Network, ethTokenAddress]);
 
   const onGenerateHash = (generatedHash) => {
     setFields([
@@ -168,7 +167,7 @@ const RegisterForm = ({
         </Form.Item>
 
         {/* generic token visible only to L1 networks */}
-        {isL1Network(chainId) && (
+        {isL1Network && (
           <>
             <Form.Item
               label="ERC20 token address"
@@ -247,7 +246,7 @@ const RegisterForm = ({
           label={(
             <ComplexLabel>
               Canonical agent Ids
-              <DependencyLabel type="service" chainId={chainId} />
+              <DependencyLabel type="service" />
             </ComplexLabel>
           )}
           rules={[
