@@ -1,6 +1,5 @@
 /* eslint-disable no-underscore-dangle */
 import { ethers } from 'ethers';
-import safeContracts from '@gnosis.pm/safe-contracts';
 import {
   GNOSIS_SAFE_CONTRACT,
   MULTI_SEND_CONTRACT,
@@ -12,6 +11,8 @@ import {
 } from 'common-util/Contracts';
 import { checkIfGnosisSafe, getEthersProvider } from 'common-util/functions';
 import { isHashApproved } from './helpers';
+
+const safeContracts = require('@gnosis.pm/safe-contracts');
 
 const ZEROS_24 = '0'.repeat(24);
 const ZEROS_64 = '0'.repeat(64);

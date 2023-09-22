@@ -38,6 +38,7 @@ const StepThreePayload = ({
   const [radioValue, setRadioValue] = useState(null);
   const [agentInstances, setAgentInstances] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isTerminating, setIsTerminating] = useState(false);
 
   const handleStep3Deploy = async (radioValuePassed, payload) => {
     try {
@@ -261,7 +262,17 @@ const StepThreePayload = ({
       <Divider className="m-0" />
       {getButton(
         <Button
-          onClick={handleTerminate}
+          onClick={async () => {
+            try {
+              setIsTerminating(true);
+              await handleTerminate();
+            } catch (error) {
+              console.error(error);
+            } finally {
+              setIsTerminating(false);
+            }
+          }}
+          loading={isTerminating}
           className="terminate-btn"
           {...getOtherBtnProps(STEP, { isDisabled: !isOwner })}
         >
