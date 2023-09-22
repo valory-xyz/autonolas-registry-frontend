@@ -184,20 +184,16 @@ export const getServiceContract = () => {
  * @returns serviceManager contract
  */
 export const getServiceManagerContract = () => {
-  const { address } = getWeb3Details();
-  const { serviceManagerToken } = address;
-  const contract = getContract(
-    SERVICE_MANAGER_TOKEN_CONTRACT.abi,
-    serviceManagerToken,
-  );
-  return contract;
-};
+  const { address, chainId } = getWeb3Details();
+  if (isL1Network(chainId)) {
+    const { serviceManagerToken } = address;
+    const contract = getContract(
+      SERVICE_MANAGER_TOKEN_CONTRACT.abi,
+      serviceManagerToken,
+    );
+    return contract;
+  }
 
-/**
- * @returns serviceManager L2 contract
- */
-export const getServiceManagerL2Contract = () => {
-  const { address } = getWeb3Details();
   const { serviceManager } = address;
   const contract = getContract(SERVICE_MANAGER_CONTRACT.abi, serviceManager);
   return contract;

@@ -12,10 +12,7 @@ import {
   AlertSuccess,
   AlertError,
 } from 'common-util/List/ListCommon';
-import {
-  getServiceManagerContract,
-  getServiceManagerL2Contract,
-} from 'common-util/Contracts';
+import { getServiceManagerContract } from 'common-util/Contracts';
 import { sendTransaction } from 'common-util/functions';
 import { checkIfERC721Receive } from 'common-util/functions/requests';
 import { useHelpers } from 'common-util/hooks';
@@ -53,9 +50,7 @@ const MintService = () => {
         console.error(e);
       }
 
-      const contract = isL1Network
-        ? getServiceManagerContract()
-        : getServiceManagerL2Contract();
+      const contract = getServiceManagerContract();
 
       const commonParams = [
         `0x${values.hash}`,
