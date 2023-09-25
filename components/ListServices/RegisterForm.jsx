@@ -16,6 +16,25 @@ import { RegisterFooter } from 'components/styles';
 
 export const FORM_NAME = 'serviceRegisterForm';
 
+const agentIdValidator = (form, value, fieldName) => {
+  if (!/^\d+(\s*,\s*\d+?)*$/gm.test(value)) {
+    return Promise.reject(new Error('Please input a valid list'));
+  }
+
+  // validate if the "agentIds" and "bonds" are same length
+  // eg: If "agent_num_slots" length = 4, "bonds" should be of length = 4
+  const agentIdsLength = form.getFieldValue('agent_ids').split(',').length;
+  const bondsLength = value.split(',').length;
+
+  if (agentIdsLength !== bondsLength) {
+    return Promise.reject(
+      new Error(`Agent IDs and ${fieldName} must be same length`),
+    );
+  }
+
+  return Promise.resolve();
+};
+
 const RegisterForm = ({
   isLoading,
   listType,
@@ -78,16 +97,8 @@ const RegisterForm = ({
   // trigger form validation on form fields change (`agent_ids`)
   const agentIds = form.getFieldValue('agent_ids');
   useEffect(() => {
-    // if(form.getFieldValue('agent_ids') &&
-    // form.getFieldValue('agent_num_slots') && form.getFieldValue('bonds')) {
-    //   form.validateFields(fieldsToValidate);
-    // }
-    console.log(form.getFieldValue('agent_ids'));
-
     if (form.getFieldValue('agent_ids')?.trim()?.length > 0) {
       const fieldsToValidate = [];
-
-      console.log(fieldsToValidate);
 
       if (form.getFieldValue('agent_num_slots')?.trim()?.length > 0) {
         fieldsToValidate.push('agent_num_slots');
@@ -282,12 +293,7 @@ const RegisterForm = ({
               message: 'Please input the slots to canonical agent Ids',
             },
             () => ({
-              validator(_, value) {
-                if (/^\d+(\s*,\s*\d+?)*$/gm.test(value)) {
-                  return Promise.resolve();
-                }
-                return Promise.reject(new Error('Please input a valid list'));
-              },
+              validator: (_, value) => agentIdValidator(form, value, 'Canonical agent Ids'),
             }),
           ]}
         >
@@ -303,26 +309,7 @@ const RegisterForm = ({
               message: 'Please input the cost of agent instance bond',
             },
             () => ({
-              validator(_, value) {
-                if (!/^\d+(\s*,\s*\d+?)*$/gm.test(value)) {
-                  return Promise.reject(new Error('Please input a valid list'));
-                }
-
-                // validate if the "agentIds" and "bonds" are same length
-                // eg: If "agent_num_slots" length = 4, "bonds" should be of length = 4
-                const agentIdsLength = form
-                  .getFieldValue('agent_ids')
-                  .split(',').length;
-                const bondsLength = value.split(',').length;
-
-                if (agentIdsLength !== bondsLength) {
-                  return Promise.reject(
-                    new Error('Agent IDs and bonds must be same length'),
-                  );
-                }
-
-                return Promise.resolve();
-              },
+              validator: (_, value) => agentIdValidator(form, value, 'Bonds'),
             }),
           ]}
         >
