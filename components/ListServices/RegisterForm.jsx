@@ -16,6 +16,30 @@ import { RegisterFooter } from 'components/styles';
 
 export const FORM_NAME = 'serviceRegisterForm';
 
+const agentIdValidator = (form, value) => {
+  if (!/^\d+(\s*,\s*\d+?)*$/gm.test(value)) {
+    return Promise.reject(new Error('Please input a valid list'));
+  }
+
+  const agentIdsStr = form.getFieldValue('agent_ids');
+  if (!agentIdsStr) {
+    return Promise.resolve();
+  }
+
+  // validate if the "agentIds" and "bonds" are same length
+  // eg: If "agent_num_slots" length = 4, "bonds" should be of length = 4
+  const agentIdsLength = agentIdsStr.split(',').length;
+  const bondsLength = value.split(',').length;
+
+  if (agentIdsLength !== bondsLength) {
+    return Promise.reject(
+      new Error('Must have same number of items as "Canonical agent Ids"'),
+    );
+  }
+
+  return Promise.resolve();
+};
+
 const RegisterForm = ({
   isLoading,
   listType,
@@ -35,22 +59,13 @@ const RegisterForm = ({
 
   useEffect(() => {
     if (account && ethTokenAddress && isL1Network) {
-      setFields([
-        {
-          name: ['token'],
-          value: ethTokenAddress,
-        },
-      ]);
+      setFields([{ name: ['token'], value: ethTokenAddress }]);
     }
   }, [account, isL1Network, ethTokenAddress]);
 
+  // callback function to get the generated hash from the modal
   const onGenerateHash = (generatedHash) => {
-    setFields([
-      {
-        name: ['hash'],
-        value: generatedHash || null,
-      },
-    ]);
+    setFields([{ name: ['hash'], value: generatedHash || null }]);
   };
 
   useDeepCompareEffect(() => {
@@ -63,10 +78,7 @@ const RegisterForm = ({
         .join(', ');
 
       setFields([
-        {
-          name: ['owner_address'],
-          value: formInitialValues.owner || null,
-        },
+        { name: ['owner_address'], value: formInitialValues.owner || null },
         {
           name: ['hash'],
           // remove 0x prefix as it is already coming from backend
@@ -79,25 +91,31 @@ const RegisterForm = ({
             ? formInitialValues.agentIds.join(', ')
             : null,
         },
-        {
-          name: ['agent_num_slots'],
-          value: agentNumSlots,
-        },
-        {
-          name: ['bonds'],
-          value: bonds,
-        },
-        {
-          name: ['threshold'],
-          value: formInitialValues.threshold || null,
-        },
-        {
-          name: ['service_id'],
-          value: id,
-        },
+        { name: ['agent_num_slots'], value: agentNumSlots },
+        { name: ['bonds'], value: bonds },
+        { name: ['threshold'], value: formInitialValues.threshold || null },
+        { name: ['service_id'], value: id },
       ]);
     }
   }, [formInitialValues, isUpdateForm]);
+
+  // trigger form validation on form fields change (`agent_ids`)
+  const agentIds = form.getFieldValue('agent_ids');
+  useEffect(() => {
+    if (form.getFieldValue('agent_ids')?.trim()?.length > 0) {
+      const fieldsToValidate = [];
+
+      if (form.getFieldValue('agent_num_slots')?.trim()?.length > 0) {
+        fieldsToValidate.push('agent_num_slots');
+      }
+
+      if (form.getFieldValue('bonds')?.trim()?.length > 0) {
+        fieldsToValidate.push('bonds');
+      }
+
+      form.validateFields(fieldsToValidate);
+    }
+  }, [agentIds]);
 
   /**
    * form helper functions
@@ -122,9 +140,7 @@ const RegisterForm = ({
         initialValues={{ remember: true }}
         layout="vertical"
         fields={fields}
-        onFieldsChange={(_, allFields) => {
-          setFields(allFields);
-        }}
+        onFieldsChange={(_, allFields) => setFields(allFields)}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete="off"
@@ -216,12 +232,7 @@ const RegisterForm = ({
           <Form.Item
             label="Service Id"
             name="service_id"
-            rules={[
-              {
-                required: true,
-                message: 'Please input the Service ID',
-              },
-            ]}
+            rules={[{ required: true, message: 'Please input the Service ID' }]}
           >
             <Input disabled={isUpdateForm} />
           </Form.Item>
@@ -264,7 +275,7 @@ const RegisterForm = ({
             }),
           ]}
         >
-          <Input placeholder="2, 10, 15, 26" />
+          <Input placeholder="2, 10, 15" />
         </Form.Item>
 
         <Form.Item
@@ -287,41 +298,35 @@ const RegisterForm = ({
               message: 'Please input the slots to canonical agent Ids',
             },
             () => ({
-              validator(_, value) {
-                if (/^\d+(\s*,\s*\d+?)*$/gm.test(value)) {
-                  return Promise.resolve();
-                }
-                return Promise.reject(new Error('Please input a valid list'));
-              },
+              validator: (_, value) => agentIdValidator(form, value),
             }),
           ]}
         >
-          <Input placeholder="1, 2, 1, 2" />
+          <Input placeholder="1, 2, 1" />
         </Form.Item>
 
         <Form.Item
           label="Cost of agent instance bond (wei)"
+          validateFirst
           name="bonds"
           rules={[
             {
               required: true,
               message: 'Please input the cost of agent instance bond',
             },
+            () => ({
+              validator: (_, value) => agentIdValidator(form, value),
+            }),
           ]}
         >
-          <Input />
+          <Input placeholder="5000000000000000, 5000000000000000, 5000000000000000" />
         </Form.Item>
 
         <Form.Item
           label="Threshold"
           name="threshold"
           tooltip="Minimum >= 2/3 of the slot number"
-          rules={[
-            {
-              required: true,
-              message: 'Please input the threshold',
-            },
-          ]}
+          rules={[{ required: true, message: 'Please input the threshold' }]}
         >
           <Input />
         </Form.Item>
