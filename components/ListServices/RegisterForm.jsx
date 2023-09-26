@@ -21,9 +21,14 @@ const agentIdValidator = (form, value) => {
     return Promise.reject(new Error('Please input a valid list'));
   }
 
+  const agentIdsStr = form.getFieldValue('agent_ids');
+  if (!agentIdsStr) {
+    return Promise.resolve();
+  }
+
   // validate if the "agentIds" and "bonds" are same length
   // eg: If "agent_num_slots" length = 4, "bonds" should be of length = 4
-  const agentIdsLength = form.getFieldValue('agent_ids').split(',').length;
+  const agentIdsLength = agentIdsStr.split(',').length;
   const bondsLength = value.split(',').length;
 
   if (agentIdsLength !== bondsLength) {
