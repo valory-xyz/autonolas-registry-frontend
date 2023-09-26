@@ -16,7 +16,7 @@ import { RegisterFooter } from 'components/styles';
 
 export const FORM_NAME = 'serviceRegisterForm';
 
-const agentIdValidator = (form, value, fieldName) => {
+const agentIdValidator = (form, value) => {
   if (!/^\d+(\s*,\s*\d+?)*$/gm.test(value)) {
     return Promise.reject(new Error('Please input a valid list'));
   }
@@ -28,7 +28,7 @@ const agentIdValidator = (form, value, fieldName) => {
 
   if (agentIdsLength !== bondsLength) {
     return Promise.reject(
-      new Error(`Agent IDs and ${fieldName} must be same length`),
+      new Error('Must have same number of items as "Canonical agent Ids"'),
     );
   }
 
@@ -270,7 +270,7 @@ const RegisterForm = ({
             }),
           ]}
         >
-          <Input placeholder="2, 10, 15, 26" />
+          <Input placeholder="2, 10, 15" />
         </Form.Item>
 
         <Form.Item
@@ -293,11 +293,11 @@ const RegisterForm = ({
               message: 'Please input the slots to canonical agent Ids',
             },
             () => ({
-              validator: (_, value) => agentIdValidator(form, value, 'Canonical agent Ids'),
+              validator: (_, value) => agentIdValidator(form, value),
             }),
           ]}
         >
-          <Input placeholder="1, 2, 1, 2" />
+          <Input placeholder="1, 2, 1" />
         </Form.Item>
 
         <Form.Item
@@ -309,11 +309,11 @@ const RegisterForm = ({
               message: 'Please input the cost of agent instance bond',
             },
             () => ({
-              validator: (_, value) => agentIdValidator(form, value, 'Bonds'),
+              validator: (_, value) => agentIdValidator(form, value),
             }),
           ]}
         >
-          <Input />
+          <Input placeholder="5000000000000000, 5000000000000000, 5000000000000000" />
         </Form.Item>
 
         <Form.Item

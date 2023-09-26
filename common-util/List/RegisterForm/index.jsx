@@ -144,7 +144,7 @@ const RegisterForm = ({
             }),
           ]}
         >
-          <Input placeholder="2, 10, 15, 26" />
+          <Input placeholder="2, 10, 15" />
         </Form.Item>
 
         {account ? (
