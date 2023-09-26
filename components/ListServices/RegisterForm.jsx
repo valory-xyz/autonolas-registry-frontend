@@ -307,6 +307,7 @@ const RegisterForm = ({
 
         <Form.Item
           label="Cost of agent instance bond (wei)"
+          validateFirst
           name="bonds"
           rules={[
             {
