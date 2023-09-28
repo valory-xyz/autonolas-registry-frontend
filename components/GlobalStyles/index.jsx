@@ -24,8 +24,8 @@ const GlobalStyle = createGlobalStyle`
   }
   html {
     /* uncomment for dark mode */
-    background-color: ${COLOR.WHITE};
-    filter: invert(1) hue-rotate(180deg);
+    /* background-color: ${COLOR.WHITE}; */
+    /* filter: invert(1) hue-rotate(180deg); */
   }
 
   /* common */
