@@ -65,7 +65,7 @@ export const DetailsInfo = ({
   setIsModalVisible,
   onDependencyClick,
 }) => {
-  const { account, isL1Network, isL1OnlyNetwork } = useHelpers();
+  const { account, doesNetworkHaveValidServiceManagerToken, isL1OnlyNetwork } = useHelpers();
   const [tokenAddress, setTokenAddress] = useState(null);
 
   // switch state
@@ -261,7 +261,7 @@ export const DetailsInfo = ({
 
     // show token address only if it is not ETH
     if (
-      isL1Network
+      doesNetworkHaveValidServiceManagerToken
       && tokenAddress !== DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS
     ) {
       serviceDetailsList.push({

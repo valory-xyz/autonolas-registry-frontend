@@ -44,7 +44,7 @@ export const checkIfGnosisSafe = async (account, provider) => {
 };
 
 /**
- * Checks if the network is has service manager token.
+ * Checks if the network has "Service Manager Token".
  * For now mainnet, goerli, gnosis & chiado has service manager token.
  */
 export const doesNetworkHaveValidServiceManagerTokenFn = (chainId) => {
