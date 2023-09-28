@@ -65,7 +65,7 @@ export const DetailsInfo = ({
   setIsModalVisible,
   onDependencyClick,
 }) => {
-  const { account, doesNetworkHaveValidServiceManagerToken, isL1OnlyNetwork } = useHelpers();
+  const { account, doesNetworkHaveValidServiceManagerToken } = useHelpers();
   const [tokenAddress, setTokenAddress] = useState(null);
 
   // switch state
@@ -105,14 +105,14 @@ export const DetailsInfo = ({
       }
     };
 
-    if (id && isL1OnlyNetwork) {
+    if (id && doesNetworkHaveValidServiceManagerToken) {
       getData();
     }
 
     return () => {
       isMounted = false;
     };
-  }, [id, isL1OnlyNetwork]);
+  }, [id, doesNetworkHaveValidServiceManagerToken]);
 
   const updateHashBtn = isOwner ? (
     <>
@@ -271,7 +271,7 @@ export const DetailsInfo = ({
     }
 
     // operator whitelisting is only available for service & L1 networks
-    if (isL1OnlyNetwork) {
+    if (doesNetworkHaveValidServiceManagerToken) {
       serviceDetailsList.push({
         title: (
           <>

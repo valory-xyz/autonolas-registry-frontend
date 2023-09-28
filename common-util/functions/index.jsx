@@ -6,7 +6,7 @@ import {
   getChainIdOrDefaultToMainnet as getChainIdOrDefaultToMainnetFn,
   getIsValidChainId as getIsValidChainIdFn,
   sendTransaction as sendTransactionFn,
-  isL1Network as isL1NetworkFn,
+  isL1OnlyNetwork as isL1OnlyNetworkFn,
 } from '@autonolas/frontend-library';
 import { RPC_URLS } from 'common-util/Contracts';
 import { SUPPORTED_CHAINS } from 'common-util/Login';
@@ -48,6 +48,6 @@ export const checkIfGnosisSafe = async (account, provider) => {
  * For now mainnet, goerli, gnosis & chiado has service manager token.
  */
 export const doesNetworkHaveValidServiceManagerTokenFn = (chainId) => {
-  const isL1 = isL1NetworkFn(chainId);
+  const isL1 = isL1OnlyNetworkFn(chainId);
   return isL1 || chainId === 100 || chainId === 10200;
 };
