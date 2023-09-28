@@ -16,7 +16,11 @@ import {
   GENERIC_ERC20_CONTRACT,
   OPERATOR_WHITELIST_CONTRACT,
 } from 'common-util/AbiAndAddresses';
-import { getChainId, getProvider } from 'common-util/functions';
+import {
+  getChainId,
+  getProvider,
+  doesNetworkHaveValidServiceManagerTokenFn,
+} from 'common-util/functions';
 import {
   LOCAL_FORK_ID,
   LOCAL_FORK_ID_GNOSIS,
@@ -189,7 +193,7 @@ export const getServiceContract = () => {
  */
 export const getServiceManagerContract = () => {
   const { address, chainId } = getWeb3Details();
-  if (isL1Network(chainId)) {
+  if (doesNetworkHaveValidServiceManagerTokenFn(chainId)) {
     const { serviceManagerToken } = address;
     const contract = getContract(
       SERVICE_MANAGER_TOKEN_CONTRACT.abi,
