@@ -49,7 +49,7 @@ const RegisterForm = ({
   handleSubmit,
   handleCancel,
 }) => {
-  const { account, isL1Network } = useHelpers();
+  const { account, doesNetworkHaveValidServiceManagerToken } = useHelpers();
 
   const [form] = Form.useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -58,10 +58,10 @@ const RegisterForm = ({
   const id = router?.query?.id;
 
   useEffect(() => {
-    if (account && ethTokenAddress && isL1Network) {
+    if (account && ethTokenAddress && doesNetworkHaveValidServiceManagerToken) {
       setFields([{ name: ['token'], value: ethTokenAddress }]);
     }
-  }, [account, isL1Network, ethTokenAddress]);
+  }, [account, doesNetworkHaveValidServiceManagerToken, ethTokenAddress]);
 
   // callback function to get the generated hash from the modal
   const onGenerateHash = (generatedHash) => {
@@ -183,7 +183,7 @@ const RegisterForm = ({
         </Form.Item>
 
         {/* generic token visible only to L1 networks */}
-        {isL1Network && (
+        {doesNetworkHaveValidServiceManagerToken && (
           <>
             <Form.Item
               label="ERC20 token address"

@@ -29,7 +29,7 @@ const { Title } = Typography;
 
 const Service = ({ account }) => {
   const router = useRouter();
-  const { chainId, isL1Network, isL1OnlyNetwork } = useHelpers();
+  const { chainId, doesNetworkHaveValidServiceManagerToken } = useHelpers();
 
   const [isAllLoading, setAllLoading] = useState(false);
   const [serviceInfo, setServiceInfo] = useState({});
@@ -52,7 +52,7 @@ const Service = ({ account }) => {
 
           // get token address for L1 only network
           // because L2 network do not have token address
-          if (isL1OnlyNetwork) {
+          if (doesNetworkHaveValidServiceManagerToken) {
             const token = await getTokenAddressRequest(id);
             setEthTokenAddress(token);
           }
@@ -61,7 +61,7 @@ const Service = ({ account }) => {
         }
       }
     })();
-  }, [account, chainId, isL1OnlyNetwork]);
+  }, [account, chainId, doesNetworkHaveValidServiceManagerToken]);
 
   /* helper functions */
   const handleSubmit = (values) => {
@@ -83,8 +83,10 @@ const Service = ({ account }) => {
         values.service_id,
       ];
 
-      // token wil be passed only for L1
-      const params = isL1Network ? [token, ...commonParams] : [...commonParams];
+      // token wil be passed only if the connected network has service manager token
+      const params = doesNetworkHaveValidServiceManagerToken
+        ? [token, ...commonParams]
+        : [...commonParams];
 
       const fn = contract.methods.update(...params).send({ from: account });
       sendTransaction(fn, account)

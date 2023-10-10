@@ -38,7 +38,7 @@ export const ServiceState = ({
   const [dataSource, setDataSource] = useState([]);
   const [isEthToken, setIsEthToken] = useState(true); // by default, assume it's an eth token
   const [isStateImageVisible, setIsStateImageVisible] = useState(false);
-  const { chainId, isL1OnlyNetwork } = useHelpers();
+  const { chainId, doesNetworkHaveValidServiceManagerToken } = useHelpers();
 
   const status = get(details, 'state');
   const agentIds = get(details, 'agentIds');
@@ -58,7 +58,7 @@ export const ServiceState = ({
       }
 
       // if valid service id, check if it's an eth token
-      if (id && chainId && isL1OnlyNetwork) {
+      if (id && chainId && doesNetworkHaveValidServiceManagerToken) {
         const isEth = await checkIfEth(id);
         if (isMounted) {
           setIsEthToken(isEth);
@@ -69,7 +69,7 @@ export const ServiceState = ({
     return () => {
       isMounted = false;
     };
-  }, [id, agentIds, chainId, isL1OnlyNetwork]);
+  }, [id, agentIds, chainId, doesNetworkHaveValidServiceManagerToken]);
 
   useEffect(() => {
     setCurrentStep(Number(status) - 1);

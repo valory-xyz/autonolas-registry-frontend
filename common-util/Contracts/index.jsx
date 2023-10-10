@@ -16,7 +16,11 @@ import {
   GENERIC_ERC20_CONTRACT,
   OPERATOR_WHITELIST_CONTRACT,
 } from 'common-util/AbiAndAddresses';
-import { getChainId, getProvider } from 'common-util/functions';
+import {
+  getChainId,
+  getProvider,
+  doesNetworkHaveValidServiceManagerTokenFn,
+} from 'common-util/functions';
 import {
   LOCAL_FORK_ID,
   LOCAL_FORK_ID_GNOSIS,
@@ -47,8 +51,10 @@ const MAINNET_ADDRESSES = {
 };
 
 const GNOSIS_ADDRESSES = {
-  serviceManager: '0xE3607b00E75f6405248323A9417ff6b39B244b50',
+  serviceManagerToken: '0x04b0007b2aFb398015B76e5f22993a1fddF83644',
   serviceRegistryL2: '0x9338b5153AE39BB89f50468E608eD9d764B755fD',
+  serviceRegistryTokenUtility: '0xa45E64d13A30a51b91ae0eb182e88a40e9b18eD8',
+  operatorWhitelist: '0x526E064cB694E8f5B7DB299158e17F33055B3943',
 };
 
 const POLYGON_ADDRESSES = {
@@ -75,8 +81,10 @@ export const ADDRESSES = {
   137: POLYGON_ADDRESSES,
   // chiado
   10200: {
-    serviceManager: '0x29086141ecdc310058fc23273F8ef7881d20C2f7',
+    serviceManagerToken: '0xc965a32185590Eb5a5fffDba29E96126b7650eDe',
     serviceRegistryL2: '0x31D3202d8744B16A120117A053459DDFAE93c855',
+    serviceRegistryTokenUtility: '0xc2c7E40674f1C7Bb99eFe5680Efd79842502bED4',
+    operatorWhitelist: '0x6f7661F52fE1919996d0A4F68D09B344093a349d',
   },
   // polygon mumbai
   80001: {
@@ -185,7 +193,7 @@ export const getServiceContract = () => {
  */
 export const getServiceManagerContract = () => {
   const { address, chainId } = getWeb3Details();
-  if (isL1Network(chainId)) {
+  if (doesNetworkHaveValidServiceManagerTokenFn(chainId)) {
     const { serviceManagerToken } = address;
     const contract = getContract(
       SERVICE_MANAGER_TOKEN_CONTRACT.abi,

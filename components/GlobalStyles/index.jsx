@@ -22,8 +22,9 @@ const GlobalStyle = createGlobalStyle`
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-  body {
+  html {
     /* uncomment for dark mode */
+    /* background-color: ${COLOR.WHITE}; */
     /* filter: invert(1) hue-rotate(180deg); */
   }
 

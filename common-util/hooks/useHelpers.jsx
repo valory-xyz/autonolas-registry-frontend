@@ -6,7 +6,11 @@ import {
 } from '@autonolas/frontend-library';
 
 import { setChainId } from 'store/setup/actions';
-import { getChainId, getIsValidChainId } from '../functions';
+import {
+  doesNetworkHaveValidServiceManagerTokenFn,
+  getChainId,
+  getIsValidChainId,
+} from '../functions';
 
 export const useHelpers = () => {
   const dispatch = useDispatch();
@@ -30,5 +34,7 @@ export const useHelpers = () => {
     isValidChainId: getIsValidChainId(chainId),
     isL1OnlyNetwork: isL1OnlyNetworkFn(chainId),
     isL1Network: isL1NetworkFn(chainId),
+    doesNetworkHaveValidServiceManagerToken:
+      doesNetworkHaveValidServiceManagerTokenFn(chainId),
   };
 };

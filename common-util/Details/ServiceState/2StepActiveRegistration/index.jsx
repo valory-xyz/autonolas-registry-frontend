@@ -33,7 +33,7 @@ const ActiveRegistration = ({
   isEthToken,
   updateDetails,
 }) => {
-  const { account, chainId, isL1OnlyNetwork } = useHelpers();
+  const { account, chainId, doesNetworkHaveValidServiceManagerToken } = useHelpers();
 
   const [totalBonds, setTotalBond] = useState(null);
   const [ethTokenBonds, setEthTokenBonds] = useState([]);
@@ -61,7 +61,7 @@ const ActiveRegistration = ({
         }
       }
 
-      if (serviceId && !isEthToken && isL1OnlyNetwork) {
+      if (serviceId && !isEthToken && doesNetworkHaveValidServiceManagerToken) {
         const response = await getTokenBondRequest(serviceId, dataSource);
         setEthTokenBonds(response);
       }
@@ -70,7 +70,7 @@ const ActiveRegistration = ({
     return () => {
       isMounted = false;
     };
-  }, [chainId, isL1OnlyNetwork, serviceId, dataSource]);
+  }, [chainId, doesNetworkHaveValidServiceManagerToken, serviceId, dataSource]);
 
   const handleStep2RegisterAgents = async () => {
     const trimArray = (string) => (string || [])

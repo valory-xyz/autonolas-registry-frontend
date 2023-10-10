@@ -14,7 +14,12 @@ import { ContractsInfoContainer } from './styles';
 const PATHS_NOT_TO_SHOW = ['/', '/disclaimer'];
 
 const ContractInfo = () => {
-  const { isValidChainId, chainId, isL1Network } = useHelpers();
+  const {
+    isValidChainId,
+    chainId,
+    isL1Network,
+    doesNetworkHaveValidServiceManagerToken,
+  } = useHelpers();
   const router = useRouter();
 
   const { pathname } = router;
@@ -49,7 +54,7 @@ const ContractInfo = () => {
         registry: isL1Network
           ? addresses.serviceRegistry
           : addresses.serviceRegistryL2,
-        manager: isL1Network
+        manager: doesNetworkHaveValidServiceManagerToken
           ? addresses.serviceManagerToken
           : addresses.serviceManager,
       };

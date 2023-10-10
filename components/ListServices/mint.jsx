@@ -24,7 +24,7 @@ const { Title } = Typography;
 
 const MintService = () => {
   const router = useRouter();
-  const { account, isL1Network } = useHelpers();
+  const { account, doesNetworkHaveValidServiceManagerToken } = useHelpers();
 
   const [isMinting, setIsMinting] = useState(false);
   const [error, setError] = useState(null);
@@ -59,7 +59,7 @@ const MintService = () => {
         values.threshold,
       ];
 
-      const params = isL1Network
+      const params = doesNetworkHaveValidServiceManagerToken
         ? [
           values.owner_address,
           values.token === DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS
