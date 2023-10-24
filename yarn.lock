@@ -121,10 +121,10 @@
   resolved "https://registry.yarnpkg.com/@assemblyscript/loader/-/loader-0.9.4.tgz#a483c54c1253656bb33babd464e3154a173e1577"
   integrity sha512-HazVq9zwTVwGmqdwYzu7WyQ6FQVZ7SwET0KKQuKm55jD0IfUpZgN0OPIiZG3zV1iSrVYcN0bdwLRXI/VNCYsUA==
 
-"@autonolas/frontend-library@^0.4.14":
-  version "0.4.14"
-  resolved "https://registry.yarnpkg.com/@autonolas/frontend-library/-/frontend-library-0.4.14.tgz#33b64f856f24c1f6136d947310e7df04ee5634b9"
-  integrity sha512-/9xD3BIHpwiBq2QGR1njpENiUU9eTh5vBn1NoGpSzM5sxl7Ydj87Et6i1TO7GsQ+5IJ8sbWoJC5SG0wqc4YIZA==
+"@autonolas/frontend-library@^0.4.17":
+  version "0.4.17"
+  resolved "https://registry.yarnpkg.com/@autonolas/frontend-library/-/frontend-library-0.4.17.tgz#c06ac7c6ee5bbdd523bf488c339d60aafa484151"
+  integrity sha512-/gw05nSPIcxzB07OFxMaZEM0d5uwQ8O4H43GV1tjOi1PVPTfrSh94IB5jxJ7iO9IS5gfQyranMc13hPU8SrOCg==
   dependencies:
     "@ant-design/icons" "^5.2.6"
     "@storybook/builder-webpack5" "^7.4.1"
