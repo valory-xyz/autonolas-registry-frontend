@@ -10,7 +10,6 @@ import styled from 'styled-components';
 import {
   COLOR,
   MEDIA_QUERY,
-  isAddressProhibited,
   notifyProhibitedAddressError,
 } from '@autonolas/frontend-library';
 
@@ -18,6 +17,7 @@ import { setChainId, setUserBalance } from 'store/setup/actions';
 import {
   getChainId,
   getChainIdOrDefaultToMainnet,
+  isAddressProhibited,
 } from 'common-util/functions';
 import { projectId, ethereumClient } from './config';
 

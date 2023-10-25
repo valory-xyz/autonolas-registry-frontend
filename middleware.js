@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { prohibitedCountries } from '@autonolas/frontend-library';
+import prohibitedCountries from './data/prohibited-countries.json';
 
 const prohibitedCountriesCode = Object.values(prohibitedCountries);
 

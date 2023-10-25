@@ -1,3 +1,4 @@
+import { toLower } from 'lodash';
 import {
   isValidAddress,
   getProvider as getProviderFn,
@@ -10,6 +11,7 @@ import {
 } from '@autonolas/frontend-library';
 import { RPC_URLS } from 'common-util/Contracts';
 import { SUPPORTED_CHAINS } from 'common-util/Login';
+import prohibitedAddresses from '../../data/prohibited-addresses.json';
 
 export const getProvider = () => getProviderFn(SUPPORTED_CHAINS, RPC_URLS);
 
@@ -50,4 +52,9 @@ export const checkIfGnosisSafe = async (account, provider) => {
 export const doesNetworkHaveValidServiceManagerTokenFn = (chainId) => {
   const isL1 = isL1OnlyNetworkFn(chainId);
   return isL1 || chainId === 100 || chainId === 10200;
+};
+
+export const isAddressProhibited = (address) => {
+  const addresses = prohibitedAddresses.map((e) => toLower(e));
+  return addresses.includes(toLower(address));
 };
