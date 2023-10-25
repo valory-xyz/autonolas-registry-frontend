@@ -9,8 +9,9 @@ import {
 import styled from 'styled-components';
 import {
   COLOR,
+  CannotConnectAddressOfacError,
   MEDIA_QUERY,
-  notifyProhibitedAddressError,
+  notifyError,
 } from '@autonolas/frontend-library';
 
 import { setChainId, setUserBalance } from 'store/setup/actions';
@@ -135,7 +136,7 @@ export const LoginV2 = ({
   useEffect(() => {
     if (address && isAddressProhibited(address)) {
       disconnect();
-      notifyProhibitedAddressError();
+      notifyError(<CannotConnectAddressOfacError />);
       if (onDisconnectCb) onDisconnectCb();
     }
   }, [address]);
