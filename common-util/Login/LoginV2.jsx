@@ -1,16 +1,25 @@
 import { useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { Web3Modal, Web3Button, Web3NetworkSwitch } from '@web3modal/react';
-import { useAccount, useNetwork, useBalance } from 'wagmi';
-import { COLOR } from '@autonolas/frontend-library';
 import { useDispatch } from 'react-redux';
+import PropTypes from 'prop-types';
+import { Grid } from 'antd';
+import { Web3Modal, Web3Button, Web3NetworkSwitch } from '@web3modal/react';
+import {
+  useAccount, useNetwork, useBalance, useDisconnect,
+} from 'wagmi';
 import styled from 'styled-components';
-import { setChainId } from 'store/setup/actions';
+import {
+  COLOR,
+  CannotConnectAddressOfacError,
+  MEDIA_QUERY,
+  notifyError,
+} from '@autonolas/frontend-library';
+
+import { setChainId, setUserBalance } from 'store/setup/actions';
 import {
   getChainId,
   getChainIdOrDefaultToMainnet,
+  isAddressProhibited,
 } from 'common-util/functions';
-import { useScreen } from 'common-util/hooks';
 import { projectId, ethereumClient } from './config';
 
 const LoginContainer = styled.div`
@@ -18,7 +27,12 @@ const LoginContainer = styled.div`
   align-items: center;
   font-size: 18px;
   line-height: normal;
+  ${MEDIA_QUERY.mobileL} {
+    margin-top: 0.5rem;
+  }
 `;
+
+const { useBreakpoint } = Grid;
 
 export const LoginV2 = ({
   onConnect: onConnectCb,
@@ -26,18 +40,40 @@ export const LoginV2 = ({
   theme = 'light',
 }) => {
   const dispatch = useDispatch();
-  const { address } = useAccount();
+  const { disconnect } = useDisconnect();
   const { chain } = useNetwork();
-  const { data } = useBalance({ address });
-  const { isMobile } = useScreen();
 
   const chainId = chain?.id;
+  const { address, connector } = useAccount({
+    onConnect: ({ address: currentAddress }) => {
+      if (isAddressProhibited(currentAddress)) {
+        disconnect();
+      } else if (onConnectCb) {
+        onConnectCb({
+          address: address || currentAddress,
+          balance: null,
+          chainId,
+        });
+      }
+    },
+    onDisconnect() {
+      if (onDisconnectCb) onDisconnectCb();
+    },
+  });
+
+  // Update the balance
+  const { data: balance } = useBalance({ address });
+  useEffect(() => {
+    if (balance?.formatted) {
+      dispatch(setUserBalance(balance.formatted));
+    }
+  }, [balance?.formatted]);
 
   useEffect(() => {
     // if chainId is undefined, the wallet is not connected & default to mainnet
     if (chainId === undefined) {
       /**
-       * wait for 100ms to get the chainId & set it to redux to avoid race condition
+       * wait for 0ms to get the chainId & set it to redux to avoid race condition
        * and dependent components are loaded once the chainId is set
        */
       setTimeout(() => {
@@ -49,21 +85,6 @@ export const LoginV2 = ({
       dispatch(setChainId(tempChainId));
     }
   }, [chainId]);
-
-  const { connector } = useAccount({
-    onConnect: ({ address: currentAddress }) => {
-      if (onConnectCb) {
-        onConnectCb({
-          address: address || currentAddress,
-          balance: data?.formatted,
-          chainId,
-        });
-      }
-    },
-    onDisconnect() {
-      if (onDisconnectCb) onDisconnectCb();
-    },
-  });
 
   useEffect(() => {
     const getData = async () => {
@@ -106,17 +127,30 @@ export const LoginV2 = ({
       }
     };
 
-    getData();
+    if (connector && !isAddressProhibited(address)) {
+      getData();
+    }
   }, [connector]);
+
+  // Disconnect if the address is prohibited
+  useEffect(() => {
+    if (address && isAddressProhibited(address)) {
+      disconnect();
+      notifyError(<CannotConnectAddressOfacError />);
+      if (onDisconnectCb) onDisconnectCb();
+    }
+  }, [address]);
+
+  const screens = useBreakpoint();
 
   return (
     <LoginContainer>
       <Web3NetworkSwitch />
       &nbsp;&nbsp;
       <Web3Button
-        balance="show"
         avatar="hide"
-        icon={isMobile ? 'hide' : 'show'}
+        balance={screens.xs ? 'hide' : 'show'}
+        icon={screens.xs ? 'hide' : 'show'}
       />
       <Web3Modal
         projectId={projectId}
