@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Grid } from 'antd';
-import { Web3Modal, Web3Button, Web3NetworkSwitch } from '@web3modal/react';
+import { Web3Modal, Web3Button } from '@web3modal/react';
 import {
   useAccount, useNetwork, useBalance, useDisconnect,
 } from 'wagmi';
@@ -145,8 +145,6 @@ export const LoginV2 = ({
 
   return (
     <LoginContainer>
-      <Web3NetworkSwitch />
-      &nbsp;&nbsp;
       <Web3Button
         avatar="hide"
         balance={screens.xs ? 'hide' : 'show'}
