@@ -11,7 +11,7 @@ import Socials from './Socials';
 import { ContractsInfoContainer } from './styles';
 
 // should not display contracts on homepage
-const PATHS_NOT_TO_SHOW = ['/', '/disclaimer'];
+const PATHS_NOT_TO_SHOW = ['/', '/disclaimer', '/not-legal'];
 
 const ContractInfo = () => {
   const {
@@ -81,9 +81,8 @@ const ContractInfo = () => {
     </div>
   );
 
-  const {
-    registry, manager, managerText, registryText,
-  } = getCurrentPageAddresses();
+  const { registry, manager, managerText, registryText } =
+    getCurrentPageAddresses();
 
   return (
     <ContractsInfoContainer>
@@ -110,7 +109,7 @@ const Footer = () => (
   <CommonFooter
     leftContent={<ContractInfo />}
     rightContent={<Socials />}
-    centerContent={(
+    centerContent={
       <>
         ©&nbsp;Autonolas DAO&nbsp;
         {new Date().getFullYear()}
@@ -125,7 +124,7 @@ const Footer = () => (
           DAO Constitution
         </a>
       </>
-    )}
+    }
   />
 );
 
