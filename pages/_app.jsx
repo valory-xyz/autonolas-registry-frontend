@@ -14,8 +14,7 @@ import GlobalStyle from 'components/GlobalStyles';
 import { THEME_CONFIG } from '@autonolas/frontend-library';
 import initStore from '../store';
 
-const DESC =
-  'View and manage components, agents and services via the Autonolas on-chain registry.';
+const DESC = 'View and manage components, agents and services via the Autonolas on-chain registry.';
 
 const MyApp = ({ Component, pageProps }) => {
   const router = useRouter();

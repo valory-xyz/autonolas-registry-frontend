@@ -81,8 +81,9 @@ const ContractInfo = () => {
     </div>
   );
 
-  const { registry, manager, managerText, registryText } =
-    getCurrentPageAddresses();
+  const {
+    registry, manager, managerText, registryText,
+  } = getCurrentPageAddresses();
 
   return (
     <ContractsInfoContainer>
@@ -109,7 +110,7 @@ const Footer = () => (
   <CommonFooter
     leftContent={<ContractInfo />}
     rightContent={<Socials />}
-    centerContent={
+    centerContent={(
       <>
         ©&nbsp;Autonolas DAO&nbsp;
         {new Date().getFullYear()}
@@ -124,7 +125,7 @@ const Footer = () => (
           DAO Constitution
         </a>
       </>
-    }
+    )}
   />
 );
 
