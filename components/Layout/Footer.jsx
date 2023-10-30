@@ -11,7 +11,7 @@ import Socials from './Socials';
 import { ContractsInfoContainer } from './styles';
 
 // should not display contracts on homepage
-const PATHS_NOT_TO_SHOW = ['/', '/disclaimer'];
+const PATHS_NOT_TO_SHOW = ['/', '/disclaimer', '/not-legal'];
 
 const ContractInfo = () => {
   const {
