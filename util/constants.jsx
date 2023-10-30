@@ -1,5 +1,4 @@
 export const URL = {
-  root: '/',
   AGENTS: '/agents',
   COMPONENTS: '/components',
   SERVICES: '/services',
@@ -24,6 +23,9 @@ export const SERVICE_STATE = {
   4: 'Deployed',
   5: 'Terminated Bonded',
 };
+
+// should not display contracts on homepage
+export const PATHS_NOT_TO_SHOW = ['/', '/disclaimer'];
 
 export const HASH_PREFIX = 'f01701220';
 export const HASH_PREFIXES = {

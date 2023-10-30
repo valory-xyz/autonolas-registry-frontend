@@ -82,15 +82,18 @@ export const Logo = styled.div`
   display: flex;
   align-items: center;
   justify-content: left;
-  margin-right: 1.5rem;
+  margin-right: 0.5rem;
   > span {
     margin-left: 0.5rem;
+    margin-right: 0.5rem;
   }
 
   ${MEDIA_QUERY.mobileL} {
     margin-right: 0.5rem;
   }
 `;
+
+export const SelectContainer = styled.div``;
 
 export const RightMenu = styled.div`
   display: flex;

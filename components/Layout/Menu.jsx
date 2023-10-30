@@ -12,7 +12,7 @@ const items = [
 const serviceItem = [{ label: 'Services', key: 'services' }];
 
 const NavigationMenu = () => {
-  const { isL1Network } = useHelpers();
+  const { isL1Network, chainName } = useHelpers();
   const router = useRouter();
   const [selectedMenu, setSelectedMenu] = useState([]);
   const { pathname } = router;
@@ -26,7 +26,7 @@ const NavigationMenu = () => {
   }, [pathname]);
 
   const handleMenuItemClick = ({ key }) => {
-    router.push(`/${key}`);
+    router.push(`/${chainName}/${key}`);
     setSelectedMenu(key);
   };
 

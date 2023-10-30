@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
 import { notifyError } from '@autonolas/frontend-library';
 
-import { URL, NAV_TYPES } from 'util/constants';
+import { NAV_TYPES } from 'util/constants';
 import {
   useExtraTabContent,
   getHash,
@@ -33,16 +33,16 @@ const ListServices = () => {
     isMyTab(hash) ? MY_SERVICES : ALL_SERVICES,
   );
 
-  const { account, chainId } = useHelpers();
+  const { account, chainId, links } = useHelpers();
 
   /**
    * extra tab content & view click
    */
   const { searchValue, extraTabContent, clearSearch } = useExtraTabContent({
     title: 'Services',
-    onRegisterClick: () => router.push(URL.MINT_SERVICE),
+    onRegisterClick: () => router.push(links.MINT_SERVICE),
   });
-  const onViewClick = (id) => router.push(`${URL.SERVICES}/${id}`);
+  const onViewClick = (id) => router.push(`${links.SERVICES}/${id}`);
 
   /**
    * filtered list
@@ -182,7 +182,9 @@ const ListServices = () => {
 
         // update the URL to keep track of my-services
         router.push(
-          e === MY_SERVICES ? `${URL.SERVICES}#${MY_SERVICES}` : URL.SERVICES,
+          e === MY_SERVICES
+            ? `${links.SERVICES}#${MY_SERVICES}`
+            : links.SERVICES,
         );
       }}
       items={[
@@ -198,7 +200,7 @@ const ListServices = () => {
             <ListTable
               {...tableCommonProps}
               list={myServiceList}
-              onUpdateClick={(serviceId) => router.push(`${URL.UPDATE_SERVICE}/${serviceId}`)}
+              onUpdateClick={(serviceId) => router.push(`${links.UPDATE_SERVICE}/${serviceId}`)}
               isAccountRequired
             />
           ),

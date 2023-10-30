@@ -3,7 +3,7 @@ import { Tabs } from 'antd';
 import { useRouter } from 'next/router';
 import { notifyError } from '@autonolas/frontend-library';
 
-import { URL, NAV_TYPES } from 'util/constants';
+import { NAV_TYPES } from 'util/constants';
 import ListTable from 'common-util/List/ListTable';
 import {
   useExtraTabContent,
@@ -29,16 +29,16 @@ const ListComponents = () => {
     isMyTab(hash) ? MY_COMPONENTS : ALL_COMPONENTS,
   );
 
-  const { account, chainId } = useHelpers();
+  const { account, chainId, links } = useHelpers();
 
   /**
    * extra tab content & view click
    */
   const { searchValue, extraTabContent, clearSearch } = useExtraTabContent({
     title: 'Components',
-    onRegisterClick: () => router.push(URL.MINT_COMPONENT),
+    onRegisterClick: () => router.push(links.MINT_COMPONENT),
   });
-  const onViewClick = (id) => router.push(`${URL.COMPONENTS}/${id}`);
+  const onViewClick = (id) => router.push(`${links.COMPONENTS}/${id}`);
 
   /**
    * filtered list
@@ -181,8 +181,8 @@ const ListComponents = () => {
         // update the URL to keep track of my-components
         router.push(
           e === MY_COMPONENTS
-            ? `${URL.COMPONENTS}#${MY_COMPONENTS}`
-            : URL.COMPONENTS,
+            ? `${links.COMPONENTS}#${MY_COMPONENTS}`
+            : links.COMPONENTS,
         );
       }}
       items={[

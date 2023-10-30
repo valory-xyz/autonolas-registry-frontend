@@ -6,6 +6,7 @@ import {
 } from '@autonolas/frontend-library';
 
 import { setChainId } from 'store/setup/actions';
+import { URL } from 'util/constants';
 import {
   doesNetworkHaveValidServiceManagerTokenFn,
   getChainId,
@@ -16,6 +17,10 @@ export const useHelpers = () => {
   const dispatch = useDispatch();
   const account = useSelector((state) => state?.setup?.account);
   const chainId = useSelector((state) => state?.setup?.chainId);
+  const chainDisplayName = useSelector(
+    (state) => state?.setup?.chainDisplayName,
+  );
+  const chainName = useSelector((state) => state?.setup?.chainName);
 
   /**
    * Set chainId to redux on page load.
@@ -28,13 +33,21 @@ export const useHelpers = () => {
     }
   }, [currentChainId]);
 
+  const updatedLinks = Object.entries(URL).reduce((acc, [key, value]) => {
+    acc[key] = `/${chainName}${value}`;
+    return acc;
+  }, {});
+
   return {
-    chainId,
     account,
+    chainId,
+    chainDisplayName,
+    chainName,
     isValidChainId: getIsValidChainId(chainId),
     isL1OnlyNetwork: isL1OnlyNetworkFn(chainId),
     isL1Network: isL1NetworkFn(chainId),
     doesNetworkHaveValidServiceManagerToken:
       doesNetworkHaveValidServiceManagerTokenFn(chainId),
+    links: updatedLinks,
   };
 };

@@ -5,13 +5,12 @@ import {
   Footer as CommonFooter,
   getExplorerURL,
 } from '@autonolas/frontend-library';
+
+import { PATHS_NOT_TO_SHOW } from 'util/constants';
 import { ADDRESSES } from 'common-util/Contracts';
 import { useHelpers } from 'common-util/hooks';
 import Socials from './Socials';
 import { ContractsInfoContainer } from './styles';
-
-// should not display contracts on homepage
-const PATHS_NOT_TO_SHOW = ['/', '/disclaimer'];
 
 const ContractInfo = () => {
   const {

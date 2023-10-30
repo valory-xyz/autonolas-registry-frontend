@@ -14,6 +14,23 @@ const nextConfig = {
       maxChunkSize: 30000,
     },
   },
+  redirects: async () => [
+    {
+      source: '/components',
+      destination: '/mainnet/components',
+      permanent: true,
+    },
+    {
+      source: '/agents',
+      destination: '/mainnet/agents',
+      permanent: true,
+    },
+    {
+      source: '/services',
+      destination: '/mainnet/services',
+      permanent: true,
+    },
+  ],
 };
 
 module.exports = withBundleAnalyzer({

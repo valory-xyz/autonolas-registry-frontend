@@ -1,6 +1,5 @@
 import { useRouter } from 'next/router';
 
-import { URL } from 'util/constants';
 import Details from 'common-util/Details';
 import { useHelpers } from 'common-util/hooks';
 import {
@@ -14,7 +13,7 @@ import {
 const Agent = () => {
   const router = useRouter();
   const id = router?.query?.id;
-  const { account } = useHelpers();
+  const { account, links } = useHelpers();
 
   return (
     <Details
@@ -27,7 +26,7 @@ const Agent = () => {
       onUpdateHash={async (newHash) => {
         await updateAgentHashes(account, id, newHash);
       }}
-      onDependencyClick={(e) => router.push(`${URL.COMPONENTS}/${e}`)}
+      onDependencyClick={(e) => router.push(`${links.COMPONENTS}/${e}`)}
     />
   );
 };

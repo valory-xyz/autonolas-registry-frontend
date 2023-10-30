@@ -4,7 +4,6 @@ import {
 import Link from 'next/link';
 import Image from 'next/image';
 
-import { URL } from 'util/constants';
 import { useScreen } from 'common-util/hooks/useScreen';
 import { useHelpers } from 'common-util/hooks';
 import { AutonolasServicesArchitected } from './AutonolasServicesArchitected';
@@ -13,7 +12,7 @@ import { Container, HeaderRow } from './styles';
 const { Title, Text } = Typography;
 
 const HomePage = () => {
-  const { isL1Network } = useHelpers();
+  const { isL1Network, links } = useHelpers();
   const { isMobile } = useScreen();
 
   return (
@@ -30,7 +29,7 @@ const HomePage = () => {
               The easiest way to interact with the Autonolas on-chain registry.
             </Text>
             <Link
-              href={isL1Network ? URL.COMPONENTS : URL.SERVICES}
+              href={isL1Network ? links.COMPONENTS : links.SERVICES}
               passHref
               legacyBehavior
             >

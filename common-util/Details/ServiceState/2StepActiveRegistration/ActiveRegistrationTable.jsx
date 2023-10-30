@@ -8,7 +8,6 @@ import { useRouter } from 'next/router';
 import { isValidAddress } from '@autonolas/frontend-library';
 import styled from 'styled-components';
 
-import { URL } from 'util/constants';
 import { useHelpers } from 'common-util/hooks';
 
 const TableContainer = styled.div`
@@ -151,7 +150,7 @@ const ActiveRegistrationTable = ({
   setIsValidAgentAddress,
 }) => {
   const router = useRouter();
-  const { isL1Network } = useHelpers();
+  const { isL1Network, links } = useHelpers();
 
   // event if one of the agent instance addresses is present,
   // it is okay to NOT have other agent instance addresses
@@ -173,7 +172,7 @@ const ActiveRegistrationTable = ({
         <Button
           type="link"
           disabled={!isL1Network}
-          onClick={() => router.push(`${URL.AGENTS}/${text}`)}
+          onClick={() => router.push(`${links.AGENTS}/${text}`)}
         >
           {text}
         </Button>
