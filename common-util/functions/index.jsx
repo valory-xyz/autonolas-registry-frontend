@@ -1,8 +1,7 @@
+import { ethers } from 'ethers';
 import { toLower } from 'lodash';
 import {
   isValidAddress,
-  getProvider as getProviderFn,
-  getEthersProvider as getEthersProviderFn,
   getChainIdOrDefaultToMainnet as getChainIdOrDefaultToMainnetFn,
   getIsValidChainId as getIsValidChainIdFn,
   sendTransaction as sendTransactionFn,
@@ -12,6 +11,52 @@ import { RPC_URLS } from 'common-util/Contracts';
 import { SUPPORTED_CHAINS } from 'common-util/Login';
 import { SUPPORTED_CHAINS_MORE_INFO } from 'common-util/Login/config';
 import prohibitedAddresses from '../../data/prohibited-addresses.json';
+
+export const getModalProvider = () => window?.MODAL_PROVIDER;
+
+export const getWindowEthereum = () => window?.ethereum;
+
+export const getProviderHelper = (chainId, rpcUrls) => {
+  const rpcUrl = rpcUrls[chainId];
+
+  if (!rpcUrl) {
+    throw new Error(`No RPC URL found for chainId: ${chainId}`);
+  }
+
+  if (typeof window === 'undefined') {
+    console.warn(
+      'No provider found, fetching RPC URL from first supported chain',
+    );
+    return rpcUrl;
+  }
+
+  // connected via wallet-connect
+  const walletProvider = getModalProvider();
+  if (walletProvider) {
+    return walletProvider;
+  }
+
+  // NOT logged in but has wallet installed (eg. Metamask).
+  // If chainId is not supported, default to mainnet (ie. Use JSON-RPC provider)
+  const windowEthereum = getWindowEthereum();
+  if (windowEthereum?.chainId) {
+    return windowEthereum;
+  }
+
+  // fallback to mainnet JSON RPC provider
+  return rpcUrl;
+};
+
+export const getEthersProviderHelper = (chainId, rpcUrls) => {
+  const provider = getProviderHelper(chainId, rpcUrls);
+
+  // if provider is a string, it is a JSON-RPC provider
+  if (typeof provider === 'string') {
+    return new ethers.providers.JsonRpcProvider(provider);
+  }
+
+  return new ethers.providers.Web3Provider(provider, 'any');
+};
 
 export const getChainId = (chainId = null) => {
   if (chainId) return chainId;
@@ -31,11 +76,11 @@ export const getChainId = (chainId = null) => {
 };
 
 export const getProvider = () => {
-  const provider = RPC_URLS[getChainId()];
+  const provider = getProviderHelper(getChainId(), RPC_URLS);
   return provider;
 };
 
-export const getEthersProvider = () => getEthersProviderFn(SUPPORTED_CHAINS, RPC_URLS);
+export const getEthersProvider = () => getEthersProviderHelper(getChainId(), RPC_URLS);
 
 export const getIsValidChainId = (chainId) => getIsValidChainIdFn(SUPPORTED_CHAINS, chainId);
 
