@@ -11,7 +11,7 @@ export const setUserBalance = (balance) => ({
 });
 
 /**
- * chainId should be set only using Login component
+ * chainId should be set only using Layout component
  */
 export const setChainId = (chainId) => ({
   type: syncTypes.SET_CHAIND_ID,

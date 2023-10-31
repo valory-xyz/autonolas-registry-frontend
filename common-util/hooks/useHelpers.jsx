@@ -15,6 +15,10 @@ export const useHelpers = () => {
   );
   const chainName = useSelector((state) => state?.setup?.chainName);
 
+  /**
+   * Links with chain name
+   * eg. /mainnet/agents, /goerli/agents
+   */
   const updatedLinks = Object.entries(URL).reduce((acc, [key, value]) => {
     acc[key] = `/${chainName}${value}`;
     return acc;

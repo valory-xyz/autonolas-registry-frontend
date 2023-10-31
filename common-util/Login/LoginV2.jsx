@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Grid } from 'antd';
-import { Web3Modal, Web3Button } from '@web3modal/react';
+import { Button, ConfigProvider, Grid } from 'antd';
+import { Web3Modal, Web3Button, useWeb3Modal } from '@web3modal/react';
 import {
-  useAccount, useNetwork, useBalance, useDisconnect,
+  useAccount, useBalance, useDisconnect, useNetwork,
 } from 'wagmi';
 import styled from 'styled-components';
 import {
@@ -17,6 +17,7 @@ import {
 import { setUserBalance } from 'store/setup/actions';
 import { isAddressProhibited } from 'common-util/functions';
 import { useHelpers } from 'common-util/hooks';
+import { WarningOutlined } from '@ant-design/icons';
 import { projectId, ethereumClient } from './config';
 
 const LoginContainer = styled.div`
@@ -38,7 +39,9 @@ export const LoginV2 = ({
 }) => {
   const dispatch = useDispatch();
   const { disconnect } = useDisconnect();
+  const { open, isOpen } = useWeb3Modal();
   const { chainId } = useHelpers();
+  const { chain: walletConnectedChain } = useNetwork();
 
   const { address, connector } = useAccount({
     onConnect: ({ address: currentAddress }) => {
@@ -58,12 +61,13 @@ export const LoginV2 = ({
   });
 
   // Update the balance
-  const { data: balance } = useBalance({ address });
+  const { data: balance } = useBalance({ address, chainId });
+
   useEffect(() => {
-    if (balance?.formatted) {
+    if (chainId && balance?.formatted) {
       dispatch(setUserBalance(balance.formatted));
     }
-  }, [balance?.formatted]);
+  }, [chainId, balance?.formatted]);
 
   useEffect(() => {
     const getData = async () => {
@@ -124,6 +128,28 @@ export const LoginV2 = ({
 
   return (
     <LoginContainer>
+      {walletConnectedChain.id === chainId ? null : (
+        <ConfigProvider
+          theme={{
+            token: {
+              colorPrimary: '#FAAD14',
+              colorBgBase: '#FFFBE6',
+              colorTextBase: '#FAAD14',
+              defaultBorderColor: COLOR.ORANGE,
+            },
+          }}
+        >
+          <Button
+            loading={isOpen}
+            type="default"
+            onClick={open}
+            icon={<WarningOutlined />}
+          >
+            Wrong Network
+          </Button>
+        </ConfigProvider>
+      )}
+      &nbsp;&nbsp;
       <Web3Button
         avatar="hide"
         balance={screens.xs ? 'hide' : 'show'}

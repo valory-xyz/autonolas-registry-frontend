@@ -93,7 +93,6 @@ export const getAgentContract = () => {
 export const getMechMinterContract = () => {
   const { address } = getWeb3Details();
   const { registriesManager } = address;
-
   const contract = getContract(
     REGISTRIES_MANAGER_CONTRACT.abi,
     registriesManager,
@@ -108,7 +107,6 @@ export const getMechMinterContract = () => {
  */
 export const getServiceContract = () => {
   const { address, chainId } = getWeb3Details();
-
   if (isL1Network(chainId)) {
     const { serviceRegistry } = address;
     const contract = getContract(

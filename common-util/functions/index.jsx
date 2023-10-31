@@ -19,10 +19,10 @@ export const getWindowEthereum = () => window?.ethereum;
 export const getChainId = (chainId = null) => {
   if (chainId) return chainId;
 
+  // chainId fetched from sessionStorage
   const chainIdfromSessionStorage = typeof sessionStorage === 'undefined'
     ? 1
     : Number(sessionStorage.getItem('chainId'));
-  // console.log({ chainIdfromSessionStorage });
 
   if (
     !SUPPORTED_CHAINS_MORE_INFO.find((e) => e.id === chainIdfromSessionStorage)
@@ -84,30 +84,3 @@ export const getCustomNetworkName = (name) => {
   if (name === 'homestead') return 'mainnet';
   return name;
 };
-
-export const getCurrentChainInfo = (chainId) => {
-  const chain = SUPPORTED_CHAINS_MORE_INFO.find((e) => e.id === chainId);
-  // if (!chain) {
-  //   throw new Error('Invalid chain id');
-  // }
-
-  return chain;
-};
-
-// export const getNetworkNameFromChainId = (chainId) => {
-//   const chain = SUPPORTED_CHAINS_MORE_INFO.find((e) => e.id === chainId);
-//   if (!chain) {
-//     throw new Error('Invalid chain id');
-//   }
-
-//   return chain.network;
-// };
-
-/**
- * 1. users goes /components => redirect to mainnet/components
- * 2. users goes /goerli/components =>
- *  set chainId to 5 and make sure others are using this chainId
- * 3. users goes /random_text/components =>
- *  set chainId to 1 and make sure others are using this chainId
- * 4. dropdown changes => redirect to appropriate page
- */

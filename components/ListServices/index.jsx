@@ -91,6 +91,7 @@ const ListServices = () => {
     (async () => {
       if (total && currentPage && !searchValue) {
         setIsLoading(true);
+        setCurrentPage(1); // reset the page to 1
 
         try {
           // All services
