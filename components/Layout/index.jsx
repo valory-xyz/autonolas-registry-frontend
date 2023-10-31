@@ -33,9 +33,7 @@ const PAGES_TO_LOAD_WITHOUT_CHAINID = ['/', '/disclaimer'];
 const Layout = ({ children }) => {
   const dispatch = useDispatch();
   const router = useRouter();
-  const {
-    chainId, isL1Network, chainName,
-  } = useHelpers();
+  const { chainId, isL1Network, chainName } = useHelpers();
   const path = router?.pathname || '';
   const networkNameFromUrl = router?.query?.network;
   // || 'mainnet'; // default to mainnet
@@ -59,21 +57,52 @@ const Layout = ({ children }) => {
   //   }
   // }, [networkNameFromUrl]);
 
-  const networkName = getCurrentChainInfo(chainId)?.network;
-
   // set chainId in local storage
   useEffect(() => {
-    // console.log('inside network hook');
+    console.log('inside network hook', networkNameFromUrl);
     if (networkNameFromUrl) {
-      const mapChainIdFromPath = SUPPORTED_CHAINS_MORE_INFO.find(
+      // if the network name is not supported then redirect to mainnet
+      // eg. /random/components => /mainnet/components
+      const isValidNetworkName = SUPPORTED_CHAINS_MORE_INFO.some(
         (e) => toLower(e.networkName) === toLower(networkNameFromUrl),
-      )?.id || 1;
+      );
 
-      // console.log({ networkNameFromUrl, mapChainIdFromPath });
+      if (isValidNetworkName) {
+        const mapChainIdFromPath = SUPPORTED_CHAINS_MORE_INFO.find(
+          (e) => toLower(e.networkName) === toLower(networkNameFromUrl),
+        )?.id || 1;
 
-      sessionStorage.setItem('chainId', mapChainIdFromPath);
+        console.log(
+          SUPPORTED_CHAINS_MORE_INFO.find(
+            (e) => toLower(e.networkName) === toLower(networkNameFromUrl),
+          )?.id,
+        );
+
+        // console.log({ networkNameFromUrl, mapChainIdFromPath });
+
+        sessionStorage.setItem('chainId', mapChainIdFromPath);
+        setTimeout(() => {
+          dispatch(setChainId(mapChainIdFromPath));
+        }, 0);
+      } else {
+        const updatedPath = router.asPath.replace(
+          networkNameFromUrl,
+          SUPPORTED_CHAINS_MORE_INFO[0].networkName,
+        );
+        // redirect to mainnet
+        router.push(updatedPath);
+
+        // there is no network name in the url so set it to default network (mainnet)
+        sessionStorage.setItem('chainId', 1);
+        setTimeout(() => {
+          dispatch(setChainId(1));
+        }, 0);
+      }
+    } else {
+      // there is no network name in the url so set it to default network (mainnet)
+      sessionStorage.setItem('chainId', 1);
       setTimeout(() => {
-        dispatch(setChainId(mapChainIdFromPath));
+        dispatch(setChainId(1));
       }, 0);
     }
   }, [networkNameFromUrl]);
@@ -102,6 +131,20 @@ const Layout = ({ children }) => {
   //   }
   // }, [chainId, isL1Network]);
 
+  // const dropdownOptions = isL1Network
+  //   ? SUPPORTED_CHAINS_MORE_INFO
+  //   : SUPPORTED_CHAINS_MORE_INFO.filter((e) => e.id === 1 || e.id === 5);
+  const dropdownOptions = SUPPORTED_CHAINS_MORE_INFO;
+  const filteredDropdownOptions = dropdownOptions.map((e) => ({
+    label: e.networkDisplayName,
+    value: e.networkName,
+  }));
+
+  console.log({
+    chainName,
+    filteredDropdownOptions,
+  });
+
   return (
     <CustomLayout>
       <Header>
@@ -118,12 +161,10 @@ const Layout = ({ children }) => {
 
         <SelectContainer>
           <Select
+            style={{ width: 180 }}
             size="small"
             value={chainName}
-            options={SUPPORTED_CHAINS_MORE_INFO.map((e) => ({
-              label: e.networkDisplayName,
-              value: e.networkName,
-            }))}
+            options={filteredDropdownOptions}
             onChange={(value) => {
               const currentChainInfo = SUPPORTED_CHAINS_MORE_INFO.find(
                 (e) => e.networkName === value,
@@ -132,8 +173,14 @@ const Layout = ({ children }) => {
               if (currentChainInfo) {
                 // update session storage
                 sessionStorage.setItem('chainId', currentChainInfo.id);
-                const replacedPath = router.pathname.replace('/[network]/', '');
-                router.push(`/${value}/${replacedPath}`);
+
+                if (PAGES_TO_LOAD_WITHOUT_CHAINID.find((e) => e === path)) {
+                  router.push(`/${path}`);
+                  dispatch(setChainId(currentChainInfo.id));
+                } else {
+                  const replacedPath = router.asPath.replace(chainName, value);
+                  router.push(`${replacedPath}`);
+                }
               }
 
               // set it after 0 seconds

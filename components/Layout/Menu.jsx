@@ -20,7 +20,7 @@ const NavigationMenu = () => {
   // to set default menu on first render
   useEffect(() => {
     if (pathname) {
-      const name = pathname.split('/')[1];
+      const name = pathname.split('/')[2];
       setSelectedMenu(name || null);
     }
   }, [pathname]);

@@ -174,6 +174,14 @@ const GlobalStyle = createGlobalStyle`
     margin-bottom: 0 !important;
   }
 
+  .next-error-h1 {
+    color: ${COLOR.BLACK}; 
+    border-color: ${COLOR.BLACK} !important;
+    + div {
+      color: ${COLOR.BLACK};
+    } 
+  }
+
   ${MEDIA_QUERY.mobileL} {
     .ant-table {
       .ant-table-thead {
