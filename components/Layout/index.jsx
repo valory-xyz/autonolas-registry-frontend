@@ -1,26 +1,18 @@
-import { useEffect, useId } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
 import Image from 'next/image';
-import { Layout as AntdLayout, Select, Typography } from 'antd';
-import { getNetworkName, useScreen } from '@autonolas/frontend-library';
+import { Layout as AntdLayout, Select } from 'antd';
 
 import { useHelpers } from 'common-util/hooks';
-import { SUPPORTED_CHAINS } from 'common-util/Login';
 import { toLower } from 'lodash';
 import { SUPPORTED_CHAINS_MORE_INFO } from 'common-util/Login/config';
-import {
-  getCurrentChainInfo,
-  getCustomNetworkName,
-} from 'common-util/functions';
 import { useDispatch } from 'react-redux';
 import { setChainId } from 'store/setup/actions';
 import {
   CustomLayout, Logo, RightMenu, SelectContainer,
 } from './styles';
-
-const { Text } = Typography;
 
 const Login = dynamic(() => import('../Login'), { ssr: false });
 const NavigationMenu = dynamic(() => import('./Menu'), { ssr: false });
@@ -33,33 +25,19 @@ const PAGES_TO_LOAD_WITHOUT_CHAINID = ['/', '/disclaimer'];
 const Layout = ({ children }) => {
   const dispatch = useDispatch();
   const router = useRouter();
-  const { chainId, isL1Network, chainName } = useHelpers();
+  const { chainId, chainName } = useHelpers();
   const path = router?.pathname || '';
   const networkNameFromUrl = router?.query?.network;
-  // || 'mainnet'; // default to mainnet
-  // console.log({
-  //   networkNameFromUrl, chainName, chainId, LLL: router,
-  // });
 
-  const { isMobile } = useScreen();
-
-  // useEffect(() => {
-  //   if (networkNameFromUrl) {
-  //     const isValidNetwork = SUPPORTED_CHAINS.some(
-  //       (e) => toLower(e.name) === toLower(networkNameFromUrl),
-  //     );
-  //     // TODO
-  //     if (!isValidNetwork) {
-  //       router.push(`${SUPPORTED_CHAINS[0].name}/${path}`);
-  //     }
-  //   } else {
-  //     router.push(`${SUPPORTED_CHAINS[0].name}/${path}`);
-  //   }
-  // }, [networkNameFromUrl]);
+  const updateChainId = (id) => {
+    sessionStorage.setItem('chainId', id);
+    setTimeout(() => {
+      dispatch(setChainId(id));
+    }, 0);
+  };
 
   // set chainId in local storage
   useEffect(() => {
-    console.log('inside network hook', networkNameFromUrl);
     if (networkNameFromUrl) {
       // if the network name is not supported then redirect to mainnet
       // eg. /random/components => /mainnet/components
@@ -72,77 +50,35 @@ const Layout = ({ children }) => {
           (e) => toLower(e.networkName) === toLower(networkNameFromUrl),
         )?.id || 1;
 
-        console.log(
-          SUPPORTED_CHAINS_MORE_INFO.find(
-            (e) => toLower(e.networkName) === toLower(networkNameFromUrl),
-          )?.id,
-        );
-
-        // console.log({ networkNameFromUrl, mapChainIdFromPath });
-
-        sessionStorage.setItem('chainId', mapChainIdFromPath);
-        setTimeout(() => {
-          dispatch(setChainId(mapChainIdFromPath));
-        }, 0);
+        updateChainId(mapChainIdFromPath);
       } else {
+        // updated the url with default network name (mainnet)
         const updatedPath = router.asPath.replace(
           networkNameFromUrl,
           SUPPORTED_CHAINS_MORE_INFO[0].networkName,
         );
-        // redirect to mainnet
         router.push(updatedPath);
 
         // there is no network name in the url so set it to default network (mainnet)
-        sessionStorage.setItem('chainId', 1);
-        setTimeout(() => {
-          dispatch(setChainId(1));
-        }, 0);
+        updateChainId(1);
       }
     } else {
-      // there is no network name in the url so set it to default network (mainnet)
-      sessionStorage.setItem('chainId', 1);
-      setTimeout(() => {
-        dispatch(setChainId(1));
-      }, 0);
+      updateChainId(1);
     }
   }, [networkNameFromUrl]);
 
-  // redirect to different pagess
-  // useEffect(() => {
-  //   if (chainId) {
-  //     const shouldRedirect = !PAGES_TO_LOAD_WITHOUT_CHAINID.some(
-  //       (e) => e === path,
-  //     );
-  //     // console.log({ chainId, path });
-  //     // if (shouldRedirect) {
-  //     //   router.push(`/${networkName}/${path}`);
-  //     // }
+  const dropdownOptions = SUPPORTED_CHAINS_MORE_INFO.map((e) => {
+    // disable all the networks except mainnet & goerli
+    // if the user is on components or agents page
+    const isDisabled = e.id !== 1
+      && e.id !== 5
+      && (path.includes('components') || path.includes('agents'));
 
-  //     // redirect to services page if user is on components or agents page
-  //     // and chainId is not L1
-  //     if (!isL1Network) {
-  //       if (
-  //         path.includes(`/${networkName}/components`)
-  //         || path.includes(`/${networkName}/agents`)
-  //       ) {
-  //         router.push('/services');
-  //       }
-  //     }
-  //   }
-  // }, [chainId, isL1Network]);
-
-  // const dropdownOptions = isL1Network
-  //   ? SUPPORTED_CHAINS_MORE_INFO
-  //   : SUPPORTED_CHAINS_MORE_INFO.filter((e) => e.id === 1 || e.id === 5);
-  const dropdownOptions = SUPPORTED_CHAINS_MORE_INFO;
-  const filteredDropdownOptions = dropdownOptions.map((e) => ({
-    label: e.networkDisplayName,
-    value: e.networkName,
-  }));
-
-  console.log({
-    chainName,
-    filteredDropdownOptions,
+    return {
+      label: e.networkDisplayName,
+      value: e.networkName,
+      disabled: isDisabled,
+    };
   });
 
   return (
@@ -164,7 +100,7 @@ const Layout = ({ children }) => {
             style={{ width: 180 }}
             size="small"
             value={chainName}
-            options={filteredDropdownOptions}
+            options={dropdownOptions}
             onChange={(value) => {
               const currentChainInfo = SUPPORTED_CHAINS_MORE_INFO.find(
                 (e) => e.networkName === value,
@@ -174,6 +110,7 @@ const Layout = ({ children }) => {
                 // update session storage
                 sessionStorage.setItem('chainId', currentChainInfo.id);
 
+                // eg. /disclaimer will be redirect to same page ie. /disclaimer
                 if (PAGES_TO_LOAD_WITHOUT_CHAINID.find((e) => e === path)) {
                   router.push(`/${path}`);
                   dispatch(setChainId(currentChainInfo.id));
@@ -182,11 +119,6 @@ const Layout = ({ children }) => {
                   router.push(`${replacedPath}`);
                 }
               }
-
-              // set it after 0 seconds
-              // setTimeout(() => {
-              //   dispatch(setChainId(id));
-              // }, 0);
             }}
           />
         </SelectContainer>
