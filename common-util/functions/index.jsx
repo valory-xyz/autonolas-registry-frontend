@@ -34,11 +34,53 @@ export const getChainId = (chainId = null) => {
 };
 
 export const getProvider = () => {
-  const provider = RPC_URLS[getChainId()];
-  return provider;
+  const defaultChainId = getChainId();
+  const rpcUrl = RPC_URLS[defaultChainId];
+
+  if (!rpcUrl) {
+    throw new Error(`No RPC URL found for chainId: ${defaultChainId}`);
+  }
+
+  if (typeof window === 'undefined') {
+    console.warn(
+      'No provider found, fetching RPC URL from first supported chain',
+    );
+    return rpcUrl;
+  }
+
+  // connected via wallet-connect
+  const walletProvider = getModalProvider();
+  if (walletProvider) {
+    const walletConnectChainId = Number(walletProvider.chainId);
+
+    // if logged in via wallet-connect but chainId is not supported,
+    // default to mainnet (ie. Use JSON-RPC provider)
+    return walletConnectChainId === defaultChainId ? walletProvider : rpcUrl;
+  }
+
+  // NOT logged in but has wallet installed (eg. Metamask).
+  // If chainId is not supported, default to mainnet (ie. Use JSON-RPC provider)
+  const windowEthereum = getWindowEthereum();
+  if (windowEthereum?.chainId) {
+    const walletChainId = Number(windowEthereum.chainId);
+
+    return walletChainId === defaultChainId ? windowEthereum : rpcUrl;
+  }
+
+  // fallback to mainnet JSON RPC provider
+  return rpcUrl;
 };
 
-export const getEthersProvider = () => new ethers.providers.JsonRpcProvider(getProvider());
+export const getEthersProvider = () => {
+  const provider = getProvider();
+
+  // if provider is a string, it is a JSON-RPC provider
+  if (typeof provider === 'string') {
+    return new ethers.providers.JsonRpcProvider(provider);
+  }
+
+  return new ethers.providers.Web3Provider(provider, 'any');
+};
 
 export const getIsValidChainId = (chainId) => getIsValidChainIdFn(SUPPORTED_CHAINS, chainId);
 
