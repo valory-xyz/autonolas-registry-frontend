@@ -81,7 +81,7 @@ const ListServices = () => {
           }
         } catch (e) {
           console.error(e);
-          notifyError('Error fetching services');
+          notifyError('Error fetching services count');
         }
       }
     })();
@@ -112,7 +112,7 @@ const ListServices = () => {
           }
         } catch (e) {
           console.error(e);
-          notifyError('Error fetching services');
+          notifyError('Error fetching services list');
         } finally {
           setIsLoading(false);
         }

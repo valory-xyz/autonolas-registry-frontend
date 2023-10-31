@@ -35,6 +35,7 @@ export const getTotalForMyServices = async (account) => {
 export const getTotalForAllServices = async () => {
   const contract = getServiceContract();
   const total = await contract.methods.totalSupply().call();
+  console.log('getTotalForAllServices', { total });
   return total;
 };
 
@@ -50,6 +51,8 @@ export const getServices = async (total, nextPage, fetchAll = false) => {
     const result = contract.methods.exists(`${i}`).call();
     existsPromises.push(result);
   }
+
+  console.log({ existsPromises });
 
   const existsResult = await Promise.allSettled(existsPromises);
   // filter services which don't exists (deleted or destroyed)
@@ -69,6 +72,8 @@ export const getServices = async (total, nextPage, fetchAll = false) => {
       return { ...info, id, owner };
     }),
   );
+
+  console.log({ results });
 
   return results;
 };

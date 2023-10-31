@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useId } from 'react';
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
@@ -16,7 +16,9 @@ import {
 } from 'common-util/functions';
 import { useDispatch } from 'react-redux';
 import { setChainId } from 'store/setup/actions';
-import { CustomLayout, Logo, RightMenu } from './styles';
+import {
+  CustomLayout, Logo, RightMenu, SelectContainer,
+} from './styles';
 
 const { Text } = Typography;
 
@@ -32,17 +34,21 @@ const Layout = ({ children }) => {
   const dispatch = useDispatch();
   const router = useRouter();
   const {
-    chainId, isL1Network, isValidChainId, chainName,
+    chainId, isL1Network, chainName,
   } = useHelpers();
   const path = router?.pathname || '';
-  const network = router?.query?.network;
-  console.log({ network, chainId });
+  const networkNameFromUrl = router?.query?.network;
+  // || 'mainnet'; // default to mainnet
+  // console.log({
+  //   networkNameFromUrl, chainName, chainId, LLL: router,
+  // });
+
   const { isMobile } = useScreen();
 
   // useEffect(() => {
-  //   if (network) {
+  //   if (networkNameFromUrl) {
   //     const isValidNetwork = SUPPORTED_CHAINS.some(
-  //       (e) => toLower(e.name) === toLower(network),
+  //       (e) => toLower(e.name) === toLower(networkNameFromUrl),
   //     );
   //     // TODO
   //     if (!isValidNetwork) {
@@ -51,75 +57,92 @@ const Layout = ({ children }) => {
   //   } else {
   //     router.push(`${SUPPORTED_CHAINS[0].name}/${path}`);
   //   }
-  // }, [network]);
+  // }, [networkNameFromUrl]);
 
   const networkName = getCurrentChainInfo(chainId)?.network;
 
-  // redirect to different pagess
+  // set chainId in local storage
   useEffect(() => {
-    if (chainId && !isL1Network) {
-      const shouldRedirect = !PAGES_TO_LOAD_WITHOUT_CHAINID.some(
-        (e) => e === path,
-      );
-      console.log({ chainId, path });
-      if (shouldRedirect) {
-        router.push(`/${networkName}/${path}`);
-      }
+    // console.log('inside network hook');
+    if (networkNameFromUrl) {
+      const mapChainIdFromPath = SUPPORTED_CHAINS_MORE_INFO.find(
+        (e) => toLower(e.networkName) === toLower(networkNameFromUrl),
+      )?.id || 1;
 
-      // redirect to services page if user is on components or agents page
-      // and chainId is not L1
-      if (!isL1Network) {
-        if (
-          path.includes(`/${networkName}/components`)
-          || path.includes(`/${networkName}/agents`)
-        ) {
-          router.push('/services');
-        }
-      }
+      // console.log({ networkNameFromUrl, mapChainIdFromPath });
+
+      sessionStorage.setItem('chainId', mapChainIdFromPath);
+      setTimeout(() => {
+        dispatch(setChainId(mapChainIdFromPath));
+      }, 0);
     }
-  }, [chainId, isL1Network]);
+  }, [networkNameFromUrl]);
 
-  const logo = (
-    <Logo onClick={() => router.push('/')} data-testid="protocol-logo">
-      <Image
-        priority
-        src="/images/logo.svg"
-        height={32}
-        width={32}
-        alt="Autonolas"
-      />
+  // redirect to different pagess
+  // useEffect(() => {
+  //   if (chainId) {
+  //     const shouldRedirect = !PAGES_TO_LOAD_WITHOUT_CHAINID.some(
+  //       (e) => e === path,
+  //     );
+  //     // console.log({ chainId, path });
+  //     // if (shouldRedirect) {
+  //     //   router.push(`/${networkName}/${path}`);
+  //     // }
 
-      <span>Registry</span>
-
-      <Select
-        size="small"
-        value={chainName}
-        options={SUPPORTED_CHAINS_MORE_INFO.map((e) => ({
-          label: e.networkDisplayName,
-          value: e.networkName,
-        }))}
-        onChange={(value) => {
-          const id = SUPPORTED_CHAINS_MORE_INFO.find(
-            (e) => e.network === value,
-          )?.id;
-          console.log(id, getCustomNetworkName(value));
-
-          if (!id) return;
-
-          console.log({ id, path, value });
-          dispatch(setChainId(id));
-          if (!shouldNotRedirect) {
-            router.push(`/${getCustomNetworkName(value)}/${path}`);
-          }
-        }}
-      />
-    </Logo>
-  );
+  //     // redirect to services page if user is on components or agents page
+  //     // and chainId is not L1
+  //     if (!isL1Network) {
+  //       if (
+  //         path.includes(`/${networkName}/components`)
+  //         || path.includes(`/${networkName}/agents`)
+  //       ) {
+  //         router.push('/services');
+  //       }
+  //     }
+  //   }
+  // }, [chainId, isL1Network]);
 
   return (
     <CustomLayout>
       <Header>
-        {logo}
+        <Logo onClick={() => router.push('/')} data-testid="protocol-logo">
+          <Image
+            priority
+            src="/images/logo.svg"
+            height={32}
+            width={32}
+            alt="Autonolas"
+          />
+          <span>Registry</span>
+        </Logo>
+
+        <SelectContainer>
+          <Select
+            size="small"
+            value={chainName}
+            options={SUPPORTED_CHAINS_MORE_INFO.map((e) => ({
+              label: e.networkDisplayName,
+              value: e.networkName,
+            }))}
+            onChange={(value) => {
+              const currentChainInfo = SUPPORTED_CHAINS_MORE_INFO.find(
+                (e) => e.networkName === value,
+              );
+
+              if (currentChainInfo) {
+                // update session storage
+                sessionStorage.setItem('chainId', currentChainInfo.id);
+                const replacedPath = router.pathname.replace('/[network]/', '');
+                router.push(`/${value}/${replacedPath}`);
+              }
+
+              // set it after 0 seconds
+              // setTimeout(() => {
+              //   dispatch(setChainId(id));
+              // }, 0);
+            }}
+          />
+        </SelectContainer>
         <NavigationMenu />
         <RightMenu>
           <Login />

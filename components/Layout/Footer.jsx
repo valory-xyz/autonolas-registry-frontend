@@ -13,12 +13,7 @@ import Socials from './Socials';
 import { ContractsInfoContainer } from './styles';
 
 const ContractInfo = () => {
-  const {
-    isValidChainId,
-    chainId,
-    isL1Network,
-    doesNetworkHaveValidServiceManagerToken,
-  } = useHelpers();
+  const { chainId, isL1Network, doesNetworkHaveValidServiceManagerToken } = useHelpers();
   const router = useRouter();
 
   const { pathname } = router;
@@ -86,7 +81,7 @@ const ContractInfo = () => {
 
   return (
     <ContractsInfoContainer>
-      {!PATHS_NOT_TO_SHOW.includes(pathname) && isValidChainId && (
+      {!PATHS_NOT_TO_SHOW.includes(pathname) && (
         <>
           <div>
             <Image

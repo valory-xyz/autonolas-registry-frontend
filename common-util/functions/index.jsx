@@ -3,7 +3,6 @@ import {
   isValidAddress,
   getProvider as getProviderFn,
   getEthersProvider as getEthersProviderFn,
-  getChainId as getChainIdFn,
   getChainIdOrDefaultToMainnet as getChainIdOrDefaultToMainnetFn,
   getIsValidChainId as getIsValidChainIdFn,
   sendTransaction as sendTransactionFn,
@@ -11,9 +10,30 @@ import {
 } from '@autonolas/frontend-library';
 import { RPC_URLS } from 'common-util/Contracts';
 import { SUPPORTED_CHAINS } from 'common-util/Login';
+import { SUPPORTED_CHAINS_MORE_INFO } from 'common-util/Login/config';
 import prohibitedAddresses from '../../data/prohibited-addresses.json';
 
-export const getProvider = () => getProviderFn(SUPPORTED_CHAINS, RPC_URLS);
+export const getChainId = (chainId = null) => {
+  if (chainId) return chainId;
+
+  const chainIdfromSessionStorage = typeof sessionStorage === 'undefined'
+    ? 1
+    : Number(sessionStorage.getItem('chainId'));
+  // console.log({ chainIdfromSessionStorage });
+
+  if (
+    !SUPPORTED_CHAINS_MORE_INFO.find((e) => e.id === chainIdfromSessionStorage)
+  ) {
+    return new Error('Invalid chain id');
+  }
+
+  return chainIdfromSessionStorage;
+};
+
+export const getProvider = () => {
+  const provider = RPC_URLS[getChainId()];
+  return provider;
+};
 
 export const getEthersProvider = () => getEthersProviderFn(SUPPORTED_CHAINS, RPC_URLS);
 
@@ -23,8 +43,6 @@ export const getChainIdOrDefaultToMainnet = (chainId) => {
   const x = getChainIdOrDefaultToMainnetFn(SUPPORTED_CHAINS, chainId);
   return x;
 };
-
-export const getChainId = (chainId = null) => getChainIdFn(SUPPORTED_CHAINS, chainId);
 
 export const sendTransaction = (fn, account) => sendTransactionFn(fn, account, {
   supportedChains: SUPPORTED_CHAINS,
@@ -58,3 +76,35 @@ export const isAddressProhibited = (address) => {
   const addresses = prohibitedAddresses.map((e) => toLower(e));
   return addresses.includes(toLower(address));
 };
+
+export const getCustomNetworkName = (name) => {
+  if (name === 'homestead') return 'mainnet';
+  return name;
+};
+
+export const getCurrentChainInfo = (chainId) => {
+  const chain = SUPPORTED_CHAINS_MORE_INFO.find((e) => e.id === chainId);
+  // if (!chain) {
+  //   throw new Error('Invalid chain id');
+  // }
+
+  return chain;
+};
+
+// export const getNetworkNameFromChainId = (chainId) => {
+//   const chain = SUPPORTED_CHAINS_MORE_INFO.find((e) => e.id === chainId);
+//   if (!chain) {
+//     throw new Error('Invalid chain id');
+//   }
+
+//   return chain.network;
+// };
+
+/**
+ * 1. users goes /components => redirect to mainnet/components
+ * 2. users goes /goerli/components =>
+ *  set chainId to 5 and make sure others are using this chainId
+ * 3. users goes /random_text/components =>
+ *  set chainId to 1 and make sure others are using this chainId
+ * 4. dropdown changes => redirect to appropriate page
+ */

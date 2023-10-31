@@ -12,7 +12,7 @@ import { Container, HeaderRow } from './styles';
 const { Title, Text } = Typography;
 
 const HomePage = () => {
-  const { isL1Network, links } = useHelpers();
+  const { isL1OnlyNetwork, links } = useHelpers();
   const { isMobile } = useScreen();
 
   return (
@@ -22,14 +22,14 @@ const HomePage = () => {
           <Col span={14} offset={2}>
             <Title className="hero-title">
               {` Mint and manage your services${
-                isL1Network ? ', agents and components' : ''
+                isL1OnlyNetwork ? ', agents and components' : ''
               }.`}
             </Title>
             <Text className="lead">
               The easiest way to interact with the Autonolas on-chain registry.
             </Text>
             <Link
-              href={isL1Network ? links.COMPONENTS : links.SERVICES}
+              href={isL1OnlyNetwork ? links.COMPONENTS : links.SERVICES}
               passHref
               legacyBehavior
             >
