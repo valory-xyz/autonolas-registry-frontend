@@ -4,13 +4,13 @@ import { notifySuccess, notifyError } from '@autonolas/frontend-library';
 
 import { DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS } from 'util/constants';
 import {
-  ADDRESSES,
   getGenericErc20Contract,
   getOperatorWhitelistContract,
   getServiceContract,
   getServiceManagerContract,
   getServiceRegistryTokenUtilityContract,
 } from 'common-util/Contracts';
+import { ADDRESSES } from 'common-util/Contracts/addresses';
 import { sendTransaction } from 'common-util/functions';
 
 /* ----- helper functions ----- */

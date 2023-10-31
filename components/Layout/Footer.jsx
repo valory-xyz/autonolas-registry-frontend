@@ -7,7 +7,7 @@ import {
 } from '@autonolas/frontend-library';
 
 import { PATHS_NOT_TO_SHOW } from 'util/constants';
-import { ADDRESSES } from 'common-util/Contracts';
+import { ADDRESSES } from 'common-util/Contracts/addresses';
 import { useHelpers } from 'common-util/hooks';
 import Socials from './Socials';
 import { ContractsInfoContainer } from './styles';

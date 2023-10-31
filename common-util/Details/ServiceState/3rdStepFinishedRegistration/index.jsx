@@ -10,7 +10,7 @@ import {
   FALLBACK_HANDLER,
   multisigAddresses,
   multisigSameAddresses,
-} from 'common-util/Contracts';
+} from 'common-util/Contracts/addresses';
 import { useHelpers } from 'common-util/hooks';
 import { getServiceAgentInstances, onStep3Deploy } from '../utils';
 import { handleMultisigSubmit } from './utils';
