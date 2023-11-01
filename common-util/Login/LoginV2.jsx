@@ -128,7 +128,7 @@ export const LoginV2 = ({
 
   return (
     <LoginContainer>
-      {walletConnectedChain.id === chainId ? null : (
+      {walletConnectedChain?.id === chainId ? null : (
         <ConfigProvider
           theme={{
             token: {
