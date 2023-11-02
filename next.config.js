@@ -1,10 +1,4 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-const withBundleAnalyzer = require('@next/bundle-analyzer');
-
-/**
- * @type {import('next').NextConfig}
- */
-const nextConfig = {
+module.exports = {
   reactStrictMode: true,
   compiler: {
     styledComponents: true,
@@ -14,8 +8,29 @@ const nextConfig = {
       maxChunkSize: 30000,
     },
   },
-};
-
-module.exports = withBundleAnalyzer({
-  enabled: process.env.ANALYZE === 'true',
-}, nextConfig);
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'Content-Security-Policy',
+            value: "frame-ancestors 'none';",
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'strict-origin-when-cross-origin',
+          },
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=31536000; includeSubDomains',
+          },
+        ],
+      },
+    ];
+  },
+}
