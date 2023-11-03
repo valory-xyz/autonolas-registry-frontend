@@ -6,8 +6,7 @@
     "lint": "eslint ./",
     "test": "jest",
     "testw": "jest --watch",
-    "testc": "jest --coverage --verbose",
-    "analyze": "ANALYZE=true next build"
+    "testc": "jest --coverage --verbose"
   },
   "dependencies": {
     "@ant-design/cssinjs": "^1.16.2",
