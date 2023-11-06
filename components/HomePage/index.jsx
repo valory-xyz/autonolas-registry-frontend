@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 import { useScreen } from 'common-util/hooks/useScreen';
-import { useHelpers } from 'common-util/hooks';
+import { useHelpers } from 'common-util/hooks/useHelpers';
 import { AutonolasServicesArchitected } from './AutonolasServicesArchitected';
 import { Container, HeaderRow } from './styles';
 

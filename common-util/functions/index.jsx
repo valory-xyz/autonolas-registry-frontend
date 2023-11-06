@@ -123,6 +123,6 @@ export const isAddressProhibited = (address) => {
 };
 
 export const getCustomNetworkName = (name) => {
-  if (name === 'homestead') return 'mainnet';
+  if (name === 'homestead') return 'ethereum';
   return name;
 };

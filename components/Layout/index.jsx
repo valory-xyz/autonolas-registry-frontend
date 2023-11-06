@@ -39,8 +39,8 @@ const Layout = ({ children }) => {
   // set chainId in local storage
   useEffect(() => {
     if (networkNameFromUrl) {
-      // if the network name is not supported then redirect to mainnet
-      // eg. /random/components => /mainnet/components
+      // if the network name is not supported then redirect to ethereum
+      // eg. /random/components => /ethereum/components
       const isValidNetworkName = SUPPORTED_CHAINS_MORE_INFO.some(
         (e) => toLower(e.networkName) === toLower(networkNameFromUrl),
       );
@@ -52,14 +52,14 @@ const Layout = ({ children }) => {
 
         updateChainId(mapChainIdFromPath);
       } else {
-        // updated the url with default network name (mainnet)
+        // updated the url with default network name (ethereum)
         const updatedPath = router.asPath.replace(
           networkNameFromUrl,
           SUPPORTED_CHAINS_MORE_INFO[0].networkName,
         );
         router.push(updatedPath);
 
-        // there is no network name in the url so set it to default network (mainnet)
+        // there is no network name in the url so set it to default network (ethereum)
         updateChainId(1);
       }
     } else {

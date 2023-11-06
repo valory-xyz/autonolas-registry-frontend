@@ -16,18 +16,23 @@ const nextConfig = {
   },
   redirects: async () => [
     {
+      source: '/',
+      destination: '/ethereum',
+      permanent: true,
+    },
+    {
       source: '/components',
-      destination: '/mainnet/components',
+      destination: '/ethereum/components',
       permanent: true,
     },
     {
       source: '/agents',
-      destination: '/mainnet/agents',
+      destination: '/ethereum/agents',
       permanent: true,
     },
     {
       source: '/services',
-      destination: '/mainnet/services',
+      destination: '/ethereum/services',
       permanent: true,
     },
   ],

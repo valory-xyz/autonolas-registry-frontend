@@ -17,7 +17,7 @@ export const useHelpers = () => {
 
   /**
    * Links with chain name
-   * eg. /mainnet/agents, /goerli/agents
+   * eg. /ethereum/agents, /goerli/agents
    */
   const updatedLinks = Object.entries(URL).reduce((acc, [key, value]) => {
     acc[key] = `/${chainName}${value}`;
