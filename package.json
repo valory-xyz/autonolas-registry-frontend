@@ -6,8 +6,7 @@
     "lint": "eslint ./",
     "test": "jest",
     "testw": "jest --watch",
-    "testc": "jest --coverage --verbose",
-    "analyze": "ANALYZE=true next build"
+    "testc": "jest --coverage --verbose"
   },
   "dependencies": {
     "@ant-design/cssinjs": "^1.16.2",
@@ -41,7 +40,6 @@
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.22.11",
-    "@next/bundle-analyzer": "^13.4.16",
     "@testing-library/jest-dom": "^6.1.2",
     "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "^14.4.3",
