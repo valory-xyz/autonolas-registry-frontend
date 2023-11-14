@@ -35,6 +35,7 @@ MyDocument.getInitialProps = async (ctx) => {
       styles: (
         <>
           {initialProps.styles}
+          {/* eslint-disable-next-line react/no-danger */}
           <style dangerouslySetInnerHTML={{ __html: style }} />
           {sheet.getStyleElement()}
         </>
