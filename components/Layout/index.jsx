@@ -20,7 +20,7 @@ const Footer = dynamic(() => import('./Footer'), { ssr: false });
 
 const { Header, Content } = AntdLayout;
 
-const PAGES_TO_LOAD_WITHOUT_CHAINID = ['/', '/disclaimer'];
+const PAGES_TO_LOAD_WITHOUT_CHAINID = ['/disclaimer'];
 
 const Layout = ({ children }) => {
   const dispatch = useDispatch();
@@ -63,7 +63,8 @@ const Layout = ({ children }) => {
         updateChainId(1);
       }
     } else {
-      updateChainId(1);
+      // there is no network name in the url so set it to default network (ethereum)
+      router.push('/ethereum');
     }
   }, [networkNameFromUrl]);
 
@@ -81,10 +82,12 @@ const Layout = ({ children }) => {
     };
   });
 
+  const onLogoClick = () => router.push('/');
+
   return (
     <CustomLayout>
       <Header>
-        <Logo onClick={() => router.push('/')} data-testid="protocol-logo">
+        <Logo onClick={onLogoClick} data-testid="protocol-logo">
           <Image
             priority
             src="/images/logo.svg"

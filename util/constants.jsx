@@ -48,3 +48,9 @@ export const LOCAL_FORK_ID_GNOSIS = 100001;
 export const LOCAL_FORK_ID_POLYGON = 100002;
 
 export const DEFAULT_CHAIN_ID = 1;
+
+// TODO: move to autonolas-frontend-library
+export const EXTRA_COLORS = {
+  YELLOW_PRIMARY: '#FAAD14',
+  YELLOW_SECONDARY: '#FFFBE6',
+};

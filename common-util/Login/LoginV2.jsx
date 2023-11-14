@@ -1,7 +1,9 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Button, ConfigProvider, Grid } from 'antd';
+import { Grid } from 'antd';
+import { WarningOutlined } from '@ant-design/icons';
+import { isNil } from 'lodash';
 import { Web3Modal, Web3Button, useWeb3Modal } from '@web3modal/react';
 import {
   useAccount, useBalance, useDisconnect, useNetwork,
@@ -17,7 +19,7 @@ import {
 import { setUserBalance } from 'store/setup/actions';
 import { isAddressProhibited } from 'common-util/functions';
 import { useHelpers } from 'common-util/hooks';
-import { WarningOutlined } from '@ant-design/icons';
+import { YellowButton } from 'common-util/YellowButton';
 import { projectId, ethereumClient } from './config';
 
 const LoginContainer = styled.div`
@@ -38,6 +40,7 @@ export const LoginV2 = ({
   theme = 'light',
 }) => {
   const dispatch = useDispatch();
+  const screens = useBreakpoint();
   const { disconnect } = useDisconnect();
   const { open, isOpen } = useWeb3Modal();
   const { chainId } = useHelpers();
@@ -124,30 +127,19 @@ export const LoginV2 = ({
     }
   }, [address]);
 
-  const screens = useBreakpoint();
+  const hideWrongNetwork = isNil(walletConnectedChain?.id) || walletConnectedChain?.id === chainId;
 
   return (
     <LoginContainer>
-      {walletConnectedChain?.id === chainId ? null : (
-        <ConfigProvider
-          theme={{
-            token: {
-              colorPrimary: '#FAAD14',
-              colorBgBase: '#FFFBE6',
-              colorTextBase: '#FAAD14',
-              defaultBorderColor: COLOR.ORANGE,
-            },
-          }}
+      {hideWrongNetwork ? null : (
+        <YellowButton
+          loading={isOpen}
+          type="default"
+          onClick={open}
+          icon={<WarningOutlined />}
         >
-          <Button
-            loading={isOpen}
-            type="default"
-            onClick={open}
-            icon={<WarningOutlined />}
-          >
-            Wrong Network
-          </Button>
-        </ConfigProvider>
+          Wrong Network
+        </YellowButton>
       )}
       &nbsp;&nbsp;
       <Web3Button
