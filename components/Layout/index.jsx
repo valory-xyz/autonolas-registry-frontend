@@ -1,15 +1,16 @@
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
-import PropTypes from 'prop-types';
 import Image from 'next/image';
+import PropTypes from 'prop-types';
 import { Layout as AntdLayout, Select } from 'antd';
-
-import { useHelpers } from 'common-util/hooks';
 import { toLower } from 'lodash';
-import { SUPPORTED_CHAINS_MORE_INFO } from 'common-util/Login/config';
-import { useDispatch } from 'react-redux';
+
 import { setChainId } from 'store/setup/actions';
+import { useHelpers } from 'common-util/hooks';
+import { SUPPORTED_CHAINS_MORE_INFO } from 'common-util/Login/config';
+import { PAGES_TO_LOAD_WITHOUT_CHAINID, useHandleRoute } from './hooks/useHandleRoute';
 import {
   CustomLayout, Logo, RightMenu, SelectContainer,
 } from './styles';
@@ -20,14 +21,14 @@ const Footer = dynamic(() => import('./Footer'), { ssr: false });
 
 const { Header, Content } = AntdLayout;
 
-const PAGES_TO_LOAD_WITHOUT_CHAINID = ['/disclaimer'];
-
 const Layout = ({ children }) => {
   const dispatch = useDispatch();
   const router = useRouter();
   const { chainId, chainName } = useHelpers();
   const path = router?.pathname || '';
   const networkNameFromUrl = router?.query?.network;
+
+  const { onHomeClick } = useHandleRoute();
 
   const updateChainId = (id) => {
     sessionStorage.setItem('chainId', id);
@@ -62,9 +63,6 @@ const Layout = ({ children }) => {
         // there is no network name in the url so set it to default network (ethereum)
         updateChainId(1);
       }
-    } else {
-      // there is no network name in the url so set it to default network (ethereum)
-      router.push('/ethereum');
     }
   }, [networkNameFromUrl]);
 
@@ -82,12 +80,10 @@ const Layout = ({ children }) => {
     };
   });
 
-  const onLogoClick = () => router.push('/');
-
   return (
     <CustomLayout>
       <Header>
-        <Logo onClick={onLogoClick} data-testid="protocol-logo">
+        <Logo onClick={onHomeClick} data-testid="protocol-logo">
           <Image
             priority
             src="/images/logo.svg"
