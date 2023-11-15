@@ -82,7 +82,7 @@ export const Logo = styled.div`
   display: flex;
   align-items: center;
   justify-content: left;
-  margin-right: 0.5rem;
+  margin-right: ${(props) => (props.isMobile ? '10px' : '20px')};
   > span {
     margin-left: 0.5rem;
     margin-right: 0.5rem;
@@ -93,7 +93,8 @@ export const Logo = styled.div`
   }
 `;
 
-export const SelectContainer = styled.div``;
+export const SelectContainer = styled.div`
+`;
 
 export const RightMenu = styled.div`
   display: flex;
@@ -119,4 +120,12 @@ export const ContractsInfoContainer = styled.div`
   ${MEDIA_QUERY.mobileL} {
     align-items: center;
   }
+`;
+
+export const OlasHeader = styled(Layout.Header)`
+  padding: 0 ${(props) => (props.isMobile ? '10px' : '20px')} !important;
+  border-bottom: 1px solid ${COLOR.BORDER_GREY} !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
 `;

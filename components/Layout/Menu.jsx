@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { Menu } from 'antd';
+import { Button, Dropdown, Menu } from 'antd';
+import PropTypes from 'prop-types';
 
 import { useHelpers } from 'common-util/hooks';
+import { useScreen } from '@autonolas/frontend-library';
 
 const items = [
   { label: 'Components', key: 'components' },
@@ -11,11 +13,37 @@ const items = [
 
 const serviceItem = [{ label: 'Services', key: 'services' }];
 
+const MenuInstance = ({ selectedMenu, handleMenuItemClick, mode }) => {
+  const { isL1Network } = useHelpers();
+
+  return (
+    <Menu
+      theme="light"
+      mode={mode}
+      selectedKeys={[selectedMenu]}
+      items={isL1Network ? [...items, ...serviceItem] : serviceItem}
+      onClick={handleMenuItemClick}
+    />
+  );
+};
+
+MenuInstance.propTypes = {
+  selectedMenu: PropTypes.string.isRequired,
+  handleMenuItemClick: PropTypes.func.isRequired,
+  mode: PropTypes.string,
+};
+
+MenuInstance.defaultProps = {
+  mode: 'horizontal',
+};
+
 const NavigationMenu = () => {
-  const { isL1Network, chainName } = useHelpers();
+  const { chainName } = useHelpers();
   const router = useRouter();
+  const { isMobile, isTablet } = useScreen();
   const [selectedMenu, setSelectedMenu] = useState([]);
   const { pathname } = router;
+  const [menuVisible, setMenuVisible] = useState(false);
 
   // to set default menu on first render
   useEffect(() => {
@@ -28,16 +56,38 @@ const NavigationMenu = () => {
   const handleMenuItemClick = ({ key }) => {
     router.push(`/${chainName}/${key}`);
     setSelectedMenu(key);
+    setMenuVisible(false); // close the dropdown menu after item click
+  };
+
+  // function to handle menu button click
+  const handleMenuButtonClick = () => {
+    setMenuVisible(!menuVisible);
   };
 
   return (
-    <Menu
-      theme="light"
-      mode="horizontal"
-      selectedKeys={[selectedMenu]}
-      items={isL1Network ? [...items, ...serviceItem] : serviceItem}
-      onClick={handleMenuItemClick}
-    />
+    <>
+      {
+        !(isMobile || isTablet) && (
+          <MenuInstance selectedMenu={selectedMenu} handleMenuItemClick={handleMenuItemClick} />
+        )
+      }
+      {
+        (isMobile || isTablet) && (
+          <Dropdown
+            overlay={(
+              <MenuInstance
+                selectedMenu={selectedMenu}
+                handleMenuItemClick={handleMenuItemClick}
+                mode="vertical"
+              />
+            )}
+            trigger={['click']}
+          >
+            <Button onClick={handleMenuButtonClick}>Menu</Button>
+          </Dropdown>
+        )
+      }
+    </>
   );
 };
 

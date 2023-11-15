@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
-import Image from 'next/image';
 import PropTypes from 'prop-types';
 import { Layout as AntdLayout, Select } from 'antd';
 import { toLower } from 'lodash';
@@ -10,20 +9,31 @@ import { toLower } from 'lodash';
 import { setChainId } from 'store/setup/actions';
 import { useHelpers } from 'common-util/hooks';
 import { SUPPORTED_CHAINS_MORE_INFO } from 'common-util/Login/config';
-import { PAGES_TO_LOAD_WITHOUT_CHAINID, useHandleRoute } from './hooks/useHandleRoute';
+import { CaretDownOutlined } from '@ant-design/icons';
+import { useScreen } from '@autonolas/frontend-library';
 import {
-  CustomLayout, Logo, RightMenu, SelectContainer,
+  PAGES_TO_LOAD_WITHOUT_CHAINID,
+  useHandleRoute,
+} from './hooks/useHandleRoute';
+import { LogoSvg, LogoIconSvg } from '../Logos';
+import {
+  CustomLayout,
+  Logo,
+  OlasHeader,
+  RightMenu,
+  SelectContainer,
 } from './styles';
 
 const Login = dynamic(() => import('../Login'), { ssr: false });
 const NavigationMenu = dynamic(() => import('./Menu'), { ssr: false });
 const Footer = dynamic(() => import('./Footer'), { ssr: false });
 
-const { Header, Content } = AntdLayout;
+const { Content } = AntdLayout;
 
 const Layout = ({ children }) => {
   const dispatch = useDispatch();
   const router = useRouter();
+  const { isMobile, isTablet } = useScreen();
   const { chainId, chainName } = useHelpers();
   const path = router?.pathname || '';
   const networkNameFromUrl = router?.query?.network;
@@ -82,22 +92,19 @@ const Layout = ({ children }) => {
 
   return (
     <CustomLayout>
-      <Header>
-        <Logo onClick={onHomeClick} data-testid="protocol-logo">
-          <Image
-            priority
-            src="/images/logo.svg"
-            height={32}
-            width={32}
-            alt="Autonolas"
-          />
-          <span>Registry</span>
+      <OlasHeader isMobile={isMobile}>
+        <Logo
+          onClick={onHomeClick}
+          data-testid="protocol-logo"
+          isMobile={isMobile}
+        >
+          {isMobile || isTablet ? <LogoIconSvg /> : <LogoSvg />}
         </Logo>
 
         <SelectContainer>
           <Select
-            style={{ width: 180 }}
-            size="small"
+            suffixIcon={<CaretDownOutlined />}
+            dropdownStyle={{ width: 200 }}
             value={chainName}
             options={dropdownOptions}
             onChange={(value) => {
@@ -125,7 +132,7 @@ const Layout = ({ children }) => {
         <RightMenu>
           <Login />
         </RightMenu>
-      </Header>
+      </OlasHeader>
 
       <Content className="site-layout">
         <div className="site-layout-background">
