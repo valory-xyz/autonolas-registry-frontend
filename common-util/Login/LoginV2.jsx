@@ -1,8 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Grid } from 'antd';
-import { WarningOutlined } from '@ant-design/icons';
+import { SwapOutlined } from '@ant-design/icons';
 import { isNil } from 'lodash';
 import { Web3Modal, Web3Button, useWeb3Modal } from '@web3modal/react';
 import {
@@ -12,8 +11,8 @@ import styled from 'styled-components';
 import {
   COLOR,
   CannotConnectAddressOfacError,
-  MEDIA_QUERY,
   notifyError,
+  useScreen,
 } from '@autonolas/frontend-library';
 
 import { setUserBalance } from 'store/setup/actions';
@@ -27,12 +26,7 @@ const LoginContainer = styled.div`
   align-items: center;
   font-size: 18px;
   line-height: normal;
-  ${MEDIA_QUERY.mobileL} {
-    margin-top: 0.5rem;
-  }
 `;
-
-const { useBreakpoint } = Grid;
 
 export const LoginV2 = ({
   onConnect: onConnectCb,
@@ -40,7 +34,7 @@ export const LoginV2 = ({
   theme = 'light',
 }) => {
   const dispatch = useDispatch();
-  const screens = useBreakpoint();
+  const { isMobile } = useScreen();
   const { disconnect } = useDisconnect();
   const { open, isOpen } = useWeb3Modal();
   const { chainId } = useHelpers();
@@ -131,21 +125,20 @@ export const LoginV2 = ({
 
   return (
     <LoginContainer>
-      {hideWrongNetwork ? null : (
+      {!hideWrongNetwork && (
         <YellowButton
           loading={isOpen}
           type="default"
           onClick={open}
-          icon={<WarningOutlined />}
+          icon={<SwapOutlined />}
         >
-          Wrong Network
+          {!isMobile && 'Switch network'}
         </YellowButton>
       )}
       &nbsp;&nbsp;
       <Web3Button
         avatar="hide"
-        balance={screens.xs ? 'hide' : 'show'}
-        icon={screens.xs ? 'hide' : 'show'}
+        balance="hide"
       />
       <Web3Modal
         projectId={projectId}

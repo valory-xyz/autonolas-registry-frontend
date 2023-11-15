@@ -51,6 +51,6 @@ export const DEFAULT_CHAIN_ID = 1;
 
 // TODO: move to autonolas-frontend-library
 export const EXTRA_COLORS = {
-  YELLOW_PRIMARY: '#FAAD14',
-  YELLOW_SECONDARY: '#FFFBE6',
+  YELLOW_PRIMARY: '#eab308', // tailwind orange.500
+  YELLOW_SECONDARY: '#fefce8', // tailwind orange.50
 };
