@@ -29,7 +29,9 @@ const ListAgents = () => {
     isMyTab(hash) ? MY_AGENTS : ALL_AGENTS,
   );
 
-  const { account, chainId, links } = useHelpers();
+  const {
+    account, chainId, links, isL1OnlyNetwork,
+  } = useHelpers();
 
   /**
    * extra tab content & view click
@@ -57,7 +59,7 @@ const ListAgents = () => {
   // fetch total
   useEffect(() => {
     (async () => {
-      if (searchValue === '') {
+      if (isL1OnlyNetwork && searchValue === '') {
         try {
           let totalTemp = null;
 
@@ -81,12 +83,12 @@ const ListAgents = () => {
         }
       }
     })();
-  }, [account, chainId, currentTab, searchValue]);
+  }, [account, chainId, isL1OnlyNetwork, currentTab, searchValue]);
 
   // fetch the list (without search)
   useEffect(() => {
     (async () => {
-      if (total && currentPage && !searchValue) {
+      if (isL1OnlyNetwork && total && currentPage && !searchValue) {
         setIsLoading(true);
 
         try {
@@ -114,7 +116,7 @@ const ListAgents = () => {
         }
       }
     })();
-  }, [account, chainId, total, currentPage]);
+  }, [account, chainId, isL1OnlyNetwork, total, currentPage]);
 
   /**
    * Search (All agents, My agents)

@@ -11,7 +11,7 @@ module.exports = {
   redirects: async () => [
     {
       source: '/',
-      destination: '/ethereum',
+      destination: '/ethereum/components',
       permanent: true,
     },
     {

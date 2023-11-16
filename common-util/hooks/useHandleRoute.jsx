@@ -4,6 +4,7 @@ import { toLower } from 'lodash';
 
 import { useHelpers } from 'common-util/hooks';
 import { SUPPORTED_CHAINS_MORE_INFO } from 'common-util/Login/config';
+import { doesPathIncludesComponentsOrAgents } from 'common-util/functions';
 
 export const PAGES_TO_LOAD_WITHOUT_CHAINID = [
   '/disclaimer',
@@ -22,12 +23,6 @@ const isValidL1NetworkName = (name) => {
   if (name === 'ethereum') return true;
   if (name === 'goerli') return true;
   return false;
-};
-
-const doesItIncludesComponentsAndAgents = (path) => {
-  console.log(path);
-  if (!path) return false;
-  return path.includes('components') || path.includes('agents');
 };
 
 /**
@@ -104,12 +99,12 @@ export const useHandleRoute = () => {
     console.log('here-1', {
       networkNameFromUrl,
       isValidL1NetworkName: isValidL1NetworkName(networkNameFromUrl),
-      doesItIncludesComponentsAndAgents: doesItIncludesComponentsAndAgents(path),
+      // doesItIncludesComponentsAndAgents: doesItIncludesComponentsAndAgents(path),
     });
 
     if (
       !isValidL1NetworkName(networkNameFromUrl)
-      && doesItIncludesComponentsAndAgents(path)
+      && doesPathIncludesComponentsOrAgents(path)
     ) {
       console.log('here-2');
       router.push(`/${networkNameFromUrl}/services`);

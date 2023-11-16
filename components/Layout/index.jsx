@@ -4,17 +4,17 @@ import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
 import { Layout as AntdLayout, Select } from 'antd';
+import { CaretDownOutlined } from '@ant-design/icons';
+import { useScreen } from '@autonolas/frontend-library';
 import { toLower } from 'lodash';
 
 import { setChainId } from 'store/setup/actions';
 import { useHelpers } from 'common-util/hooks';
 import { SUPPORTED_CHAINS_MORE_INFO } from 'common-util/Login/config';
-import { CaretDownOutlined } from '@ant-design/icons';
-import { useScreen } from '@autonolas/frontend-library';
 import {
   PAGES_TO_LOAD_WITHOUT_CHAINID,
   useHandleRoute,
-} from './hooks/useHandleRoute';
+} from 'common-util/hooks/useHandleRoute';
 import { LogoSvg, LogoIconSvg } from '../Logos';
 import {
   CustomLayout,
