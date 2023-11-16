@@ -64,30 +64,28 @@ const NavigationMenu = () => {
     setMenuVisible(!menuVisible);
   };
 
+  if (isMobile || isTablet) {
+    return (
+      <Dropdown
+        trigger={['click']}
+        overlay={(
+          <MenuInstance
+            selectedMenu={selectedMenu}
+            handleMenuItemClick={handleMenuItemClick}
+            mode="vertical"
+          />
+        )}
+      >
+        <Button onClick={handleMenuButtonClick}>Menu</Button>
+      </Dropdown>
+    );
+  }
+
   return (
-    <>
-      {
-        !(isMobile || isTablet) && (
-          <MenuInstance selectedMenu={selectedMenu} handleMenuItemClick={handleMenuItemClick} />
-        )
-      }
-      {
-        (isMobile || isTablet) && (
-          <Dropdown
-            overlay={(
-              <MenuInstance
-                selectedMenu={selectedMenu}
-                handleMenuItemClick={handleMenuItemClick}
-                mode="vertical"
-              />
-            )}
-            trigger={['click']}
-          >
-            <Button onClick={handleMenuButtonClick}>Menu</Button>
-          </Dropdown>
-        )
-      }
-    </>
+    <MenuInstance
+      selectedMenu={selectedMenu}
+      handleMenuItemClick={handleMenuItemClick}
+    />
   );
 };
 

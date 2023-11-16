@@ -115,9 +115,11 @@ export const useHandleRoute = () => {
 
   const onHomeClick = () => {
     if (networkNameFromUrl) {
-      router.push(`/${networkNameFromUrl}`);
+      router.push(
+        `/${networkNameFromUrl}/${isL1Network ? 'components' : 'services'}}`,
+      );
     } else {
-      router.push('/ethereum');
+      router.push('/ethereum/components');
     }
   };
 

@@ -76,20 +76,6 @@ const Layout = ({ children }) => {
     }
   }, [networkNameFromUrl]);
 
-  const dropdownOptions = SUPPORTED_CHAINS_MORE_INFO.map((e) => {
-    // disable all the networks except mainnet & goerli
-    // if the user is on components or agents page
-    const isDisabled = e.id !== 1
-      && e.id !== 5
-      && (path.includes('components') || path.includes('agents'));
-
-    return {
-      label: e.networkDisplayName,
-      value: e.networkName,
-      disabled: isDisabled,
-    };
-  });
-
   return (
     <CustomLayout>
       <OlasHeader isMobile={isMobile}>
@@ -104,9 +90,14 @@ const Layout = ({ children }) => {
         <SelectContainer>
           <Select
             suffixIcon={<CaretDownOutlined />}
-            dropdownStyle={{ width: 200 }}
+            style={{ width: 200 }}
             value={chainName}
-            options={dropdownOptions}
+            placeholder="Select Network"
+            disabled={PAGES_TO_LOAD_WITHOUT_CHAINID.some((e) => path.includes(e))}
+            options={SUPPORTED_CHAINS_MORE_INFO.map((e) => ({
+              label: e.networkDisplayName,
+              value: e.networkName,
+            }))}
             onChange={(value) => {
               const currentChainInfo = SUPPORTED_CHAINS_MORE_INFO.find(
                 (e) => e.networkName === value,

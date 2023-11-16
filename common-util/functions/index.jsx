@@ -24,13 +24,14 @@ export const getChainId = (chainId = null) => {
     ? 1
     : Number(sessionStorage.getItem('chainId'));
 
+  // if chainId is not supported, throw error
   if (
     !SUPPORTED_CHAINS_MORE_INFO.find((e) => e.id === chainIdfromSessionStorage)
   ) {
     return new Error('Invalid chain id');
   }
 
-  return chainIdfromSessionStorage;
+  return chainIdfromSessionStorage || 1;
 };
 
 export const getProvider = () => {
