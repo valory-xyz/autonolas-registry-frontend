@@ -34,8 +34,6 @@ export const useHandleRoute = () => {
   const path = router?.pathname || '';
   const networkNameFromUrl = router?.query?.network;
 
-  console.log({ chainId, isL1Network });
-
   useEffect(() => {
     console.log({ path, networkNameFromUrl });
 
@@ -45,12 +43,18 @@ export const useHandleRoute = () => {
 
     /**
      * if user navigates to `/` (homepage) then
-     * redirect to `/ethereum` page
+     * redirect to `/ethereum/components` page
      */
     if (path === '/') {
-      router.push('/ethereum');
+      router.push('/ethereum/components');
       return;
     }
+
+    console.log({
+      path,
+      networkNameFromUrl,
+      isValidNetworkName: isValidNetworkName(networkNameFromUrl),
+    });
 
     /**
      * if the network name is invalid, eg.
@@ -70,11 +74,39 @@ export const useHandleRoute = () => {
      * - if user navigates to `/random-page` then redirect to `/page-not-found`
      */
 
-    const isHomepage = path?.split('/')?.length === 2;
+    // eg. /ethereum/components => ['ethereum', 'components']
+    const pathArray = (path?.split('/') || []).filter(Boolean);
 
-    // console.log({ len: path?.split('/')?.length, isHomepage });
+    // User navigates to `/[network]`
+    if (
+      !PAGES_TO_LOAD_WITHOUT_CHAINID.includes(router.asPath)
+      && pathArray.length === 1
+    ) {
+      console.log('HERE', {
+        pathArray,
+        networkNameFromUrl,
+        path,
+        asPath: router.asPath,
+        e: PAGES_TO_LOAD_WITHOUT_CHAINID.includes(path),
+      });
+      router.push(
+        `/${networkNameFromUrl}/${isL1Network ? 'components' : 'services'}`,
+      );
+      return;
+    }
 
-    if (isHomepage) {
+    // // User navigates to `/[network]` or `/random-page`
+    // if (!PAGES_TO_LOAD_WITHOUT_CHAINID.includes(path) && pathArray.length < 2) {
+    //   router.push('/ethereum/components');
+    //   return;
+    // }
+
+    // [networkName, components/agents/services]
+    const isNonHomepage = pathArray === 2;
+
+    console.log({ len: path?.split('/')?.length, isNonHomepage });
+
+    if (isNonHomepage) {
       if (!isValidNetworkName(networkNameFromUrl)) {
         /**
          * eg.
@@ -82,6 +114,7 @@ export const useHandleRoute = () => {
          * - /ethereumTypo => /page-not-found
          */
         router.push('/page-not-found');
+        return;
       }
     }
 
@@ -96,27 +129,18 @@ export const useHandleRoute = () => {
      * components & agents are not supported on gnosis
      */
 
-    console.log('here-1', {
-      networkNameFromUrl,
-      isValidL1NetworkName: isValidL1NetworkName(networkNameFromUrl),
-      // doesItIncludesComponentsAndAgents: doesItIncludesComponentsAndAgents(path),
-    });
-
     if (
       !isValidL1NetworkName(networkNameFromUrl)
       && doesPathIncludesComponentsOrAgents(path)
     ) {
-      console.log('here-2');
       router.push(`/${networkNameFromUrl}/services`);
     }
-
-    // router.push('/page-not-found');
   }, [path, networkNameFromUrl]);
 
   const onHomeClick = () => {
     if (networkNameFromUrl) {
       router.push(
-        `/${networkNameFromUrl}/${isL1Network ? 'components' : 'services'}}`,
+        `/${networkNameFromUrl}/${isL1Network ? 'components' : 'services'}`,
       );
     } else {
       router.push('/ethereum/components');

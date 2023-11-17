@@ -63,13 +63,6 @@ const Layout = ({ children }) => {
 
         updateChainId(mapChainIdFromPath);
       } else {
-        // updated the url with default network name (ethereum)
-        const updatedPath = router.asPath.replace(
-          networkNameFromUrl,
-          SUPPORTED_CHAINS_MORE_INFO[0].networkName,
-        );
-        router.push(updatedPath);
-
         // there is no network name in the url so set it to default network (ethereum)
         updateChainId(1);
       }

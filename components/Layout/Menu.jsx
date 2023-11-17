@@ -20,7 +20,7 @@ const MenuInstance = ({ selectedMenu, handleMenuItemClick, mode }) => {
     <Menu
       theme="light"
       mode={mode}
-      selectedKeys={[selectedMenu]}
+      selectedKeys={selectedMenu ? [selectedMenu] : []}
       items={isL1Network ? [...items, ...serviceItem] : serviceItem}
       onClick={handleMenuItemClick}
     />
@@ -28,12 +28,13 @@ const MenuInstance = ({ selectedMenu, handleMenuItemClick, mode }) => {
 };
 
 MenuInstance.propTypes = {
-  selectedMenu: PropTypes.string.isRequired,
+  selectedMenu: PropTypes.string,
   handleMenuItemClick: PropTypes.func.isRequired,
   mode: PropTypes.string,
 };
 
 MenuInstance.defaultProps = {
+  selectedMenu: '',
   mode: 'horizontal',
 };
 
@@ -41,7 +42,7 @@ const NavigationMenu = () => {
   const { chainName } = useHelpers();
   const router = useRouter();
   const { isMobile, isTablet } = useScreen();
-  const [selectedMenu, setSelectedMenu] = useState([]);
+  const [selectedMenu, setSelectedMenu] = useState('');
   const { pathname } = router;
   const [menuVisible, setMenuVisible] = useState(false);
 
