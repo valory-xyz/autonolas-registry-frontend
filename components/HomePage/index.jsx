@@ -11,9 +11,14 @@ import { Container, HeaderRow } from './styles';
 
 const { Title, Text } = Typography;
 
+// TODO: this page is deprecated, @oaksprout will update it
+const IS_DEPRECATED = true;
+
 const HomePage = () => {
   const { isL1Network, links } = useHelpers();
   const { isMobile } = useScreen();
+
+  if (IS_DEPRECATED) return null;
 
   return (
     <Container>

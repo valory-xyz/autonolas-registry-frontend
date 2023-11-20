@@ -1,7 +1,9 @@
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/router';
 import { toLower } from 'lodash';
 
+import { setChainId } from 'store/setup/actions';
 import { useHelpers } from 'common-util/hooks';
 import { SUPPORTED_CHAINS_MORE_INFO } from 'common-util/Login/config';
 import { doesPathIncludesComponentsOrAgents } from 'common-util/functions';
@@ -12,12 +14,13 @@ export const PAGES_TO_LOAD_WITHOUT_CHAINID = [
   '/not-legal',
 ];
 
-const isValidNetworkName = (name) => {
-  if (name === 'ethereum') return true;
-  return SUPPORTED_CHAINS_MORE_INFO.some(
-    (e) => toLower(e.networkName) === toLower(name),
-  );
-};
+const isValidNetworkName = (name) => SUPPORTED_CHAINS_MORE_INFO.some(
+  (e) => toLower(e.networkName) === toLower(name),
+);
+
+const getChainIdFromPath = (networkName) => SUPPORTED_CHAINS_MORE_INFO.find(
+  (e) => toLower(e.networkName) === toLower(networkName),
+)?.id;
 
 const isValidL1NetworkName = (name) => {
   if (name === 'ethereum') return true;
@@ -29,10 +32,25 @@ const isValidL1NetworkName = (name) => {
  * handles the route
  */
 export const useHandleRoute = () => {
+  const dispatch = useDispatch();
   const router = useRouter();
   const { isL1Network } = useHelpers();
   const path = router?.pathname || '';
   const networkNameFromUrl = router?.query?.network;
+
+  const updateChainId = (id) => {
+    sessionStorage.setItem('chainId', id);
+    setTimeout(() => {
+      dispatch(setChainId(id));
+    }, 0);
+  };
+
+  // updating the chainId in redux
+  useEffect(() => {
+    const isValidNetwork = isValidNetworkName(networkNameFromUrl);
+    const chainIdFromPath = getChainIdFromPath(networkNameFromUrl);
+    updateChainId(isValidNetwork ? chainIdFromPath : 1);
+  }, [networkNameFromUrl]);
 
   useEffect(() => {
     if (PAGES_TO_LOAD_WITHOUT_CHAINID.includes(path)) {
@@ -59,15 +77,28 @@ export const useHandleRoute = () => {
       return;
     }
 
+    // eg. /ethereum/components => ['ethereum', 'components']
+    // eg 1. pathArray = [networkName, components/agents/services]
+    // eg 2. pathArray = [networkName, agents, mint]
+    const pathArray = (path?.split('/') || []).filter(Boolean);
+
+    const listingPage = pathArray >= 2;
+    if (listingPage && !isValidNetworkName(networkNameFromUrl)) {
+      /**
+       * eg.
+       * - /random-page => /page-not-found
+       * - /ethereummmmTypo => /page-not-found
+       */
+      router.push('/page-not-found');
+      return;
+    }
+
     /**
-     * homepage
-     * - if user navigates to `/ethereum` then no need to redirect
-     * - if user navigates to `/` then redirect to `/ethereum` page
+     * - if user navigates to `/ethereum/components` then no need to redirect
+     * - if user navigates to `/` then redirect to `/ethereum/components` page
+     * - if user navigates to `/ethereum` then redirect to `/ethereum/components` page
      * - if user navigates to `/random-page` then redirect to `/page-not-found`
      */
-
-    // eg. /ethereum/components => ['ethereum', 'components']
-    const pathArray = (path?.split('/') || []).filter(Boolean);
 
     // User navigates to `/[network]`
     if (
@@ -80,27 +111,15 @@ export const useHandleRoute = () => {
       return;
     }
 
-    // eg. [networkName, components/agents/services]
-    const isNonHomepage = pathArray === 2;
-    if (isNonHomepage && !isValidNetworkName(networkNameFromUrl)) {
-      /**
-       * eg.
-       * - /random-page => /page-not-found
-       * - /ethereumTypo => /page-not-found
-       */
-      router.push('/page-not-found');
-      return;
-    }
-
-    // components, agents
+    // ONLY components, agents
     /**
      * if user navigates to `/ethereum/components` or `/ethereum/agents` then no need to redirect
      * if user navigates to `/goerli/components` or `/goerli/agents` then no need to redirect
      *
      * if user navigates to `/ethereum/random-page redirect to `/page-not-found`
      *
-     * if user navigates to `/gnosis/components redirect to `/goerli/page-not-found` because
-     * components & agents are not supported on gnosis
+     * if user navigates to `/gnosis/components redirect to `/gnosis/services`
+     * because components & agents are not supported on gnosis
      */
 
     if (
@@ -121,5 +140,5 @@ export const useHandleRoute = () => {
     }
   };
 
-  return { onHomeClick };
+  return { onHomeClick, updateChainId };
 };

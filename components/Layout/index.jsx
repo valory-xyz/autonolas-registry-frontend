@@ -1,13 +1,9 @@
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
 import { Layout as AntdLayout, Select } from 'antd';
 import { useScreen } from '@autonolas/frontend-library';
-import { toLower } from 'lodash';
 
-import { setChainId } from 'store/setup/actions';
 import { useHelpers } from 'common-util/hooks';
 import { SUPPORTED_CHAINS_MORE_INFO } from 'common-util/Login/config';
 import {
@@ -30,43 +26,12 @@ const Footer = dynamic(() => import('./Footer'), { ssr: false });
 const { Content } = AntdLayout;
 
 const Layout = ({ children }) => {
-  const dispatch = useDispatch();
   const router = useRouter();
   const { isMobile, isTablet } = useScreen();
   const { chainId, chainName } = useHelpers();
   const path = router?.pathname || '';
-  const networkNameFromUrl = router?.query?.network;
 
-  const { onHomeClick } = useHandleRoute();
-
-  const updateChainId = (id) => {
-    sessionStorage.setItem('chainId', id);
-    setTimeout(() => {
-      dispatch(setChainId(id));
-    }, 0);
-  };
-
-  // set chainId in local storage
-  useEffect(() => {
-    if (networkNameFromUrl) {
-      // if the network name is not supported then redirect to ethereum
-      // eg. /random/components => /ethereum/components
-      const isValidNetworkName = SUPPORTED_CHAINS_MORE_INFO.some(
-        (e) => toLower(e.networkName) === toLower(networkNameFromUrl),
-      );
-
-      if (isValidNetworkName) {
-        const mapChainIdFromPath = SUPPORTED_CHAINS_MORE_INFO.find(
-          (e) => toLower(e.networkName) === toLower(networkNameFromUrl),
-        )?.id || 1;
-
-        updateChainId(mapChainIdFromPath);
-      } else {
-        // there is no network name in the url so set it to default network (ethereum)
-        updateChainId(1);
-      }
-    }
-  }, [networkNameFromUrl]);
+  const { onHomeClick, updateChainId } = useHandleRoute();
 
   return (
     <CustomLayout>
@@ -100,8 +65,8 @@ const Layout = ({ children }) => {
 
                 // eg. /disclaimer will be redirect to same page ie. /disclaimer
                 if (PAGES_TO_LOAD_WITHOUT_CHAINID.find((e) => e === path)) {
+                  updateChainId(currentChainInfo.id);
                   router.push(`/${path}`);
-                  dispatch(setChainId(currentChainInfo.id));
                 } else {
                   const replacedPath = router.asPath.replace(chainName, value);
                   router.push(`${replacedPath}`);
