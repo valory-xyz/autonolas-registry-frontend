@@ -3,9 +3,13 @@ import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { SwapOutlined } from '@ant-design/icons';
 import { isNil } from 'lodash';
-import { Web3Modal, Web3Button, useWeb3Modal } from '@web3modal/react';
+import { Web3Modal, Web3Button } from '@web3modal/react';
 import {
-  useAccount, useBalance, useDisconnect, useNetwork,
+  useAccount,
+  useBalance,
+  useDisconnect,
+  useNetwork,
+  useSwitchNetwork,
 } from 'wagmi';
 import styled from 'styled-components';
 import {
@@ -36,9 +40,9 @@ export const LoginV2 = ({
   const dispatch = useDispatch();
   const { isMobile } = useScreen();
   const { disconnect } = useDisconnect();
-  const { open, isOpen } = useWeb3Modal();
   const { chainId } = useHelpers();
   const { chain: walletConnectedChain } = useNetwork();
+  const { switchNetworkAsync, isLoading } = useSwitchNetwork();
 
   const { address, connector } = useAccount({
     onConnect: ({ address: currentAddress }) => {
@@ -121,25 +125,30 @@ export const LoginV2 = ({
     }
   }, [address]);
 
+  const onSwitchNetwork = async () => {
+    try {
+      await switchNetworkAsync(chainId);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const hideWrongNetwork = isNil(walletConnectedChain?.id) || walletConnectedChain?.id === chainId;
 
   return (
     <LoginContainer>
       {!hideWrongNetwork && (
         <YellowButton
-          loading={isOpen}
+          loading={isLoading}
           type="default"
-          onClick={open}
+          onClick={onSwitchNetwork}
           icon={<SwapOutlined />}
         >
           {!isMobile && 'Switch network'}
         </YellowButton>
       )}
       &nbsp;&nbsp;
-      <Web3Button
-        avatar="hide"
-        balance="hide"
-      />
+      <Web3Button avatar="hide" balance="hide" />
       <Web3Modal
         projectId={projectId}
         ethereumClient={ethereumClient}

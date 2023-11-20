@@ -71,11 +71,11 @@ const Layout = ({ children }) => {
 
   return (
     <CustomLayout>
-      <OlasHeader isMobile={isMobile}>
+      <OlasHeader ismobile={`${isMobile}`}>
         <Logo
           onClick={onHomeClick}
           data-testid="protocol-logo"
-          isMobile={isMobile}
+          ismobile={`${isMobile}`}
         >
           {isMobile || isTablet ? <LogoIconSvg /> : <LogoSvg />}
         </Logo>

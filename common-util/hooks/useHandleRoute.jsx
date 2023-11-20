@@ -30,13 +30,11 @@ const isValidL1NetworkName = (name) => {
  */
 export const useHandleRoute = () => {
   const router = useRouter();
-  const { chainId, chainName, isL1Network } = useHelpers();
+  const { isL1Network } = useHelpers();
   const path = router?.pathname || '';
   const networkNameFromUrl = router?.query?.network;
 
   useEffect(() => {
-    console.log({ path, networkNameFromUrl });
-
     if (PAGES_TO_LOAD_WITHOUT_CHAINID.includes(path)) {
       return;
     }
@@ -49,12 +47,6 @@ export const useHandleRoute = () => {
       router.push('/ethereum/components');
       return;
     }
-
-    console.log({
-      path,
-      networkNameFromUrl,
-      isValidNetworkName: isValidNetworkName(networkNameFromUrl),
-    });
 
     /**
      * if the network name is invalid, eg.
@@ -82,40 +74,22 @@ export const useHandleRoute = () => {
       !PAGES_TO_LOAD_WITHOUT_CHAINID.includes(router.asPath)
       && pathArray.length === 1
     ) {
-      console.log('HERE', {
-        pathArray,
-        networkNameFromUrl,
-        path,
-        asPath: router.asPath,
-        e: PAGES_TO_LOAD_WITHOUT_CHAINID.includes(path),
-      });
       router.push(
         `/${networkNameFromUrl}/${isL1Network ? 'components' : 'services'}`,
       );
       return;
     }
 
-    // // User navigates to `/[network]` or `/random-page`
-    // if (!PAGES_TO_LOAD_WITHOUT_CHAINID.includes(path) && pathArray.length < 2) {
-    //   router.push('/ethereum/components');
-    //   return;
-    // }
-
-    // [networkName, components/agents/services]
+    // eg. [networkName, components/agents/services]
     const isNonHomepage = pathArray === 2;
-
-    console.log({ len: path?.split('/')?.length, isNonHomepage });
-
-    if (isNonHomepage) {
-      if (!isValidNetworkName(networkNameFromUrl)) {
-        /**
-         * eg.
-         * - /random-page => /page-not-found
-         * - /ethereumTypo => /page-not-found
-         */
-        router.push('/page-not-found');
-        return;
-      }
+    if (isNonHomepage && !isValidNetworkName(networkNameFromUrl)) {
+      /**
+       * eg.
+       * - /random-page => /page-not-found
+       * - /ethereumTypo => /page-not-found
+       */
+      router.push('/page-not-found');
+      return;
     }
 
     // components, agents
