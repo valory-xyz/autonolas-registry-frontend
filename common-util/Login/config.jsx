@@ -72,6 +72,14 @@ export const ethereumClient = new EthereumClient(wagmiConfig, chains);
  */
 export const SUPPORTED_CHAINS_MORE_INFO = SUPPORTED_CHAINS.map((chain) => {
   const { name, network, id } = chain;
-  const networkName = network === 'homestead' ? 'ethereum' : network;
-  return { id, networkDisplayName: name, networkName };
+
+  const getNetworkName = () => {
+    if (network === 'homestead') return 'ethereum';
+    if (network === 'chiado') return 'gnosis-chiado';
+    if (network === 'matic') return 'polygon';
+    if (network === 'maticmum') return 'polygon-mumbai';
+    return network;
+  };
+
+  return { id, networkDisplayName: name, networkName: getNetworkName() };
 });

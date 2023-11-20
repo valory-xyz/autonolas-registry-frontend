@@ -4,7 +4,6 @@ import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
 import { Layout as AntdLayout, Select } from 'antd';
-import { CaretDownOutlined } from '@ant-design/icons';
 import { useScreen } from '@autonolas/frontend-library';
 import { toLower } from 'lodash';
 
@@ -82,7 +81,6 @@ const Layout = ({ children }) => {
 
         <SelectContainer>
           <Select
-            suffixIcon={<CaretDownOutlined />}
             style={{ width: 200 }}
             value={chainName}
             placeholder="Select Network"
