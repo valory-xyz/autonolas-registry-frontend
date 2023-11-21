@@ -24,7 +24,7 @@ const isValidL1NetworkName = (name) => {
 };
 
 /**
- * handles the route
+ * Hook to handle the routing
  */
 export const useHandleRoute = () => {
   const dispatch = useDispatch();

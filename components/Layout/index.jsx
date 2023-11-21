@@ -42,9 +42,9 @@ const Layout = ({ children }) => {
           {isMobile || isTablet ? <LogoIconSvg /> : <LogoSvg />}
         </Logo>
 
-        <SelectContainer>
+        <SelectContainer style={{ marginRight: isMobile ? 8 : 0 }}>
           <Select
-            style={{ width: 200 }}
+            style={{ width: isMobile ? 140 : 200 }}
             value={chainName}
             placeholder="Select Network"
             disabled={PAGES_TO_LOAD_WITHOUT_CHAINID.some((e) => path.includes(e))}

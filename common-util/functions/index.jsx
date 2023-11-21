@@ -123,15 +123,8 @@ export const isAddressProhibited = (address) => {
   return addresses.includes(toLower(address));
 };
 
-export const getCustomNetworkName = (name) => {
-  if (name === 'homestead') return 'ethereum';
-  return name;
-};
-
-export const doesPathIncludesComponents = (path) => !!path?.includes('components');
-
-export const doesPathIncludesAgents = (path) => !!path?.includes('agents');
-
+const doesPathIncludesComponents = (path) => !!path?.includes('components');
+const doesPathIncludesAgents = (path) => !!path?.includes('agents');
 export const doesPathIncludesComponentsOrAgents = (path) => {
   if (!path) return false;
   return doesPathIncludesComponents(path) || doesPathIncludesAgents(path);

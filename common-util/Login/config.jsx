@@ -68,6 +68,7 @@ export const ethereumClient = new EthereumClient(wagmiConfig, chains);
  * [
  *  { name: 'Mainnet', id: 1, network: 'ethereum' },
  *  { name: 'Goerli', id: 5, network: 'goerli' },
+ *  // ...
  * ]
  */
 export const SUPPORTED_CHAINS_MORE_INFO = SUPPORTED_CHAINS.map((chain) => {
