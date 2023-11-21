@@ -6,7 +6,7 @@ import {
   getExplorerURL,
 } from '@autonolas/frontend-library';
 
-import { PATHS_NOT_TO_SHOW } from 'util/constants';
+import { PAGES_TO_LOAD_WITHOUT_CHAINID } from 'util/constants';
 import { ADDRESSES } from 'common-util/Contracts/addresses';
 import { useHelpers } from 'common-util/hooks';
 import Socials from './Socials';
@@ -81,7 +81,7 @@ const ContractInfo = () => {
 
   return (
     <ContractsInfoContainer>
-      {!PATHS_NOT_TO_SHOW.includes(pathname) && (
+      {!PAGES_TO_LOAD_WITHOUT_CHAINID.includes(pathname) && (
         <>
           <div>
             <Image

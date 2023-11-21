@@ -4,12 +4,10 @@ import PropTypes from 'prop-types';
 import { Layout as AntdLayout, Select } from 'antd';
 import { useScreen } from '@autonolas/frontend-library';
 
+import { PAGES_TO_LOAD_WITHOUT_CHAINID } from 'util/constants';
 import { useHelpers } from 'common-util/hooks';
 import { SUPPORTED_CHAINS_MORE_INFO } from 'common-util/Login/config';
-import {
-  PAGES_TO_LOAD_WITHOUT_CHAINID,
-  useHandleRoute,
-} from 'common-util/hooks/useHandleRoute';
+import { useHandleRoute } from 'common-util/hooks/useHandleRoute';
 import { LogoSvg, LogoIconSvg } from '../Logos';
 import {
   CustomLayout,

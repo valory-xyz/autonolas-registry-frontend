@@ -24,8 +24,12 @@ export const SERVICE_STATE = {
   5: 'Terminated Bonded',
 };
 
-// should not display contracts on homepage
-export const PATHS_NOT_TO_SHOW = ['/', '/disclaimer'];
+// should not display contracts on homepage nor load with chain Ids
+export const PAGES_TO_LOAD_WITHOUT_CHAINID = [
+  '/disclaimer',
+  '/page-not-found',
+  '/not-legal',
+];
 
 export const HASH_PREFIX = 'f01701220';
 export const HASH_PREFIXES = {

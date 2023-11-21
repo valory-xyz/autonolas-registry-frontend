@@ -4,15 +4,10 @@ import { useRouter } from 'next/router';
 import { toLower } from 'lodash';
 
 import { setChainId } from 'store/setup/actions';
+import { PAGES_TO_LOAD_WITHOUT_CHAINID } from 'util/constants';
 import { useHelpers } from 'common-util/hooks';
 import { SUPPORTED_CHAINS_MORE_INFO } from 'common-util/Login/config';
 import { doesPathIncludesComponentsOrAgents } from 'common-util/functions';
-
-export const PAGES_TO_LOAD_WITHOUT_CHAINID = [
-  '/disclaimer',
-  '/page-not-found',
-  '/not-legal',
-];
 
 const isValidNetworkName = (name) => SUPPORTED_CHAINS_MORE_INFO.some(
   (e) => toLower(e.networkName) === toLower(name),
