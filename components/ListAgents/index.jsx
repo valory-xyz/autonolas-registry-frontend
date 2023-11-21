@@ -3,7 +3,7 @@ import { Tabs } from 'antd';
 import { useRouter } from 'next/router';
 import { notifyError } from '@autonolas/frontend-library';
 
-import { URL, NAV_TYPES } from 'util/constants';
+import { NAV_TYPES } from 'util/constants';
 import ListTable from 'common-util/List/ListTable';
 import {
   useExtraTabContent,
@@ -29,16 +29,18 @@ const ListAgents = () => {
     isMyTab(hash) ? MY_AGENTS : ALL_AGENTS,
   );
 
-  const { account, chainId } = useHelpers();
+  const {
+    account, chainId, links, isL1OnlyNetwork,
+  } = useHelpers();
 
   /**
    * extra tab content & view click
    */
   const { searchValue, extraTabContent, clearSearch } = useExtraTabContent({
     title: 'Agents',
-    onRegisterClick: () => router.push(URL.MINT_AGENT),
+    onRegisterClick: () => router.push(links.MINT_AGENT),
   });
-  const onViewClick = (id) => router.push(`${URL.AGENTS}/${id}`);
+  const onViewClick = (id) => router.push(`${links.AGENTS}/${id}`);
 
   /**
    * filtered list
@@ -48,7 +50,7 @@ const ListAgents = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [list, setList] = useState([]);
 
-  // update current tab based on the "hash" in the URL
+  // update current tab based on the "hash" in the links
   useEffect(() => {
     setCurrentTab(isMyTab(hash) ? MY_AGENTS : ALL_AGENTS);
     setList([]);
@@ -57,7 +59,7 @@ const ListAgents = () => {
   // fetch total
   useEffect(() => {
     (async () => {
-      if (searchValue === '') {
+      if (isL1OnlyNetwork && searchValue === '') {
         try {
           let totalTemp = null;
 
@@ -81,12 +83,12 @@ const ListAgents = () => {
         }
       }
     })();
-  }, [account, chainId, currentTab, searchValue]);
+  }, [account, chainId, isL1OnlyNetwork, currentTab, searchValue]);
 
   // fetch the list (without search)
   useEffect(() => {
     (async () => {
-      if (total && currentPage && !searchValue) {
+      if (isL1OnlyNetwork && total && currentPage && !searchValue) {
         setIsLoading(true);
 
         try {
@@ -114,7 +116,7 @@ const ListAgents = () => {
         }
       }
     })();
-  }, [account, chainId, total, currentPage]);
+  }, [account, chainId, isL1OnlyNetwork, total, currentPage]);
 
   /**
    * Search (All agents, My agents)
@@ -176,9 +178,9 @@ const ListAgents = () => {
         // clear the search
         clearSearch();
 
-        // update the URL to keep track of my-agents
+        // update the links to keep track of my-agents
         router.push(
-          e === MY_AGENTS ? `${URL.AGENTS}#${MY_AGENTS}` : URL.AGENTS,
+          e === MY_AGENTS ? `${links.AGENTS}#${MY_AGENTS}` : links.AGENTS,
         );
       }}
       items={[

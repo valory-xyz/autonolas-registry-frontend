@@ -1,10 +1,5 @@
 import { syncTypes } from './_types';
 
-export const setLoaded = (isLoaded) => ({
-  type: syncTypes.SET_LOADED,
-  data: { isLoaded },
-});
-
 export const setUserAccount = (account) => ({
   type: syncTypes.SET_ACCOUNT,
   data: { account },
@@ -15,7 +10,9 @@ export const setUserBalance = (balance) => ({
   data: { balance },
 });
 
-// chainId should be set only using Login component
+/**
+ * chainId should be set only using Layout component
+ */
 export const setChainId = (chainId) => ({
   type: syncTypes.SET_CHAIND_ID,
   data: { chainId },

@@ -61,3 +61,26 @@ export const wagmiConfig = createConfig({
 });
 
 export const ethereumClient = new EthereumClient(wagmiConfig, chains);
+
+/**
+ * Returns the list of supported chains with more info.
+ * @example
+ * [
+ *  { name: 'Mainnet', id: 1, network: 'ethereum' },
+ *  { name: 'Goerli', id: 5, network: 'goerli' },
+ *  // ...
+ * ]
+ */
+export const SUPPORTED_CHAINS_MORE_INFO = SUPPORTED_CHAINS.map((chain) => {
+  const { name, network, id } = chain;
+
+  const getNetworkName = () => {
+    if (network === 'homestead') return 'ethereum';
+    if (network === 'chiado') return 'gnosis-chiado';
+    if (network === 'matic') return 'polygon';
+    if (network === 'maticmum') return 'polygon-mumbai';
+    return network;
+  };
+
+  return { id, networkDisplayName: name, networkName: getNetworkName() };
+});

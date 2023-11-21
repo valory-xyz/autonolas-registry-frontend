@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Tabs } from 'antd';
 import { useRouter } from 'next/router';
-import dynamic from 'next/dynamic';
 import { notifyError } from '@autonolas/frontend-library';
 
-import { URL, NAV_TYPES } from 'util/constants';
+import { NAV_TYPES } from 'util/constants';
+import ListTable from 'common-util/List/ListTable';
 import {
   useExtraTabContent,
   getHash,
@@ -19,10 +19,6 @@ import {
   getTotalForMyServices,
 } from './utils';
 
-const ListTable = dynamic(() => import('common-util/List/ListTable'), {
-  ssr: false,
-});
-
 const ALL_SERVICES = 'all-services';
 const MY_SERVICES = 'my-services';
 
@@ -33,16 +29,16 @@ const ListServices = () => {
     isMyTab(hash) ? MY_SERVICES : ALL_SERVICES,
   );
 
-  const { account, chainId } = useHelpers();
+  const { account, chainId, links } = useHelpers();
 
   /**
    * extra tab content & view click
    */
   const { searchValue, extraTabContent, clearSearch } = useExtraTabContent({
     title: 'Services',
-    onRegisterClick: () => router.push(URL.MINT_SERVICE),
+    onRegisterClick: () => router.push(links.MINT_SERVICE),
   });
-  const onViewClick = (id) => router.push(`${URL.SERVICES}/${id}`);
+  const onViewClick = (id) => router.push(`${links.SERVICES}/${id}`);
 
   /**
    * filtered list
@@ -87,6 +83,7 @@ const ListServices = () => {
     })();
   }, [account, chainId, currentTab, searchValue]);
 
+  // fetch the list (without search)
   useEffect(() => {
     (async () => {
       if (total && currentPage && !searchValue) {
@@ -112,7 +109,7 @@ const ListServices = () => {
           }
         } catch (e) {
           console.error(e);
-          notifyError('Error fetching services');
+          notifyError('Error fetching services list');
         } finally {
           setIsLoading(false);
         }
@@ -182,7 +179,9 @@ const ListServices = () => {
 
         // update the URL to keep track of my-services
         router.push(
-          e === MY_SERVICES ? `${URL.SERVICES}#${MY_SERVICES}` : URL.SERVICES,
+          e === MY_SERVICES
+            ? `${links.SERVICES}#${MY_SERVICES}`
+            : links.SERVICES,
         );
       }}
       items={[
@@ -198,7 +197,7 @@ const ListServices = () => {
             <ListTable
               {...tableCommonProps}
               list={myServiceList}
-              onUpdateClick={(serviceId) => router.push(`${URL.UPDATE_SERVICE}/${serviceId}`)}
+              onUpdateClick={(serviceId) => router.push(`${links.UPDATE_SERVICE}/${serviceId}`)}
               isAccountRequired
             />
           ),

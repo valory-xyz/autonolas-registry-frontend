@@ -4,7 +4,6 @@ import { useRouter } from 'next/router';
 import { Button, Space } from 'antd';
 import { isLocalNetwork } from '@autonolas/frontend-library';
 
-import { URL } from 'util/constants';
 import { useHelpers } from 'common-util/hooks';
 import {
   checkAndApproveToken,
@@ -22,7 +21,7 @@ const PreRegistration = ({
   updateDetails,
 }) => {
   const router = useRouter();
-  const { account, chainId } = useHelpers();
+  const { account, chainId, links } = useHelpers();
   const [isActivating, setIsUpdateLoading] = useState(false);
 
   const handleStep1Registration = async () => {
@@ -59,7 +58,7 @@ const PreRegistration = ({
   };
 
   const handleStep1Update = () => {
-    router.push(`${URL.UPDATE_SERVICE}/${serviceId}`);
+    router.push(`${links.UPDATE_SERVICE}/${serviceId}`);
   };
 
   return (

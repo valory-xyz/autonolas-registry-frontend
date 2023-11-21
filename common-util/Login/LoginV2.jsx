@@ -1,25 +1,28 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Grid } from 'antd';
-import { Web3Modal, Web3Button, Web3NetworkSwitch } from '@web3modal/react';
+import { SwapOutlined } from '@ant-design/icons';
+import { isNil } from 'lodash';
+import { Web3Modal, Web3Button } from '@web3modal/react';
 import {
-  useAccount, useNetwork, useBalance, useDisconnect,
+  useAccount,
+  useBalance,
+  useDisconnect,
+  useNetwork,
+  useSwitchNetwork,
 } from 'wagmi';
 import styled from 'styled-components';
 import {
   COLOR,
   CannotConnectAddressOfacError,
-  MEDIA_QUERY,
   notifyError,
+  useScreen,
 } from '@autonolas/frontend-library';
 
-import { setChainId, setUserBalance } from 'store/setup/actions';
-import {
-  getChainId,
-  getChainIdOrDefaultToMainnet,
-  isAddressProhibited,
-} from 'common-util/functions';
+import { setUserBalance } from 'store/setup/actions';
+import { isAddressProhibited } from 'common-util/functions';
+import { useHelpers } from 'common-util/hooks';
+import { YellowButton } from 'common-util/YellowButton';
 import { projectId, ethereumClient } from './config';
 
 const LoginContainer = styled.div`
@@ -27,12 +30,7 @@ const LoginContainer = styled.div`
   align-items: center;
   font-size: 18px;
   line-height: normal;
-  ${MEDIA_QUERY.mobileL} {
-    margin-top: 0.5rem;
-  }
 `;
-
-const { useBreakpoint } = Grid;
 
 export const LoginV2 = ({
   onConnect: onConnectCb,
@@ -40,15 +38,17 @@ export const LoginV2 = ({
   theme = 'light',
 }) => {
   const dispatch = useDispatch();
+  const { isMobile } = useScreen();
   const { disconnect } = useDisconnect();
-  const { chain } = useNetwork();
+  const { chainId } = useHelpers();
+  const { chain: walletConnectedChain } = useNetwork();
+  const { switchNetworkAsync, isLoading } = useSwitchNetwork();
 
-  const chainId = chain?.id;
   const { address, connector } = useAccount({
     onConnect: ({ address: currentAddress }) => {
       if (isAddressProhibited(currentAddress)) {
         disconnect();
-      } else if (onConnectCb) {
+      } else if (onConnectCb && chainId) {
         onConnectCb({
           address: address || currentAddress,
           balance: null,
@@ -62,29 +62,13 @@ export const LoginV2 = ({
   });
 
   // Update the balance
-  const { data: balance } = useBalance({ address });
-  useEffect(() => {
-    if (balance?.formatted) {
-      dispatch(setUserBalance(balance.formatted));
-    }
-  }, [balance?.formatted]);
+  const { data: balance } = useBalance({ address, chainId });
 
   useEffect(() => {
-    // if chainId is undefined, the wallet is not connected & default to mainnet
-    if (chainId === undefined) {
-      /**
-       * wait for 0ms to get the chainId & set it to redux to avoid race condition
-       * and dependent components are loaded once the chainId is set
-       */
-      setTimeout(() => {
-        const tempChainId = getChainId();
-        dispatch(setChainId(tempChainId));
-      }, 0);
-    } else {
-      const tempChainId = getChainIdOrDefaultToMainnet(chainId);
-      dispatch(setChainId(tempChainId));
+    if (chainId && balance?.formatted) {
+      dispatch(setUserBalance(balance.formatted));
     }
-  }, [chainId]);
+  }, [chainId, balance?.formatted]);
 
   useEffect(() => {
     const getData = async () => {
@@ -141,17 +125,30 @@ export const LoginV2 = ({
     }
   }, [address]);
 
-  const screens = useBreakpoint();
+  const onSwitchNetwork = async () => {
+    try {
+      await switchNetworkAsync(chainId);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const hideWrongNetwork = isNil(walletConnectedChain?.id) || walletConnectedChain?.id === chainId;
 
   return (
     <LoginContainer>
-      <Web3NetworkSwitch />
+      {!hideWrongNetwork && (
+        <YellowButton
+          loading={isLoading}
+          type="default"
+          onClick={onSwitchNetwork}
+          icon={<SwapOutlined />}
+        >
+          {!isMobile && 'Switch network'}
+        </YellowButton>
+      )}
       &nbsp;&nbsp;
-      <Web3Button
-        avatar="hide"
-        balance={screens.xs ? 'hide' : 'show'}
-        icon={screens.xs ? 'hide' : 'show'}
-      />
+      <Web3Button avatar="hide" balance="hide" />
       <Web3Modal
         projectId={projectId}
         ethereumClient={ethereumClient}

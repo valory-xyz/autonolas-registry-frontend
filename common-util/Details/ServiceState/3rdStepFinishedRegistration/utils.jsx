@@ -7,8 +7,8 @@ import {
 import {
   RPC_URLS,
   getServiceOwnerMultisigContract,
-  safeMultiSend,
 } from 'common-util/Contracts';
+import { safeMultiSend } from 'common-util/Contracts/addresses';
 import { checkIfGnosisSafe, getEthersProvider } from 'common-util/functions';
 import { isHashApproved } from './helpers';
 

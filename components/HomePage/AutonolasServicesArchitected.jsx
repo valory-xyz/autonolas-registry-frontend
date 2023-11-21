@@ -2,37 +2,36 @@ import { Col, Row, Typography } from 'antd';
 import Link from 'next/link';
 import Image from 'next/image';
 
-import { URL } from 'util/constants';
 import { useScreen } from 'common-util/hooks/useScreen';
-import { useHelpers } from 'common-util/hooks';
+import { useHelpers } from 'common-util/hooks/useHelpers';
 import { ContentRow } from './styles';
 
 const { Title, Text } = Typography;
 
-const LIST = [
-  {
-    type: 'services',
-    title: 'Service owners mint and manage complete agent services',
-    desc: 'They manage how the service is set up. Service owners define the business model of their services, and charge DAOs to use them.',
-    link: URL.SERVICES,
-  },
-  {
-    type: 'agents',
-    title: 'Services are made of agents',
-    desc: 'Services are run by multiple  software agents, each with an independent operator. Developers can author full agents, and these can be composed by service owners.',
-    link: URL.AGENTS,
-  },
-  {
-    type: 'components',
-    title: 'Each agent is made of components',
-    desc: 'Components are smaller blocks of code which can be reused by agent developers.',
-    link: URL.COMPONENTS,
-  },
-];
-
 export const AutonolasServicesArchitected = () => {
-  const { isL1Network } = useHelpers();
+  const { isL1Network, links } = useHelpers();
   const { isMobile } = useScreen();
+
+  const LIST = [
+    {
+      type: 'services',
+      title: 'Service owners mint and manage complete agent services',
+      desc: 'They manage how the service is set up. Service owners define the business model of their services, and charge DAOs to use them.',
+      link: links.SERVICES,
+    },
+    {
+      type: 'agents',
+      title: 'Services are made of agents',
+      desc: 'Services are run by multiple  software agents, each with an independent operator. Developers can author full agents, and these can be composed by service owners.',
+      link: links.AGENTS,
+    },
+    {
+      type: 'components',
+      title: 'Each agent is made of components',
+      desc: 'Components are smaller blocks of code which can be reused by agent developers.',
+      link: links.COMPONENTS,
+    },
+  ];
 
   return (
     <ContentRow className="row-2">

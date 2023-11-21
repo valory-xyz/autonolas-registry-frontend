@@ -1,5 +1,4 @@
 export const URL = {
-  root: '/',
   AGENTS: '/agents',
   COMPONENTS: '/components',
   SERVICES: '/services',
@@ -25,6 +24,13 @@ export const SERVICE_STATE = {
   5: 'Terminated Bonded',
 };
 
+// should not display contracts on homepage nor load with chain Ids
+export const PAGES_TO_LOAD_WITHOUT_CHAINID = [
+  '/disclaimer',
+  '/page-not-found',
+  '/not-legal',
+];
+
 export const HASH_PREFIX = 'f01701220';
 export const HASH_PREFIXES = {
   type1: HASH_PREFIX,
@@ -46,3 +52,9 @@ export const LOCAL_FORK_ID_GNOSIS = 100001;
 export const LOCAL_FORK_ID_POLYGON = 100002;
 
 export const DEFAULT_CHAIN_ID = 1;
+
+// TODO: move to autonolas-frontend-library
+export const EXTRA_COLORS = {
+  YELLOW_PRIMARY: '#eab308', // tailwind orange.500
+  YELLOW_SECONDARY: '#fefce8', // tailwind orange.50
+};

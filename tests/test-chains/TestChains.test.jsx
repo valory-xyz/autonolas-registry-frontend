@@ -16,7 +16,7 @@ import {
   ADDRESSES,
   multisigAddresses,
   multisigSameAddresses,
-} from 'common-util/Contracts';
+} from 'common-util/Contracts/addresses';
 
 const localArtifacts = [
   COMPONENT_REGISTRY_CONTRACT,

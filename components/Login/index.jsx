@@ -1,20 +1,20 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { useAccount, useNetwork, useBalance } from 'wagmi';
+import { useAccount, useBalance } from 'wagmi';
 import {
   setUserAccount,
   setUserBalance,
   setErrorMessage,
-  setChainId,
   setLogout,
 } from 'store/setup/actions';
 import { LoginV2 } from 'common-util/Login';
+import { useHelpers } from 'common-util/hooks';
 
 const Login = () => {
   const dispatch = useDispatch();
+  const { chainId } = useHelpers();
   const { address } = useAccount();
-  const { chain } = useNetwork();
-  const { data } = useBalance({ address, chainId: chain?.id });
+  const { data } = useBalance({ address, chainId });
 
   useEffect(() => {
     if (address) {
@@ -24,12 +24,6 @@ const Login = () => {
       dispatch(setLogout());
     }
   }, [address]);
-
-  useEffect(() => {
-    if (chain?.id) {
-      dispatch(setChainId(chain.id));
-    }
-  }, [chain?.id]);
 
   const onConnect = (response) => {
     dispatch(setUserAccount(response.address));

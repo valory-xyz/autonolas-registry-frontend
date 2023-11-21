@@ -5,21 +5,15 @@ import {
   Footer as CommonFooter,
   getExplorerURL,
 } from '@autonolas/frontend-library';
-import { ADDRESSES } from 'common-util/Contracts';
+
+import { PAGES_TO_LOAD_WITHOUT_CHAINID } from 'util/constants';
+import { ADDRESSES } from 'common-util/Contracts/addresses';
 import { useHelpers } from 'common-util/hooks';
 import Socials from './Socials';
 import { ContractsInfoContainer } from './styles';
 
-// should not display contracts on homepage
-const PATHS_NOT_TO_SHOW = ['/', '/disclaimer', '/not-legal'];
-
 const ContractInfo = () => {
-  const {
-    isValidChainId,
-    chainId,
-    isL1Network,
-    doesNetworkHaveValidServiceManagerToken,
-  } = useHelpers();
+  const { chainId, isL1Network, doesNetworkHaveValidServiceManagerToken } = useHelpers();
   const router = useRouter();
 
   const { pathname } = router;
@@ -87,7 +81,7 @@ const ContractInfo = () => {
 
   return (
     <ContractsInfoContainer>
-      {!PATHS_NOT_TO_SHOW.includes(pathname) && isValidChainId && (
+      {!PAGES_TO_LOAD_WITHOUT_CHAINID.includes(pathname) && (
         <>
           <div>
             <Image
