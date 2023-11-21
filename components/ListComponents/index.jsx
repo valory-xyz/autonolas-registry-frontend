@@ -80,8 +80,6 @@ const ListComponents = () => {
         } catch (e) {
           console.error(e);
           notifyError('Error fetching components');
-        } finally {
-          setIsLoading(false);
         }
       }
     })();

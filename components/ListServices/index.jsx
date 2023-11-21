@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Tabs } from 'antd';
 import { useRouter } from 'next/router';
-import dynamic from 'next/dynamic';
 import { notifyError } from '@autonolas/frontend-library';
 
 import { NAV_TYPES } from 'util/constants';
+import ListTable from 'common-util/List/ListTable';
 import {
   useExtraTabContent,
   getHash,
@@ -18,10 +18,6 @@ import {
   getTotalForAllServices,
   getTotalForMyServices,
 } from './utils';
-
-const ListTable = dynamic(() => import('common-util/List/ListTable'), {
-  ssr: false,
-});
 
 const ALL_SERVICES = 'all-services';
 const MY_SERVICES = 'my-services';
@@ -81,17 +77,17 @@ const ListServices = () => {
           }
         } catch (e) {
           console.error(e);
-          notifyError('Error fetching services count');
+          notifyError('Error fetching services');
         }
       }
     })();
   }, [account, chainId, currentTab, searchValue]);
 
+  // fetch the list (without search)
   useEffect(() => {
     (async () => {
       if (total && currentPage && !searchValue) {
         setIsLoading(true);
-        setCurrentPage(1); // reset the page to 1
 
         try {
           // All services
