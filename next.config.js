@@ -37,7 +37,7 @@ module.exports = {
         headers: [
           {
             key: 'Content-Security-Policy',
-            value: "frame-ancestors 'none';",
+            value: "frame-ancestors 'none'; 'unsafe-inline'; 'unsafe-eval'",
           },
           {
             key: 'X-Content-Type-Options',
