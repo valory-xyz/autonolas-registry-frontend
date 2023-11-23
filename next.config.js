@@ -37,7 +37,7 @@ module.exports = {
         headers: [
           {
             key: 'Content-Security-Policy',
-            value: "frame-ancestors 'none'; default-src 'self';",
+            value: "frame-ancestors 'none'; default-src 'none';  base-uri 'self'; form-action 'self';",
           },
           {
             key: 'X-Content-Type-Options',
