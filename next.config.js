@@ -1,4 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
+// const { nextSafe } = require('next-safe');
 const nextSafe = require('next-safe');
 
 const isDev = process.env.NODE_ENV !== 'production';
@@ -40,7 +41,29 @@ module.exports = {
       {
         source: '/:path*',
         headers: [
-          ...nextSafe({ isDev }),
+          ...nextSafe({
+            isDev,
+            contentSecurityPolicy: {
+              'default-src': "'none'",
+              'script-src': "'self' wss://relay.walletconnect.org",
+              'connect-src': [
+                "'self'",
+                'wss://relay.walletconnect.org',
+                'https://rpc.walletconnect.com/',
+                'https://explorer-api.walletconnect.com/',
+                'https://eth-mainnet.g.alchemy.com/v2/',
+                'https://eth-goerli.g.alchemy.com/v2/',
+                'https://gno.getblock.io/',
+                'https://polygon-mainnet.g.alchemy.com/v2/',
+                'https://polygon-mumbai-bor.publicnode.com/',
+                'https://rpc.chiado.gnosis.gateway.fm/',
+                'https://safe-transaction-mainnet.safe.global/api/v1/',
+                'https://safe-transaction-goerli.safe.global/api/',
+                'https://safe-transaction-gnosis-chain.safe.global/api/',
+                'https://safe-transaction-polygon.safe.global/api/',
+              ],
+            },
+          }),
           {
             key: 'Strict-Transport-Security',
             value: 'max-age=31536000; includeSubDomains',
@@ -50,3 +73,12 @@ module.exports = {
     ];
   },
 };
+
+/**
+ *
+ *
+ * "'self'  https://rpc.walletconnect.com/ https://explorer-api.walletconnect.com https://eth-mainnet.g.alchemy.com/v2/ ttps://eth-goerli.g.alchemy.com/v2/ https://gno.getblock.io/ https://polygon-mainnet.g.alchemy.com/v2 https://polygon-mumbai-bor.publicnode.com https://rpc.chiado.gnosis.gateway.fm https://safe-transaction-mainnet.safe.global/api/v1/ https://safe-transaction-goerli.safe.global/api/ https://safe-transaction-gnosis-chain.safe.global/api/ https://safe-transaction-polygon.safe.global/api/",
+ *
+ *
+ *
+ */
