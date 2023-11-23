@@ -1,3 +1,8 @@
+/* eslint-disable import/no-extraneous-dependencies */
+const nextSafe = require('next-safe');
+
+const isDev = process.env.NODE_ENV !== 'production';
+
 module.exports = {
   reactStrictMode: true,
   compiler: {
@@ -35,18 +40,7 @@ module.exports = {
       {
         source: '/:path*',
         headers: [
-          {
-            key: 'Content-Security-Policy',
-            value: "frame-ancestors 'none'; default-src 'self'; script-src 'self';  base-uri 'self'; form-action 'self';",
-          },
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff',
-          },
-          {
-            key: 'Referrer-Policy',
-            value: 'strict-origin-when-cross-origin',
-          },
+          ...nextSafe({ isDev }),
           {
             key: 'Strict-Transport-Security',
             value: 'max-age=31536000; includeSubDomains',
