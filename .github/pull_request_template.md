@@ -1,10 +1,10 @@
 ## Proposed changes
 
-Describe the big picture of your changes here to communicate to the maintainers why we should accept this pull request.
+<!-- Describe the big picture of your changes here to communicate to the maintainers why we should accept this pull request. -->
 
 ## Fixes
 
-If it fixes a bug or resolves a feature request, be sure to link to that issue.
+<!-- If it fixes a bug or resolves a feature request, be sure to link to that issue. -->
 
 ## Types of changes
 
@@ -26,7 +26,4 @@ _Put an `x` in the boxes that apply._
 - [ ] I've added any necessary documentation as needed.
 - [ ] I've confirmed that any dependent changes have been merged and published in downstream modules.
 - [ ] If the onload page involves contract interaction, I've ensured it is client-side rendered using next/dynamic.
-
-## Further comments
-
-Write here any other comment about the release, if any.
+- [ ] I've updated next.config.js header to include the new URL for secure app interaction

@@ -1,5 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
-// const { nextSafe } = require('next-safe');
 const nextSafe = require('next-safe');
 
 const isDev = process.env.NODE_ENV !== 'production';
@@ -36,6 +34,10 @@ module.exports = {
       permanent: true,
     },
   ],
+  /**
+   * Headers for all routes
+   * @see https://nextjs.org/docs/api-reference/next.config.js/headers
+   */
   async headers() {
     const connectSrc = [
       "'self'",
@@ -68,6 +70,10 @@ module.exports = {
         headers: [
           ...nextSafe({
             isDev,
+            /**
+             * Content Security Policy
+             * @see https://content-security-policy.com/
+             */
             contentSecurityPolicy: {
               'default-src': "'none'",
               'script-src': "'self'",
