@@ -42,6 +42,7 @@ module.exports = {
     const connectSrc = [
       "'self'",
       'https://gateway.autonolas.tech/ipfs/',
+      'https://registry.autonolas.tech/api/',
       'wss://relay.walletconnect.org',
       'https://rpc.walletconnect.com/',
       'https://explorer-api.walletconnect.com/',
