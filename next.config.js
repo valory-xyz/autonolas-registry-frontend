@@ -1,3 +1,4 @@
+// const { nextSafe } = require('next-safe');
 const nextSafe = require('next-safe');
 
 const isDev = process.env.NODE_ENV !== 'production';
@@ -41,7 +42,8 @@ module.exports = {
   async headers() {
     const connectSrc = [
       "'self'",
-      'https://gateway.autonolas.tech/ipfs/',
+      'https://*.autonolas.tech',
+      'https://verify.walletconnect.org/',
       'https://registry.autonolas.tech/api/',
       'wss://relay.walletconnect.org',
       'https://rpc.walletconnect.com/',
@@ -86,7 +88,12 @@ module.exports = {
                 'data:',
               ],
               'style-src': ["'self'", "'unsafe-inline'"],
+              'frame-src': ["'self'", 'https://verify.walletconnect.org/'],
             },
+            permissionsPolicy: {
+              'clipboard-read': "'self'",
+            },
+            permissionsPolicyDirectiveSupport: ['standard'],
           }),
           {
             key: 'Strict-Transport-Security',
