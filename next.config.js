@@ -1,4 +1,3 @@
-// const { nextSafe } = require('next-safe');
 const nextSafe = require('next-safe');
 
 const isDev = process.env.NODE_ENV !== 'production';
@@ -86,7 +85,7 @@ module.exports = {
                 'https://explorer-api.walletconnect.com/w3m/',
                 'data:',
               ],
-              'style-src': ["'self'", "'unsafe-inline'"],
+              'style-src': ["'self'"],
             },
             permissionsPolicyDirectiveSupport: ['standard'],
           }),
