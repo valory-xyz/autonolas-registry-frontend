@@ -42,10 +42,9 @@ module.exports = {
   async headers() {
     const connectSrc = [
       "'self'",
-      'https://*.autonolas.tech',
+      'https://*.autonolas.tech/',
       'https://verify.walletconnect.org/',
-      'https://registry.autonolas.tech/api/',
-      'wss://relay.walletconnect.org',
+      'wss://relay.walletconnect.org/',
       'https://rpc.walletconnect.com/',
       'https://explorer-api.walletconnect.com/',
       'https://eth-mainnet.g.alchemy.com/v2/',
@@ -59,7 +58,7 @@ module.exports = {
       'https://safe-transaction-gnosis-chain.safe.global/api/',
       'https://safe-transaction-polygon.safe.global/api/',
       'wss://relay.walletconnect.com/',
-      'https://vercel.live',
+      'https://vercel.live/',
     ];
 
     if (isDev) {
@@ -83,15 +82,11 @@ module.exports = {
               'connect-src': connectSrc,
               'img-src': [
                 "'self'",
-                'https://gateway.autonolas.tech',
+                'https://*.autonolas.tech/',
                 'https://explorer-api.walletconnect.com/w3m/',
                 'data:',
               ],
               'style-src': ["'self'", "'unsafe-inline'"],
-              'frame-src': ["'self'", 'https://verify.walletconnect.org/'],
-            },
-            permissionsPolicy: {
-              'clipboard-read': "'self'",
             },
             permissionsPolicyDirectiveSupport: ['standard'],
           }),
