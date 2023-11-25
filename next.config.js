@@ -85,7 +85,7 @@ module.exports = {
                 'https://explorer-api.walletconnect.com/w3m/',
                 'data:',
               ],
-              'style-src': ["'self'"],
+              'style-src': ["'self'", "'unsafe-inline'"],
             },
             permissionsPolicyDirectiveSupport: ['standard'],
           }),
