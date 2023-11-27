@@ -1,8 +1,8 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { SwapOutlined } from '@ant-design/icons';
-import { isNil } from 'lodash';
+import { isNil, isNumber } from 'lodash';
 import { Web3Modal, Web3Button } from '@web3modal/react';
 import {
   useAccount,
@@ -125,13 +125,28 @@ export const LoginV2 = ({
     }
   }, [address]);
 
-  const onSwitchNetwork = async () => {
+  const onSwitchNetwork = useCallback(async () => {
     try {
       await switchNetworkAsync(chainId);
     } catch (error) {
       console.error(error);
     }
-  };
+  }, [chainId, switchNetworkAsync]);
+
+  useEffect(() => {
+    if (
+      isNumber(walletConnectedChain?.id)
+      && isNumber(chainId)
+      && walletConnectedChain?.id !== chainId
+    ) {
+      onSwitchNetwork();
+    }
+  }, [chainId, walletConnectedChain?.id, onSwitchNetwork]);
+
+  console.log({
+    walletConnectedChainID: walletConnectedChain?.id,
+    chainId,
+  });
 
   const hideWrongNetwork = isNil(walletConnectedChain?.id) || walletConnectedChain?.id === chainId;
 
