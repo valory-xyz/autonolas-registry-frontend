@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Table, Space, Button } from 'antd';
+import { Table, Space } from 'antd';
 import { AddressLink } from '@autonolas/frontend-library';
 
 import { setAgentInstancesAndOperators } from 'store/service/state/actions';
 import { useScreen } from 'common-util/hooks/useScreen';
 import { useHelpers } from 'common-util/hooks/useHelpers';
+import { SendTransactionButton } from 'common-util/TransactionHelpers/SendTransactionButton';
 import { getAgentInstanceAndOperator, onTerminate } from '../utils';
 
 const Deployed = ({
@@ -42,7 +43,7 @@ const Deployed = ({
     return () => {
       isMounted = false;
     };
-  }, [serviceId, chainId, currentStep]);
+  }, [serviceId, chainId, currentStep, dispatch]);
 
   const handleTerminate = async () => {
     try {
@@ -87,13 +88,13 @@ const Deployed = ({
         )}
         <div>{`Safe contract address: ${multisig}`}</div>
         {getButton(
-          <Button
+          <SendTransactionButton
             onClick={handleTerminate}
             loading={isTerminating}
             {...getOtherBtnProps(4, { isDisabled: !isOwner })}
           >
             Terminate
-          </Button>,
+          </SendTransactionButton>,
           { step: 4 },
         )}
       </Space>

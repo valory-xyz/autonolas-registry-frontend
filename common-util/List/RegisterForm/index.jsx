@@ -5,7 +5,8 @@ import isNil from 'lodash/isNil';
 import { isValidAddress } from '@autonolas/frontend-library';
 
 import { useHelpers } from 'common-util/hooks';
-import IpfsHashGenerationModal from '../IpfsHashGenerationModal';
+import { RegistryForm } from 'common-util/TransactionHelpers/RegistryForm';
+import { IpfsHashGenerationModal } from '../IpfsHashGenerationModal';
 import { DependencyLabel } from '../ListCommon';
 import { FormItemHash } from './helpers';
 import { RegisterFooter, ComplexLabel } from '../styles';
@@ -48,7 +49,7 @@ const RegisterForm = ({
 
   return (
     <>
-      <Form
+      <RegistryForm
         form={form}
         name={FORM_NAME}
         initialValues={{ remember: true }}
@@ -163,7 +164,7 @@ const RegisterForm = ({
             )}
           </RegisterFooter>
         )}
-      </Form>
+      </RegistryForm>
 
       <IpfsHashGenerationModal
         visible={isModalVisible}

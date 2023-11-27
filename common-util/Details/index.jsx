@@ -8,7 +8,7 @@ import { notifyError, Loader } from '@autonolas/frontend-library';
 
 import { NAV_TYPES } from 'util/constants';
 import { useHelpers } from 'common-util/hooks';
-import IpfsHashGenerationModal from '../List/IpfsHashGenerationModal';
+import { IpfsHashGenerationModal } from '../List/IpfsHashGenerationModal';
 import { NftImage } from './NFTImage';
 import { ServiceState } from './ServiceState';
 import {

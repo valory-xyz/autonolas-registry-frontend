@@ -7,6 +7,8 @@ import {
 import { notifyError, notifySuccess } from '@autonolas/frontend-library';
 
 import { HASH_PREFIXES } from 'util/constants';
+import { useHelpers } from 'common-util/hooks';
+import { notifyWrongNetwork } from 'common-util/functions';
 import { getIpfsHashHelper } from './helpers';
 import { CustomModal } from '../styles';
 
@@ -33,9 +35,15 @@ export const getBase16Validator = (value, hashType = HASH_PREFIXES.type1) => {
   return Promise.reject(new Error('Please input a valid hash'));
 };
 
-const IpfsModal = ({
-  visible, type, onUpdateHash, handleCancel, callback,
+export const IpfsHashGenerationModal = ({
+  visible,
+  type,
+  onUpdateHash,
+  handleCancel,
+  callback,
 }) => {
+  const { isConnectedToWrongNetwork } = useHelpers();
+
   const [form] = Form.useForm();
   const [isHashLoading, setIsHashLoading] = useState(false);
   const [hashType, setHashType] = useState(HASH_PREFIXES.type1);
@@ -50,7 +58,7 @@ const IpfsModal = ({
 
   const getNewHash = async (values) => {
     try {
-      setIsHashLoading(true); // loading on!
+      setIsHashLoading(true);
 
       const hash = await getIpfsHashHelper(values, hashType);
       if (callback) callback(hash);
@@ -61,7 +69,7 @@ const IpfsModal = ({
       console.error(error);
       notifyError('Error generating hash');
     } finally {
-      setIsHashLoading(false); // off the loader and close the `Modal`
+      setIsHashLoading(false);
     }
 
     return null;
@@ -74,6 +82,11 @@ const IpfsModal = ({
 
   const handleUpdate = async () => {
     try {
+      if (isConnectedToWrongNetwork) {
+        notifyWrongNetwork();
+        return;
+      }
+
       const values = form.validateFields();
       const hash = await getNewHash(values);
       await onUpdateHash(hash);
@@ -207,7 +220,7 @@ const IpfsModal = ({
   );
 };
 
-IpfsModal.propTypes = {
+IpfsHashGenerationModal.propTypes = {
   visible: PropTypes.bool.isRequired,
   type: PropTypes.string,
   onUpdateHash: PropTypes.func,
@@ -215,10 +228,8 @@ IpfsModal.propTypes = {
   callback: PropTypes.func,
 };
 
-IpfsModal.defaultProps = {
+IpfsHashGenerationModal.defaultProps = {
   type: '',
   onUpdateHash: null,
   callback: null,
 };
-
-export default IpfsModal;

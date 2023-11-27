@@ -24,7 +24,7 @@ const { Title } = Typography;
 
 const MintService = () => {
   const router = useRouter();
-  const { account, doesNetworkHaveValidServiceManagerToken } = useHelpers();
+  const { account, chainName, doesNetworkHaveValidServiceManagerToken } = useHelpers();
 
   const [isMinting, setIsMinting] = useState(false);
   const [error, setError] = useState(null);
@@ -86,7 +86,7 @@ const MintService = () => {
     }
   };
 
-  const handleCancel = () => router.push('/services');
+  const handleCancel = () => router.push(`/${chainName}/services`);
 
   return (
     <>

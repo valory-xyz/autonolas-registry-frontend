@@ -14,13 +14,13 @@ import { FormContainer } from '../styles';
 const { Title } = Typography;
 
 const MintAgent = () => {
-  const { account } = useHelpers();
+  const { account, chainName } = useHelpers();
   const [isMinting, setIsMinting] = useState(false);
   const [error, setError] = useState(null);
   const [information, setInformation] = useState(null);
   const router = useRouter();
 
-  const handleCancel = () => router.push('/agents');
+  const handleCancel = () => router.push(`/${chainName}/agents`);
 
   const handleSubmit = async (values) => {
     if (account) {

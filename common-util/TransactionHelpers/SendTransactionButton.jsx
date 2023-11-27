@@ -1,41 +1,39 @@
-import { useCallback } from 'react';
-import { Button, notification } from 'antd';
+import { Button } from 'antd';
 import { isFunction } from 'lodash';
 import PropTypes from 'prop-types';
-import { useHelpers } from './hooks';
+import { useHelpers } from '../hooks';
+import { notifyWrongNetwork } from '../functions';
 
 /**
  * @param {import('antd').ButtonProps}
  * @returns {Button}
  */
-export const SendTransaction = ({ onClick, children, ...rest }) => {
+export const SendTransactionButton = ({ onClick, children, ...rest }) => {
   const { isConnectedToWrongNetwork } = useHelpers();
 
   // if connected to wrong network, then switch network else call onClick
-  const handleClick = useCallback(async () => {
+  const handleClick = async (e) => {
     if (isConnectedToWrongNetwork) {
-      notification.warning({
-        message: 'Please switch to the correct network and try again',
-      });
+      notifyWrongNetwork();
     } else if (isFunction(onClick)) {
-      onClick();
+      onClick(e);
     }
-  }, [isConnectedToWrongNetwork]);
+  };
 
   return (
-    <Button onClick={handleClick} {...rest}>
+    <Button {...rest} onClick={handleClick}>
       {children}
     </Button>
   );
 };
 
-SendTransaction.propTypes = {
+SendTransactionButton.propTypes = {
   loading: PropTypes.bool,
   children: PropTypes.node,
   onClick: PropTypes.func,
 };
 
-SendTransaction.defaultProps = {
+SendTransactionButton.defaultProps = {
   loading: false,
   children: null,
   onClick: null,

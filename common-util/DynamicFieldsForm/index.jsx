@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { Button, Form, Typography } from 'antd';
 
 import { useHelpers } from 'common-util/hooks';
+import { RegistryForm } from 'common-util/TransactionHelpers/RegistryForm';
 import { FormList } from './FormList';
 import { DynamicFormContainer } from './styles';
 
@@ -29,7 +30,7 @@ export const DynamicFieldsForm = ({
 
   return (
     <DynamicFormContainer>
-      <Form
+      <RegistryForm
         form={form}
         name="dynamic_form_complex"
         onFinish={onFinish}
@@ -57,7 +58,7 @@ export const DynamicFieldsForm = ({
             </Text>
           )}
         </Form.Item>
-      </Form>
+      </RegistryForm>
     </DynamicFormContainer>
   );
 };

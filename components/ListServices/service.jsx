@@ -29,7 +29,7 @@ const { Title } = Typography;
 
 const Service = ({ account }) => {
   const router = useRouter();
-  const { chainId, doesNetworkHaveValidServiceManagerToken } = useHelpers();
+  const { chainId, chainName, doesNetworkHaveValidServiceManagerToken } = useHelpers();
 
   const [isAllLoading, setAllLoading] = useState(false);
   const [serviceInfo, setServiceInfo] = useState({});
@@ -107,7 +107,7 @@ const Service = ({ account }) => {
     }
   };
 
-  const handleCancel = () => router.push('/services');
+  const handleCancel = () => router.push(`/${chainName}/services`);
 
   return (
     <>
