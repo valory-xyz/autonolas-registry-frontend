@@ -22,7 +22,7 @@
     "ecmaVersion": 2018,
     "sourceType": "module"
   },
-  "plugins": ["react", "jsx-a11y", "import", "jest"],
+  "plugins": ["react", "jsx-a11y", "import", "jest", "react-hooks"],
   "rules": {
     "react/react-in-jsx-scope": "off",
     "react/jsx-props-no-spreading": "off",
@@ -50,6 +50,8 @@
     ],
     "react/jsx-no-useless-fragment": [2, { "allowExpressions": true }],
     "no-untyped-mock-factory": "off",
-    "jest/no-untyped-mock-factory": "off"
+    "jest/no-untyped-mock-factory": "off",
+    "react-hooks/rules-of-hooks": "error", 
+    "react-hooks/exhaustive-deps": "warn" 
   }
 }
