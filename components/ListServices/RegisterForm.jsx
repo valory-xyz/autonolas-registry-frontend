@@ -13,6 +13,7 @@ import IpfsHashGenerationModal from 'common-util/List/IpfsHashGenerationModal';
 import { useHelpers } from 'common-util/hooks';
 import { ComplexLabel } from 'common-util/List/styles';
 import { RegisterFooter } from 'components/styles';
+import { notifyWrongNetwork } from 'common-util/functions';
 
 export const FORM_NAME = 'serviceRegisterForm';
 
@@ -49,7 +50,11 @@ const RegisterForm = ({
   handleSubmit,
   handleCancel,
 }) => {
-  const { account, doesNetworkHaveValidServiceManagerToken } = useHelpers();
+  const {
+    account,
+    isConnectedToWrongNetwork,
+    doesNetworkHaveValidServiceManagerToken,
+  } = useHelpers();
 
   const [form] = Form.useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -141,7 +146,7 @@ const RegisterForm = ({
         layout="vertical"
         fields={fields}
         onFieldsChange={(_, allFields) => setFields(allFields)}
-        onFinish={onFinish}
+        onFinish={isConnectedToWrongNetwork ? notifyWrongNetwork : onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
