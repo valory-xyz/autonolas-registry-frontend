@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { useCallback } from 'react';
 import { Form } from 'antd';
 import PropTypes from 'prop-types';
 import { isFunction } from 'lodash';
@@ -14,16 +12,13 @@ import { notifyWrongNetwork } from '../functions';
 export const RegistryForm = ({ onFinish, children, ...rest }) => {
   const { isConnectedToWrongNetwork } = useHelpers();
 
-  const handleFinish = useCallback(
-    async (...params) => {
-      if (isConnectedToWrongNetwork) {
-        notifyWrongNetwork();
-      } else if (isFunction(onFinish)) {
-        onFinish(...params);
-      }
-    },
-    [isConnectedToWrongNetwork],
-  );
+  const handleFinish = async (...params) => {
+    if (isConnectedToWrongNetwork) {
+      notifyWrongNetwork();
+    } else if (isFunction(onFinish)) {
+      onFinish(...params);
+    }
+  };
 
   return (
     <Form {...rest} onFinish={handleFinish}>

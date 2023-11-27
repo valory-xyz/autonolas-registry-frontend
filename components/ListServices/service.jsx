@@ -41,7 +41,7 @@ const Service = ({ account }) => {
 
   useEffect(() => {
     (async () => {
-      if (account) {
+      if (account && id) {
         try {
           setAllLoading(true);
           setServiceInfo({});
@@ -61,7 +61,7 @@ const Service = ({ account }) => {
         }
       }
     })();
-  }, [account, chainId, doesNetworkHaveValidServiceManagerToken]);
+  }, [account, chainId, id, doesNetworkHaveValidServiceManagerToken]);
 
   /* helper functions */
   const handleSubmit = (values) => {
