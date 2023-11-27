@@ -2,7 +2,7 @@ import { useCallback, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { SwapOutlined } from '@ant-design/icons';
-import { isNil, isNumber } from 'lodash';
+import { isNil } from 'lodash';
 import { Web3Modal, Web3Button } from '@web3modal/react';
 import {
   useAccount,
@@ -40,7 +40,7 @@ export const LoginV2 = ({
   const dispatch = useDispatch();
   const { isMobile } = useScreen();
   const { disconnect } = useDisconnect();
-  const { chainId } = useHelpers();
+  const { chainId, isConnectedToWrongNetwork } = useHelpers();
   const { chain: walletConnectedChain } = useNetwork();
   const { switchNetworkAsync, isLoading } = useSwitchNetwork();
 
@@ -114,7 +114,7 @@ export const LoginV2 = ({
     if (connector && !isAddressProhibited(address)) {
       getData();
     }
-  }, [connector]);
+  }, [address, connector]);
 
   // Disconnect if the address is prohibited
   useEffect(() => {
@@ -134,19 +134,10 @@ export const LoginV2 = ({
   }, [chainId, switchNetworkAsync]);
 
   useEffect(() => {
-    if (
-      isNumber(walletConnectedChain?.id)
-      && isNumber(chainId)
-      && walletConnectedChain?.id !== chainId
-    ) {
+    if (isConnectedToWrongNetwork) {
       onSwitchNetwork();
     }
-  }, [chainId, walletConnectedChain?.id, onSwitchNetwork]);
-
-  console.log({
-    walletConnectedChainID: walletConnectedChain?.id,
-    chainId,
-  });
+  }, [isConnectedToWrongNetwork, onSwitchNetwork]);
 
   const hideWrongNetwork = isNil(walletConnectedChain?.id) || walletConnectedChain?.id === chainId;
 
