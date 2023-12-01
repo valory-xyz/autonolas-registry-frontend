@@ -77,7 +77,7 @@ module.exports = {
              */
             contentSecurityPolicy: {
               'default-src': "'none'",
-              'script-src': ["'self'", 'https://verify.walletconnect.org/'],
+              'script-src': ["'self'", 'https://verify.walletconnect.org/', 'https://vercel.live/'],
               'connect-src': connectSrc,
               'img-src': [
                 "'self'",
