@@ -1,4 +1,6 @@
+/* eslint-disable import/no-extraneous-dependencies */
 const nextSafe = require('next-safe');
+// const { nextSafe } = require('next-safe');
 
 const isDev = process.env.NODE_ENV !== 'production';
 
@@ -43,6 +45,7 @@ module.exports = {
       "'self'",
       'https://*.autonolas.tech/',
       'https://verify.walletconnect.org/',
+      'https://verify.walletconnect.com/',
       'https://rpc.walletconnect.com/',
       'wss://relay.walletconnect.org/',
       'wss://relay.walletconnect.com/',
@@ -77,15 +80,28 @@ module.exports = {
              */
             contentSecurityPolicy: {
               'default-src': "'none'",
-              'script-src': ["'self'", 'https://verify.walletconnect.org/', 'https://vercel.live/'],
+              'script-src': ["'self'", 'https://verify.walletconnect.com/', 'https://vercel.live/'],
               'connect-src': connectSrc,
               'img-src': [
                 "'self'",
                 'https://*.autonolas.tech/',
                 'https://explorer-api.walletconnect.com/w3m/',
+                'https://verify.walletconnect.org/',
+                'https://verify.walletconnect.com/',
                 'data:',
               ],
               'style-src': ["'self'", "'unsafe-inline'"],
+              'child-src': ["'self'", 'https://verify.walletconnect.com/', 'https://verify.walletconnect.org/'],
+              'base-uri': ["'self'", 'https://verify.walletconnect.com/', 'https://verify.walletconnect.org/'],
+              'font-src': ["'self'", 'https://verify.walletconnect.com/', 'https://verify.walletconnect.org/'],
+              'form-action': ["'self'", 'https://verify.walletconnect.com/', 'https://verify.walletconnect.org/'],
+              'frame-ancestors': ["'self'", 'https://verify.walletconnect.com/', 'https://verify.walletconnect.org/'],
+              'frame-src': ["'self'", 'https://verify.walletconnect.com/', 'https://verify.walletconnect.org/'],
+              'manifest-src': ["'self'", 'https://verify.walletconnect.com/', 'https://verify.walletconnect.org/'],
+              'media-src': ["'self'", 'https://verify.walletconnect.com/', 'https://verify.walletconnect.org/'],
+              'object-src': ["'self'", 'https://verify.walletconnect.com/', 'https://verify.walletconnect.org/'],
+              'prefetch-src': ["'self'", 'https://verify.walletconnect.com/', 'https://verify.walletconnect.org/'],
+              'worker-src': ["'self'", 'https://verify.walletconnect.com/', 'https://verify.walletconnect.org/'],
             },
             permissionsPolicyDirectiveSupport: ['standard'],
           }),
