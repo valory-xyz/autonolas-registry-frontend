@@ -77,7 +77,7 @@ module.exports = {
              */
             contentSecurityPolicy: {
               'default-src': "'none'",
-              'script-src': "'self'",
+              'script-src': ["'self'", 'https://verify.walletconnect.org/'],
               'connect-src': connectSrc,
               'img-src': [
                 "'self'",
