@@ -6,7 +6,9 @@ import {
   getIsValidChainId as getIsValidChainIdFn,
   sendTransaction as sendTransactionFn,
   isL1OnlyNetwork as isL1OnlyNetworkFn,
+  notifyWarning,
 } from '@autonolas/frontend-library';
+
 import { RPC_URLS } from 'common-util/Contracts';
 import { SUPPORTED_CHAINS } from 'common-util/Login';
 import { SUPPORTED_CHAINS_MORE_INFO } from 'common-util/Login/config';
@@ -128,4 +130,8 @@ const doesPathIncludesAgents = (path) => !!path?.includes('agents');
 export const doesPathIncludesComponentsOrAgents = (path) => {
   if (!path) return false;
   return doesPathIncludesComponents(path) || doesPathIncludesAgents(path);
+};
+
+export const notifyWrongNetwork = () => {
+  notifyWarning('Please switch to the correct network and try again');
 };

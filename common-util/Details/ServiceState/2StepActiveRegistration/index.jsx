@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Divider, Typography } from 'antd';
+import { Divider, Typography } from 'antd';
 import {
   convertToEth,
   notifyError,
@@ -8,6 +8,7 @@ import {
 } from '@autonolas/frontend-library';
 
 import { useHelpers } from 'common-util/hooks';
+import { SendTransactionButton } from 'common-util/TransactionHelpers/SendTransactionButton';
 import {
   getBonds,
   getTokenBondRequest,
@@ -70,7 +71,13 @@ const ActiveRegistration = ({
     return () => {
       isMounted = false;
     };
-  }, [chainId, doesNetworkHaveValidServiceManagerToken, serviceId, dataSource]);
+  }, [
+    chainId,
+    doesNetworkHaveValidServiceManagerToken,
+    serviceId,
+    dataSource,
+    isEthToken,
+  ]);
 
   const handleStep2RegisterAgents = async () => {
     const trimArray = (string) => (string || [])
@@ -100,8 +107,8 @@ const ActiveRegistration = ({
 
       return address;
     });
-    const agentInstances = trimArray(instances || []);
 
+    const agentInstances = trimArray(instances || []);
     try {
       setIsRegistering(true);
 
@@ -167,17 +174,17 @@ const ActiveRegistration = ({
       </Text>
 
       {/* "Register agents" can be clicked by anyone */}
-      <Button
+      <SendTransactionButton
         onClick={handleStep2RegisterAgents}
         {...btnProps}
         loading={isRegistering}
         disabled={btnProps.disabled || !isValidAgentAddress}
       >
         Register Agents
-      </Button>
+      </SendTransactionButton>
       <Divider />
       {getButton(
-        <Button
+        <SendTransactionButton
           onClick={async () => {
             try {
               setIsTerminating(true);
@@ -192,7 +199,7 @@ const ActiveRegistration = ({
           {...getOtherBtnProps(2, { isDisabled: !isOwner })}
         >
           Terminate
-        </Button>,
+        </SendTransactionButton>,
         { step: 2 },
       )}
     </div>

@@ -29,7 +29,7 @@ const { Title } = Typography;
 
 const Service = ({ account }) => {
   const router = useRouter();
-  const { chainId, doesNetworkHaveValidServiceManagerToken } = useHelpers();
+  const { chainId, chainName, doesNetworkHaveValidServiceManagerToken } = useHelpers();
 
   const [isAllLoading, setAllLoading] = useState(false);
   const [serviceInfo, setServiceInfo] = useState({});
@@ -41,7 +41,7 @@ const Service = ({ account }) => {
 
   useEffect(() => {
     (async () => {
-      if (account) {
+      if (account && id) {
         try {
           setAllLoading(true);
           setServiceInfo({});
@@ -61,7 +61,7 @@ const Service = ({ account }) => {
         }
       }
     })();
-  }, [account, chainId, doesNetworkHaveValidServiceManagerToken]);
+  }, [account, chainId, id, doesNetworkHaveValidServiceManagerToken]);
 
   /* helper functions */
   const handleSubmit = (values) => {
@@ -107,7 +107,7 @@ const Service = ({ account }) => {
     }
   };
 
-  const handleCancel = () => router.push('/services');
+  const handleCancel = () => router.push(`/${chainName}/services`);
 
   return (
     <>

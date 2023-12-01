@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Button } from 'antd';
 import { notifySuccess } from '@autonolas/frontend-library';
 
 import { useHelpers } from 'common-util/hooks';
+import { SendTransactionButton } from 'common-util/TransactionHelpers/SendTransactionButton';
 import { onStep5Unbond } from '../utils';
 
 const Unbond = ({
@@ -38,9 +38,13 @@ const Unbond = ({
   );
 
   return getButton(
-    <Button onClick={onUnbond} loading={isUnbonding} {...getOtherBtnProps(5)}>
+    <SendTransactionButton
+      onClick={onUnbond}
+      loading={isUnbonding}
+      {...getOtherBtnProps(5)}
+    >
       Unbond
-    </Button>,
+    </SendTransactionButton>,
     {
       step: 5,
       // TODO: only operator can do it (remove the true condition)

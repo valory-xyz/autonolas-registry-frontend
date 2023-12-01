@@ -12,6 +12,8 @@ import {
   multisigSameAddresses,
 } from 'common-util/Contracts/addresses';
 import { useHelpers } from 'common-util/hooks';
+import { RegistryForm } from 'common-util/TransactionHelpers/RegistryForm';
+import { SendTransactionButton } from 'common-util/TransactionHelpers/SendTransactionButton';
 import { getServiceAgentInstances, onStep3Deploy } from '../utils';
 import { handleMultisigSubmit } from './utils';
 import { RadioLabel } from '../styles';
@@ -129,7 +131,7 @@ const StepThreePayload = ({
       {/* form should be shown only if 1st radio button is selected
       2nd radio button means everything will be handled by the backend */}
       {radioValue === isMultiSig && (
-        <Form
+        <RegistryForm
           form={form}
           layout="vertical"
           name="mult-sig-form"
@@ -219,14 +221,14 @@ const StepThreePayload = ({
               { step: STEP },
             )}
           </Form.Item>
-        </Form>
+        </RegistryForm>
       )}
 
       {/* submits the data for 2nd radio button (ie. 2nd multisig option) */}
       {radioValue !== isMultiSig && (
         <div className="mb-12 mt-8">
           {getButton(
-            <Button
+            <SendTransactionButton
               type="primary"
               loading={isSubmitting}
               onClick={async () => {
@@ -253,7 +255,7 @@ const StepThreePayload = ({
               })}
             >
               Submit
-            </Button>,
+            </SendTransactionButton>,
             { step: STEP },
           )}
         </div>
@@ -261,7 +263,7 @@ const StepThreePayload = ({
 
       <Divider className="m-0" />
       {getButton(
-        <Button
+        <SendTransactionButton
           onClick={async () => {
             try {
               setIsTerminating(true);
@@ -277,7 +279,7 @@ const StepThreePayload = ({
           {...getOtherBtnProps(STEP, { isDisabled: !isOwner })}
         >
           Terminate
-        </Button>,
+        </SendTransactionButton>,
         { step: STEP },
       )}
     </div>

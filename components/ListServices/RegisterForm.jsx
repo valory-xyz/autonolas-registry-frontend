@@ -9,10 +9,11 @@ import { isValidAddress } from '@autonolas/frontend-library';
 import { DEFAULT_SERVICE_CREATION_ETH_TOKEN } from 'util/constants';
 import { commaMessage, DependencyLabel } from 'common-util/List/ListCommon';
 import { FormItemHash } from 'common-util/List/RegisterForm/helpers';
-import IpfsHashGenerationModal from 'common-util/List/IpfsHashGenerationModal';
+import { IpfsHashGenerationModal } from 'common-util/List/IpfsHashGenerationModal';
 import { useHelpers } from 'common-util/hooks';
 import { ComplexLabel } from 'common-util/List/styles';
 import { RegisterFooter } from 'components/styles';
+import { RegistryForm } from 'common-util/TransactionHelpers/RegistryForm';
 
 export const FORM_NAME = 'serviceRegisterForm';
 
@@ -134,7 +135,7 @@ const RegisterForm = ({
 
   return (
     <>
-      <Form
+      <RegistryForm
         name={FORM_NAME}
         form={form}
         initialValues={{ remember: true }}
@@ -347,7 +348,7 @@ const RegisterForm = ({
             )}
           </RegisterFooter>
         )}
-      </Form>
+      </RegistryForm>
 
       <IpfsHashGenerationModal
         visible={isModalVisible}

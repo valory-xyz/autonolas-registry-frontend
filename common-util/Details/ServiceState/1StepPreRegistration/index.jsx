@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
-import { Button, Space } from 'antd';
+import { Space } from 'antd';
 import { isLocalNetwork } from '@autonolas/frontend-library';
 
 import { useHelpers } from 'common-util/hooks';
+import { SendTransactionButton } from 'common-util/TransactionHelpers/SendTransactionButton';
 import {
   checkAndApproveToken,
   mintTokenRequest,
@@ -65,22 +66,22 @@ const PreRegistration = ({
     <div className="step-1-pre-registration">
       <Space>
         {getButton(
-          <Button
+          <SendTransactionButton
             onClick={handleStep1Registration}
             loading={isActivating}
             {...getOtherBtnProps(1, { isDisabled: !isOwner })}
           >
             Activate Registration
-          </Button>,
+          </SendTransactionButton>,
           { step: 1 },
         )}
         {getButton(
-          <Button
+          <SendTransactionButton
             onClick={handleStep1Update}
             {...getOtherBtnProps(1, { isDisabled: !isOwner })}
           >
             Update
-          </Button>,
+          </SendTransactionButton>,
           { step: 1 },
         )}
       </Space>
