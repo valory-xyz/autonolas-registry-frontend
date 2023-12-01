@@ -80,14 +80,12 @@ module.exports = {
              */
             contentSecurityPolicy: {
               'default-src': "'none'",
-              'script-src': ["'self'", 'https://verify.walletconnect.com/', 'https://vercel.live/'],
+              'script-src': ["'self'", 'https://vercel.live/'],
               'connect-src': connectSrc,
               'img-src': [
                 "'self'",
                 'https://*.autonolas.tech/',
                 'https://explorer-api.walletconnect.com/w3m/',
-                'https://verify.walletconnect.org/',
-                'https://verify.walletconnect.com/',
                 'data:',
               ],
               'style-src': ["'self'", "'unsafe-inline'"],
