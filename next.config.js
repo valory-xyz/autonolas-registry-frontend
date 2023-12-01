@@ -1,6 +1,4 @@
-/* eslint-disable import/no-extraneous-dependencies */
 const nextSafe = require('next-safe');
-// const { nextSafe } = require('next-safe');
 
 const isDev = process.env.NODE_ENV !== 'production';
 
