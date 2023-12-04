@@ -43,8 +43,10 @@ module.exports = {
       "'self'",
       'https://*.autonolas.tech/',
       'https://verify.walletconnect.org/',
-      'wss://relay.walletconnect.org/',
+      'https://verify.walletconnect.com/',
       'https://rpc.walletconnect.com/',
+      'wss://relay.walletconnect.org/',
+      'wss://relay.walletconnect.com/',
       'https://explorer-api.walletconnect.com/',
       'https://eth-mainnet.g.alchemy.com/v2/',
       'https://eth-goerli.g.alchemy.com/v2/',
@@ -56,7 +58,6 @@ module.exports = {
       'https://safe-transaction-goerli.safe.global/api/',
       'https://safe-transaction-gnosis-chain.safe.global/api/',
       'https://safe-transaction-polygon.safe.global/api/',
-      'wss://relay.walletconnect.com/',
       'https://vercel.live/',
     ];
 
@@ -77,7 +78,7 @@ module.exports = {
              */
             contentSecurityPolicy: {
               'default-src': "'none'",
-              'script-src': "'self'",
+              'script-src': ["'self'", 'https://vercel.live/'],
               'connect-src': connectSrc,
               'img-src': [
                 "'self'",
@@ -86,6 +87,7 @@ module.exports = {
                 'data:',
               ],
               'style-src': ["'self'", "'unsafe-inline'"],
+              'frame-src': ["'self'", 'https://verify.walletconnect.com/', 'https://verify.walletconnect.org/'],
             },
             permissionsPolicyDirectiveSupport: ['standard'],
           }),
