@@ -43,6 +43,11 @@ module.exports = {
       'https://verify.walletconnect.org',
       'https://verify.walletconnect.com',
     ];
+    const scriptSha256 = [
+      "'sha256-YS3QNE5QXiUUIM5MeZS0LnchkXKr//rinpZZO+rodCY='",
+      "'sha256-avpYSMhuJi9WJxyEjI6GYMe1nMx5fWui+MNt0GpU354='",
+      "'sha256-7WNRe20drB93fDeE6wXp+mRpZz4QnQJ0MS4oT5S5bi4='",
+    ];
     const connectSrc = [
       "'self'",
       ...walletconnectSrc,
@@ -83,13 +88,7 @@ module.exports = {
              */
             contentSecurityPolicy: {
               'default-src': "'none'",
-              'script-src': [
-                "'self'",
-                "'unsafe-inline'",
-                'sha256-YS3QNE5QXiUUIM5MeZS0LnchkXKr//rinpZZO+rodCY=',
-                'sha256-avpYSMhuJi9WJxyEjI6GYMe1nMx5fWui+MNt0GpU354=',
-                'sha256-7WNRe20drB93fDeE6wXp+mRpZz4QnQJ0MS4oT5S5bi4=',
-              ],
+              'script-src': ["'self'", ...scriptSha256],
               'connect-src': connectSrc,
               'img-src': [
                 "'self'",
