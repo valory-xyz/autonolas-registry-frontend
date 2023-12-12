@@ -82,7 +82,7 @@ module.exports = {
              */
             contentSecurityPolicy: {
               'default-src': "'none'",
-              'script-src': ["'self'", "'unsafe-inline'"],
+              'script-src': ["'self'", "'unsafe-inline'", 'https://vercel.live/'],
               'connect-src': connectSrc,
               'img-src': [
                 "'self'",
