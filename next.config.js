@@ -63,7 +63,6 @@ module.exports = {
       'https://safe-transaction-gnosis-chain.safe.global/api/',
       'https://safe-transaction-polygon.safe.global/api/',
       'https://vercel.live/',
-      'sha256-avpYSMhuJi9WJxyEjI6GYMe1nMx5fWui+MNt0GpU354=',
     ];
 
     if (isDev) {
