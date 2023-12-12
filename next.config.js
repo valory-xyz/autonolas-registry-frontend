@@ -40,10 +40,8 @@ module.exports = {
    */
   async headers() {
     const walletconnectSrc = [
-      'https://verify.walletconnect.com/',
-      'https://verify.walletconnect.org/',
-      'moz-extension://*',
-      'moz-extension://79337df8-fa6f-4480-8634-43d7130df45d/contentscript.js',
+      'https://verify.walletconnect.org',
+      'https://verify.walletconnect.com',
     ];
     const connectSrc = [
       "'self'",
@@ -87,32 +85,21 @@ module.exports = {
               'default-src': "'none'",
               'script-src': [
                 "'self'",
-                // '"*"',
                 "'unsafe-inline'",
-                'sha256-YS3QNE5QXiUUIM5MeZS0LnchkXKr//rinpZZO+rodCY=', 'sha256-avpYSMhuJi9WJxyEjI6GYMe1nMx5fWui+MNt0GpU354=', 'sha256-7WNRe20drB93fDeE6wXp+mRpZz4QnQJ0MS4oT5S5bi4=',
+                'sha256-YS3QNE5QXiUUIM5MeZS0LnchkXKr//rinpZZO+rodCY=',
+                'sha256-avpYSMhuJi9WJxyEjI6GYMe1nMx5fWui+MNt0GpU354=',
+                'sha256-7WNRe20drB93fDeE6wXp+mRpZz4QnQJ0MS4oT5S5bi4=',
               ],
-              // 'script-src': [
-              //   "'self'",
-              //   'https://vercel.live/',
-              //   ...walletconnectSrc,
-              //   'moz-extension://*',
-              //   'moz-extension://79337df8-fa6f-4480-8634-43d7130df45d/contentscript.js',
-              // ],
               'connect-src': connectSrc,
               'img-src': [
                 "'self'",
                 'data:',
                 'https://*.autonolas.tech/',
                 'https://explorer-api.walletconnect.com/w3m/',
-                'contentscript.js',
                 ...walletconnectSrc,
               ],
               'style-src': ["'self'", "'unsafe-inline'"],
-              'frame-src': [
-                "'self'",
-                ...walletconnectSrc,
-                'moz-extension://79337df8-fa6f-4480-8634-43d7130df45d/contentscript.js',
-              ],
+              'frame-src': ["'self'", ...walletconnectSrc],
             },
             permissionsPolicyDirectiveSupport: ['standard'],
           }),
@@ -125,8 +112,3 @@ module.exports = {
     ];
   },
 };
-
-/**
- * https://github.com/MetaMask/metamask-extension/issues/3133
- *
- */
