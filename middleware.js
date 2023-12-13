@@ -1,4 +1,4 @@
-import { NextResponse, userAgent } from 'next/server';
+import { NextResponse, NextRequest, userAgent } from 'next/server';
 import nextSafe from 'next-safe';
 import prohibitedCountries from './data/prohibited-countries.json';
 
@@ -87,15 +87,15 @@ const cspHeaderMiddleware = async (request) => {
   const browserName = userAgent(request)?.browser.name;
   const cspHeaders = getCspHeader(browserName);
 
-  const requestHeaders = new Headers(request);
+  const requestHeaders = new NextRequest(request);
   cspHeaders.forEach((header) => {
     const { key, value } = header;
-    requestHeaders.set(key, value);
+    requestHeaders.headers.set(key, value);
   });
 
   const response = NextResponse.next({
     request: {
-      headers: requestHeaders,
+      headers: requestHeaders.headers,
     },
   });
 
