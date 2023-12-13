@@ -1,6 +1,5 @@
-import { NextResponse, userAgent } from 'next/server';
+import { NextResponse, NextRequest, userAgent } from 'next/server';
 import nextSafe from 'next-safe';
-import { isArray } from 'lodash';
 import prohibitedCountries from './data/prohibited-countries.json';
 
 const prohibitedCountriesCode = Object.values(prohibitedCountries);
@@ -79,7 +78,7 @@ const getCspHeader = (browserName) => {
   return headers;
 };
 
-const getRequestAndResponseAfterApplyingCsp = (req) => {
+const cspHeaderMiddleware = async (req) => {
   const browserName = userAgent(req)?.browser.name;
 
   // const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
@@ -102,34 +101,39 @@ const getRequestAndResponseAfterApplyingCsp = (req) => {
   //   .replace(/\s{2,}/g, ' ')
   //   .trim();
 
-  const requestHeaders = new Headers(req.headers);
+  const requestHeaders = new NextRequest(req);
   // console.log(requestHeaders.set, '--->>>');
   cspHeaders.forEach((header) => {
     const { key, value } = header;
     // console.log(typeof key, key);
     // console.log(key, value);
-    requestHeaders.set(key, value);
+    requestHeaders.headers.set(key, value);
     // requestHeaders.set('Random', 'mohan');
   });
 
-  console.log(requestHeaders);
+  // console.log(requestHeaders);
 
   // requestHeaders.set(
   //   'Content-Security-Policy',
   //   contentSecurityPolicyHeaderValue,
   // );
 
-  const response = NextResponse;
-  cspHeaders.forEach((header) => {
-    const { key, value } = header;
-    // response.headers.set(key, value);
-  });
-  // response.headers.set(
-  //   'Content-Security-Policy',
-  //   contentSecurityPolicyHeaderValue,
-  // );
+  const response = NextResponse.next();
 
-  return { request: req, response };
+  // const response = NextResponse.next({
+  //   headers: requestHeaders,
+  // });
+
+  // cspHeaders.forEach((header) => {
+  //   const { key, value } = header;
+  //   response.headers.set(key, value);
+  // });
+
+  // console.log(keys(response));
+
+  // response.setHeader('Content-Security-Policy', contentSecurityPolicyHeaderValue);
+
+  return { request: requestHeaders, response };
 };
 
 /**
@@ -137,11 +141,7 @@ const getRequestAndResponseAfterApplyingCsp = (req) => {
  *
  * @param {NextRequest} request
  */
-export default function validateCountryMiddleware(rawRequest) {
-  const { request, response } = getRequestAndResponseAfterApplyingCsp(rawRequest);
-
-  // console.log(request);
-
+const validateCountryMiddleware = async (request) => {
   const country = request.geo?.country;
   const isProhibited = prohibitedCountriesCode.includes(country);
 
@@ -151,17 +151,28 @@ export default function validateCountryMiddleware(rawRequest) {
   // if already on the not-legal page, don't redirect
   if (request.nextUrl.pathname === '/not-legal') {
     if (isProhibited) {
-      return response.next();
+      return NextResponse.next();
     }
 
     // if not prohibited & trying to access not-legal page, redirect to home
-    return response.redirect(new URL('/', request.url));
+    return NextResponse.redirect(new URL('/', request.url));
   }
 
   // if country is prohibited, redirect to not-legal page
   if (isProhibited) {
-    return response.redirect(new URL('/not-legal', request.url));
+    return NextResponse.redirect(new URL('/not-legal', request.url));
   }
 
-  return response.next();
+  return NextResponse.next();
+};
+
+/**
+ * Middleware to validate the country
+ *
+ * @param {NextRequest} request
+ */
+export default async function middleware(request) {
+  await cspHeaderMiddleware(request);
+
+  await validateCountryMiddleware(request);
 }
