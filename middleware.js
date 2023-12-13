@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { NextResponse, NextRequest, userAgent } from 'next/server';
 import nextSafe from 'next-safe';
 import prohibitedCountries from './data/prohibited-countries.json';
@@ -87,24 +88,42 @@ const cspHeaderMiddleware = async (request) => {
   const browserName = userAgent(request)?.browser.name;
   const cspHeaders = getCspHeader(browserName);
 
-  const requestHeaders = new NextRequest(request);
-  cspHeaders.forEach((header) => {
-    const { key, value } = header;
-    requestHeaders.headers.set(key, value);
-  });
+  const contentSecurityPolicyHeaderValue = cspHeaders[0].value;
+  console.log(cspHeaders[0].key);
+
+  // const requestHeaders = new NextRequest(request);
+  const requestHeaders = new Headers(request.headers);
+  // cspHeaders.forEach((header) => {
+  //   const { key, value } = header;
+  //   // requestHeaders.headers.set(key, value);
+  //   requestHeaders.set(key, value);
+  // });
+
+  requestHeaders.set(
+    'Content-Security-Policy',
+    contentSecurityPolicyHeaderValue,
+  );
 
   const response = NextResponse.next({
     request: {
-      headers: requestHeaders.headers,
+      headers: requestHeaders,
     },
   });
 
-  cspHeaders.forEach((header) => {
-    const { key, value } = header;
-    response.headers.set(key, value);
-  });
+  // cspHeaders.forEach((header) => {
+  //   const { key, value } = header;
+  //   console.log(key);
+  //   response.headers.set(key, value);
+  // });
+  // console.log('>>>>>>>>>');
 
-  return { request: requestHeaders, response };
+  response.headers.set(
+    'Content-Security-Policy',
+    contentSecurityPolicyHeaderValue,
+  );
+
+  // console.log(response.headers);//
+  return response;
 };
 
 /**
@@ -140,6 +159,6 @@ const validateCountryMiddleware = async (request) => {
  * @param {NextRequest} request
  */
 export default async function middleware(request) {
-  await validateCountryMiddleware(request);
+  // await validateCountryMiddleware(request);
   await cspHeaderMiddleware(request);
 }
