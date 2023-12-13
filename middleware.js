@@ -79,17 +79,25 @@ const getCspHeader = (browserName) => {
   return headers;
 };
 
+function setCspHeaders(request, browserName) {
+  const cspHeaders = getCspHeader(browserName);
+  cspHeaders.forEach((header) => {
+    request.headers.set(header.key, header.value);
+  });
+}
+
 /**
  * Middleware to set CSP headers
  *
  * @param {NextRequest} request
  */
-const cspHeaderMiddleware = async (request) => {
+// export default function cspHeaderMiddleware(request) {
+function cspHeaderMiddleware(request) {
   const browserName = userAgent(request)?.browser.name;
   const cspHeaders = getCspHeader(browserName);
 
   const contentSecurityPolicyHeaderValue = cspHeaders[0].value;
-  console.log(cspHeaders[0].key);
+  // console.log(cspHeaders[0].key);
 
   // const requestHeaders = new NextRequest(request);
   const requestHeaders = new Headers(request.headers);
@@ -98,6 +106,8 @@ const cspHeaderMiddleware = async (request) => {
   //   // requestHeaders.headers.set(key, value);
   //   requestHeaders.set(key, value);
   // });
+
+  requestHeaders.set('x-hello-from-middleware1', 'hello');
 
   requestHeaders.set(
     'Content-Security-Policy',
@@ -110,21 +120,23 @@ const cspHeaderMiddleware = async (request) => {
     },
   });
 
-  // cspHeaders.forEach((header) => {
-  //   const { key, value } = header;
-  //   console.log(key);
-  //   response.headers.set(key, value);
-  // });
+  // response.headers.set('x-hello-from-middleware1', 'hello');
+
+  cspHeaders.forEach((header) => {
+    const { key, value } = header;
+    console.log(key);
+    response.headers.set(key, value);
+  });
   // console.log('>>>>>>>>>');
 
-  response.headers.set(
-    'Content-Security-Policy',
-    contentSecurityPolicyHeaderValue,
-  );
+  // response.headers.set(
+  //   'Content-Security-Policy',
+  //   contentSecurityPolicyHeaderValue,
+  // );
 
   // console.log(response.headers);//
   return response;
-};
+}
 
 /**
  * Middleware to validate the country
@@ -159,6 +171,8 @@ const validateCountryMiddleware = async (request) => {
  * @param {NextRequest} request
  */
 export default async function middleware(request) {
-  // await validateCountryMiddleware(request);
-  await cspHeaderMiddleware(request);
+  //  validateCountryMiddleware(request);
+  return cspHeaderMiddleware(request);
+  // console.log(request.headers);
+  // return NextResponse.next();
 }
