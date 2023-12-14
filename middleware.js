@@ -1,5 +1,4 @@
-/* eslint-disable no-unused-vars */
-import { NextResponse, NextRequest, userAgent } from 'next/server';
+import { NextResponse, userAgent } from 'next/server';
 import nextSafe from 'next-safe';
 import prohibitedCountries from './data/prohibited-countries.json';
 
@@ -80,70 +79,18 @@ const getCspHeader = (browserName) => {
 };
 
 /**
- * Middleware to set CSP headers
  *
- * @param {NextRequest} request
+ * @param {string} countryName
+ * @param {string} pathName
+ * @returns {string} redirectUrl
  */
-// export default function cspHeaderMiddleware(request) {
-function cspHeaderMiddleware(request, response) {
-  // console.log('>>>>>>>>>');
-
-  // response.headers.set(
-  //   'Content-Security-Policy',
-  //   contentSecurityPolicyHeaderValue,
-  // );
-
-  // console.log(response.headers);//
-  return response;
-}
-
 const getRedirectUrl = (countryName, pathName) => {
-  const isProhibited = !true;
-  // const isProhibited = prohibitedCountriesCode.includes(countryName);
+  const isProhibited = prohibitedCountriesCode.includes(countryName);
+
   if (pathName === '/not-legal') {
     return isProhibited ? null : '/';
   }
   return isProhibited ? '/not-legal' : null;
-};
-/**
- * Middleware to validate the country
- *
- * @param {NextRequest} request
- */
-const validateCountryMiddleware = async (request) => {
-  const country = request.geo?.country;
-  const redirectUrl = getRedirectUrl(country, request.nextUrl.pathname);
-
-  console.log({ redirectUrl });
-
-  const response = redirectUrl
-    ? NextResponse.redirect(new URL(redirectUrl, request.nextUrl))
-    : NextResponse.next();
-
-  const browserName = userAgent(request)?.browser.name;
-  const cspHeaders = getCspHeader(browserName);
-
-  // console.log(cspHeaders[0].key);
-
-  // const requestHeaders = new NextRequest(request);
-  // const requestHeaders = new Headers(request.headers);
-  // cspHeaders.forEach((header) => {
-  //   const { key, value } = header;
-  //   // requestHeaders.headers.set(key, value);
-  //   requestHeaders.set(key, value);
-  // });
-
-  // response.headers.set('x-hello-from-middleware1', 'hello');
-
-  cspHeaders.forEach((header) => {
-    const { key, value } = header;
-    // console.log(key);
-    response.headers.set(key, value);
-  });
-
-  console.log(response.statusText);
-
-  return response;
 };
 
 /**
@@ -152,10 +99,24 @@ const validateCountryMiddleware = async (request) => {
  * @param {NextRequest} request
  */
 export default async function middleware(request) {
-  return validateCountryMiddleware(request);
-  // return cspHeaderMiddleware(request);
-  // console.log(request.headers);
-  // return NextResponse.next();
+  const country = request.geo?.country;
+  const redirectUrl = getRedirectUrl(country, request.nextUrl.pathname);
+
+  const response = redirectUrl
+    ? NextResponse.redirect(new URL(redirectUrl, request.nextUrl))
+    : NextResponse.next();
+
+  const browserName = userAgent(request)?.browser.name;
+  const cspHeaders = getCspHeader(browserName);
+
+  // apply CSP headers
+  // https://nextjs.org/docs/app/building-your-application/routing/middleware#setting-headers
+  cspHeaders.forEach((header) => {
+    const { key, value } = header;
+    response.headers.set(key, value);
+  });
+
+  return response;
 }
 
 export const config = {
