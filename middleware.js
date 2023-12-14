@@ -98,7 +98,7 @@ function cspHeaderMiddleware(request, response) {
 }
 
 const getRedirectUrl = (countryName, pathName) => {
-  const isProhibited = true;
+  const isProhibited = !true;
   // const isProhibited = prohibitedCountriesCode.includes(countryName);
   if (pathName === '/not-legal') {
     return isProhibited ? null : '/';
@@ -114,6 +114,8 @@ const validateCountryMiddleware = async (request) => {
   const country = request.geo?.country;
   const redirectUrl = getRedirectUrl(country, request.nextUrl.pathname);
 
+  console.log({ redirectUrl });
+
   const response = redirectUrl
     ? NextResponse.redirect(new URL(redirectUrl, request.nextUrl))
     : NextResponse.next();
@@ -121,29 +123,25 @@ const validateCountryMiddleware = async (request) => {
   const browserName = userAgent(request)?.browser.name;
   const cspHeaders = getCspHeader(browserName);
 
-  const contentSecurityPolicyHeaderValue = cspHeaders[0].value;
   // console.log(cspHeaders[0].key);
 
   // const requestHeaders = new NextRequest(request);
-  const requestHeaders = new Headers(request.headers);
+  // const requestHeaders = new Headers(request.headers);
   // cspHeaders.forEach((header) => {
   //   const { key, value } = header;
   //   // requestHeaders.headers.set(key, value);
   //   requestHeaders.set(key, value);
   // });
 
-  requestHeaders.set(
-    'Content-Security-Policy',
-    contentSecurityPolicyHeaderValue,
-  );
-
   // response.headers.set('x-hello-from-middleware1', 'hello');
 
   cspHeaders.forEach((header) => {
     const { key, value } = header;
-    console.log(key);
+    // console.log(key);
     response.headers.set(key, value);
   });
+
+  console.log(response.statusText);
 
   return response;
 };
@@ -159,3 +157,16 @@ export default async function middleware(request) {
   // console.log(request.headers);
   // return NextResponse.next();
 }
+
+export const config = {
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+  ],
+};
