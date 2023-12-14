@@ -79,20 +79,45 @@ const getCspHeader = (browserName) => {
   return headers;
 };
 
-function setCspHeaders(request, browserName) {
-  const cspHeaders = getCspHeader(browserName);
-  cspHeaders.forEach((header) => {
-    request.headers.set(header.key, header.value);
-  });
-}
-
 /**
  * Middleware to set CSP headers
  *
  * @param {NextRequest} request
  */
 // export default function cspHeaderMiddleware(request) {
-function cspHeaderMiddleware(request) {
+function cspHeaderMiddleware(request, response) {
+  // console.log('>>>>>>>>>');
+
+  // response.headers.set(
+  //   'Content-Security-Policy',
+  //   contentSecurityPolicyHeaderValue,
+  // );
+
+  // console.log(response.headers);//
+  return response;
+}
+
+const getRedirectUrl = (countryName, pathName) => {
+  const isProhibited = true;
+  // const isProhibited = prohibitedCountriesCode.includes(countryName);
+  if (pathName === '/not-legal') {
+    return isProhibited ? null : '/';
+  }
+  return isProhibited ? '/not-legal' : null;
+};
+/**
+ * Middleware to validate the country
+ *
+ * @param {NextRequest} request
+ */
+const validateCountryMiddleware = async (request) => {
+  const country = request.geo?.country;
+  const redirectUrl = getRedirectUrl(country, request.nextUrl.pathname);
+
+  const response = redirectUrl
+    ? NextResponse.redirect(new URL(redirectUrl, request.nextUrl))
+    : NextResponse.next();
+
   const browserName = userAgent(request)?.browser.name;
   const cspHeaders = getCspHeader(browserName);
 
@@ -107,18 +132,10 @@ function cspHeaderMiddleware(request) {
   //   requestHeaders.set(key, value);
   // });
 
-  requestHeaders.set('x-hello-from-middleware1', 'hello');
-
   requestHeaders.set(
     'Content-Security-Policy',
     contentSecurityPolicyHeaderValue,
   );
-
-  const response = NextResponse.next({
-    request: {
-      headers: requestHeaders,
-    },
-  });
 
   // response.headers.set('x-hello-from-middleware1', 'hello');
 
@@ -127,42 +144,8 @@ function cspHeaderMiddleware(request) {
     console.log(key);
     response.headers.set(key, value);
   });
-  // console.log('>>>>>>>>>');
 
-  // response.headers.set(
-  //   'Content-Security-Policy',
-  //   contentSecurityPolicyHeaderValue,
-  // );
-
-  // console.log(response.headers);//
   return response;
-}
-
-/**
- * Middleware to validate the country
- *
- * @param {NextRequest} request
- */
-const validateCountryMiddleware = async (request) => {
-  const country = request.geo?.country;
-  const isProhibited = prohibitedCountriesCode.includes(country);
-
-  // if already on the not-legal page, don't redirect
-  if (request.nextUrl.pathname === '/not-legal') {
-    if (isProhibited) {
-      return NextResponse.next();
-    }
-
-    // if not prohibited & trying to access not-legal page, redirect to home
-    return NextResponse.redirect(new URL('/', request.url));
-  }
-
-  // if country is prohibited, redirect to not-legal page
-  if (isProhibited) {
-    return NextResponse.redirect(new URL('/not-legal', request.url));
-  }
-
-  return NextResponse.next();
 };
 
 /**
@@ -171,8 +154,8 @@ const validateCountryMiddleware = async (request) => {
  * @param {NextRequest} request
  */
 export default async function middleware(request) {
-  //  validateCountryMiddleware(request);
-  return cspHeaderMiddleware(request);
+  return validateCountryMiddleware(request);
+  // return cspHeaderMiddleware(request);
   // console.log(request.headers);
   // return NextResponse.next();
 }
