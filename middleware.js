@@ -1,31 +1,133 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, userAgent } from 'next/server';
+import nextSafe from 'next-safe';
 import prohibitedCountries from './data/prohibited-countries.json';
 
 const prohibitedCountriesCode = Object.values(prohibitedCountries);
 
+const isDev = process.env.NODE_ENV !== 'production';
+
+const getCspHeader = (browserName) => {
+  const walletconnectSrc = [
+    'https://verify.walletconnect.org',
+    'https://verify.walletconnect.com',
+  ];
+  const connectSrc = [
+    "'self'",
+    ...walletconnectSrc,
+    'https://*.olas.network/',
+    'https://*.autonolas.tech/',
+    'https://rpc.walletconnect.com/',
+    'wss://relay.walletconnect.org/',
+    'wss://relay.walletconnect.com/',
+    'https://explorer-api.walletconnect.com/',
+    'https://eth-mainnet.g.alchemy.com/v2/',
+    'https://eth-goerli.g.alchemy.com/v2/',
+    'https://gno.getblock.io/',
+    'https://polygon-mainnet.g.alchemy.com/v2/',
+    'https://polygon-mumbai-bor.publicnode.com/',
+    'https://rpc.chiado.gnosis.gateway.fm/',
+    'https://safe-transaction-mainnet.safe.global/api/v1/',
+    'https://safe-transaction-goerli.safe.global/api/',
+    'https://safe-transaction-gnosis-chain.safe.global/api/',
+    'https://safe-transaction-polygon.safe.global/api/',
+    'https://vercel.live/',
+  ];
+
+  if (isDev) {
+    connectSrc.push('http://localhost');
+    connectSrc.push('ws://localhost');
+  }
+
+  const scriptSrc = ["'self'", 'https://vercel.live/'];
+
+  // Firefox blocks inline scripts by default and it's an issue with Metamask
+  // reference: https://github.com/MetaMask/metamask-extension/issues/3133
+  if (browserName === 'Firefox') {
+    scriptSrc.push("'unsafe-inline'");
+  }
+
+  const headers = [
+    ...nextSafe({
+      isDev,
+      /**
+       * Content Security Policy
+       * @see https://content-security-policy.com/
+       */
+      contentSecurityPolicy: {
+        'default-src': "'none'",
+        'script-src': scriptSrc,
+        'connect-src': connectSrc,
+        'img-src': [
+          "'self'",
+          'data:',
+          'https://*.autonolas.tech/',
+          'https://explorer-api.walletconnect.com/w3m/',
+          ...walletconnectSrc,
+        ],
+        'style-src': ["'self'", "'unsafe-inline'"],
+        'frame-src': ["'self'", ...walletconnectSrc],
+      },
+      permissionsPolicyDirectiveSupport: ['standard'],
+    }),
+    {
+      key: 'Strict-Transport-Security',
+      value: 'max-age=31536000; includeSubDomains',
+    },
+  ];
+
+  return headers;
+};
+
 /**
- * Middleware to validate the country
+ *
+ * @param {string} countryName
+ * @param {string} pathName
+ * @returns {string} redirectUrl
+ */
+const getRedirectUrl = (countryName, pathName) => {
+  const isProhibited = prohibitedCountriesCode.includes(countryName);
+
+  if (pathName === '/not-legal') {
+    return isProhibited ? null : '/';
+  }
+  return isProhibited ? '/not-legal' : null;
+};
+
+/**
+ * common middleware
  *
  * @param {NextRequest} request
  */
-export default function validateCountryMiddleware(request) {
+export default async function middleware(request) {
   const country = request.geo?.country;
-  const isProhibited = prohibitedCountriesCode.includes(country);
+  const redirectUrl = getRedirectUrl(country, request.nextUrl.pathname);
 
-  // if already on the not-legal page, don't redirect
-  if (request.nextUrl.pathname === '/not-legal') {
-    if (isProhibited) {
-      return NextResponse.next();
-    }
+  const response = redirectUrl
+    ? NextResponse.redirect(new URL(redirectUrl, request.nextUrl))
+    : NextResponse.next();
 
-    // if not prohibited & trying to access not-legal page, redirect to home
-    return NextResponse.redirect(new URL('/', request.url));
-  }
+  const browserName = userAgent(request)?.browser.name;
+  const cspHeaders = getCspHeader(browserName);
 
-  // if country is prohibited, redirect to not-legal page
-  if (isProhibited) {
-    return NextResponse.redirect(new URL('/not-legal', request.url));
-  }
+  // apply CSP headers
+  // https://nextjs.org/docs/app/building-your-application/routing/middleware#setting-headers
+  cspHeaders.forEach((header) => {
+    const { key, value } = header;
+    response.headers.set(key, value);
+  });
 
-  return NextResponse.next();
+  return response;
 }
+
+export const config = {
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+  ],
+};
