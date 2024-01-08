@@ -6,8 +6,12 @@ import { useScreen } from '@autonolas/frontend-library';
 
 import { PAGES_TO_LOAD_WITHOUT_CHAINID } from 'util/constants';
 import { useHelpers } from 'common-util/hooks';
-import { SUPPORTED_CHAINS_MORE_INFO } from 'common-util/Login/config';
+import {
+  ETHEREUM_AND_SOLANA_SUPPORTED_CHAINS,
+  ETHEREUM_SUPPORTED_CHAINS,
+} from 'common-util/Login/config';
 import { useHandleRoute } from 'common-util/hooks/useHandleRoute';
+import { doesPathIncludesServices } from 'common-util/functions';
 import { LogoSvg, LogoIconSvg } from '../Logos';
 import {
   CustomLayout,
@@ -31,6 +35,10 @@ const Layout = ({ children }) => {
 
   const { onHomeClick, updateChainId } = useHandleRoute();
 
+  const chainOptions = doesPathIncludesServices(router.asPath)
+    ? ETHEREUM_AND_SOLANA_SUPPORTED_CHAINS
+    : ETHEREUM_SUPPORTED_CHAINS;
+
   return (
     <CustomLayout>
       <OlasHeader ismobile={`${isMobile}`}>
@@ -48,12 +56,12 @@ const Layout = ({ children }) => {
             value={chainName}
             placeholder="Select Network"
             disabled={PAGES_TO_LOAD_WITHOUT_CHAINID.some((e) => path.includes(e))}
-            options={SUPPORTED_CHAINS_MORE_INFO.map((e) => ({
+            options={chainOptions.map((e) => ({
               label: e.networkDisplayName,
               value: e.networkName,
             }))}
             onChange={(value) => {
-              const currentChainInfo = SUPPORTED_CHAINS_MORE_INFO.find(
+              const currentChainInfo = chainOptions.find(
                 (e) => e.networkName === value,
               );
 
@@ -61,11 +69,13 @@ const Layout = ({ children }) => {
                 // update session storage
                 sessionStorage.setItem('chainId', currentChainInfo.id);
 
-                // eg. /disclaimer will be redirect to same page ie. /disclaimer
                 if (PAGES_TO_LOAD_WITHOUT_CHAINID.find((e) => e === path)) {
+                  // eg. /disclaimer will be redirect to same page ie. /disclaimer
                   updateChainId(currentChainInfo.id);
                   router.push(`/${path}`);
                 } else {
+                  // eg. /components, /agents, /services will be redirect to
+                  // /<chainName>/components, /<chainName>/agents, /<chainName>/services
                   const replacedPath = router.asPath.replace(chainName, value);
                   router.push(`${replacedPath}`);
                 }

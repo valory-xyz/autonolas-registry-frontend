@@ -127,6 +127,7 @@ export const isAddressProhibited = (address) => {
 
 const doesPathIncludesComponents = (path) => !!path?.includes('components');
 const doesPathIncludesAgents = (path) => !!path?.includes('agents');
+export const doesPathIncludesServices = (path) => !!path?.includes('services');
 export const doesPathIncludesComponentsOrAgents = (path) => {
   if (!path) return false;
   return doesPathIncludesComponents(path) || doesPathIncludesAgents(path);

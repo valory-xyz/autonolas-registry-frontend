@@ -63,7 +63,8 @@ export const wagmiConfig = createConfig({
 export const ethereumClient = new EthereumClient(wagmiConfig, chains);
 
 /**
- * Returns the list of supported chains with more info.
+ * Returns the list of supported chains with more info such as
+ * network name, network display name, etc
  * @example
  * [
  *  { name: 'Mainnet', id: 1, network: 'ethereum' },
@@ -87,8 +88,10 @@ export const SUPPORTED_CHAINS_MORE_INFO = SUPPORTED_CHAINS.map((chain) => {
 
 export const ETHEREUM_SUPPORTED_CHAINS = [...SUPPORTED_CHAINS_MORE_INFO];
 
-// TOD
-export const SOLANA_SUPPORTED_CHAINS = [
+/**
+ * Solana supported chains
+ */
+export const SOLANA_SUPPORTED_CHAINS_WITH_INFO = [
   {
     id: 101,
     networkDisplayName: 'Solana',
@@ -106,7 +109,7 @@ export const SOLANA_SUPPORTED_CHAINS = [
 /**
  * Returns the list of all supported chains.
  */
-export const ALL_SUPPORTED_CHAINS = [
+export const ETHEREUM_AND_SOLANA_SUPPORTED_CHAINS = [
   ...ETHEREUM_SUPPORTED_CHAINS,
-  ...SOLANA_SUPPORTED_CHAINS,
+  ...SOLANA_SUPPORTED_CHAINS_WITH_INFO,
 ];
