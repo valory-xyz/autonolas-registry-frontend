@@ -3,8 +3,8 @@ import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/router';
 import { toLower } from 'lodash';
 
-import { setBlockchainName, setChainId } from 'store/setup/actions';
-import { BLOCKCHAIN_NAME, PAGES_TO_LOAD_WITHOUT_CHAINID } from 'util/constants';
+import { setBlockchainInfo, setChainId } from 'store/setup/actions';
+import { PAGES_TO_LOAD_WITHOUT_CHAINID, URL } from 'util/constants';
 import { useHelpers } from 'common-util/hooks';
 import {
   ETHEREUM_AND_SOLANA_SUPPORTED_CHAINS,
@@ -53,10 +53,7 @@ export const useHandleRoute = () => {
   // updating the blockchain information in redux
   useEffect(() => {
     const isValidNetwork = isValidNetworkName(networkNameFromUrl);
-    const bcName = isPageWithSolana(networkNameFromUrl)
-      ? BLOCKCHAIN_NAME.SOLANA
-      : BLOCKCHAIN_NAME.ETHEREUM;
-    dispathWithDelay(setBlockchainName(bcName));
+    dispathWithDelay(setBlockchainInfo(networkNameFromUrl));
 
     if (!isPageWithSolana(networkNameFromUrl)) {
       const chainIdFromPath = getChainIdFromPath(networkNameFromUrl);
@@ -85,7 +82,7 @@ export const useHandleRoute = () => {
      * -
      */
     if (!isValidNetworkName(networkNameFromUrl)) {
-      router.push('/page-not-found');
+      router.push(URL.PAGE_NOT_FOUND);
       return;
     }
 
@@ -101,7 +98,7 @@ export const useHandleRoute = () => {
        * - /random-page => /page-not-found
        * - /ethereummmmTypo => /page-not-found
        */
-      router.push('/page-not-found');
+      router.push(URL.PAGE_NOT_FOUND);
       return;
     }
 
@@ -140,7 +137,7 @@ export const useHandleRoute = () => {
     ) {
       router.push(`/${networkNameFromUrl}/services`);
     }
-  }, [path, networkNameFromUrl]);
+  }, [path, networkNameFromUrl, isL1Network, router]);
 
   const onHomeClick = () => {
     if (networkNameFromUrl) {

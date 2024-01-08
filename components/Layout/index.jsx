@@ -45,12 +45,7 @@ const Layout = ({ children }) => {
         <SelectContainer style={{ marginRight: isMobile ? 8 : 0 }}>
           <Select
             style={{ width: isMobile ? 140 : 200 }}
-            value={
-              // TODO: add support for solana testnet
-              blockchainName === BLOCKCHAIN_NAME.SOLANA
-                ? BLOCKCHAIN_NAME.SOLANA
-                : chainName
-            }
+            value={chainName}
             placeholder="Select Network"
             disabled={PAGES_TO_LOAD_WITHOUT_CHAINID.some((e) => path.includes(e))}
             options={ETHEREUM_AND_SOLANA_SUPPORTED_CHAINS.map((e) => ({
@@ -74,7 +69,7 @@ const Layout = ({ children }) => {
                   // eg. /components, /agents, /services will be redirect to
                   // /<chainName>/components, /<chainName>/agents, /<chainName>/services
                   const replacedPath = router.asPath.replace(chainName, value);
-                  router.push(`${replacedPath}`);
+                  router.push(replacedPath);
                 }
               }
             }}

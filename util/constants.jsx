@@ -6,6 +6,11 @@ export const URL = {
   MINT_COMPONENT: '/components/mint',
   MINT_SERVICE: '/services/mint',
   UPDATE_SERVICE: '/services/update',
+
+  // pages without chain id
+  DISCLAIMER: '/disclaimer',
+  PAGE_NOT_FOUND: '/page-not-found',
+  NOT_LEGAL: '/not-legal',
 };
 
 export const NAV_TYPES = {

@@ -96,6 +96,12 @@ export const SOLANA_SUPPORTED_CHAINS = [
     networkName: 'solana',
     blockchainName: 'solana',
   },
+  {
+    id: null,
+    networkDisplayName: 'Solana Devnet',
+    networkName: 'solana-devnet',
+    blockchainName: 'solana',
+  },
 ];
 
 /**

@@ -1,4 +1,4 @@
-import { ETHEREUM_SUPPORTED_CHAINS } from 'common-util/Login/config';
+import { ETHEREUM_AND_SOLANA_SUPPORTED_CHAINS, ETHEREUM_SUPPORTED_CHAINS } from 'common-util/Login/config';
 import { BLOCKCHAIN_NAME } from 'util/constants';
 import { apiTypes, syncTypes } from './_types';
 
@@ -26,13 +26,17 @@ const setup = (state = initialState, { data, type } = {}) => {
     case syncTypes.SET_STORE_STATE: {
       return { ...state, ...data };
     }
-    case syncTypes.SET_BLOCKCHAIN_NAME: {
-      if (data.blockchainName === BLOCKCHAIN_NAME.SOLANA) {
+    case syncTypes.SET_BLOCKCHAIN_INFO: {
+      const info = ETHEREUM_AND_SOLANA_SUPPORTED_CHAINS.find(
+        (item) => item.networkName === data.networkName,
+      );
+
+      if (info.blockchainName === BLOCKCHAIN_NAME.SOLANA) {
         return {
           ...state,
           blockchainName: BLOCKCHAIN_NAME.SOLANA,
-          chainDisplayName: 'Solana',
-          chainName: 'solana',
+          chainDisplayName: info.networkDisplayName,
+          chainName: info.networkName,
         };
       }
 
