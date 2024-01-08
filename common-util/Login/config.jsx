@@ -84,3 +84,29 @@ export const SUPPORTED_CHAINS_MORE_INFO = SUPPORTED_CHAINS.map((chain) => {
 
   return { id, networkDisplayName: name, networkName: getNetworkName() };
 });
+
+export const ETHEREUM_SUPPORTED_CHAINS = [...SUPPORTED_CHAINS_MORE_INFO];
+
+// TOD
+export const SOLANA_SUPPORTED_CHAINS = [
+  {
+    id: 101,
+    networkDisplayName: 'Solana',
+    networkName: 'solana',
+    blockchainName: 'solana',
+  },
+  {
+    id: 102,
+    networkDisplayName: 'Solana Testnet',
+    networkName: 'solana-testnet',
+    blockchainName: 'solana',
+  },
+];
+
+/**
+ * Returns the list of all supported chains.
+ */
+export const ALL_SUPPORTED_CHAINS = [
+  ...ETHEREUM_SUPPORTED_CHAINS,
+  ...SOLANA_SUPPORTED_CHAINS,
+];
