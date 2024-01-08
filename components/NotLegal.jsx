@@ -10,7 +10,7 @@ export const NotLegal = () => (
   <NotLegalContainer>
     <Result
       status="warning"
-      title="Your country is not allowed to access this website due to legal reasons!"
+      title="Access is blocked for the US and countries on the OFAC-sanctioned list"
     />
   </NotLegalContainer>
 );
