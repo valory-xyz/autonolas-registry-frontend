@@ -31,6 +31,8 @@ const getCspHeader = (browserName) => {
     'https://safe-transaction-gnosis-chain.safe.global/api/',
     'https://safe-transaction-polygon.safe.global/api/',
     'https://vercel.live/',
+    'https://api.devnet.solana.com',
+    'wss://api.devnet.solana.com/',
   ];
 
   if (isDev) {

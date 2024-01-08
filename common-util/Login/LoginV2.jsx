@@ -23,7 +23,9 @@ import { setUserBalance } from 'store/setup/actions';
 import { isAddressProhibited } from 'common-util/functions';
 import { useHelpers } from 'common-util/hooks';
 import { YellowButton } from 'common-util/YellowButton';
+import { useRouter } from 'next/router';
 import { projectId, ethereumClient } from './config';
+import SolanaWallet from 'components/Login/SolanaWallet';
 
 const LoginContainer = styled.div`
   display: flex;
@@ -43,6 +45,8 @@ export const LoginV2 = ({
   const { chainId, isConnectedToWrongNetwork } = useHelpers();
   const { chain: walletConnectedChain } = useNetwork();
   const { switchNetworkAsync, isLoading } = useSwitchNetwork();
+  const router = useRouter();
+  const { network } = router.query;
 
   const { address, connector } = useAccount({
     onConnect: ({ address: currentAddress }) => {
@@ -154,17 +158,25 @@ export const LoginV2 = ({
         </YellowButton>
       )}
       &nbsp;&nbsp;
-      <Web3Button avatar="hide" balance="hide" />
-      <Web3Modal
-        projectId={projectId}
-        ethereumClient={ethereumClient}
-        themeMode={theme}
-        themeVariables={{
-          '--w3m-button-border-radius': '5px',
-          '--w3m-accent-color': COLOR.PRIMARY,
-          '--w3m-background-color': COLOR.PRIMARY,
-        }}
-      />
+      {
+        network === 'gnosis'
+          ? <SolanaWallet />
+          : (
+            <>
+              <Web3Button avatar="hide" balance="hide" />
+              <Web3Modal
+                projectId={projectId}
+                ethereumClient={ethereumClient}
+                themeMode={theme}
+                themeVariables={{
+                  '--w3m-button-border-radius': '5px',
+                  '--w3m-accent-color': COLOR.PRIMARY,
+                  '--w3m-background-color': COLOR.PRIMARY,
+                }}
+              />
+            </>
+          )
+      }
     </LoginContainer>
   );
 };
