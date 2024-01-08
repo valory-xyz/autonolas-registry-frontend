@@ -72,7 +72,7 @@ export const ethereumClient = new EthereumClient(wagmiConfig, chains);
  *  // ...
  * ]
  */
-export const SUPPORTED_CHAINS_MORE_INFO = SUPPORTED_CHAINS.map((chain) => {
+export const ETHEREUM_SUPPORTED_CHAINS = SUPPORTED_CHAINS.map((chain) => {
   const { name, network, id } = chain;
 
   const getNetworkName = () => {
@@ -86,22 +86,14 @@ export const SUPPORTED_CHAINS_MORE_INFO = SUPPORTED_CHAINS.map((chain) => {
   return { id, networkDisplayName: name, networkName: getNetworkName() };
 });
 
-export const ETHEREUM_SUPPORTED_CHAINS = [...SUPPORTED_CHAINS_MORE_INFO];
-
 /**
  * Solana supported chains
  */
-export const SOLANA_SUPPORTED_CHAINS_WITH_INFO = [
+export const SOLANA_SUPPORTED_CHAINS = [
   {
-    id: 101,
+    id: null,
     networkDisplayName: 'Solana',
     networkName: 'solana',
-    blockchainName: 'solana',
-  },
-  {
-    id: 102,
-    networkDisplayName: 'Solana Testnet',
-    networkName: 'solana-testnet',
     blockchainName: 'solana',
   },
 ];
@@ -111,5 +103,5 @@ export const SOLANA_SUPPORTED_CHAINS_WITH_INFO = [
  */
 export const ETHEREUM_AND_SOLANA_SUPPORTED_CHAINS = [
   ...ETHEREUM_SUPPORTED_CHAINS,
-  ...SOLANA_SUPPORTED_CHAINS_WITH_INFO,
+  ...SOLANA_SUPPORTED_CHAINS,
 ];

@@ -12,6 +12,7 @@ import { doesNetworkHaveValidServiceManagerTokenFn } from '../functions';
 
 export const useHelpers = () => {
   const account = useSelector((state) => state?.setup?.account);
+  const blockchainName = useSelector((state) => state?.setup?.blockchainName);
 
   // chainId - selected in the dropdown
   const chainId = useSelector((state) => state?.setup?.chainId);
@@ -43,6 +44,7 @@ export const useHelpers = () => {
 
   return {
     account,
+    blockchainName,
     chainId,
     chainDisplayName,
     chainName,

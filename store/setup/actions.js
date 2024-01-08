@@ -18,6 +18,11 @@ export const setChainId = (chainId) => ({
   data: { chainId },
 });
 
+export const setBlockchainName = (blockchainName) => ({
+  type: syncTypes.SET_BLOCKCHAIN_NAME,
+  data: { blockchainName },
+});
+
 export const setLogout = () => ({
   type: syncTypes.SET_LOGOUT,
   data: null,

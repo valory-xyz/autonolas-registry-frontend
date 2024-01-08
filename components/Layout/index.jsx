@@ -1,17 +1,13 @@
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
-import { Layout as AntdLayout, Select } from 'antd';
+import { Layout as AntdLayout, Empty, Select } from 'antd';
 import { useScreen } from '@autonolas/frontend-library';
 
-import { PAGES_TO_LOAD_WITHOUT_CHAINID } from 'util/constants';
+import { BLOCKCHAIN_NAME, PAGES_TO_LOAD_WITHOUT_CHAINID } from 'util/constants';
 import { useHelpers } from 'common-util/hooks';
-import {
-  ETHEREUM_AND_SOLANA_SUPPORTED_CHAINS,
-  ETHEREUM_SUPPORTED_CHAINS,
-} from 'common-util/Login/config';
+import { ETHEREUM_AND_SOLANA_SUPPORTED_CHAINS } from 'common-util/Login/config';
 import { useHandleRoute } from 'common-util/hooks/useHandleRoute';
-import { doesPathIncludesServices } from 'common-util/functions';
 import { LogoSvg, LogoIconSvg } from '../Logos';
 import {
   CustomLayout,
@@ -30,14 +26,10 @@ const { Content } = AntdLayout;
 const Layout = ({ children }) => {
   const router = useRouter();
   const { isMobile, isTablet } = useScreen();
-  const { chainId, chainName } = useHelpers();
+  const { blockchainName, chainId, chainName } = useHelpers();
   const path = router?.pathname || '';
 
   const { onHomeClick, updateChainId } = useHandleRoute();
-
-  const chainOptions = doesPathIncludesServices(router.asPath)
-    ? ETHEREUM_AND_SOLANA_SUPPORTED_CHAINS
-    : ETHEREUM_SUPPORTED_CHAINS;
 
   return (
     <CustomLayout>
@@ -53,15 +45,20 @@ const Layout = ({ children }) => {
         <SelectContainer style={{ marginRight: isMobile ? 8 : 0 }}>
           <Select
             style={{ width: isMobile ? 140 : 200 }}
-            value={chainName}
+            value={
+              // TODO: add support for solana testnet
+              blockchainName === BLOCKCHAIN_NAME.SOLANA
+                ? BLOCKCHAIN_NAME.SOLANA
+                : chainName
+            }
             placeholder="Select Network"
             disabled={PAGES_TO_LOAD_WITHOUT_CHAINID.some((e) => path.includes(e))}
-            options={chainOptions.map((e) => ({
+            options={ETHEREUM_AND_SOLANA_SUPPORTED_CHAINS.map((e) => ({
               label: e.networkDisplayName,
               value: e.networkName,
             }))}
             onChange={(value) => {
-              const currentChainInfo = chainOptions.find(
+              const currentChainInfo = ETHEREUM_AND_SOLANA_SUPPORTED_CHAINS.find(
                 (e) => e.networkName === value,
               );
 
@@ -91,11 +88,20 @@ const Layout = ({ children }) => {
 
       <Content className="site-layout">
         <div className="site-layout-background">
-          {/* chainId has to be set in redux before rendering any components OR
-          the page doesn't depends on the chain Id */}
-          {chainId || PAGES_TO_LOAD_WITHOUT_CHAINID.some((e) => e === path)
-            ? children
-            : null}
+          {blockchainName === BLOCKCHAIN_NAME.SOLANA ? (
+            <Empty
+              description="Solana is not supported yet"
+              style={{ marginTop: '15%' }}
+            />
+          ) : (
+            <>
+              {/* chainId has to be set in redux before rendering any components
+               OR the page doesn't depends on the chain Id */}
+              {chainId || PAGES_TO_LOAD_WITHOUT_CHAINID.some((e) => e === path)
+                ? children
+                : null}
+            </>
+          )}
         </div>
       </Content>
 

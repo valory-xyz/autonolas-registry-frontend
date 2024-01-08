@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { toLower } from 'lodash';
+import { isString, toLower } from 'lodash';
 import {
   isValidAddress,
   getChainIdOrDefaultToMainnet as getChainIdOrDefaultToMainnetFn,
@@ -11,7 +11,7 @@ import {
 
 import { RPC_URLS } from 'common-util/Contracts';
 import { SUPPORTED_CHAINS } from 'common-util/Login';
-import { SUPPORTED_CHAINS_MORE_INFO } from 'common-util/Login/config';
+import { ETHEREUM_SUPPORTED_CHAINS } from 'common-util/Login/config';
 import prohibitedAddresses from '../../data/prohibited-addresses.json';
 
 export const getModalProvider = () => window?.MODAL_PROVIDER;
@@ -28,7 +28,7 @@ export const getChainId = (chainId = null) => {
 
   // if chainId is not supported, throw error
   if (
-    !SUPPORTED_CHAINS_MORE_INFO.find((e) => e.id === chainIdfromSessionStorage)
+    !ETHEREUM_SUPPORTED_CHAINS.find((e) => e.id === chainIdfromSessionStorage)
   ) {
     return new Error('Invalid chain id');
   }
@@ -135,4 +135,11 @@ export const doesPathIncludesComponentsOrAgents = (path) => {
 
 export const notifyWrongNetwork = () => {
   notifyWarning('Please switch to the correct network and try again');
+};
+
+// functions for solana
+export const isPageWithSolana = (path) => {
+  if (!path) return false;
+  if (!isString(path)) return false;
+  return path.toLowerCase().includes('solana');
 };

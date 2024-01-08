@@ -3,17 +3,23 @@ import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/router';
 import { toLower } from 'lodash';
 
-import { setChainId } from 'store/setup/actions';
-import { PAGES_TO_LOAD_WITHOUT_CHAINID } from 'util/constants';
+import { setBlockchainName, setChainId } from 'store/setup/actions';
+import { BLOCKCHAIN_NAME, PAGES_TO_LOAD_WITHOUT_CHAINID } from 'util/constants';
 import { useHelpers } from 'common-util/hooks';
-import { SUPPORTED_CHAINS_MORE_INFO } from 'common-util/Login/config';
-import { doesPathIncludesComponentsOrAgents } from 'common-util/functions';
+import {
+  ETHEREUM_AND_SOLANA_SUPPORTED_CHAINS,
+  ETHEREUM_SUPPORTED_CHAINS,
+} from 'common-util/Login/config';
+import {
+  doesPathIncludesComponentsOrAgents,
+  isPageWithSolana,
+} from 'common-util/functions';
 
-const isValidNetworkName = (name) => SUPPORTED_CHAINS_MORE_INFO.some(
+const isValidNetworkName = (name) => ETHEREUM_AND_SOLANA_SUPPORTED_CHAINS.some(
   (e) => toLower(e.networkName) === toLower(name),
 );
 
-const getChainIdFromPath = (networkName) => SUPPORTED_CHAINS_MORE_INFO.find(
+const getChainIdFromPath = (networkName) => ETHEREUM_SUPPORTED_CHAINS.find(
   (e) => toLower(e.networkName) === toLower(networkName),
 )?.id;
 
@@ -33,18 +39,29 @@ export const useHandleRoute = () => {
   const path = router?.pathname || '';
   const networkNameFromUrl = router?.query?.network;
 
-  const updateChainId = (id) => {
-    sessionStorage.setItem('chainId', id);
+  const dispathWithDelay = (action) => {
     setTimeout(() => {
-      dispatch(setChainId(id));
+      dispatch(action);
     }, 0);
   };
 
-  // updating the chainId in redux
+  const updateChainId = (id) => {
+    sessionStorage.setItem('chainId', id);
+    dispathWithDelay(setChainId(id));
+  };
+
+  // updating the blockchain information in redux
   useEffect(() => {
     const isValidNetwork = isValidNetworkName(networkNameFromUrl);
-    const chainIdFromPath = getChainIdFromPath(networkNameFromUrl);
-    updateChainId(isValidNetwork ? chainIdFromPath : 1);
+    const bcName = isPageWithSolana(networkNameFromUrl)
+      ? BLOCKCHAIN_NAME.SOLANA
+      : BLOCKCHAIN_NAME.ETHEREUM;
+    dispathWithDelay(setBlockchainName(bcName));
+
+    if (!isPageWithSolana(networkNameFromUrl)) {
+      const chainIdFromPath = getChainIdFromPath(networkNameFromUrl);
+      updateChainId(isValidNetwork ? chainIdFromPath : 1);
+    }
   }, [networkNameFromUrl]);
 
   useEffect(() => {
