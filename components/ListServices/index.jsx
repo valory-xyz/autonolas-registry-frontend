@@ -149,7 +149,7 @@ const ListServices = () => {
     currentPage,
     vmType,
     currentTab,
-    // searchValue,
+    searchValue,
     // list?.length,
   ]);
 
