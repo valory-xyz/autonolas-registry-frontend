@@ -77,11 +77,7 @@ const Layout = ({ children }) => {
         </SelectContainer>
         <NavigationMenu />
         <RightMenu>
-          {vmType === VM_TYPE.SVM ? (
-            'Solana wallet'
-          ) : (
-            <Login />
-          )}
+          <Login />
         </RightMenu>
       </OlasHeader>
 
