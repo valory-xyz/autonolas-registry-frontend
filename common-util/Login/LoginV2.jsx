@@ -24,7 +24,7 @@ import { setUserBalance } from 'store/setup/actions';
 import { isAddressProhibited } from 'common-util/functions';
 import { useHelpers } from 'common-util/hooks';
 import { YellowButton } from 'common-util/YellowButton';
-import SolanaWallet from 'components/Login/SolanaWallet'; // TODO: move this to common-util
+import { SolanaWallet } from './SolanaWallet';
 import { projectId, ethereumClient } from './config';
 
 const LoginContainer = styled.div`

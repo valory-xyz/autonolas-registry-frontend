@@ -1,10 +1,17 @@
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
-import { Layout as AntdLayout, Empty, Select } from 'antd';
+import { Layout as AntdLayout, Select } from 'antd';
 import { useScreen } from '@autonolas/frontend-library';
+import {
+  ConnectionProvider,
+  WalletProvider,
+} from '@solana/wallet-adapter-react';
+import * as web3 from '@solana/web3.js';
+import * as wallet from '@solana/wallet-adapter-wallets';
+import { WalletModalProvider as ReactUIWalletModalProvider } from '@solana/wallet-adapter-react-ui';
 
-import { VM_TYPE, PAGES_TO_LOAD_WITHOUT_CHAINID } from 'util/constants';
+import { PAGES_TO_LOAD_WITHOUT_CHAINID, VM_TYPE } from 'util/constants';
 import { useHelpers } from 'common-util/hooks';
 import { ALL_SUPPORTED_CHAINS } from 'common-util/Login/config';
 import { useHandleRoute } from 'common-util/hooks/useHandleRoute';
@@ -16,6 +23,10 @@ import {
   RightMenu,
   SelectContainer,
 } from './styles';
+
+const wallets = [new wallet.PhantomWalletAdapter()];
+
+const endpoint = web3.clusterApiUrl('devnet');
 
 const Login = dynamic(() => import('../Login'), { ssr: false });
 const NavigationMenu = dynamic(() => import('./Menu'), { ssr: false });
@@ -44,6 +55,7 @@ const Layout = ({ children }) => {
 
         <SelectContainer style={{ marginRight: isMobile ? 8 : 0 }}>
           <Select
+            className="show-scrollbar"
             style={{ width: isMobile ? 140 : 200 }}
             value={chainName}
             placeholder="Select Network"
@@ -83,20 +95,14 @@ const Layout = ({ children }) => {
 
       <Content className="site-layout">
         <div className="site-layout-background">
-          {vmType === VM_TYPE.SVM ? (
-            <Empty
-              description="Solana is not supported yet"
-              style={{ marginTop: '15%' }}
-            />
-          ) : (
-            <>
-              {/* chainId has to be set in redux before rendering any components
-               OR the page doesn't depends on the chain Id */}
-              {chainId || PAGES_TO_LOAD_WITHOUT_CHAINID.some((e) => e === path)
-                ? children
-                : null}
-            </>
-          )}
+          {/* chainId has to be set in redux before rendering any components
+              OR the page doesn't depends on the chain Id
+              OR it is SOLANA */}
+          {chainId
+          || VM_TYPE.SVM === vmType
+          || PAGES_TO_LOAD_WITHOUT_CHAINID.some((e) => e === path)
+            ? children
+            : null}
         </div>
       </Content>
 
@@ -105,12 +111,19 @@ const Layout = ({ children }) => {
   );
 };
 
-Layout.propTypes = {
-  children: PropTypes.element,
-};
+Layout.propTypes = { children: PropTypes.element };
+Layout.defaultProps = { children: null };
 
-Layout.defaultProps = {
-  children: null,
-};
+const LayoutWithWalletProvider = (props) => (
+  <ConnectionProvider endpoint={endpoint}>
+    <WalletProvider wallets={wallets}>
+      <ReactUIWalletModalProvider>
+        <Layout {...props}>{props.children}</Layout>
+      </ReactUIWalletModalProvider>
+    </WalletProvider>
+  </ConnectionProvider>
+);
 
-export default Layout;
+LayoutWithWalletProvider.propTypes = { children: PropTypes.element };
+LayoutWithWalletProvider.defaultProps = { children: null };
+export default LayoutWithWalletProvider;

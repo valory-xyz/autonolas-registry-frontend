@@ -40,7 +40,11 @@ const getCspHeader = (browserName) => {
     connectSrc.push('ws://localhost');
   }
 
-  const scriptSrc = ["'self'", 'https://vercel.live/'];
+  const scriptSrc = [
+    "'self'",
+    'https://vercel.live/',
+    'https://fonts.googleapis.com/',
+  ];
 
   // Firefox blocks inline scripts by default and it's an issue with Metamask
   // reference: https://github.com/MetaMask/metamask-extension/issues/3133

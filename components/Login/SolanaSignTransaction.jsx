@@ -1,19 +1,20 @@
 import { BN, Program, AnchorProvider } from '@project-serum/anchor';
 import { Button } from 'antd';
+import { useState } from 'react';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import React from 'react';
 import { notifyError, notifySuccess } from '@autonolas/frontend-library';
 import { PublicKey } from '@solana/web3.js';
 
 import idl from 'common-util/AbiAndAddresses/ServiceRegistrySolana.json';
+import {
+  SVM_SERVICE_REGISTRY_PROGRAM_PUBLIC_KEY,
+  SVM_STORAGE_ACCOUNT_PUBLIC_KEY,
+} from 'common-util/Contracts/addresses';
 
-const STORAGE_ACCOUNT_PUBLIC_KEY = '2afUAb8aRfcUentfGone5L2J5DeKz9PsSj4zs1WZREUf';
-const SERVICE_REGISTRY_PROGRAM_PUBLIC_KEY = 'AU428Z7KbjRMjhmqWmQwUta2AvydbpfEZNBh8dStHTDi';
-
-const programId = new PublicKey(SERVICE_REGISTRY_PROGRAM_PUBLIC_KEY);
+const programId = new PublicKey(SVM_SERVICE_REGISTRY_PROGRAM_PUBLIC_KEY);
 
 export const SolanaSignTransaction = () => {
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = useState(false);
 
   const { connection } = useConnection();
   const wallet = useWallet();
@@ -51,7 +52,7 @@ export const SolanaSignTransaction = () => {
           bonds,
           maxThreshold,
         )
-        .accounts({ dataAccount: STORAGE_ACCOUNT_PUBLIC_KEY })
+        .accounts({ dataAccount: SVM_STORAGE_ACCOUNT_PUBLIC_KEY })
         .remainingAccounts([
           { pubkey: serviceOwnerPublicKey, isSigner: true, isWritable: true },
         ])
