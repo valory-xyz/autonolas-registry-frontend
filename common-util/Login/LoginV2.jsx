@@ -19,12 +19,12 @@ import {
   useScreen,
 } from '@autonolas/frontend-library';
 
+import { VM_TYPE } from 'util/constants';
 import { setUserBalance } from 'store/setup/actions';
 import { isAddressProhibited } from 'common-util/functions';
 import { useHelpers } from 'common-util/hooks';
 import { YellowButton } from 'common-util/YellowButton';
-import { useRouter } from 'next/router';
-import SolanaWallet from 'components/Login/SolanaWallet';
+import SolanaWallet from 'components/Login/SolanaWallet'; // TODO: move this to common-util
 import { projectId, ethereumClient } from './config';
 
 const LoginContainer = styled.div`
@@ -35,6 +35,7 @@ const LoginContainer = styled.div`
 `;
 
 export const LoginV2 = ({
+  vmType,
   onConnect: onConnectCb,
   onDisconnect: onDisconnectCb,
   theme = 'light',
@@ -45,8 +46,6 @@ export const LoginV2 = ({
   const { chainId, isConnectedToWrongNetwork } = useHelpers();
   const { chain: walletConnectedChain } = useNetwork();
   const { switchNetworkAsync, isLoading } = useSwitchNetwork();
-  const router = useRouter();
-  const { network } = router.query;
 
   const { address, connector } = useAccount({
     onConnect: ({ address: currentAddress }) => {
@@ -72,7 +71,7 @@ export const LoginV2 = ({
     if (chainId && balance?.formatted) {
       dispatch(setUserBalance(balance.formatted));
     }
-  }, [chainId, balance?.formatted]);
+  }, [chainId, balance?.formatted, dispatch]);
 
   useEffect(() => {
     const getData = async () => {
@@ -127,7 +126,7 @@ export const LoginV2 = ({
       notifyError(<CannotConnectAddressOfacError />);
       if (onDisconnectCb) onDisconnectCb();
     }
-  }, [address]);
+  }, [address, disconnect, onDisconnectCb]);
 
   const onSwitchNetwork = useCallback(async () => {
     try {
@@ -158,7 +157,7 @@ export const LoginV2 = ({
         </YellowButton>
       )}
       &nbsp;&nbsp;
-      {network === 'gnosis' ? (
+      {vmType === VM_TYPE.SVM ? (
         <SolanaWallet />
       ) : (
         <>
@@ -180,12 +179,14 @@ export const LoginV2 = ({
 };
 
 LoginV2.propTypes = {
+  vmType: PropTypes.string,
   onConnect: PropTypes.func,
   onDisconnect: PropTypes.func,
   theme: PropTypes.string,
 };
 
 LoginV2.defaultProps = {
+  vmType: VM_TYPE.EVM,
   onConnect: undefined,
   onDisconnect: undefined,
   theme: 'light',

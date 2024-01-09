@@ -31,7 +31,7 @@ const setup = (state = initialState, { data, type } = {}) => {
         (item) => item.networkName === data.networkName,
       );
 
-      if (info.vmType === VM_TYPE.SVM) {
+      if (info?.vmType === VM_TYPE.SVM) {
         return {
           ...state,
           vmType: VM_TYPE.SVM,
