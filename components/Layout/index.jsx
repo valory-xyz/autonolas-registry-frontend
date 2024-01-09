@@ -1,12 +1,12 @@
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
-import { Layout as AntdLayout, Select } from 'antd';
+import { Layout as AntdLayout, Empty, Select } from 'antd';
 import { useScreen } from '@autonolas/frontend-library';
 
-import { PAGES_TO_LOAD_WITHOUT_CHAINID } from 'util/constants';
+import { VM_TYPE, PAGES_TO_LOAD_WITHOUT_CHAINID } from 'util/constants';
 import { useHelpers } from 'common-util/hooks';
-import { SUPPORTED_CHAINS_MORE_INFO } from 'common-util/Login/config';
+import { ALL_SUPPORTED_CHAINS } from 'common-util/Login/config';
 import { useHandleRoute } from 'common-util/hooks/useHandleRoute';
 import { LogoSvg, LogoIconSvg } from '../Logos';
 import {
@@ -26,7 +26,7 @@ const { Content } = AntdLayout;
 const Layout = ({ children }) => {
   const router = useRouter();
   const { isMobile, isTablet } = useScreen();
-  const { chainId, chainName } = useHelpers();
+  const { vmType, chainId, chainName } = useHelpers();
   const path = router?.pathname || '';
 
   const { onHomeClick, updateChainId } = useHandleRoute();
@@ -48,12 +48,12 @@ const Layout = ({ children }) => {
             value={chainName}
             placeholder="Select Network"
             disabled={PAGES_TO_LOAD_WITHOUT_CHAINID.some((e) => path.includes(e))}
-            options={SUPPORTED_CHAINS_MORE_INFO.map((e) => ({
+            options={ALL_SUPPORTED_CHAINS.map((e) => ({
               label: e.networkDisplayName,
               value: e.networkName,
             }))}
             onChange={(value) => {
-              const currentChainInfo = SUPPORTED_CHAINS_MORE_INFO.find(
+              const currentChainInfo = ALL_SUPPORTED_CHAINS.find(
                 (e) => e.networkName === value,
               );
 
@@ -61,13 +61,15 @@ const Layout = ({ children }) => {
                 // update session storage
                 sessionStorage.setItem('chainId', currentChainInfo.id);
 
-                // eg. /disclaimer will be redirect to same page ie. /disclaimer
                 if (PAGES_TO_LOAD_WITHOUT_CHAINID.find((e) => e === path)) {
+                  // eg. /disclaimer will be redirect to same page ie. /disclaimer
                   updateChainId(currentChainInfo.id);
                   router.push(`/${path}`);
                 } else {
+                  // eg. /components, /agents, /services will be redirect to
+                  // /<chainName>/components, /<chainName>/agents, /<chainName>/services
                   const replacedPath = router.asPath.replace(chainName, value);
-                  router.push(`${replacedPath}`);
+                  router.push(replacedPath);
                 }
               }
             }}
@@ -75,17 +77,30 @@ const Layout = ({ children }) => {
         </SelectContainer>
         <NavigationMenu />
         <RightMenu>
-          <Login />
+          {vmType === VM_TYPE.SVM ? (
+            'Solana wallet'
+          ) : (
+            <Login />
+          )}
         </RightMenu>
       </OlasHeader>
 
       <Content className="site-layout">
         <div className="site-layout-background">
-          {/* chainId has to be set in redux before rendering any components OR
-          the page doesn't depends on the chain Id */}
-          {chainId || PAGES_TO_LOAD_WITHOUT_CHAINID.some((e) => e === path)
-            ? children
-            : null}
+          {vmType === VM_TYPE.SVM ? (
+            <Empty
+              description="Solana is not supported yet"
+              style={{ marginTop: '15%' }}
+            />
+          ) : (
+            <>
+              {/* chainId has to be set in redux before rendering any components
+               OR the page doesn't depends on the chain Id */}
+              {chainId || PAGES_TO_LOAD_WITHOUT_CHAINID.some((e) => e === path)
+                ? children
+                : null}
+            </>
+          )}
         </div>
       </Content>
 

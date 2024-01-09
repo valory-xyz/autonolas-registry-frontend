@@ -18,6 +18,11 @@ export const setChainId = (chainId) => ({
   data: { chainId },
 });
 
+export const setVmInfo = (networkName) => ({
+  type: syncTypes.SET_VM_INFO,
+  data: { networkName },
+});
+
 export const setLogout = () => ({
   type: syncTypes.SET_LOGOUT,
   data: null,

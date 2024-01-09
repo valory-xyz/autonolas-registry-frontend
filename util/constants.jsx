@@ -6,6 +6,11 @@ export const URL = {
   MINT_COMPONENT: '/components/mint',
   MINT_SERVICE: '/services/mint',
   UPDATE_SERVICE: '/services/update',
+
+  // pages without chain id
+  DISCLAIMER: '/disclaimer',
+  PAGE_NOT_FOUND: '/page-not-found',
+  NOT_LEGAL: '/not-legal',
 };
 
 export const NAV_TYPES = {
@@ -57,4 +62,9 @@ export const DEFAULT_CHAIN_ID = 1;
 export const EXTRA_COLORS = {
   YELLOW_PRIMARY: '#eab308', // tailwind orange.500
   YELLOW_SECONDARY: '#fefce8', // tailwind orange.50
+};
+
+export const VM_TYPE = {
+  EVM: 'evm',
+  SVM: 'svm',
 };
