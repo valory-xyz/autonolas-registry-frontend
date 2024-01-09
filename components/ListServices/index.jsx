@@ -3,7 +3,7 @@ import { Tabs } from 'antd';
 import { useRouter } from 'next/router';
 import { notifyError } from '@autonolas/frontend-library';
 
-import { NAV_TYPES } from 'util/constants';
+import { VM_TYPE, NAV_TYPES } from 'util/constants';
 import ListTable from 'common-util/List/ListTable';
 import {
   useExtraTabContent,
@@ -29,7 +29,9 @@ const ListServices = () => {
     isMyTab(hash) ? MY_SERVICES : ALL_SERVICES,
   );
 
-  const { account, chainId, links } = useHelpers();
+  const {
+    account, chainId, links, vmType,
+  } = useHelpers();
 
   /**
    * extra tab content & view click
@@ -52,13 +54,24 @@ const ListServices = () => {
   useEffect(() => {
     setCurrentTab(isMyTab(hash) ? MY_SERVICES : ALL_SERVICES);
     setList([]);
-  }, [router.asPath]);
+  }, [
+    router.asPath,
+    // hash
+  ]);
 
   // fetch total
   useEffect(() => {
     (async () => {
       if (searchValue === '') {
         try {
+          // TODO: remove this once solana is ready
+          if (vmType === VM_TYPE.SVM) {
+            setTotal(0);
+            setIsLoading(false);
+            return;
+          }
+
+          /* ethereum & its testnets */
           let totalTemp = null;
 
           // All services
@@ -81,7 +94,13 @@ const ListServices = () => {
         }
       }
     })();
-  }, [account, chainId, currentTab, searchValue]);
+  }, [
+    account,
+    chainId,
+    currentTab,
+    searchValue,
+    vmType,
+  ]);
 
   // fetch the list (without search)
   useEffect(() => {
@@ -90,6 +109,14 @@ const ListServices = () => {
         setIsLoading(true);
 
         try {
+          // TODO: remove this once solana is ready
+          if (vmType === VM_TYPE.SVM) {
+            setList([]);
+            setIsLoading(false);
+            return;
+          }
+
+          /* ethereum & its testnets */
           // All services
           if (currentTab === ALL_SERVICES) {
             setList([]);
@@ -115,7 +142,16 @@ const ListServices = () => {
         }
       }
     })();
-  }, [account, chainId, total, currentPage]);
+  }, [
+    account,
+    chainId,
+    total,
+    currentPage,
+    vmType,
+    currentTab,
+    // searchValue,
+    // list?.length,
+  ]);
 
   /**
    * Search (All services, My Services)
@@ -144,7 +180,12 @@ const ListServices = () => {
         }
       }
     })();
-  }, [account, chainId, searchValue]);
+  }, [
+    account,
+    chainId,
+    searchValue,
+    currentTab,
+  ]);
 
   const tableCommonProps = {
     type: NAV_TYPES.SERVICE,

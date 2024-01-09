@@ -3,17 +3,23 @@ import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/router';
 import { toLower } from 'lodash';
 
-import { setChainId } from 'store/setup/actions';
-import { PAGES_TO_LOAD_WITHOUT_CHAINID } from 'util/constants';
+import { setVmInfo, setChainId } from 'store/setup/actions';
+import { PAGES_TO_LOAD_WITHOUT_CHAINID, URL } from 'util/constants';
 import { useHelpers } from 'common-util/hooks';
-import { SUPPORTED_CHAINS_MORE_INFO } from 'common-util/Login/config';
-import { doesPathIncludesComponentsOrAgents } from 'common-util/functions';
+import {
+  ALL_SUPPORTED_CHAINS,
+  EVM_SUPPORTED_CHAINS,
+} from 'common-util/Login/config';
+import {
+  doesPathIncludesComponentsOrAgents,
+  isPageWithSolana,
+} from 'common-util/functions';
 
-const isValidNetworkName = (name) => SUPPORTED_CHAINS_MORE_INFO.some(
+const isValidNetworkName = (name) => ALL_SUPPORTED_CHAINS.some(
   (e) => toLower(e.networkName) === toLower(name),
 );
 
-const getChainIdFromPath = (networkName) => SUPPORTED_CHAINS_MORE_INFO.find(
+const getChainIdFromPath = (networkName) => EVM_SUPPORTED_CHAINS.find(
   (e) => toLower(e.networkName) === toLower(networkName),
 )?.id;
 
@@ -33,18 +39,26 @@ export const useHandleRoute = () => {
   const path = router?.pathname || '';
   const networkNameFromUrl = router?.query?.network;
 
-  const updateChainId = (id) => {
-    sessionStorage.setItem('chainId', id);
+  const dispathWithDelay = (action) => {
     setTimeout(() => {
-      dispatch(setChainId(id));
+      dispatch(action);
     }, 0);
   };
 
-  // updating the chainId in redux
+  const updateChainId = (id) => {
+    sessionStorage.setItem('chainId', id);
+    dispathWithDelay(setChainId(id));
+  };
+
+  // updating the blockchain information in redux
   useEffect(() => {
     const isValidNetwork = isValidNetworkName(networkNameFromUrl);
-    const chainIdFromPath = getChainIdFromPath(networkNameFromUrl);
-    updateChainId(isValidNetwork ? chainIdFromPath : 1);
+    dispathWithDelay(setVmInfo(networkNameFromUrl));
+
+    if (!isPageWithSolana(networkNameFromUrl)) {
+      const chainIdFromPath = getChainIdFromPath(networkNameFromUrl);
+      updateChainId(isValidNetwork ? chainIdFromPath : 1);
+    }
   }, [networkNameFromUrl]);
 
   useEffect(() => {
@@ -68,7 +82,7 @@ export const useHandleRoute = () => {
      * -
      */
     if (!isValidNetworkName(networkNameFromUrl)) {
-      router.push('/page-not-found');
+      router.push(URL.PAGE_NOT_FOUND);
       return;
     }
 
@@ -84,7 +98,7 @@ export const useHandleRoute = () => {
        * - /random-page => /page-not-found
        * - /ethereummmmTypo => /page-not-found
        */
-      router.push('/page-not-found');
+      router.push(URL.PAGE_NOT_FOUND);
       return;
     }
 
@@ -123,7 +137,7 @@ export const useHandleRoute = () => {
     ) {
       router.push(`/${networkNameFromUrl}/services`);
     }
-  }, [path, networkNameFromUrl]);
+  }, [path, networkNameFromUrl, isL1Network, router]);
 
   const onHomeClick = () => {
     if (networkNameFromUrl) {
