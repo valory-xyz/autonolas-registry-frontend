@@ -77,7 +77,11 @@ const Layout = ({ children }) => {
         </SelectContainer>
         <NavigationMenu />
         <RightMenu>
-          <Login />
+          {blockchainName === BLOCKCHAIN_NAME.SOLANA ? (
+            'Solana is not supported yet'
+          ) : (
+            <Login />
+          )}
         </RightMenu>
       </OlasHeader>
 
