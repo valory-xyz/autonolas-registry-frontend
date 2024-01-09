@@ -25,6 +25,7 @@ const SolanaWallet = () => (
     <WalletProvider wallets={wallets}>
       <ReactUIWalletModalProvider>
         <WalletMultiButton />
+        &nbsp;
         <SolanaSignTransaction />
       </ReactUIWalletModalProvider>
     </WalletProvider>

@@ -1,6 +1,4 @@
-import {
-  BN, Program, AnchorProvider,
-} from '@project-serum/anchor';
+import { BN, Program, AnchorProvider } from '@project-serum/anchor';
 import { Button } from 'antd';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import React from 'react';
@@ -44,14 +42,31 @@ export const SolanaSignTransaction = () => {
 
       // Create a service
       // eslint-disable-next-line max-len
-      const response = await program.methods.create(serviceOwnerPublicKey, configHash, agentIds, slots, bonds, maxThreshold)
+      const response = await program.methods
+        .create(
+          serviceOwnerPublicKey,
+          configHash,
+          agentIds,
+          slots,
+          bonds,
+          maxThreshold,
+        )
         .accounts({ dataAccount: STORAGE_ACCOUNT_PUBLIC_KEY })
         .remainingAccounts([
           { pubkey: serviceOwnerPublicKey, isSigner: true, isWritable: true },
         ])
         .rpc();
 
-      notifySuccess(`Service created: ${response}`, <a href={`https://explorer.solana.com/tx/${response}?cluster=devnet`} target="_blank" rel="noopener noreferrer">view transaction</a>);
+      notifySuccess(
+        `Service created: ${response}`,
+        <a
+          href={`https://explorer.solana.com/tx/${response}?cluster=devnet`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          view transaction
+        </a>,
+      );
     } catch (error) {
       notifyError(error.message);
       console.error(error);
