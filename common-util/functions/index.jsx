@@ -11,7 +11,10 @@ import {
 
 import { RPC_URLS } from 'common-util/Contracts';
 import { SUPPORTED_CHAINS } from 'common-util/Login';
-import { ETHEREUM_SUPPORTED_CHAINS } from 'common-util/Login/config';
+import {
+  EVM_SUPPORTED_CHAINS,
+  SVM_SUPPORTED_CHAINS,
+} from 'common-util/Login/config';
 import prohibitedAddresses from '../../data/prohibited-addresses.json';
 
 export const getModalProvider = () => window?.MODAL_PROVIDER;
@@ -27,9 +30,7 @@ export const getChainId = (chainId = null) => {
     : Number(sessionStorage.getItem('chainId'));
 
   // if chainId is not supported, throw error
-  if (
-    !ETHEREUM_SUPPORTED_CHAINS.find((e) => e.id === chainIdfromSessionStorage)
-  ) {
+  if (!EVM_SUPPORTED_CHAINS.find((e) => e.id === chainIdfromSessionStorage)) {
     return new Error('Invalid chain id');
   }
 
@@ -141,5 +142,7 @@ export const notifyWrongNetwork = () => {
 export const isPageWithSolana = (path) => {
   if (!path) return false;
   if (!isString(path)) return false;
-  return path.toLowerCase().includes('solana');
+
+  const checkPath = (e) => path.toLowerCase().includes(e.networkName.toLowerCase());
+  return SVM_SUPPORTED_CHAINS.some(checkPath);
 };

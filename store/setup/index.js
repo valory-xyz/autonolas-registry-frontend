@@ -1,11 +1,11 @@
-import { ETHEREUM_AND_SOLANA_SUPPORTED_CHAINS, ETHEREUM_SUPPORTED_CHAINS } from 'common-util/Login/config';
-import { BLOCKCHAIN_NAME } from 'util/constants';
+import { ALL_SUPPORTED_CHAINS, EVM_SUPPORTED_CHAINS } from 'common-util/Login/config';
+import { VM_TYPE } from 'util/constants';
 import { apiTypes, syncTypes } from './_types';
 
 const initialState = {
   account: null,
   balance: null,
-  blockchainName: null,
+  vmType: null,
   errorMessage: null,
 
   // chain info
@@ -26,15 +26,15 @@ const setup = (state = initialState, { data, type } = {}) => {
     case syncTypes.SET_STORE_STATE: {
       return { ...state, ...data };
     }
-    case syncTypes.SET_BLOCKCHAIN_INFO: {
-      const info = ETHEREUM_AND_SOLANA_SUPPORTED_CHAINS.find(
+    case syncTypes.SET_VM_INFO: {
+      const info = ALL_SUPPORTED_CHAINS.find(
         (item) => item.networkName === data.networkName,
       );
 
-      if (info.blockchainName === BLOCKCHAIN_NAME.SOLANA) {
+      if (info.vmType === VM_TYPE.SVM) {
         return {
           ...state,
-          blockchainName: BLOCKCHAIN_NAME.SOLANA,
+          vmType: VM_TYPE.SVM,
           chainDisplayName: info.networkDisplayName,
           chainName: info.networkName,
         };
@@ -42,12 +42,12 @@ const setup = (state = initialState, { data, type } = {}) => {
 
       return {
         ...state,
-        blockchainName: BLOCKCHAIN_NAME.ETHEREUM,
+        vmType: VM_TYPE.EVM,
       };
     }
 
     case syncTypes.SET_CHAIND_ID: {
-      const networkInfo = ETHEREUM_SUPPORTED_CHAINS.find(
+      const networkInfo = EVM_SUPPORTED_CHAINS.find(
         (item) => item.id === data.chainId,
       );
       return {

@@ -18,8 +18,8 @@ export const setChainId = (chainId) => ({
   data: { chainId },
 });
 
-export const setBlockchainInfo = (networkName) => ({
-  type: syncTypes.SET_BLOCKCHAIN_INFO,
+export const setVmInfo = (networkName) => ({
+  type: syncTypes.SET_VM_INFO,
   data: { networkName },
 });
 

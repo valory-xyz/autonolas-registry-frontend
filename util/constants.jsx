@@ -64,7 +64,7 @@ export const EXTRA_COLORS = {
   YELLOW_SECONDARY: '#fefce8', // tailwind orange.50
 };
 
-export const BLOCKCHAIN_NAME = {
-  ETHEREUM: 'ethereum',
-  SOLANA: 'solana',
+export const VM_TYPE = {
+  EVM: 'evm',
+  SVM: 'svm',
 };

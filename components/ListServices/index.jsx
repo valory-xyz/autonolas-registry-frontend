@@ -3,7 +3,7 @@ import { Tabs } from 'antd';
 import { useRouter } from 'next/router';
 import { notifyError } from '@autonolas/frontend-library';
 
-import { BLOCKCHAIN_NAME, NAV_TYPES } from 'util/constants';
+import { VM_TYPE, NAV_TYPES } from 'util/constants';
 import ListTable from 'common-util/List/ListTable';
 import {
   useExtraTabContent,
@@ -30,7 +30,7 @@ const ListServices = () => {
   );
 
   const {
-    account, chainId, links, blockchainName,
+    account, chainId, links, vmType,
   } = useHelpers();
 
   /**
@@ -65,7 +65,7 @@ const ListServices = () => {
       if (searchValue === '') {
         try {
           // TODO: remove this once solana is ready
-          if (blockchainName === BLOCKCHAIN_NAME.SOLANA) {
+          if (vmType === VM_TYPE.SVM) {
             setTotal(0);
             setIsLoading(false);
             return;
@@ -99,7 +99,7 @@ const ListServices = () => {
     chainId,
     currentTab,
     searchValue,
-    blockchainName,
+    vmType,
   ]);
 
   // fetch the list (without search)
@@ -110,7 +110,7 @@ const ListServices = () => {
 
         try {
           // TODO: remove this once solana is ready
-          if (blockchainName === BLOCKCHAIN_NAME.SOLANA) {
+          if (vmType === VM_TYPE.SVM) {
             setList([]);
             setIsLoading(false);
             return;
@@ -147,7 +147,7 @@ const ListServices = () => {
     chainId,
     total,
     currentPage,
-    blockchainName,
+    vmType,
     currentTab,
     // searchValue,
     // list?.length,

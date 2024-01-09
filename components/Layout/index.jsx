@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 import { Layout as AntdLayout, Empty, Select } from 'antd';
 import { useScreen } from '@autonolas/frontend-library';
 
-import { BLOCKCHAIN_NAME, PAGES_TO_LOAD_WITHOUT_CHAINID } from 'util/constants';
+import { VM_TYPE, PAGES_TO_LOAD_WITHOUT_CHAINID } from 'util/constants';
 import { useHelpers } from 'common-util/hooks';
-import { ETHEREUM_AND_SOLANA_SUPPORTED_CHAINS } from 'common-util/Login/config';
+import { ALL_SUPPORTED_CHAINS } from 'common-util/Login/config';
 import { useHandleRoute } from 'common-util/hooks/useHandleRoute';
 import { LogoSvg, LogoIconSvg } from '../Logos';
 import {
@@ -26,7 +26,7 @@ const { Content } = AntdLayout;
 const Layout = ({ children }) => {
   const router = useRouter();
   const { isMobile, isTablet } = useScreen();
-  const { blockchainName, chainId, chainName } = useHelpers();
+  const { vmType, chainId, chainName } = useHelpers();
   const path = router?.pathname || '';
 
   const { onHomeClick, updateChainId } = useHandleRoute();
@@ -48,12 +48,12 @@ const Layout = ({ children }) => {
             value={chainName}
             placeholder="Select Network"
             disabled={PAGES_TO_LOAD_WITHOUT_CHAINID.some((e) => path.includes(e))}
-            options={ETHEREUM_AND_SOLANA_SUPPORTED_CHAINS.map((e) => ({
+            options={ALL_SUPPORTED_CHAINS.map((e) => ({
               label: e.networkDisplayName,
               value: e.networkName,
             }))}
             onChange={(value) => {
-              const currentChainInfo = ETHEREUM_AND_SOLANA_SUPPORTED_CHAINS.find(
+              const currentChainInfo = ALL_SUPPORTED_CHAINS.find(
                 (e) => e.networkName === value,
               );
 
@@ -77,8 +77,8 @@ const Layout = ({ children }) => {
         </SelectContainer>
         <NavigationMenu />
         <RightMenu>
-          {blockchainName === BLOCKCHAIN_NAME.SOLANA ? (
-            'Solana is not supported yet'
+          {vmType === VM_TYPE.SVM ? (
+            'Solana wallet'
           ) : (
             <Login />
           )}
@@ -87,7 +87,7 @@ const Layout = ({ children }) => {
 
       <Content className="site-layout">
         <div className="site-layout-background">
-          {blockchainName === BLOCKCHAIN_NAME.SOLANA ? (
+          {vmType === VM_TYPE.SVM ? (
             <Empty
               description="Solana is not supported yet"
               style={{ marginTop: '15%' }}

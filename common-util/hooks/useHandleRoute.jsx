@@ -3,23 +3,23 @@ import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/router';
 import { toLower } from 'lodash';
 
-import { setBlockchainInfo, setChainId } from 'store/setup/actions';
+import { setVmInfo, setChainId } from 'store/setup/actions';
 import { PAGES_TO_LOAD_WITHOUT_CHAINID, URL } from 'util/constants';
 import { useHelpers } from 'common-util/hooks';
 import {
-  ETHEREUM_AND_SOLANA_SUPPORTED_CHAINS,
-  ETHEREUM_SUPPORTED_CHAINS,
+  ALL_SUPPORTED_CHAINS,
+  EVM_SUPPORTED_CHAINS,
 } from 'common-util/Login/config';
 import {
   doesPathIncludesComponentsOrAgents,
   isPageWithSolana,
 } from 'common-util/functions';
 
-const isValidNetworkName = (name) => ETHEREUM_AND_SOLANA_SUPPORTED_CHAINS.some(
+const isValidNetworkName = (name) => ALL_SUPPORTED_CHAINS.some(
   (e) => toLower(e.networkName) === toLower(name),
 );
 
-const getChainIdFromPath = (networkName) => ETHEREUM_SUPPORTED_CHAINS.find(
+const getChainIdFromPath = (networkName) => EVM_SUPPORTED_CHAINS.find(
   (e) => toLower(e.networkName) === toLower(networkName),
 )?.id;
 
@@ -53,7 +53,7 @@ export const useHandleRoute = () => {
   // updating the blockchain information in redux
   useEffect(() => {
     const isValidNetwork = isValidNetworkName(networkNameFromUrl);
-    dispathWithDelay(setBlockchainInfo(networkNameFromUrl));
+    dispathWithDelay(setVmInfo(networkNameFromUrl));
 
     if (!isPageWithSolana(networkNameFromUrl)) {
       const chainIdFromPath = getChainIdFromPath(networkNameFromUrl);
