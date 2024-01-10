@@ -14,10 +14,6 @@ import { getMyListOnPagination } from 'common-util/ContractUtils/myList';
 import { useHelpers } from 'common-util/hooks';
 import { useSvmInfo } from 'common-util/hooks/useSvmInfo';
 import {
-  SVM_SERVICE_REGISTRY_PROGRAM_PUBLIC_KEY,
-  SVM_STORAGE_ACCOUNT_PUBLIC_KEY,
-} from 'common-util/Contracts/addresses';
-import {
   getServices,
   getFilteredServices,
   getTotalForAllServices,
@@ -60,106 +56,69 @@ const ListServices = () => {
   useEffect(() => {
     setCurrentTab(isMyTab(hash) ? MY_SERVICES : ALL_SERVICES);
     setList([]);
-  }, [
-    router.asPath,
-    // hash
-  ]);
+  }, [router.asPath, hash]);
 
-  const { storagePublicKey, getProgramInstance } = useSvmInfo();
-
-  console.log(vmType);
+  const { storagePublicKey, isProgramInstanceReady, getProgramInstance } = useSvmInfo();
+  const program = getProgramInstance();
 
   const getSvmServiceTotal = useCallback(async () => {
-    const program = getProgramInstance();
-    if (program && storagePublicKey) {
+    if (isProgramInstanceReady && storagePublicKey && program) {
       const response = await program.methods
         .totalSupply()
         .accounts({
           dataAccount: storagePublicKey,
-          isMut: false,
           isSigner: false,
         })
         .view();
-
       return response;
     }
 
     return 0;
-  }, [getProgramInstance, storagePublicKey]);
+  }, [isProgramInstanceReady, storagePublicKey, program]);
 
   // fetch total
   useEffect(() => {
     const getTotal = async () => {
-      if (searchValue === '') {
-        try {
-          if (vmType === VM_TYPE.SVM) {
-            const program = getProgramInstance();
-            if (program && storagePublicKey) {
-              setTotal(0);
-              setIsLoading(false);
-              // const totalTemp = 0;
+      try {
+        if (vmType === VM_TYPE.SVM) {
+          let totalTemp = null;
 
-              console.log('HEREEEEE', { storagePublicKey });
-
-              // const provider = anchor.AnchorProvider.env();
-              // let accountInfo = await provider.connection.getAccountInfo(bridgedTokenMint);
-              // console.log(accountInfo);
-
-              // const response = program.account;
-              // const response = await program.account.dataAccount.fetch(svmStoragePublicKey);
-
-              const response0 = await program.methods
-                .totalSupply()
-                // .accounts({ dataAccount: programId })
-                // .accounts({ dataAccount: SVM_STORAGE_ACCOUNT_PUBLIC_KEY })
-                .accounts({
-                  dataAccount: storagePublicKey,
-                  isMut: false,
-                  isSigner: false,
-                })
-                .view();
-
-              // getting service
-              const response1 = await program.methods
-                .getService(1)
-                // .accounts({ dataAccount: programId })
-                // .accounts({ dataAccount: SVM_STORAGE_ACCOUNT_PUBLIC_KEY })
-                .accounts({ dataAccount: storagePublicKey })
-                .view();
-
-              console.log({ response0 });
-              console.log({ response1 });
-
-              // .accounts({ dataAccount: SVM_STORAGE_ACCOUNT_PUBLIC_KEY })
-              // .view();
-            }
-          } else {
-            /* ethereum & its testnets */
-            let totalTemp = null;
-
-            // All services
-            if (currentTab === ALL_SERVICES) {
-              totalTemp = await getTotalForAllServices();
-            }
-
-            // My services
-            if (currentTab === MY_SERVICES && account) {
-              totalTemp = await getTotalForMyServices(account);
-            }
-
-            setTotal(Number(totalTemp));
-            if (Number(totalTemp) === 0) {
-              setIsLoading(false);
-            }
+          if (currentTab === ALL_SERVICES) {
+            totalTemp = await getSvmServiceTotal();
+            console.log('totalTemp', totalTemp);
+          } else if (currentTab === MY_SERVICES && account) {
+            // totalTemp = await getTotalForMyServices(account);
+            // TODO
           }
-        } catch (e) {
-          console.error(e);
-          notifyError('Error fetching services');
+
+          setTotal(Number(totalTemp));
+          if (Number(totalTemp) === 0) {
+            setIsLoading(false);
+          }
+        } else if (chainId) {
+          /* ethereum & its testnets */
+          let totalTemp = null;
+
+          if (currentTab === ALL_SERVICES) {
+            totalTemp = await getTotalForAllServices();
+          } else if (currentTab === MY_SERVICES && account) {
+            totalTemp = await getTotalForMyServices(account);
+          }
+
+          setTotal(Number(totalTemp));
+          if (Number(totalTemp) === 0) {
+            setIsLoading(false);
+          }
         }
+      } catch (e) {
+        console.error(e);
+        notifyError('Error fetching services');
       }
     };
 
-    getTotal();
+    if (searchValue === '') {
+      getTotal();
+    }
   }, [
     account,
     chainId,
@@ -167,49 +126,51 @@ const ListServices = () => {
     searchValue,
     vmType,
     getProgramInstance,
-    storagePublicKey,
+    getSvmServiceTotal,
   ]);
 
   // fetch the list (without search)
   useEffect(() => {
-    (async () => {
-      if (total && currentPage && !searchValue) {
-        setIsLoading(true);
+    const getList = async () => {
+      setIsLoading(true);
 
-        try {
-          // TODO: remove this once solana is ready
-          if (vmType === VM_TYPE.SVM) {
-            setList([]);
-            setIsLoading(false);
-            return;
-          }
-
-          /* ethereum & its testnets */
-          // All services
-          if (currentTab === ALL_SERVICES) {
-            setList([]);
-            const everyComps = await getServices(total, currentPage);
-            setList(everyComps);
-          }
-
-          /**
-           * My services
-           * - search by `account` as searchValue
-           * - API will be called only once & store the complete list
-           */
-          if (currentTab === MY_SERVICES && list.length === 0 && account) {
-            setList([]);
-            const e = await getFilteredServices(account);
-            setList(e);
-          }
-        } catch (e) {
-          console.error(e);
-          notifyError('Error fetching services list');
-        } finally {
+      try {
+        // TODO: remove this once solana is ready
+        if (vmType === VM_TYPE.SVM) {
+          setList([]);
           setIsLoading(false);
+          return;
         }
+
+        /* ethereum & its testnets */
+        // All services
+        if (currentTab === ALL_SERVICES) {
+          setList([]);
+          const everyComps = await getServices(total, currentPage);
+          setList(everyComps);
+        }
+
+        /**
+         * My services
+         * - search by `account` as searchValue
+         * - API will be called only once & store the complete list
+         */
+        if (currentTab === MY_SERVICES && list.length === 0 && account) {
+          setList([]);
+          const e = await getFilteredServices(account);
+          setList(e);
+        }
+      } catch (e) {
+        console.error(e);
+        notifyError('Error fetching services list');
+      } finally {
+        setIsLoading(false);
       }
-    })();
+    };
+
+    if (total && currentPage && !searchValue) {
+      getList();
+    }
   }, [
     account,
     chainId,
