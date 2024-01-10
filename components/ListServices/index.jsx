@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Tabs } from 'antd';
 import { useRouter } from 'next/router';
 import { notifyError } from '@autonolas/frontend-library';
@@ -12,12 +12,18 @@ import {
 } from 'common-util/List/ListTable/helpers';
 import { getMyListOnPagination } from 'common-util/ContractUtils/myList';
 import { useHelpers } from 'common-util/hooks';
+import { useSvmInfo } from 'common-util/hooks/useSvmInfo';
+import {
+  SVM_SERVICE_REGISTRY_PROGRAM_PUBLIC_KEY,
+  SVM_STORAGE_ACCOUNT_PUBLIC_KEY,
+} from 'common-util/Contracts/addresses';
 import {
   getServices,
   getFilteredServices,
   getTotalForAllServices,
   getTotalForMyServices,
 } from './utils';
+// import * as anchor from "@coral-xyz/anchor";
 
 const ALL_SERVICES = 'all-services';
 const MY_SERVICES = 'my-services';
@@ -59,47 +65,109 @@ const ListServices = () => {
     // hash
   ]);
 
+  const { storagePublicKey, getProgramInstance } = useSvmInfo();
+
+  console.log(vmType);
+
+  const getSvmServiceTotal = useCallback(async () => {
+    const program = getProgramInstance();
+    if (program && storagePublicKey) {
+      const response = await program.methods
+        .totalSupply()
+        .accounts({
+          dataAccount: storagePublicKey,
+          isMut: false,
+          isSigner: false,
+        })
+        .view();
+
+      return response;
+    }
+
+    return 0;
+  }, [getProgramInstance, storagePublicKey]);
+
   // fetch total
   useEffect(() => {
-    (async () => {
+    const getTotal = async () => {
       if (searchValue === '') {
         try {
-          // TODO: remove this once solana is ready
           if (vmType === VM_TYPE.SVM) {
-            setTotal(0);
-            setIsLoading(false);
-            return;
-          }
+            const program = getProgramInstance();
+            if (program && storagePublicKey) {
+              setTotal(0);
+              setIsLoading(false);
+              // const totalTemp = 0;
 
-          /* ethereum & its testnets */
-          let totalTemp = null;
+              console.log('HEREEEEE', { storagePublicKey });
 
-          // All services
-          if (currentTab === ALL_SERVICES) {
-            totalTemp = await getTotalForAllServices();
-          }
+              // const provider = anchor.AnchorProvider.env();
+              // let accountInfo = await provider.connection.getAccountInfo(bridgedTokenMint);
+              // console.log(accountInfo);
 
-          // My services
-          if (currentTab === MY_SERVICES && account) {
-            totalTemp = await getTotalForMyServices(account);
-          }
+              // const response = program.account;
+              // const response = await program.account.dataAccount.fetch(svmStoragePublicKey);
 
-          setTotal(Number(totalTemp));
-          if (Number(totalTemp) === 0) {
-            setIsLoading(false);
+              const response0 = await program.methods
+                .totalSupply()
+                // .accounts({ dataAccount: programId })
+                // .accounts({ dataAccount: SVM_STORAGE_ACCOUNT_PUBLIC_KEY })
+                .accounts({
+                  dataAccount: storagePublicKey,
+                  isMut: false,
+                  isSigner: false,
+                })
+                .view();
+
+              // getting service
+              const response1 = await program.methods
+                .getService(1)
+                // .accounts({ dataAccount: programId })
+                // .accounts({ dataAccount: SVM_STORAGE_ACCOUNT_PUBLIC_KEY })
+                .accounts({ dataAccount: storagePublicKey })
+                .view();
+
+              console.log({ response0 });
+              console.log({ response1 });
+
+              // .accounts({ dataAccount: SVM_STORAGE_ACCOUNT_PUBLIC_KEY })
+              // .view();
+            }
+          } else {
+            /* ethereum & its testnets */
+            let totalTemp = null;
+
+            // All services
+            if (currentTab === ALL_SERVICES) {
+              totalTemp = await getTotalForAllServices();
+            }
+
+            // My services
+            if (currentTab === MY_SERVICES && account) {
+              totalTemp = await getTotalForMyServices(account);
+            }
+
+            setTotal(Number(totalTemp));
+            if (Number(totalTemp) === 0) {
+              setIsLoading(false);
+            }
           }
         } catch (e) {
           console.error(e);
           notifyError('Error fetching services');
         }
       }
-    })();
+    };
+
+    getTotal();
   }, [
     account,
     chainId,
     currentTab,
     searchValue,
     vmType,
+    getProgramInstance,
+    storagePublicKey,
   ]);
 
   // fetch the list (without search)
@@ -180,12 +248,7 @@ const ListServices = () => {
         }
       }
     })();
-  }, [
-    account,
-    chainId,
-    searchValue,
-    currentTab,
-  ]);
+  }, [account, chainId, searchValue, currentTab]);
 
   const tableCommonProps = {
     type: NAV_TYPES.SERVICE,
