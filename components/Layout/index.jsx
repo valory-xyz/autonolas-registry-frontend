@@ -114,15 +114,22 @@ const Layout = ({ children }) => {
 Layout.propTypes = { children: PropTypes.element };
 Layout.defaultProps = { children: null };
 
-const LayoutWithWalletProvider = (props) => (
-  <ConnectionProvider endpoint={endpoint}>
-    <WalletProvider wallets={wallets} autoConnect>
-      <ReactUIWalletModalProvider>
-        <Layout {...props}>{props.children}</Layout>
-      </ReactUIWalletModalProvider>
-    </WalletProvider>
-  </ConnectionProvider>
-);
+const LayoutWithWalletProvider = (props) => {
+  const { vmType } = useHelpers();
+  if (vmType === VM_TYPE.SVM) {
+    return (
+      <ConnectionProvider endpoint={endpoint}>
+        <WalletProvider wallets={wallets} autoConnect>
+          <ReactUIWalletModalProvider>
+            <Layout {...props}>{props.children}</Layout>
+          </ReactUIWalletModalProvider>
+        </WalletProvider>
+      </ConnectionProvider>
+    );
+  }
+
+  return <Layout {...props}>{props.children}</Layout>;
+};
 
 LayoutWithWalletProvider.propTypes = { children: PropTypes.element };
 LayoutWithWalletProvider.defaultProps = { children: null };
