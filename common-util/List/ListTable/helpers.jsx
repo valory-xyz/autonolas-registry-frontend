@@ -5,13 +5,21 @@ import {
 import { SearchOutlined } from '@ant-design/icons';
 import { AddressLink } from '@autonolas/frontend-library';
 
-import { NAV_TYPES, SERVICE_STATE, TOTAL_VIEW_COUNT } from 'util/constants';
+import {
+  NAV_TYPES,
+  SERVICE_STATE,
+  TOTAL_VIEW_COUNT,
+  VM_TYPE,
+} from 'util/constants';
+import { SVM_SOLANA_DEVNET_CHAIN } from 'common-util/Login/config';
 
 const { Title } = Typography;
 
 export const getTableColumns = (
   type,
-  { onViewClick, onUpdateClick, isMobile },
+  {
+    onViewClick, onUpdateClick, isMobile, chainName,
+  },
 ) => {
   if (type === NAV_TYPES.COMPONENT || type === NAV_TYPES.AGENT) {
     return [
@@ -74,9 +82,30 @@ export const getTableColumns = (
         dataIndex: 'owner',
         key: 'owner',
         width: 200,
-        render: (text) => (
-          <AddressLink text={text} suffixCount={isMobile ? 4 : 6} />
-        ),
+        render: (text) => {
+          const isSolana = chainName && chainName.includes(VM_TYPE.SVM);
+
+          if (isSolana) {
+            return (
+              <AddressLink
+                text={text}
+                suffixCount={isMobile ? 4 : 6}
+                onClick={() => {
+                  if (chainName === SVM_SOLANA_DEVNET_CHAIN.networkName) {
+                    window.open(
+                      `https://solscan.io/account/${text}?cluster=devnet`,
+                      '_blank',
+                    );
+                  } else {
+                    window.open(`https://solscan.io/account/${text}`, '_blank');
+                  }
+                }}
+              />
+            );
+          }
+
+          return <AddressLink text={text} suffixCount={isMobile ? 4 : 6} />;
+        },
       },
       {
         title: 'State',

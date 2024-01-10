@@ -1,3 +1,4 @@
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Table } from 'antd';
 import { Loader, useScreen } from '@autonolas/frontend-library';
@@ -19,6 +20,7 @@ const ListTable = ({
   onUpdateClick,
   extra,
 }) => {
+  const chainName = useSelector((state) => state.setup.chainName);
   /**
    * no pagination on search as we won't know total beforehand
    */
@@ -42,6 +44,7 @@ const ListTable = ({
     onViewClick,
     onUpdateClick,
     isMobile,
+    chainName,
   });
   const dataSource = getData(type, list, { current: currentPage });
   const pagination = {
