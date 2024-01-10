@@ -116,7 +116,7 @@ Layout.defaultProps = { children: null };
 
 const LayoutWithWalletProvider = (props) => (
   <ConnectionProvider endpoint={endpoint}>
-    <WalletProvider wallets={wallets}>
+    <WalletProvider wallets={wallets} autoConnect>
       <ReactUIWalletModalProvider>
         <Layout {...props}>{props.children}</Layout>
       </ReactUIWalletModalProvider>
