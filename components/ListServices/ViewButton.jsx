@@ -7,7 +7,7 @@ import {
 } from '@solana/web3.js';
 import {
   SVM_SERVICE_REGISTRY_PROGRAM_PUBLIC_KEY,
-  // SVM_STORAGE_ACCOUNT_PUBLIC_KEY,
+  SVM_STORAGE_ACCOUNT_PUBLIC_KEY,
 } from 'common-util/Contracts/addresses';
 import { Button } from 'antd';
 
@@ -26,10 +26,11 @@ export default function ViewButton() {
   const onClick = async () => {
     if (!publicKey || !program) return;
 
-    const [pda] = PublicKey.findProgramAddressSync(
-      [Buffer.from('seed'), publicKey.toBuffer()],
-      program.programId,
-    );
+    // const [pda] = PublicKey.findProgramAddressSync(
+    //   [Buffer.from('seed'), publicKey.toBuffer()],
+    //   program.programId,
+    // );
+    const pda = SVM_STORAGE_ACCOUNT_PUBLIC_KEY;
 
     // Build the instruction
     const ix = await program.methods
@@ -66,7 +67,7 @@ export default function ViewButton() {
     // As workaround to avoid null return data when value is "0"
     // Extract the program return data directly from the logs.
     // Find log entry that starts with "Program return:"
-    const returnPrefix = `Program ${program.programId} `;
+    const returnPrefix = `Program return: ${program.programId} `;
     console.log({ returnPrefix });
 
     const returnLogEntry = transactionLogs?.find((log) => log.startsWith(returnPrefix));
@@ -80,7 +81,7 @@ export default function ViewButton() {
       // Convert the Base64 return data
       const decodedBuffer = Buffer.from(encodedReturnData, 'base64');
       console.log({ decodedBuffer });
-      alert(decodedBuffer[0]);
+      console.log('decodedBuffer ', decodedBuffer[0]);
     }
   };
 
