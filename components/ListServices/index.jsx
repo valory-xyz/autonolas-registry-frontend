@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { Tabs } from 'antd';
 import { useRouter } from 'next/router';
 import { notifyError } from '@autonolas/frontend-library';
@@ -12,17 +12,13 @@ import {
 } from 'common-util/List/ListTable/helpers';
 import { getMyListOnPagination } from 'common-util/ContractUtils/myList';
 import { useHelpers } from 'common-util/hooks';
-import useWalletHook, { useSvmInfo } from 'common-util/hooks/useSvmInfo';
-import idl from 'common-util/AbiAndAddresses/ServiceRegistrySolana.json';
-
-import { clusterApiUrl } from '@solana/web3.js';
-import { SVM_STORAGE_ACCOUNT_PUBLIC_KEY } from 'common-util/Contracts/addresses';
 import {
   getServices,
   getFilteredServices,
   getTotalForAllServices,
   getTotalForMyServices,
 } from './utils';
+import { useGetServices, useGetTotalForAllServices } from './useSvmService';
 
 const ALL_SERVICES = 'all-services';
 const MY_SERVICES = 'my-services';
@@ -61,138 +57,21 @@ const ListServices = () => {
     setList([]);
   }, [router.asPath, hash]);
 
-  // Configure the client to use the local cluster.
-  // const provider = anchor.AnchorProvider.env();
-  // anchor.setProvider(provider);
-
-  const {
-    storagePublicKey, isProgramInstanceReady, getProgramInstance,
-
-  } = useSvmInfo();
-
-  const { program } = useWalletHook();
-
-  const getSvmServiceTotal = useCallback(async () => {
-    // const program = getProgramInstance();
-
-    // console.log({ isProgramInstanceReady, getProgramInstance });
-
-    // if (
-    //   // isWalletConnected
-    //   // &&
-    //   vmType === VM_TYPE.SVM
-    //   && isProgramInstanceReady
-    //   && storagePublicKey
-    //   && program
-    // ) {
-    //   const response = await program.methods
-    //     .totalSupply()
-    //     .accounts({
-    //       dataAccount: storagePublicKey,
-    //       isSigner: false,
-    //     })
-    //     .view();
-    //   return response;
-    // }
-
-    setTimeout(
-      async () => {
-        // const provider = new anchor.Provider(
-        //   new anchor.web3.Connection(
-        //     clusterApiUrl('devnet'),
-        //     'confirmed',
-        //   ),
-        // );
-
-        // // const provider = anchor.Provider.env();
-        // anchor.setProvider(provider);
-
-        // Fetch your program's IDL
-        // const idl = await anchor.Program.fetchIdl('YourProgramId', provider);
-
-        // Initialise your program
-        // const program = new anchor.Program(idl, 'YourProgramId', provider);
-
-        // const PROGRAM_ID = new anchor.web3.PublicKey
-        // ('DrGvsAxY8ehyXjE6qSZXcT5A9pTsUkVm3en5ZQD3Wm5x');
-        // const programOne = new Program(
-        //   idl,
-        //   PROGRAM_ID,
-        //   provider,
-
-        // );
-
-        try {
-          // console.log('checking totalSuppy for solana');
-          // const rrr = await program.methods.totalSupply().accounts({
-          //   dataAccount: SVM_STORAGE_ACCOUNT_PUBLIC_KEY,
-          // }).view();
-
-          // console.log({ rrr });
-        } catch (error) {
-          console.error(error);
-        }
-
-        // const response = program.methods.totalSupply
-        // .accounts({
-        //   dataAccount: storagePublicKey,
-        // }).rpc();
-        // .accounts({
-        //   dataAccount: storagePublicKey,
-        //   isSigner: false,
-        // })
-        // .simulate();
-        // console.log({ response });
-      },
-
-      // ...
-      2000,
-    );
-
-    return 0;
-  }, [getProgramInstance, isProgramInstanceReady, storagePublicKey, vmType]);
+  const { getTotalForAllSvmServices } = useGetTotalForAllServices();
+  const { getServices: getSvmServices } = useGetServices();
 
   // fetch total
   useEffect(() => {
     const getTotal = async () => {
-      console.log('inside getTotal', {
-        account,
-        chainId,
-        currentTab,
-        searchValue,
-        vmType,
-      });
-
       try {
         let totalTemp = null;
-        console.log('inside TRY');
-
         if (currentTab === ALL_SERVICES) {
-          console.log('inside ALL_SERVICES');
-
-          // const provider = anchor.Provider.env();
-          // anchor.setProvider(provider);
-
-          // // Fetch your program's IDL
-          // const idl = await anchor.Program.fetchIdl('YourProgramId', provider);
-
-          // // Initialise your program
-          // const program = new anchor.Program(idl, 'YourProgramId', provider);
-
-          // // Make a read-only request to your program
-          // const data = await program.account.yourAccount.fetch('YourAccountPublicKey');
-
-          // console.log(data);
-
           totalTemp = vmType === VM_TYPE.SVM
-            ? await getSvmServiceTotal()
+            ? await getTotalForAllSvmServices()
             : await getTotalForAllServices();
-
-          console.log({ totalTemp });
         } else if (currentTab === MY_SERVICES && account) {
           // totalTemp = await getTotalForMyServices(account);
-          // TODO
-
+          // TODO: add for svm
           totalTemp = await getTotalForMyServices(account);
         }
 
@@ -209,7 +88,14 @@ const ListServices = () => {
     if (searchValue === '') {
       getTotal();
     }
-  }, [account, chainId, currentTab, searchValue, vmType, getSvmServiceTotal]);
+  }, [
+    account,
+    chainId,
+    currentTab,
+    searchValue,
+    vmType,
+    getTotalForAllSvmServices,
+  ]);
 
   // fetch the list (without search)
   useEffect(() => {
@@ -217,18 +103,12 @@ const ListServices = () => {
       setIsLoading(true);
 
       try {
-        // TODO: remove this once solana is ready
-        if (vmType === VM_TYPE.SVM) {
-          setList([]);
-          setIsLoading(false);
-          return;
-        }
-
-        /* ethereum & its testnets */
         // All services
         if (currentTab === ALL_SERVICES) {
           setList([]);
-          const everyComps = await getServices(total, currentPage);
+          const everyComps = vmType === VM_TYPE.SVM
+            ? await getSvmServices(total)
+            : await getServices(total, currentPage);
           setList(everyComps);
         }
 
@@ -253,6 +133,7 @@ const ListServices = () => {
     if (total && currentPage && !searchValue) {
       getList();
     }
+    /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, [
     account,
     chainId,
