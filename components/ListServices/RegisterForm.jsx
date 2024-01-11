@@ -4,7 +4,8 @@ import useDeepCompareEffect from 'use-deep-compare-effect';
 import PropTypes from 'prop-types';
 import get from 'lodash/get';
 import { Button, Form, Input } from 'antd';
-import { isValidAddress } from '@autonolas/frontend-library';
+import { isValidAddress, notifyError } from '@autonolas/frontend-library';
+import * as web3 from '@solana/web3.js';
 
 import { DEFAULT_SERVICE_CREATION_ETH_TOKEN } from 'util/constants';
 import { commaMessage, DependencyLabel } from 'common-util/List/ListCommon';
@@ -12,10 +13,18 @@ import { FormItemHash } from 'common-util/List/RegisterForm/helpers';
 import { IpfsHashGenerationModal } from 'common-util/List/IpfsHashGenerationModal';
 import { useHelpers } from 'common-util/hooks';
 import { ComplexLabel } from 'common-util/List/styles';
-import { RegisterFooter } from 'components/styles';
 import { RegistryForm } from 'common-util/TransactionHelpers/RegistryForm';
+import { useSvmInfo } from 'common-util/hooks/useSvmInfo';
 
 export const FORM_NAME = 'serviceRegisterForm';
+
+const isValidSolanaPublicKey = (publicKey) => {
+  try {
+    return web3.PublicKey.isOnCurve(new Uint8Array(publicKey));
+  } catch (e) {
+    return false;
+  }
+};
 
 const agentIdValidator = (form, value) => {
   if (!/^\d+(\s*,\s*\d+?)*$/gm.test(value)) {
@@ -48,9 +57,9 @@ const RegisterForm = ({
   formInitialValues,
   ethTokenAddress,
   handleSubmit,
-  handleCancel,
 }) => {
-  const { account, doesNetworkHaveValidServiceManagerToken } = useHelpers();
+  const { account, doesNetworkHaveValidServiceManagerToken, isSvm } = useHelpers();
+  const { wallet } = useSvmInfo();
 
   const [form] = Form.useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -67,6 +76,26 @@ const RegisterForm = ({
   // callback function to get the generated hash from the modal
   const onGenerateHash = (generatedHash) => {
     setFields([{ name: ['hash'], value: generatedHash || null }]);
+  };
+
+  const validateOwnerAddress = async (_, value) => {
+    if (isSvm) {
+      if (isValidSolanaPublicKey(value)) return Promise.resolve();
+
+      return Promise.reject(
+        new Error(
+          `Please input a valid SVM public key for the ${listType} Owner`,
+        ),
+      );
+    }
+
+    if (isValidAddress(value)) return Promise.resolve();
+
+    return Promise.reject(
+      new Error(
+        `Please input a valid address for the ${listType} Owner`,
+      ),
+    );
   };
 
   useDeepCompareEffect(() => {
@@ -122,9 +151,7 @@ const RegisterForm = ({
    * form helper functions
    */
   const onFinish = (values) => {
-    if (account) {
-      handleSubmit(values);
-    }
+    handleSubmit(values);
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -132,6 +159,19 @@ const RegisterForm = ({
   };
 
   const hashValue = form.getFieldValue('hash');
+
+  const isVmWalletAbsent = isSvm ? !wallet.publicKey : !account;
+
+  const handlePrefillAddress = () => {
+    if (isVmWalletAbsent) {
+      notifyError('Connect a wallet');
+      return;
+    }
+
+    form.setFieldsValue(
+      { owner_address: isSvm ? wallet.publicKey : account },
+    );
+  };
 
   return (
     <>
@@ -157,27 +197,20 @@ const RegisterForm = ({
               message: `Please input the address of the ${listType} Owner`,
             },
             () => ({
-              validator(_, value) {
-                if (isValidAddress(value)) return Promise.resolve();
-                return Promise.reject(
-                  new Error(
-                    `Please input a valid address of the ${listType} Owner`,
-                  ),
-                );
-              },
+              validator: validateOwnerAddress,
             }),
           ]}
         >
-          <Input placeholder="0x862..." disabled={isUpdateForm} />
+          <Input placeholder={isSvm ? 'pWK1v…' : '0x862…'} disabled={isUpdateForm} />
         </Form.Item>
 
         <Form.Item className="mb-0">
           <Button
             htmlType="button"
             type="link"
-            onClick={() => form.setFieldsValue({ owner_address: account })}
+            onClick={handlePrefillAddress}
             className="pl-0"
-            disabled={!account}
+            disabled={isVmWalletAbsent}
           >
             Prefill Address
           </Button>
@@ -307,7 +340,7 @@ const RegisterForm = ({
         </Form.Item>
 
         <Form.Item
-          label="Cost of agent instance bond (wei)"
+          label={`Cost of agent instance bond (${isSvm ? 'lamports' : 'wei'})`}
           validateFirst
           name="bonds"
           rules={[
@@ -327,27 +360,17 @@ const RegisterForm = ({
           label="Threshold"
           name="threshold"
           tooltip="Minimum >= 2/3 of the slot number"
+          // TODO: add validation for threshold
           rules={[{ required: true, message: 'Please input the threshold' }]}
         >
           <Input />
         </Form.Item>
 
-        {account ? (
-          <Form.Item>
-            <Button type="primary" htmlType="submit" loading={isLoading}>
-              Submit
-            </Button>
-          </Form.Item>
-        ) : (
-          <RegisterFooter>
-            <p>To mint, connect to wallet</p>
-            {handleCancel && (
-              <Button type="default" onClick={handleCancel}>
-                Cancel
-              </Button>
-            )}
-          </RegisterFooter>
-        )}
+        <Form.Item>
+          <Button type="primary" htmlType="submit" loading={isLoading}>
+            Submit
+          </Button>
+        </Form.Item>
       </RegistryForm>
 
       <IpfsHashGenerationModal
@@ -375,7 +398,6 @@ RegisterForm.propTypes = {
     threshold: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   }),
   handleSubmit: PropTypes.func.isRequired,
-  handleCancel: PropTypes.func.isRequired,
   ethTokenAddress: PropTypes.string,
 };
 
