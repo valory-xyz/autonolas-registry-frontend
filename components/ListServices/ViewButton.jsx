@@ -3,7 +3,9 @@ import { Program, AnchorProvider } from '@project-serum/anchor';
 import idl from 'common-util/AbiAndAddresses/ServiceRegistrySolana.json';
 import {
   // Connection, Keypair,
-  PublicKey, TransactionMessage, VersionedTransaction,
+  PublicKey,
+  TransactionMessage,
+  VersionedTransaction,
 } from '@solana/web3.js';
 import {
   SVM_SERVICE_REGISTRY_PROGRAM_PUBLIC_KEY,
@@ -26,36 +28,31 @@ export default function ViewButton() {
   const onClick = async () => {
     if (!publicKey || !program) return;
 
-    // const [pda] = PublicKey.findProgramAddressSync(
-    //   [Buffer.from('seed'), publicKey.toBuffer()],
-    //   program.programId,
-    // );
-    const pda = SVM_STORAGE_ACCOUNT_PUBLIC_KEY;
-
     // Build the instruction
-    const ix = await program.methods
-      .totalSupply()
-      .accounts({ dataAccount: pda })
+    const instruction = await program.methods
+      // .totalSupply()
+      .getService(1)
+      .accounts({ dataAccount: SVM_STORAGE_ACCOUNT_PUBLIC_KEY })
       .instruction();
 
-    const data = await connection.getLatestBlockhash();
+    const latestBlock = await connection.getLatestBlockhash();
 
-    console.log({ ix, data, program });
+    console.log({ instruction, latestBlock, program });
 
     // Build a versioned transaction with the instruction
-    const msg = new TransactionMessage({
+    const txMessage = new TransactionMessage({
       payerKey: publicKey,
-      recentBlockhash: data.blockhash,
-      instructions: [ix],
+      recentBlockhash: latestBlock.blockhash,
+      instructions: [instruction],
     }).compileToV0Message();
 
-    const tx = new VersionedTransaction(msg);
+    const tx = new VersionedTransaction(txMessage);
 
     // Simulate the transaction.
     const transactionSimulation = await connection.simulateTransaction(tx);
     console.log(transactionSimulation);
 
-    // If value is "0", then return data returns null, so can't use this for bool
+    // If value is "0", then returnData returns null, so can't use this for bool
     if (transactionSimulation.value.returnData?.data) {
       console.log(transactionSimulation.value.returnData.data[0]);
     }
@@ -80,8 +77,9 @@ export default function ViewButton() {
 
       // Convert the Base64 return data
       const decodedBuffer = Buffer.from(encodedReturnData, 'base64');
-      console.log({ decodedBuffer });
-      console.log('decodedBuffer ', decodedBuffer[0]);
+      console.log('decodedBuffer ===>>> ', decodedBuffer);
+      // console.log('decodedBuffer.toString ===>>> ', decodedBuffer);
+      console.log('first decodedBuffer - ', decodedBuffer[0]);
     }
   };
 

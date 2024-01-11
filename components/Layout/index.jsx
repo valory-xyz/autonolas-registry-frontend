@@ -81,7 +81,13 @@ const Layout = ({ children }) => {
                   // eg. /components, /agents, /services will be redirect to
                   // /<chainName>/components, /<chainName>/agents, /<chainName>/services
                   const replacedPath = router.asPath.replace(chainName, value);
-                  router.push(replacedPath);
+
+                  if (vmType !== currentChainInfo.vmType) {
+                    // reload the page if vmType is different
+                    window.open(replacedPath, '_self');
+                  } else {
+                    router.push(replacedPath);
+                  }
                 }
               }
             }}
@@ -116,19 +122,15 @@ Layout.defaultProps = { children: null };
 
 const LayoutWithWalletProvider = (props) => {
   const { vmType } = useHelpers();
-  if (vmType === VM_TYPE.SVM) {
-    return (
-      <ConnectionProvider endpoint={endpoint}>
-        <WalletProvider wallets={wallets} autoConnect>
-          <ReactUIWalletModalProvider>
-            <Layout {...props}>{props.children}</Layout>
-          </ReactUIWalletModalProvider>
-        </WalletProvider>
-      </ConnectionProvider>
-    );
-  }
-
-  return <Layout {...props}>{props.children}</Layout>;
+  return (
+    <ConnectionProvider endpoint={endpoint}>
+      <WalletProvider wallets={wallets} autoConnect={vmType === VM_TYPE.SVM}>
+        <ReactUIWalletModalProvider>
+          <Layout {...props}>{props.children}</Layout>
+        </ReactUIWalletModalProvider>
+      </WalletProvider>
+    </ConnectionProvider>
+  );
 };
 
 LayoutWithWalletProvider.propTypes = { children: PropTypes.element };

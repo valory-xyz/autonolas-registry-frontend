@@ -96,19 +96,23 @@ export const EVM_SUPPORTED_CHAINS = SUPPORTED_CHAINS.map((chain) => {
 /**
  * Solana supported chains
  */
+export const SVM_SOLANA_CHAIN = {
+  id: null,
+  networkDisplayName: 'Solana',
+  networkName: 'solana',
+  vmType: VM_TYPE.SVM,
+};
+
+export const SVM_SOLANA_DEVNET_CHAIN = {
+  id: null,
+  networkDisplayName: 'Solana Devnet',
+  networkName: 'solana-devnet',
+  vmType: VM_TYPE.SVM,
+};
+
 export const SVM_SUPPORTED_CHAINS = [
-  {
-    id: null,
-    networkDisplayName: 'Solana',
-    networkName: 'solana',
-    vmType: VM_TYPE.SVM,
-  },
-  {
-    id: null,
-    networkDisplayName: 'Solana Devnet',
-    networkName: 'solana-devnet',
-    vmType: VM_TYPE.SVM,
-  },
+  { ...SVM_SOLANA_CHAIN },
+  { ...SVM_SOLANA_DEVNET_CHAIN },
 ];
 
 /**
