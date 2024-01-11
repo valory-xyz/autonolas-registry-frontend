@@ -15,6 +15,7 @@ import {
   EVM_SUPPORTED_CHAINS,
   SVM_SUPPORTED_CHAINS,
 } from 'common-util/Login/config';
+import { VM_TYPE } from 'util/constants';
 import prohibitedAddresses from '../../data/prohibited-addresses.json';
 
 export const getModalProvider = () => window?.MODAL_PROVIDER;
@@ -93,10 +94,26 @@ export const getChainIdOrDefaultToMainnet = (chainId) => {
   return x;
 };
 
-export const sendTransaction = (fn, account) => sendTransactionFn(fn, account, {
-  supportedChains: SUPPORTED_CHAINS,
-  rpcUrls: RPC_URLS,
-});
+/**
+ * Sends a transaction using the appropriate method based on the virtual machine type.
+ * For SVM (Solana Virtual Machine), it uses the rpc method on the function.
+ * For EVM (Ethereum Virtual Machine), it uses a generic sendTransaction function.
+ *
+ * @param {Function} fn - The transaction function to be executed.
+ * @param {string} account - The account address that is sending the transaction.
+ *                           Only required when vmType is EVM
+ * @param {string} vmType - The type of virtual machine ('svm' or 'evm).
+ */
+export const sendTransaction = (fn, account, vmType) => {
+  if (vmType === VM_TYPE.SVM) {
+    return fn.rpc();
+  }
+
+  return sendTransactionFn(fn, account, {
+    supportedChains: SUPPORTED_CHAINS,
+    rpcUrls: RPC_URLS,
+  });
+};
 
 export const addressValidator = () => ({
   validator(_, value) {
