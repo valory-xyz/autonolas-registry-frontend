@@ -12,7 +12,6 @@ import {
   VM_TYPE,
 } from 'util/constants';
 import { SVM_SOLANA_DEVNET_CHAIN } from 'common-util/Login/config';
-import ViewButton from 'components/ListServices/ViewButton';
 
 const { Title } = Typography;
 
@@ -225,7 +224,6 @@ export const useExtraTabContent = ({ title, onRegisterClick = () => {} }) => {
         <Button type="primary" onClick={onRegisterClick}>
           Mint
         </Button>
-        <ViewButton />
       </>
     ),
   };

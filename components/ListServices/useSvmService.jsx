@@ -1,17 +1,17 @@
 import { useCallback } from 'react';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { Program, AnchorProvider, BorshCoder } from '@project-serum/anchor';
-import idl from 'common-util/AbiAndAddresses/ServiceRegistrySolana.json';
 import {
   PublicKey,
   TransactionMessage,
   VersionedTransaction,
 } from '@solana/web3.js';
+
+import idl from 'common-util/AbiAndAddresses/ServiceRegistrySolana.json';
 import {
   SVM_SERVICE_REGISTRY_PROGRAM_PUBLIC_KEY,
   SVM_STORAGE_ACCOUNT_PUBLIC_KEY,
 } from 'common-util/Contracts/addresses';
-import { Button } from 'antd';
 
 const programId = new PublicKey(SVM_SERVICE_REGISTRY_PROGRAM_PUBLIC_KEY);
 
@@ -49,7 +49,7 @@ const useSvmInfo = () => {
   return { publicKey, connection, program };
 };
 
-const useSvmData = () => {
+export const useSvmData = () => {
   const { publicKey, connection, program } = useSvmInfo();
 
   const getData = useCallback(
@@ -62,40 +62,43 @@ const useSvmData = () => {
 
       const latestBlock = await connection.getLatestBlockhash();
 
+      // Build the instruction
       const instruction = await program.methods[fn](...(fnArgs || []))
         .accounts({ dataAccount: SVM_STORAGE_ACCOUNT_PUBLIC_KEY })
         .instruction();
 
+      // Build a versioned transaction with the instruction
       const txMessage = new TransactionMessage({
         payerKey: publicKey,
         recentBlockhash: latestBlock.blockhash,
         instructions: [instruction],
       }).compileToV0Message();
-
       const tx = new VersionedTransaction(txMessage);
 
+      // Simulate the transaction.
       const transactionSimulation = await connection.simulateTransaction(tx);
 
+      // Log all the transaction logs.
       const transactionLogs = transactionSimulation.value.logs;
 
+      // NOTE: If value is "0", then returnData returns null, so can't use this for bool
+      // As workaround to avoid null return data when value is "0"
+      // Extract the program return data directly from the logs.
+      // Find log entry that starts with "Program return:"
       const returnPrefix = `Program return: ${program.programId} `;
       const returnLogEntry = transactionLogs?.find((log) => log.startsWith(returnPrefix));
 
-      if (returnLogEntry) {
-        const encodedReturnData = returnLogEntry.slice(returnPrefix.length);
-        const decodedBuffer = Buffer.from(encodedReturnData, 'base64');
+      // If no return log entry, then return null
+      if (!returnLogEntry) return null;
 
-        const finalResult = deseralizeProgramData(
-          decodedBuffer,
-          decodeTypeName,
-        );
+      // Slice out the prefix to get the base64 return data
+      // and Convert the Base64 return data
+      const encodedReturnData = returnLogEntry.slice(returnPrefix.length);
+      const decodedBuffer = Buffer.from(encodedReturnData, 'base64');
 
-        window.console.log({ finalResult }); // TODO: remove
-
-        return finalResult;
-      }
-
-      return null;
+      // Deserialize the return data
+      const finalResult = deseralizeProgramData(decodedBuffer, decodeTypeName);
+      return finalResult;
     },
     [publicKey, program, connection],
   );
@@ -103,12 +106,12 @@ const useSvmData = () => {
   return { getData };
 };
 
-export default function ViewButton() {
-  const { getData } = useSvmData();
+// export default function ViewButton() {
+//   const { getData } = useSvmData();
 
-  const handleClick = useCallback(() => {
-    getData('getService', [1], 'Service');
-  }, [getData]);
+//   const handleClick = useCallback(() => {
+//     getData('getService', [1], 'Service');
+//   }, [getData]);
 
-  return <Button onClick={handleClick}>Load Service Total</Button>;
-}
+//   return <Button onClick={handleClick}>Load Service Total</Button>;
+// }
