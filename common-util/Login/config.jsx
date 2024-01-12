@@ -135,4 +135,25 @@ export const getSvmClusterName = (networkName) => {
 export const ALL_SUPPORTED_CHAINS = [
   ...EVM_SUPPORTED_CHAINS,
   ...SVM_SUPPORTED_CHAINS,
-];
+].sort(
+  (a, b) => {
+    // sort in this order
+    const chainOrder = [
+      'ethereum',
+      'gnosis',
+      'polygon',
+      'solana',
+      'goerli',
+      'gnosis-chiado',
+      'polygon-mumbai',
+      'solana-devnet',
+    ];
+
+    const aIndex = chainOrder.indexOf(a.networkName);
+    const bIndex = chainOrder.indexOf(b.networkName);
+
+    if (aIndex === bIndex) return 0;
+    if (aIndex > bIndex) return 1;
+    return -1;
+  },
+);
