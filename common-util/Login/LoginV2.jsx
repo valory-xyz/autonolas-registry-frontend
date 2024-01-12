@@ -19,10 +19,12 @@ import {
   useScreen,
 } from '@autonolas/frontend-library';
 
+import { VM_TYPE } from 'util/constants';
 import { setUserBalance } from 'store/setup/actions';
 import { isAddressProhibited } from 'common-util/functions';
 import { useHelpers } from 'common-util/hooks';
 import { YellowButton } from 'common-util/YellowButton';
+import SolanaWallet from 'common-util/Login/SolanaWallet';
 import { projectId, ethereumClient } from './config';
 
 const LoginContainer = styled.div`
@@ -33,6 +35,7 @@ const LoginContainer = styled.div`
 `;
 
 export const LoginV2 = ({
+  vmType,
   onConnect: onConnectCb,
   onDisconnect: onDisconnectCb,
   theme = 'light',
@@ -68,7 +71,7 @@ export const LoginV2 = ({
     if (chainId && balance?.formatted) {
       dispatch(setUserBalance(balance.formatted));
     }
-  }, [chainId, balance?.formatted]);
+  }, [chainId, balance?.formatted, dispatch]);
 
   useEffect(() => {
     const getData = async () => {
@@ -123,7 +126,7 @@ export const LoginV2 = ({
       notifyError(<CannotConnectAddressOfacError />);
       if (onDisconnectCb) onDisconnectCb();
     }
-  }, [address]);
+  }, [address, disconnect, onDisconnectCb]);
 
   const onSwitchNetwork = useCallback(async () => {
     try {
@@ -143,39 +146,47 @@ export const LoginV2 = ({
 
   return (
     <LoginContainer>
-      {!hideWrongNetwork && (
-        <YellowButton
-          loading={isLoading}
-          type="default"
-          onClick={onSwitchNetwork}
-          icon={<SwapOutlined />}
-        >
-          {!isMobile && 'Switch network'}
-        </YellowButton>
+      {vmType === VM_TYPE.SVM ? (
+        <SolanaWallet />
+      ) : (
+        <>
+          {!hideWrongNetwork && (
+            <YellowButton
+              loading={isLoading}
+              type="default"
+              onClick={onSwitchNetwork}
+              icon={<SwapOutlined />}
+            >
+              {!isMobile && 'Switch network'}
+            </YellowButton>
+          )}
+          &nbsp;&nbsp;
+          <Web3Button avatar="hide" balance="hide" />
+          <Web3Modal
+            projectId={projectId}
+            ethereumClient={ethereumClient}
+            themeMode={theme}
+            themeVariables={{
+              '--w3m-button-border-radius': '5px',
+              '--w3m-accent-color': COLOR.PRIMARY,
+              '--w3m-background-color': COLOR.PRIMARY,
+            }}
+          />
+        </>
       )}
-      &nbsp;&nbsp;
-      <Web3Button avatar="hide" balance="hide" />
-      <Web3Modal
-        projectId={projectId}
-        ethereumClient={ethereumClient}
-        themeMode={theme}
-        themeVariables={{
-          '--w3m-button-border-radius': '5px',
-          '--w3m-accent-color': COLOR.PRIMARY,
-          '--w3m-background-color': COLOR.PRIMARY,
-        }}
-      />
     </LoginContainer>
   );
 };
 
 LoginV2.propTypes = {
+  vmType: PropTypes.string,
   onConnect: PropTypes.func,
   onDisconnect: PropTypes.func,
   theme: PropTypes.string,
 };
 
 LoginV2.defaultProps = {
+  vmType: VM_TYPE.EVM,
   onConnect: undefined,
   onDisconnect: undefined,
   theme: 'light',
