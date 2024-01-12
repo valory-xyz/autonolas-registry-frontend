@@ -35,6 +35,8 @@ const getCspHeader = (browserName) => {
     'wss://api.devnet.solana.com/',
     'https://api.mainnet-beta.solana.com/',
     'wss://api.mainnet-beta.solana.com/',
+    'https://holy-convincing-bird.solana-mainnet.quiknode.pro/',
+    'wss://holy-convincing-bird.solana-mainnet.quiknode.pro',
   ];
 
   if (isDev) {

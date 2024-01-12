@@ -4,6 +4,8 @@ import { Loader, useScreen } from '@autonolas/frontend-library';
 
 import { TOTAL_VIEW_COUNT } from 'util/constants';
 import { ListEmptyMessage } from 'common-util/List/ListCommon';
+import { useHelpers } from 'common-util/hooks';
+import { useSvmConnectivity } from 'common-util/hooks/useSvmConnectivity';
 import { getData, getTableColumns } from './helpers';
 
 const ListTable = ({
@@ -19,6 +21,8 @@ const ListTable = ({
   onUpdateClick,
   extra,
 }) => {
+  const { chainName, isSvm } = useHelpers();
+  const { publicKey } = useSvmConnectivity();
   /**
    * no pagination on search as we won't know total beforehand
    */
@@ -27,12 +31,16 @@ const ListTable = ({
 
   const { scrollX } = extra;
 
-  if (isLoading) {
+  // if svm & no public key, show Loader with connect wallet message
+  const hasNoSvmPublicKey = isSvm ? !publicKey : false;
+  const isAccountRequiredForList = isAccountRequired || hasNoSvmPublicKey;
+
+  if (isLoading || hasNoSvmPublicKey) {
     return (
       <Loader
-        isAccountRequired={isAccountRequired}
+        isAccountRequired={isAccountRequiredForList}
         notConnectedMessage={
-          isAccountRequired ? `To see your ${type}s, connect wallet` : ''
+          isAccountRequiredForList ? `To see your ${type}s, connect wallet` : ''
         }
       />
     );
@@ -42,6 +50,7 @@ const ListTable = ({
     onViewClick,
     onUpdateClick,
     isMobile,
+    chainName,
   });
   const dataSource = getData(type, list, { current: currentPage });
   const pagination = {
