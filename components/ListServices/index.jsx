@@ -18,7 +18,7 @@ import {
   getTotalForAllServices,
   getTotalForMyServices,
 } from './utils';
-import { useGetServices, useGetTotalForAllServices } from './useSvmService';
+import { useServiceInfo } from './useSvmService';
 
 const ALL_SERVICES = 'all-services';
 const MY_SERVICES = 'my-services';
@@ -57,22 +57,26 @@ const ListServices = () => {
     setList([]);
   }, [router.asPath, hash]);
 
-  const { getTotalForAllSvmServices } = useGetTotalForAllServices();
-  const { getServices: getSvmServices } = useGetServices();
+  const {
+    getTotalForAllSvmServices,
+    getTotalForMySvmServices,
+    getSvmServices,
+  } = useServiceInfo();
 
   // fetch total
   useEffect(() => {
     const getTotal = async () => {
       try {
         let totalTemp = null;
+
         if (currentTab === ALL_SERVICES) {
           totalTemp = vmType === VM_TYPE.SVM
-            ? await getTotalForAllSvmServices()
+            ? await getTotalForAllSvmServices(account)
             : await getTotalForAllServices();
         } else if (currentTab === MY_SERVICES && account) {
-          // totalTemp = await getTotalForMyServices(account);
-          // TODO: add for svm
-          totalTemp = await getTotalForMyServices(account);
+          totalTemp = vmType === VM_TYPE.SVM
+            ? await getTotalForMySvmServices()
+            : await getTotalForMyServices(account);
         }
 
         setTotal(Number(totalTemp));
@@ -95,6 +99,8 @@ const ListServices = () => {
     searchValue,
     vmType,
     getTotalForAllSvmServices,
+    getTotalForMySvmServices,
+    getSvmServices,
   ]);
 
   // fetch the list (without search)
@@ -131,6 +137,13 @@ const ListServices = () => {
     };
 
     if (total && currentPage && !searchValue) {
+      // if svm, then we need to fetch the list only once
+      // as we fetch the entire list in one go
+      if (vmType === VM_TYPE.SVM && list.length > 0) {
+        setIsLoading(false);
+        return;
+      }
+
       getList();
     }
     /* eslint-disable-next-line react-hooks/exhaustive-deps */

@@ -83,6 +83,7 @@ export const getTableColumns = (
         key: 'owner',
         width: 200,
         render: (text) => {
+          // TODO: move to autonolas/frontend-library
           const isSolana = chainName && chainName.includes(VM_TYPE.SVM);
 
           if (isSolana) {

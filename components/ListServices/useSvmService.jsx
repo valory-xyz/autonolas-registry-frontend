@@ -37,7 +37,7 @@ const deseralizeProgramData = (serializedValue, decodeTypeName) => {
  * hook to get svm info
  * @returns {object} publicKey, connection, program
  */
-const useSvmInfo = () => {
+const useSvmConnectivity = () => {
   const { connection } = useConnection();
   const { publicKey, wallet } = useWallet();
 
@@ -50,8 +50,8 @@ const useSvmInfo = () => {
   return { publicKey, connection, program };
 };
 
-const useSvmData = () => {
-  const { publicKey, connection, program } = useSvmInfo();
+const useSvmDataFetch = () => {
+  const { publicKey, connection, program } = useSvmConnectivity();
 
   const getTransactionLogs = useCallback(
     async (fn, fnArgs) => {
@@ -138,8 +138,8 @@ const useSvmData = () => {
 
 // *********** HOOKS TO FETCH SERVICES DATA ***********
 
-export const useGetTotalForAllServices = () => {
-  const { getData } = useSvmData();
+const useGetTotalForAllServices = () => {
+  const { getData } = useSvmDataFetch();
 
   const getTotalForAllSvmServices = useCallback(async () => {
     const total = await getData('totalSupply', [], null, { noDecode: true });
@@ -147,6 +147,22 @@ export const useGetTotalForAllServices = () => {
   }, [getData]);
 
   return { getTotalForAllSvmServices };
+};
+
+const useGetTotalForMyServices = () => {
+  const { getData } = useSvmDataFetch();
+
+  const getTotalForMySvmServices = useCallback(
+    async (account) => {
+      const total = await getData('balanceOf', [account], null, {
+        noDecode: true,
+      });
+      return total;
+    },
+    [getData],
+  );
+
+  return { getTotalForMySvmServices };
 };
 
 /**
@@ -161,23 +177,23 @@ export const useGetTotalForAllServices = () => {
  * @param {Service}
  *
  */
-const transformServiceData = (e) => {
+const transformServiceData = (e, index) => {
   const owner = e.serviceOwner?.toString();
   const stateName = Object.keys(e.state || {})[0];
 
-  // TODO: transform more data once start with service
-  //  details page
+  // TODO: transform more data for service details page
   return {
     ...e,
+    id: index + 1,
     owner,
     state: SERVICE_STATE_KEY_MAP[stateName],
   };
 };
 
-export const useGetServices = () => {
-  const { getData } = useSvmData();
+const useGetServices = () => {
+  const { getData } = useSvmDataFetch();
 
-  const getServices = useCallback(
+  const getSvmServices = useCallback(
     async (total) => {
       const promises = [];
       for (let i = 1; i <= total; i += 1) {
@@ -190,5 +206,17 @@ export const useGetServices = () => {
     [getData],
   );
 
-  return { getServices };
+  return { getSvmServices };
+};
+
+export const useServiceInfo = () => {
+  const { getTotalForAllSvmServices } = useGetTotalForAllServices();
+  const { getTotalForMySvmServices } = useGetTotalForMyServices();
+  const { getSvmServices } = useGetServices();
+
+  return {
+    getTotalForAllSvmServices,
+    getTotalForMySvmServices,
+    getSvmServices,
+  };
 };
