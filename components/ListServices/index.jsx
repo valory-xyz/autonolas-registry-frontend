@@ -235,6 +235,7 @@ const ListServices = () => {
         {
           key: MY_SERVICES,
           label: 'My Services',
+          disabled: isSvm,
           children: (
             <ListTable
               {...tableCommonProps}
