@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import {
-  Input, Space, Button, Typography,
+  Input, Space, Button, Typography, Tooltip,
 } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { AddressLink } from '@autonolas/frontend-library';
@@ -209,6 +209,12 @@ export const useExtraTabContent = ({
     setSearchValue('');
   };
 
+  const mintButton = (
+    <Button type="primary" onClick={onRegisterClick} disabled={isSvm}>
+      Mint
+    </Button>
+  );
+
   const extraTabContent = {
     left: <Title level={2}>{title}</Title>,
     right: (
@@ -222,6 +228,7 @@ export const useExtraTabContent = ({
             onChange={(e) => setValue(e.target.value)}
           />
         )}
+
         <Button
           ghost
           type="primary"
@@ -229,9 +236,12 @@ export const useExtraTabContent = ({
         >
           Search
         </Button>
-        <Button type="primary" onClick={onRegisterClick}>
-          Mint
-        </Button>
+
+        {isSvm ? (
+          <Tooltip title="Coming soon">{mintButton}</Tooltip>
+        ) : (
+          mintButton
+        )}
       </>
     ),
   };
