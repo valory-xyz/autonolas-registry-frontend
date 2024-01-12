@@ -1,4 +1,7 @@
 import { useRouter } from 'next/router';
+import { Result } from 'antd';
+
+import { VM_TYPE } from 'util/constants';
 import Details from 'common-util/Details';
 import { useHelpers } from 'common-util/hooks';
 import {
@@ -11,7 +14,16 @@ import {
 const Service = () => {
   const router = useRouter();
   const id = router?.query?.id;
-  const { links } = useHelpers();
+  const { links, vmType } = useHelpers();
+
+  if (vmType === VM_TYPE.SVM) {
+    return (
+      <Result
+        status="warning"
+        title="This page is not available for SVM services yet!"
+      />
+    );
+  }
 
   return (
     <Details
