@@ -40,7 +40,11 @@ const ListTable = ({
       <Loader
         isAccountRequired={isAccountRequiredForList}
         notConnectedMessage={
-          isAccountRequiredForList ? `To see your ${type}s, connect wallet` : ''
+          isAccountRequiredForList
+            ? `To see your ${type}s, ${
+              isSvm ? 'connect a wallet that holds SOL' : 'connect wallet'
+            }`
+            : ''
         }
       />
     );
