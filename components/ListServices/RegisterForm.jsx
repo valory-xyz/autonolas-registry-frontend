@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import get from 'lodash/get';
 import { Button, Form, Input } from 'antd';
 import { isValidAddress, notifyError } from '@autonolas/frontend-library';
-import * as web3 from '@solana/web3.js';
+import { PublicKey } from '@solana/web3.js';
 
 import { DEFAULT_SERVICE_CREATION_ETH_TOKEN } from 'util/constants';
 import { commaMessage, DependencyLabel } from 'common-util/List/ListCommon';
@@ -20,7 +20,7 @@ export const FORM_NAME = 'serviceRegisterForm';
 
 const isValidSolanaPublicKey = (publicKey) => {
   try {
-    return web3.PublicKey.isOnCurve(new Uint8Array(publicKey));
+    return PublicKey.isOnCurve(new Uint8Array(publicKey));
   } catch (e) {
     return false;
   }

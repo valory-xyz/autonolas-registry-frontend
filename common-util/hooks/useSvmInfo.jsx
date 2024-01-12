@@ -3,7 +3,7 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { Program, AnchorProvider } from '@project-serum/anchor';
 import { PublicKey } from '@solana/web3.js';
 
-import { SVM } from 'util/constants';
+import { SOLANA_CHAIN_NAMES } from 'util/constants';
 import idl from 'common-util/AbiAndAddresses/ServiceRegistrySolana.json';
 import {
   SOLANA_ADDRESSES,
@@ -21,7 +21,9 @@ export const useSvmConnectivity = () => {
   const { chainName } = useHelpers();
 
   const solanaAddresses = useMemo(
-    () => (chainName === SVM.SOLANA ? SOLANA_ADDRESSES : SOLANA_DEVNET_ADDRESSES),
+    () => (chainName === SOLANA_CHAIN_NAMES.MAINNET
+      ? SOLANA_ADDRESSES
+      : SOLANA_DEVNET_ADDRESSES),
     [chainName],
   );
 

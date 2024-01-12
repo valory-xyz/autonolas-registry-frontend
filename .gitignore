@@ -5,3 +5,4 @@ coverage
 .env
 ganache_data
 .unlighthouse
+.env.local

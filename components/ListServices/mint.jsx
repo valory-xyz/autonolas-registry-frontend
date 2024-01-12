@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Typography } from 'antd';
 import { notifyError, notifySuccess } from '@autonolas/frontend-library';
+import { BN } from '@project-serum/anchor';
 
 import {
   DEFAULT_SERVICE_CREATION_ETH_TOKEN,
@@ -17,7 +18,6 @@ import { sendTransaction } from 'common-util/functions';
 import { checkIfERC721Receive } from 'common-util/functions/requests';
 import { useHelpers } from 'common-util/hooks';
 import { useSvmConnectivity } from 'common-util/hooks/useSvmInfo';
-import { BN } from '@project-serum/anchor';
 import RegisterForm from './RegisterForm';
 import { getAgentParams } from './utils';
 import { FormContainer } from '../styles';
@@ -86,7 +86,7 @@ const MintService = () => {
     let fn;
 
     if (vmType === VM_TYPE.SVM) {
-      fn = await buildSvmFn(values);
+      fn = buildSvmFn(values);
     } else {
       try {
         const isValid = await checkIfERC721Receive(
@@ -104,7 +104,6 @@ const MintService = () => {
 
       const contract = getServiceManagerContract();
 
-      // really not super clear on what's going on here
       const commonParams = [
         `0x${values.hash}`,
         convertStringToArray(values.agent_ids),
@@ -142,7 +141,6 @@ const MintService = () => {
 
   return (
     <>
-
       <FormContainer>
         <Title level={2}>Mint Service</Title>
         <RegisterForm

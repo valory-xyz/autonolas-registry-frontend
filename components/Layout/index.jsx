@@ -7,14 +7,13 @@ import {
   ConnectionProvider,
   WalletProvider,
 } from '@solana/wallet-adapter-react';
-import * as web3 from '@solana/web3.js';
-import * as wallet from '@solana/wallet-adapter-wallets';
+import { PhantomWalletAdapter } from '@solana/wallet-adapter-wallets';
+import { web3 } from '@project-serum/anchor';
 
-import { PAGES_TO_LOAD_WITHOUT_CHAINID, SVM, VM_TYPE } from 'util/constants';
+import { PAGES_TO_LOAD_WITHOUT_CHAINID, VM_TYPE } from 'util/constants';
 import { useHelpers } from 'common-util/hooks';
-import { ALL_SUPPORTED_CHAINS } from 'common-util/Login/config';
+import { ALL_SUPPORTED_CHAINS, getSvmClusterName } from 'common-util/Login/config';
 import { useHandleRoute } from 'common-util/hooks/useHandleRoute';
-import { useMemo } from 'react';
 import { LogoSvg, LogoIconSvg } from '../Logos';
 import {
   CustomLayout,
@@ -24,7 +23,7 @@ import {
   SelectContainer,
 } from './styles';
 
-const wallets = [new wallet.PhantomWalletAdapter()];
+const wallets = [new PhantomWalletAdapter()];
 
 const Login = dynamic(() => import('../Login'), { ssr: false });
 const NavigationMenu = dynamic(() => import('./Menu'), { ssr: false });
@@ -121,12 +120,7 @@ Layout.defaultProps = { children: null };
 const LayoutWithWalletProvider = (props) => {
   const { chainName, vmType } = useHelpers();
 
-  const cluster = useMemo(() => {
-    if (chainName === SVM.SOLANA_DEVNET) return 'devnet';
-    if (chainName === SVM.SOLANA) return 'mainnet-beta';
-    return 'mainnet-beta';
-  }, [chainName]);
-
+  const cluster = getSvmClusterName(chainName);
   const endpoint = web3.clusterApiUrl(cluster);
 
   return (
