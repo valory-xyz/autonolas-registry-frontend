@@ -13,7 +13,7 @@ import { web3 } from '@project-serum/anchor';
 
 import { PAGES_TO_LOAD_WITHOUT_CHAINID, VM_TYPE } from 'util/constants';
 import { useHelpers } from 'common-util/hooks';
-import { ALL_SUPPORTED_CHAINS, getSvmClusterName } from 'common-util/Login/config';
+import { ALL_SUPPORTED_CHAINS, getSvmClusterName, getSvmEndpoint } from 'common-util/Login/config';
 import { useHandleRoute } from 'common-util/hooks/useHandleRoute';
 import { LogoSvg, LogoIconSvg } from '../Logos';
 import {
@@ -115,8 +115,7 @@ Layout.defaultProps = { children: null };
 const LayoutWithWalletProvider = (props) => {
   const { chainName } = useHelpers();
 
-  const cluster = getSvmClusterName(chainName);
-  const endpoint = web3.clusterApiUrl(cluster);
+  const endpoint = getSvmEndpoint(chainName);
 
   return (
     <ConnectionProvider endpoint={endpoint}>

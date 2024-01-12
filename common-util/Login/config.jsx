@@ -17,6 +17,7 @@ import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 
 import { SOLANA_CHAIN_NAMES, VM_TYPE } from 'util/constants';
 import { RPC_URLS } from 'common-util/Contracts';
+import { web3 } from '@project-serum/anchor';
 
 export const projectId = process.env.NEXT_PUBLIC_WALLET_PROJECT_ID;
 
@@ -117,12 +118,17 @@ const DEFAULT_SVM_CLUSTER = 'mainnet-beta';
 
 /**
  * Get the cluster name for a given Solana network name.
+ * If it's mainnet, directly return the endpoint at process.env.NEXT_PUBLIC_SOLANA_MAINNET_URL.
+ * Otherwise, return web3.clusterApiUrl and pass in the devnet cluster name.
  * @param {string} networkName - The network name to get the cluster for.
- * @returns {string} The cluster name associated with the network name.
+ * @returns {string} The endpoint URL associated with the network name.
  */
-export const getSvmClusterName = (networkName) => {
+export const getSvmEndpoint = (networkName) => {
   const chain = SVM_SUPPORTED_CHAINS.find((c) => c.networkName === networkName);
-  return chain ? chain.clusterName : DEFAULT_SVM_CLUSTER;
+  if (chain?.networkName === SOLANA_CHAIN_NAMES.MAINNET) {
+    return process.env.NEXT_PUBLIC_SOLANA_MAINNET_BETA_URL;
+  }
+  return chain ? web3.clusterApiUrl(chain.clusterName) : web3.clusterApiUrl(DEFAULT_SVM_CLUSTER);
 };
 
 /**
