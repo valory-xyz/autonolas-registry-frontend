@@ -4,12 +4,10 @@ import {
   WalletMultiButton,
 } from '@solana/wallet-adapter-react-ui';
 
-require('@solana/wallet-adapter-react-ui/styles.css');
+import '@solana/wallet-adapter-react-ui/styles.css';
 
-const SolanaWallet = () => (
+export const SolanaWallet = () => (
   <ReactUIWalletModalProvider>
     <WalletMultiButton />
   </ReactUIWalletModalProvider>
 );
-
-export default SolanaWallet;
