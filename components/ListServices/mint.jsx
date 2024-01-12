@@ -135,7 +135,7 @@ const MintService = () => {
       .catch((e) => {
         setError(e);
         console.error(e);
-        notifyError('Couldn\'t mint service');
+        notifyError("Couldn't mint service");
       })
       .finally(() => {
         setIsMinting(false);
