@@ -197,7 +197,11 @@ export const getData = (type, rawData, { current }) => {
 /**
  * tab content
  */
-export const useExtraTabContent = ({ title, onRegisterClick = () => {} }) => {
+export const useExtraTabContent = ({
+  title,
+  onRegisterClick = () => {},
+  isSvm = false,
+}) => {
   const [searchValue, setSearchValue] = useState('');
   const [value, setValue] = useState('');
   const clearSearch = () => {
@@ -209,12 +213,15 @@ export const useExtraTabContent = ({ title, onRegisterClick = () => {} }) => {
     left: <Title level={2}>{title}</Title>,
     right: (
       <>
-        <Input
-          prefix={<SearchOutlined className="site-form-item-icon" />}
-          placeholder="Owner or Hash"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-        />
+        {/* TODO: hiding search util feature is introduced */}
+        {isSvm ? null : (
+          <Input
+            prefix={<SearchOutlined className="site-form-item-icon" />}
+            placeholder="Owner or Hash"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+          />
+        )}
         <Button
           ghost
           type="primary"

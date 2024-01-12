@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Tabs } from 'antd';
 import { useRouter } from 'next/router';
 import { notifyError } from '@autonolas/frontend-library';
@@ -12,6 +12,7 @@ import {
 } from 'common-util/List/ListTable/helpers';
 import { getMyListOnPagination } from 'common-util/ContractUtils/myList';
 import { useHelpers } from 'common-util/hooks';
+import { useSvmConnectivity } from 'common-util/hooks/useSvmInfo';
 import {
   getServices,
   getFilteredServices,
@@ -30,9 +31,15 @@ const ListServices = () => {
     isMyTab(hash) ? MY_SERVICES : ALL_SERVICES,
   );
 
+  const { publicKey } = useSvmConnectivity();
   const {
-    account, chainName, links, vmType,
+    account: ethAccount, chainName, links, vmType, isSvm,
   } = useHelpers();
+
+  const account = useMemo(() => {
+    if (isSvm) return publicKey;
+    return ethAccount;
+  }, [ethAccount, isSvm, publicKey]);
 
   /**
    * extra tab content & view click
@@ -40,6 +47,7 @@ const ListServices = () => {
   const { searchValue, extraTabContent, clearSearch } = useExtraTabContent({
     title: 'Services',
     onRegisterClick: () => router.push(links.MINT_SERVICE),
+    isSvm,
   });
   const onViewClick = (id) => router.push(`${links.SERVICES}/${id}`);
 
@@ -75,7 +83,7 @@ const ListServices = () => {
             : await getTotalForAllServices();
         } else if (currentTab === MY_SERVICES && account) {
           totalTemp = vmType === VM_TYPE.SVM
-            ? await getTotalForMySvmServices()
+            ? await getTotalForMySvmServices(account)
             : await getTotalForMyServices(account);
         }
 
