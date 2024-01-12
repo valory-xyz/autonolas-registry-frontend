@@ -73,7 +73,13 @@ export const EXTRA_COLORS = {
   YELLOW_SECONDARY: '#fefce8', // tailwind orange.50
 };
 
+// These constants define the types of virtual machines supported
 export const VM_TYPE = {
-  EVM: 'evm',
-  SVM: 'svm',
+  EVM: 'evm', // Ethereum Virtual Machine
+  SVM: 'svm', // Solana Virtual Machine
+};
+
+export const SVM = {
+  SOLANA: 'solana',
+  SOLANA_DEVNET: 'solana-devnet',
 };

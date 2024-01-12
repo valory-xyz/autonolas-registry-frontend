@@ -129,8 +129,15 @@ export const FALLBACK_HANDLER = {
 };
 
 /**
- * SOLANA service addresses
+ * SVM addresses
  */
 
-export const SVM_STORAGE_ACCOUNT_PUBLIC_KEY = '2afUAb8aRfcUentfGone5L2J5DeKz9PsSj4zs1WZREUf';
-export const SVM_SERVICE_REGISTRY_PROGRAM_PUBLIC_KEY = 'AU428Z7KbjRMjhmqWmQwUta2AvydbpfEZNBh8dStHTDi';
+export const SOLANA_ADDRESSES = {
+  serviceRegistry: 'AU428Z7KbjRMjhmqWmQwUta2AvydbpfEZNBh8dStHTDi',
+  storageAccount: 'AjHVkc5XV7wiH3KyqznfCGvMofmBQL8agF6HxCjn6H1R',
+};
+
+export const SOLANA_DEVNET_ADDRESSES = {
+  serviceRegistry: 'AU428Z7KbjRMjhmqWmQwUta2AvydbpfEZNBh8dStHTDi',
+  storageAccount: '2afUAb8aRfcUentfGone5L2J5DeKz9PsSj4zs1WZREUf',
+};

@@ -7,14 +7,15 @@ import {
   VersionedTransaction,
 } from '@solana/web3.js';
 
-import { SERVICE_STATE_KEY_MAP } from 'util/constants';
+import { SERVICE_STATE_KEY_MAP, SVM } from 'util/constants';
 import idl from 'common-util/AbiAndAddresses/ServiceRegistrySolana.json';
 import {
-  SVM_SERVICE_REGISTRY_PROGRAM_PUBLIC_KEY,
-  SVM_STORAGE_ACCOUNT_PUBLIC_KEY,
+  SOLANA_ADDRESSES,
+  SOLANA_DEVNET_ADDRESSES,
 } from 'common-util/Contracts/addresses';
+import { useHelpers } from 'common-util/hooks';
 
-const programId = new PublicKey(SVM_SERVICE_REGISTRY_PROGRAM_PUBLIC_KEY);
+const programId = new PublicKey(SOLANA_ADDRESSES.serviceRegistry);
 
 /**
  * deseralize the program data
@@ -52,6 +53,7 @@ const useSvmConnectivity = () => {
 
 const useSvmDataFetch = () => {
   const { publicKey, connection, program } = useSvmConnectivity();
+  const { chainName } = useHelpers();
 
   const getTransactionLogs = useCallback(
     async (fn, fnArgs) => {
@@ -63,10 +65,13 @@ const useSvmDataFetch = () => {
         if (!publicKey || !program) return null;
 
         const latestBlock = await connection.getLatestBlockhash();
+        const dataAccount = chainName === SVM.SOLANA
+          ? SOLANA_ADDRESSES.storageAccount
+          : SOLANA_DEVNET_ADDRESSES.storageAccount;
 
         // Build the instruction
         const instruction = await program.methods[fn](...(fnArgs || []))
-          .accounts({ dataAccount: SVM_STORAGE_ACCOUNT_PUBLIC_KEY })
+          .accounts({ dataAccount })
           .instruction();
 
         // Build a versioned transaction with the instruction
@@ -89,7 +94,7 @@ const useSvmDataFetch = () => {
         throw error;
       }
     },
-    [connection, program, publicKey],
+    [connection, program, publicKey, chainName],
   );
 
   /**

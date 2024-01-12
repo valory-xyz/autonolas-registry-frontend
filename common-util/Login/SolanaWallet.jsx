@@ -1,9 +1,6 @@
 /* eslint-disable jest/require-hook */
 import {
   WalletModalProvider as ReactUIWalletModalProvider,
-  // WalletConnectButton,
-  // WalletDisconnectButton,
-  // WalletModalButton,
   WalletMultiButton,
 } from '@solana/wallet-adapter-react-ui';
 

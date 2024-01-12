@@ -146,21 +146,21 @@ export const LoginV2 = ({
 
   return (
     <LoginContainer>
-      {!hideWrongNetwork && (
-        <YellowButton
-          loading={isLoading}
-          type="default"
-          onClick={onSwitchNetwork}
-          icon={<SwapOutlined />}
-        >
-          {!isMobile && 'Switch network'}
-        </YellowButton>
-      )}
-      &nbsp;&nbsp;
       {vmType === VM_TYPE.SVM ? (
         <SolanaWallet />
       ) : (
         <>
+          {!hideWrongNetwork && (
+            <YellowButton
+              loading={isLoading}
+              type="default"
+              onClick={onSwitchNetwork}
+              icon={<SwapOutlined />}
+            >
+              {!isMobile && 'Switch network'}
+            </YellowButton>
+          )}
+          &nbsp;&nbsp;
           <Web3Button avatar="hide" balance="hide" />
           <Web3Modal
             projectId={projectId}
