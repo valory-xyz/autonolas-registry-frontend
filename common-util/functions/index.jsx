@@ -7,7 +7,9 @@ import {
   sendTransaction as sendTransactionFn,
   isL1OnlyNetwork as isL1OnlyNetworkFn,
   notifyWarning,
+  notifyError,
 } from '@autonolas/frontend-library';
+import { PublicKey } from '@solana/web3.js';
 
 import { RPC_URLS } from 'common-util/Contracts';
 import { SUPPORTED_CHAINS } from 'common-util/Login';
@@ -95,21 +97,49 @@ export const getChainIdOrDefaultToMainnet = (chainId) => {
 };
 
 /**
+ * Checks if the provided object is a MethodsBuilder object.
+ * A MethodsBuilder object is expected to have certain properties that are
+ * used to interact with the blockchain.
+ *
+ * @param {object} obj - The object to check.
+ * @returns {boolean} - True if the object is a MethodsBuilder object, false otherwise.
+ */
+const isMethodsBuilderObject = (obj) => {
+  if (typeof obj !== 'object' || obj === null) {
+    throw new Error('sendTransaction: Input must be an object.');
+  }
+  // Check for a unique property that should always exist
+  // eslint-disable-next-line no-underscore-dangle
+  const hasProgramId = '_programId' in obj && obj._programId instanceof PublicKey;
+
+  // Check for a complex property with a specific structure,
+  // eslint-disable-next-line no-underscore-dangle
+  const argsCorrect = Array.isArray(obj._args) && obj._args.length === 6;
+
+  // Return true if both characteristic properties are as expected
+  return hasProgramId && argsCorrect;
+};
+
+/**
  * Sends a transaction using the appropriate method based on the virtual machine type.
  * For SVM (Solana Virtual Machine), it uses the rpc method on the function.
  * For EVM (Ethereum Virtual Machine), it uses a generic sendTransaction function.
  *
- * @param {Function} fn - The transaction function to be executed.
+ * @param {Function} method - The transaction method to be executed.
  * @param {string} account - The account address that is sending the transaction.
  *                           Only required when vmType is EVM
  * @param {string} vmType - The type of virtual machine ('svm' or 'evm).
  */
-export const sendTransaction = (fn, account, vmType) => {
+export const sendTransaction = (method, account, vmType) => {
   if (vmType === VM_TYPE.SVM) {
-    return fn.rpc();
+    if (!isMethodsBuilderObject(method)) {
+      notifyError('Invalid method object');
+      throw new Error('Invalid method object');
+    }
+    return method.rpc();
   }
 
-  return sendTransactionFn(fn, account, {
+  return sendTransactionFn(method, account, {
     supportedChains: SUPPORTED_CHAINS,
     rpcUrls: RPC_URLS,
   });
@@ -163,3 +193,5 @@ export const isPageWithSolana = (path) => {
   const checkPath = (e) => path.toLowerCase().includes(e.networkName.toLowerCase());
   return SVM_SUPPORTED_CHAINS.some(checkPath);
 };
+
+export const isValidSolanaPublicKey = (publicKey) => PublicKey.isOnCurve(publicKey);
