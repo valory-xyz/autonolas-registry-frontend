@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import { Button, Dropdown, Menu } from 'antd';
 import PropTypes from 'prop-types';
@@ -14,14 +14,19 @@ const items = [
 const serviceItem = [{ label: 'Services', key: 'services' }];
 
 const MenuInstance = ({ selectedMenu, handleMenuItemClick, mode }) => {
-  const { isL1Network } = useHelpers();
+  const { isL1Network, isSvm } = useHelpers();
+
+  const navItems = useMemo(() => {
+    if (isSvm) return serviceItem;
+    return isL1Network ? [...items, ...serviceItem] : serviceItem;
+  }, [isL1Network, isSvm]);
 
   return (
     <Menu
       theme="light"
       mode={mode}
       selectedKeys={selectedMenu ? [selectedMenu] : []}
-      items={isL1Network ? [...items, ...serviceItem] : serviceItem}
+      items={navItems}
       onClick={handleMenuItemClick}
     />
   );
