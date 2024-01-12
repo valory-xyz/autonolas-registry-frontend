@@ -22,7 +22,7 @@ const ListTable = ({
   extra,
 }) => {
   const { chainName, isSvm } = useHelpers();
-  const { publicKey } = useSvmConnectivity();
+  const { walletPublicKey } = useSvmConnectivity();
   /**
    * no pagination on search as we won't know total beforehand
    */
@@ -32,7 +32,7 @@ const ListTable = ({
   const { scrollX } = extra;
 
   // if svm & no public key, show Loader with connect wallet message
-  const hasNoSvmPublicKey = isSvm ? !publicKey : false;
+  const hasNoSvmPublicKey = isSvm ? !walletPublicKey : false;
   const isAccountRequiredForList = isAccountRequired || hasNoSvmPublicKey;
 
   if (isLoading || hasNoSvmPublicKey) {
@@ -40,7 +40,11 @@ const ListTable = ({
       <Loader
         isAccountRequired={isAccountRequiredForList}
         notConnectedMessage={
-          isAccountRequiredForList ? `To see your ${type}s, connect wallet` : ''
+          isAccountRequiredForList
+            ? `To see your ${type}s, ${
+              isSvm ? 'connect a wallet that holds SOL' : 'connect wallet'
+            }.`
+            : ''
         }
       />
     );
@@ -64,7 +68,10 @@ const ListTable = ({
   return (
     <>
       {list.length === 0 ? (
-        <ListEmptyMessage type={type} />
+        <ListEmptyMessage
+          type={type}
+          message={isSvm ? 'No services – do you have SOL in your wallet?' : ''}
+        />
       ) : (
         <Table
           columns={columns}

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import {
-  Input, Space, Button, Typography,
+  Input, Space, Button, Typography, Tooltip,
 } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { AddressLink } from '@autonolas/frontend-library';
@@ -209,29 +209,41 @@ export const useExtraTabContent = ({
     setSearchValue('');
   };
 
+  const mintButton = (
+    <Button type="primary" onClick={onRegisterClick} disabled={isSvm}>
+      Mint
+    </Button>
+  );
+
   const extraTabContent = {
     left: <Title level={2}>{title}</Title>,
     right: (
       <>
         {/* TODO: hiding search util feature is introduced */}
         {isSvm ? null : (
-          <Input
-            prefix={<SearchOutlined className="site-form-item-icon" />}
-            placeholder="Owner or Hash"
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-          />
+          <>
+            <Input
+              prefix={<SearchOutlined className="site-form-item-icon" />}
+              placeholder="Owner or Hash"
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+            />
+
+            <Button
+              ghost
+              type="primary"
+              onClick={() => setSearchValue(value || '')}
+            >
+              Search
+            </Button>
+          </>
         )}
-        <Button
-          ghost
-          type="primary"
-          onClick={() => setSearchValue(value || '')}
-        >
-          Search
-        </Button>
-        <Button type="primary" onClick={onRegisterClick}>
-          Mint
-        </Button>
+
+        {isSvm ? (
+          <Tooltip title="Coming soon">{mintButton}</Tooltip>
+        ) : (
+          mintButton
+        )}
       </>
     ),
   };

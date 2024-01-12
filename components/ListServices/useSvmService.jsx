@@ -26,7 +26,7 @@ const deseralizeProgramData = (serializedValue, decodeTypeName) => {
 
 const useSvmDataFetch = () => {
   const {
-    publicKey, connection, program, solanaAddresses,
+    walletPublicKey, connection, program, solanaAddresses,
   } = useSvmConnectivity();
 
   const getTransactionLogs = useCallback(
@@ -36,7 +36,7 @@ const useSvmDataFetch = () => {
           throw new Error('function is not provided');
         }
 
-        if (!publicKey || !program) return null;
+        if (!walletPublicKey || !program) return null;
 
         const latestBlock = await connection.getLatestBlockhash();
 
@@ -47,7 +47,7 @@ const useSvmDataFetch = () => {
 
         // Build a versioned transaction with the instruction
         const txMessage = new TransactionMessage({
-          payerKey: publicKey,
+          payerKey: walletPublicKey,
           recentBlockhash: latestBlock.blockhash,
           instructions: [instruction],
         }).compileToV0Message();
@@ -65,7 +65,7 @@ const useSvmDataFetch = () => {
         throw error;
       }
     },
-    [connection, program, publicKey, solanaAddresses],
+    [connection, program, walletPublicKey, solanaAddresses],
   );
 
   /**
