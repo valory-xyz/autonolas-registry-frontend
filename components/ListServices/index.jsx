@@ -31,7 +31,7 @@ const ListServices = () => {
   );
 
   const {
-    account, chainId, links, vmType,
+    account, chainName, links, vmType,
   } = useHelpers();
 
   /**
@@ -63,7 +63,7 @@ const ListServices = () => {
     getSvmServices,
   } = useServiceInfo();
 
-  // fetch total
+  // fetch total (All services & My services)
   useEffect(() => {
     const getTotal = async () => {
       try {
@@ -94,7 +94,7 @@ const ListServices = () => {
     }
   }, [
     account,
-    chainId,
+    chainName,
     currentTab,
     searchValue,
     vmType,
@@ -137,19 +137,12 @@ const ListServices = () => {
     };
 
     if (total && currentPage && !searchValue) {
-      // if svm, then we need to fetch the list only once
-      // as we fetch the entire list in one go
-      if (vmType === VM_TYPE.SVM && list.length > 0) {
-        setIsLoading(false);
-        return;
-      }
-
       getList();
     }
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, [
     account,
-    chainId,
+    chainName,
     total,
     currentPage,
     vmType,
@@ -185,7 +178,7 @@ const ListServices = () => {
         }
       }
     })();
-  }, [account, chainId, searchValue, currentTab]);
+  }, [account, chainName, searchValue, currentTab]);
 
   const tableCommonProps = {
     type: NAV_TYPES.SERVICE,
@@ -249,5 +242,3 @@ const ListServices = () => {
 };
 
 export default ListServices;
-
-// looking at this right now - https://solana.stackexchange.com/a/7171 - not sure, will work

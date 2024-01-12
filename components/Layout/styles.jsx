@@ -1,19 +1,6 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { Layout } from 'antd';
 import { COLOR, MEDIA_QUERY } from '@autonolas/frontend-library';
-
-const scrollBarStyle = css`
-  ::-webkit-scrollbar {
-    -webkit-appearance: none;
-    width: 7px;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    border-radius: 4px;
-    background-color: rgba(0, 0, 0, 0.5);
-    box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
-  }
-`;
 
 export const CustomLayout = styled(Layout)`
   .site-layout {
@@ -106,9 +93,7 @@ export const Logo = styled.div`
   }
 `;
 
-export const SelectContainer = styled.div`
-  ${scrollBarStyle}
-`;
+export const SelectContainer = styled.div``;
 
 export const RightMenu = styled.div`
   display: flex;
