@@ -4,7 +4,7 @@ import { TransactionMessage, VersionedTransaction } from '@solana/web3.js';
 
 import { SERVICE_STATE_KEY_MAP } from 'util/constants';
 import idl from 'common-util/AbiAndAddresses/ServiceRegistrySolana.json';
-import { useSvmConnectivity } from 'common-util/hooks/useSvmInfo';
+import { useSvmConnectivity } from 'common-util/hooks/useSvmConnectivity';
 
 /**
  * deseralize the program data
@@ -113,6 +113,7 @@ const useSvmDataFetch = () => {
 
 // *********** HOOKS TO FETCH SERVICES DATA ***********
 
+// returns the total number of services
 const useGetTotalForAllServices = () => {
   const { getData } = useSvmDataFetch();
 
@@ -124,6 +125,7 @@ const useGetTotalForAllServices = () => {
   return { getTotalForAllSvmServices };
 };
 
+// returns the total number of services for the given account
 const useGetTotalForMyServices = () => {
   const { getData } = useSvmDataFetch();
 
@@ -165,6 +167,7 @@ const transformServiceData = (e, index) => {
   };
 };
 
+// returns the list of services
 const useGetServices = () => {
   const { getData } = useSvmDataFetch();
 
@@ -184,14 +187,37 @@ const useGetServices = () => {
   return { getSvmServices };
 };
 
+// return the list of services for the given account
+const useGetMyServices = () => {
+  const { getData } = useSvmDataFetch();
+
+  const getMySvmServices = useCallback(
+    async (account, total) => {
+      const promises = [];
+      for (let i = 1; i <= total; i += 1) {
+        promises.push(getData('getService', [i], 'Service'));
+      }
+
+      const results = (await Promise.all(promises)).map(transformServiceData);
+      const filteredResults = results.filter((e) => e.owner === account);
+      return filteredResults;
+    },
+    [getData],
+  );
+
+  return { getMySvmServices };
+};
+
 export const useServiceInfo = () => {
   const { getTotalForAllSvmServices } = useGetTotalForAllServices();
   const { getTotalForMySvmServices } = useGetTotalForMyServices();
   const { getSvmServices } = useGetServices();
+  const { getMySvmServices } = useGetMyServices();
 
   return {
     getTotalForAllSvmServices,
     getTotalForMySvmServices,
     getSvmServices,
+    getMySvmServices,
   };
 };

@@ -12,7 +12,7 @@ import {
 } from 'common-util/List/ListTable/helpers';
 import { getMyListOnPagination } from 'common-util/ContractUtils/myList';
 import { useHelpers } from 'common-util/hooks';
-import { useSvmConnectivity } from 'common-util/hooks/useSvmInfo';
+import { useSvmConnectivity } from 'common-util/hooks/useSvmConnectivity';
 import {
   getServices,
   getFilteredServices,

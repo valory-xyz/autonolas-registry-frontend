@@ -12,7 +12,7 @@ import { commaMessage, DependencyLabel } from 'common-util/List/ListCommon';
 import { FormItemHash } from 'common-util/List/RegisterForm/helpers';
 import { IpfsHashGenerationModal } from 'common-util/List/IpfsHashGenerationModal';
 import { useHelpers } from 'common-util/hooks';
-import { useSvmConnectivity } from 'common-util/hooks/useSvmInfo';
+import { useSvmConnectivity } from 'common-util/hooks/useSvmConnectivity';
 import { ComplexLabel } from 'common-util/List/styles';
 import { RegistryForm } from 'common-util/TransactionHelpers/RegistryForm';
 

@@ -17,7 +17,7 @@ import { getServiceManagerContract } from 'common-util/Contracts';
 import { sendTransaction } from 'common-util/functions';
 import { checkIfERC721Receive } from 'common-util/functions/requests';
 import { useHelpers } from 'common-util/hooks';
-import { useSvmConnectivity } from 'common-util/hooks/useSvmInfo';
+import { useSvmConnectivity } from 'common-util/hooks/useSvmConnectivity';
 import RegisterForm from './RegisterForm';
 import { getAgentParams } from './utils';
 import { FormContainer } from '../styles';
