@@ -43,7 +43,7 @@ const ListTable = ({
           isAccountRequiredForList
             ? `To see your ${type}s, ${
               isSvm ? 'connect a wallet that holds SOL' : 'connect wallet'
-            }`
+            }.`
             : ''
         }
       />
