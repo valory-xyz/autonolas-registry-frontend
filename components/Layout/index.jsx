@@ -120,7 +120,6 @@ const LayoutWithWalletProvider = (props) => {
 
   return (
     <ConnectionProvider endpoint={endpoint}>
-      {endpoint}
       <WalletProvider wallets={wallets} autoConnect>
         <ReactUIWalletModalProvider>
           <Layout {...props}>{props.children}</Layout>
