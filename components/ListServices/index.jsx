@@ -31,15 +31,15 @@ const ListServices = () => {
     isMyTab(hash) ? MY_SERVICES : ALL_SERVICES,
   );
 
-  const { publicKey } = useSvmConnectivity();
+  const { walletPublicKey } = useSvmConnectivity();
   const {
     account: ethAccount, chainName, links, isSvm,
   } = useHelpers();
 
   const account = useMemo(() => {
-    if (isSvm) return publicKey;
+    if (isSvm) return walletPublicKey;
     return ethAccount;
-  }, [ethAccount, isSvm, publicKey]);
+  }, [ethAccount, isSvm, walletPublicKey]);
 
   /**
    * extra tab content & view click

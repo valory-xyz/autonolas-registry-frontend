@@ -59,7 +59,7 @@ const RegisterForm = ({
   handleSubmit,
 }) => {
   const { account, doesNetworkHaveValidServiceManagerToken, isSvm } = useHelpers();
-  const { publicKey } = useSvmConnectivity();
+  const { walletPublicKey } = useSvmConnectivity();
 
   const [form] = Form.useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -157,7 +157,7 @@ const RegisterForm = ({
   };
 
   const hashValue = form.getFieldValue('hash');
-  const isVmWalletAbsent = isSvm ? !publicKey : !account;
+  const isVmWalletAbsent = isSvm ? !walletPublicKey : !account;
 
   const handlePrefillAddress = () => {
     if (isVmWalletAbsent) {
@@ -165,7 +165,7 @@ const RegisterForm = ({
       return;
     }
 
-    form.setFieldsValue({ owner_address: isSvm ? publicKey : account });
+    form.setFieldsValue({ owner_address: isSvm ? walletPublicKey : account });
   };
 
   return (
