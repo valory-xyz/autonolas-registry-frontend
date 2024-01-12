@@ -1,7 +1,6 @@
 import { useRouter } from 'next/router';
 import { Result } from 'antd';
 
-import { VM_TYPE } from 'util/constants';
 import Details from 'common-util/Details';
 import { useHelpers } from 'common-util/hooks';
 import {
@@ -14,9 +13,9 @@ import {
 const Service = () => {
   const router = useRouter();
   const id = router?.query?.id;
-  const { links, vmType } = useHelpers();
+  const { links, isSvm } = useHelpers();
 
-  if (vmType === VM_TYPE.SVM) {
+  if (isSvm) {
     return (
       <Result
         status="warning"

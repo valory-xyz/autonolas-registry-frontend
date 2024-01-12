@@ -33,7 +33,7 @@ const useSvmDataFetch = () => {
     async (fn, fnArgs) => {
       try {
         if (!fn) {
-          throw new Error('function name is required');
+          throw new Error('function is not provided');
         }
 
         if (!publicKey || !program) return null;

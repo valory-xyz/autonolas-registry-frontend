@@ -12,7 +12,7 @@ import { useHelpers } from 'common-util/hooks';
 
 const Login = () => {
   const dispatch = useDispatch();
-  const { chainId, vmType } = useHelpers();
+  const { chainId, isSvm } = useHelpers();
   const { address } = useAccount();
   const { data } = useBalance({ address, chainId });
   const formattedBalance = data?.formatted;
@@ -48,7 +48,7 @@ const Login = () => {
   return (
     <div>
       <LoginV2
-        vmType={vmType}
+        isSvm={isSvm}
         onConnect={onConnect}
         onDisconnect={onDisconnect}
         onError={onError}

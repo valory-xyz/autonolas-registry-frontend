@@ -33,7 +33,7 @@ const ListServices = () => {
 
   const { publicKey } = useSvmConnectivity();
   const {
-    account: ethAccount, chainName, links, vmType, isSvm,
+    account: ethAccount, chainName, links, isSvm,
   } = useHelpers();
 
   const account = useMemo(() => {
@@ -162,7 +162,6 @@ const ListServices = () => {
     chainName,
     total,
     currentPage,
-    vmType,
     currentTab,
     searchValue,
     isSvm,

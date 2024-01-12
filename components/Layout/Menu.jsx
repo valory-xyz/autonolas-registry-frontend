@@ -17,7 +17,9 @@ const MenuInstance = ({ selectedMenu, handleMenuItemClick, mode }) => {
   const { isL1Network, isSvm } = useHelpers();
 
   const navItems = useMemo(() => {
+    // only show services for svm
     if (isSvm) return serviceItem;
+
     return isL1Network ? [...items, ...serviceItem] : serviceItem;
   }, [isL1Network, isSvm]);
 

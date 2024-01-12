@@ -6,7 +6,6 @@ import { BN } from '@project-serum/anchor';
 import {
   DEFAULT_SERVICE_CREATION_ETH_TOKEN,
   DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS,
-  VM_TYPE,
 } from 'util/constants';
 import {
   convertStringToArray,
@@ -85,7 +84,7 @@ const MintService = () => {
 
     let fn;
 
-    if (vmType === VM_TYPE.SVM) {
+    if (isSvm) {
       fn = buildSvmFn(values);
     } else {
       try {

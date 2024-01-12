@@ -19,7 +19,6 @@ import {
   useScreen,
 } from '@autonolas/frontend-library';
 
-import { VM_TYPE } from 'util/constants';
 import { setUserBalance } from 'store/setup/actions';
 import { isAddressProhibited } from 'common-util/functions';
 import { useHelpers } from 'common-util/hooks';
@@ -35,7 +34,7 @@ const LoginContainer = styled.div`
 `;
 
 export const LoginV2 = ({
-  vmType,
+  isSvm,
   onConnect: onConnectCb,
   onDisconnect: onDisconnectCb,
   theme = 'light',
@@ -146,7 +145,7 @@ export const LoginV2 = ({
 
   return (
     <LoginContainer>
-      {vmType === VM_TYPE.SVM ? (
+      {isSvm ? (
         <SolanaWallet />
       ) : (
         <>
@@ -179,14 +178,14 @@ export const LoginV2 = ({
 };
 
 LoginV2.propTypes = {
-  vmType: PropTypes.string,
+  isSvm: PropTypes.bool,
   onConnect: PropTypes.func,
   onDisconnect: PropTypes.func,
   theme: PropTypes.string,
 };
 
 LoginV2.defaultProps = {
-  vmType: VM_TYPE.EVM,
+  isSvm: false,
   onConnect: undefined,
   onDisconnect: undefined,
   theme: 'light',
