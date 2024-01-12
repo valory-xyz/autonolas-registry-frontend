@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Typography } from 'antd';
 import { notifyError, notifySuccess } from '@autonolas/frontend-library';
+import { BN } from '@project-serum/anchor';
 
 import {
   DEFAULT_SERVICE_CREATION_ETH_TOKEN,
@@ -17,7 +18,6 @@ import { sendTransaction } from 'common-util/functions';
 import { checkIfERC721Receive } from 'common-util/functions/requests';
 import { useHelpers } from 'common-util/hooks';
 import { useSvmInfo } from 'common-util/hooks/useSvmInfo';
-import { BN } from '@project-serum/anchor';
 import RegisterForm from './RegisterForm';
 import { getAgentParams } from './utils';
 import { FormContainer } from '../styles';
@@ -28,7 +28,7 @@ const MintService = () => {
   const {
     account, doesNetworkHaveValidServiceManagerToken, vmType, isSvm,
   } = useHelpers();
-  const { getAddresses } = useSvmInfo();
+  const { solanaAddresses } = useSvmInfo();
 
   const [isMinting, setIsMinting] = useState(false);
   const [error, setError] = useState(null);
@@ -36,7 +36,7 @@ const MintService = () => {
 
   const { wallet, program } = useSvmInfo();
 
-  const buildSvmFn = async (values) => {
+  const buildSvmFn = (values) => {
     const {
       owner_address: ownerAddress,
       hash,
@@ -47,13 +47,13 @@ const MintService = () => {
     } = values;
 
     const serviceOwnerPublicKey = ownerAddress;
-    // // Convert hash to bytes32 Buffer
+    // Convert hash to bytes32 Buffer
     const configHash = Buffer.from(hash, 'hex');
-    // // Convert agent_ids to an array
+    // Convert agent_ids to an array
     const agentIds = convertStringToArray(agentIdsSrc);
-    // // Use agent_num_slots to define slots
+    // Use agent_num_slots to define slots
     const slots = convertStringToArray(slotsSrc).map(Number);
-    // // Convert bonds to an array of BN
+    // Convert bonds to an array of BN
     const bondsArray = convertStringToArray(bonds).map((bond) => new BN(bond));
     // numberfy threshold
     const threshold = Number(thresholdStr);
@@ -67,7 +67,7 @@ const MintService = () => {
         bondsArray,
         threshold,
       )
-      .accounts({ dataAccount: getAddresses().storageAccount })
+      .accounts({ dataAccount: solanaAddresses.storageAccount })
       .remainingAccounts([
         { pubkey: serviceOwnerPublicKey, isSigner: true, isWritable: true },
       ]);
@@ -88,7 +88,7 @@ const MintService = () => {
     let fn;
 
     if (vmType === VM_TYPE.SVM) {
-      fn = await buildSvmFn(values);
+      fn = buildSvmFn(values);
     } else {
       try {
         const isValid = await checkIfERC721Receive(
@@ -106,7 +106,6 @@ const MintService = () => {
 
       const contract = getServiceManagerContract();
 
-      // really not super clear on what's going on here
       const commonParams = [
         `0x${values.hash}`,
         convertStringToArray(values.agent_ids),
