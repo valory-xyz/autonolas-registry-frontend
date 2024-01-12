@@ -221,21 +221,23 @@ export const useExtraTabContent = ({
       <>
         {/* TODO: hiding search util feature is introduced */}
         {isSvm ? null : (
-          <Input
-            prefix={<SearchOutlined className="site-form-item-icon" />}
-            placeholder="Owner or Hash"
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-          />
-        )}
+          <>
+            <Input
+              prefix={<SearchOutlined className="site-form-item-icon" />}
+              placeholder="Owner or Hash"
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+            />
 
-        <Button
-          ghost
-          type="primary"
-          onClick={() => setSearchValue(value || '')}
-        >
-          Search
-        </Button>
+            <Button
+              ghost
+              type="primary"
+              onClick={() => setSearchValue(value || '')}
+            >
+              Search
+            </Button>
+          </>
+        )}
 
         {isSvm ? (
           <Tooltip title="Coming soon">{mintButton}</Tooltip>
