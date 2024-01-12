@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { toLower } from 'lodash';
+import { isString, toLower } from 'lodash';
 import {
   isValidAddress,
   getChainIdOrDefaultToMainnet as getChainIdOrDefaultToMainnetFn,
@@ -11,7 +11,11 @@ import {
 
 import { RPC_URLS } from 'common-util/Contracts';
 import { SUPPORTED_CHAINS } from 'common-util/Login';
-import { SUPPORTED_CHAINS_MORE_INFO } from 'common-util/Login/config';
+import {
+  EVM_SUPPORTED_CHAINS,
+  SVM_SUPPORTED_CHAINS,
+} from 'common-util/Login/config';
+import { VM_TYPE } from 'util/constants';
 import prohibitedAddresses from '../../data/prohibited-addresses.json';
 
 export const getModalProvider = () => window?.MODAL_PROVIDER;
@@ -27,9 +31,7 @@ export const getChainId = (chainId = null) => {
     : Number(sessionStorage.getItem('chainId'));
 
   // if chainId is not supported, throw error
-  if (
-    !SUPPORTED_CHAINS_MORE_INFO.find((e) => e.id === chainIdfromSessionStorage)
-  ) {
+  if (!EVM_SUPPORTED_CHAINS.find((e) => e.id === chainIdfromSessionStorage)) {
     return new Error('Invalid chain id');
   }
 
@@ -92,10 +94,26 @@ export const getChainIdOrDefaultToMainnet = (chainId) => {
   return x;
 };
 
-export const sendTransaction = (fn, account) => sendTransactionFn(fn, account, {
-  supportedChains: SUPPORTED_CHAINS,
-  rpcUrls: RPC_URLS,
-});
+/**
+ * Sends a transaction using the appropriate method based on the virtual machine type.
+ * For SVM (Solana Virtual Machine), it uses the rpc method on the function.
+ * For EVM (Ethereum Virtual Machine), it uses a generic sendTransaction function.
+ *
+ * @param {Function} fn - The transaction function to be executed.
+ * @param {string} account - The account address that is sending the transaction.
+ *                           Only required when vmType is EVM
+ * @param {string} vmType - The type of virtual machine ('svm' or 'evm).
+ */
+export const sendTransaction = (fn, account, vmType) => {
+  if (vmType === VM_TYPE.SVM) {
+    return fn.rpc();
+  }
+
+  return sendTransactionFn(fn, account, {
+    supportedChains: SUPPORTED_CHAINS,
+    rpcUrls: RPC_URLS,
+  });
+};
 
 export const addressValidator = () => ({
   validator(_, value) {
@@ -127,6 +145,7 @@ export const isAddressProhibited = (address) => {
 
 const doesPathIncludesComponents = (path) => !!path?.includes('components');
 const doesPathIncludesAgents = (path) => !!path?.includes('agents');
+export const doesPathIncludesServices = (path) => !!path?.includes('services');
 export const doesPathIncludesComponentsOrAgents = (path) => {
   if (!path) return false;
   return doesPathIncludesComponents(path) || doesPathIncludesAgents(path);
@@ -134,4 +153,13 @@ export const doesPathIncludesComponentsOrAgents = (path) => {
 
 export const notifyWrongNetwork = () => {
   notifyWarning('Please switch to the correct network and try again');
+};
+
+// functions for solana
+export const isPageWithSolana = (path) => {
+  if (!path) return false;
+  if (!isString(path)) return false;
+
+  const checkPath = (e) => path.toLowerCase().includes(e.networkName.toLowerCase());
+  return SVM_SUPPORTED_CHAINS.some(checkPath);
 };

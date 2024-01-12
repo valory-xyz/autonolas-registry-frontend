@@ -1,9 +1,11 @@
-import { SUPPORTED_CHAINS_MORE_INFO } from 'common-util/Login/config';
+import { ALL_SUPPORTED_CHAINS, EVM_SUPPORTED_CHAINS } from 'common-util/Login/config';
+import { VM_TYPE } from 'util/constants';
 import { apiTypes, syncTypes } from './_types';
 
 const initialState = {
   account: null,
   balance: null,
+  vmType: null,
   errorMessage: null,
 
   // chain info
@@ -24,8 +26,28 @@ const setup = (state = initialState, { data, type } = {}) => {
     case syncTypes.SET_STORE_STATE: {
       return { ...state, ...data };
     }
+    case syncTypes.SET_VM_INFO: {
+      const info = ALL_SUPPORTED_CHAINS.find(
+        (item) => item.networkName === data.networkName,
+      );
+
+      if (info?.vmType === VM_TYPE.SVM) {
+        return {
+          ...state,
+          vmType: VM_TYPE.SVM,
+          chainDisplayName: info.networkDisplayName,
+          chainName: info.networkName,
+        };
+      }
+
+      return {
+        ...state,
+        vmType: VM_TYPE.EVM,
+      };
+    }
+
     case syncTypes.SET_CHAIND_ID: {
-      const networkInfo = SUPPORTED_CHAINS_MORE_INFO.find(
+      const networkInfo = EVM_SUPPORTED_CHAINS.find(
         (item) => item.id === data.chainId,
       );
       return {

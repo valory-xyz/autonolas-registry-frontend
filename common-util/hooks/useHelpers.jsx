@@ -7,11 +7,12 @@ import {
   isL1Network as isL1NetworkFn,
 } from '@autonolas/frontend-library';
 
-import { URL } from 'util/constants';
+import { URL, VM_TYPE } from 'util/constants';
 import { doesNetworkHaveValidServiceManagerTokenFn } from '../functions';
 
 export const useHelpers = () => {
   const account = useSelector((state) => state?.setup?.account);
+  const vmType = useSelector((state) => state?.setup?.vmType);
 
   // chainId - selected in the dropdown
   const chainId = useSelector((state) => state?.setup?.chainId);
@@ -41,8 +42,11 @@ export const useHelpers = () => {
     return chainIdFromWallet !== chainId;
   }, [chainId, chainIdFromWallet]);
 
+  const isSvm = vmType === VM_TYPE.SVM;
+
   return {
     account,
+    vmType,
     chainId,
     chainDisplayName,
     chainName,
@@ -52,5 +56,6 @@ export const useHelpers = () => {
       doesNetworkHaveValidServiceManagerTokenFn(chainId),
     links: updatedLinks,
     isConnectedToWrongNetwork,
+    isSvm,
   };
 };

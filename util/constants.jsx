@@ -6,6 +6,11 @@ export const URL = {
   MINT_COMPONENT: '/components/mint',
   MINT_SERVICE: '/services/mint',
   UPDATE_SERVICE: '/services/update',
+
+  // pages without chain id
+  DISCLAIMER: '/disclaimer',
+  PAGE_NOT_FOUND: '/page-not-found',
+  NOT_LEGAL: '/not-legal',
 };
 
 export const NAV_TYPES = {
@@ -22,6 +27,15 @@ export const SERVICE_STATE = {
   3: 'Finished Registration',
   4: 'Deployed',
   5: 'Terminated Bonded',
+};
+
+export const SERVICE_STATE_KEY_MAP = {
+  nonExistent: 0,
+  preRegistration: 1,
+  activeRegistration: 2,
+  finishedRegistration: 3,
+  deployed: 4,
+  terminatedBonded: 5,
 };
 
 // should not display contracts on homepage nor load with chain Ids
@@ -57,4 +71,16 @@ export const DEFAULT_CHAIN_ID = 1;
 export const EXTRA_COLORS = {
   YELLOW_PRIMARY: '#eab308', // tailwind orange.500
   YELLOW_SECONDARY: '#fefce8', // tailwind orange.50
+};
+
+// These constants define the types of virtual machines supported
+export const VM_TYPE = {
+  EVM: 'evm', // Ethereum Virtual Machine
+  SVM: 'svm', // Solana Virtual Machine
+};
+
+// Constants for Solana chain names
+export const SOLANA_CHAIN_NAMES = {
+  MAINNET: 'solana',
+  DEVNET: 'solana-devnet',
 };

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { useAccount, useBalance } from 'wagmi';
 import {
@@ -12,35 +12,43 @@ import { useHelpers } from 'common-util/hooks';
 
 const Login = () => {
   const dispatch = useDispatch();
-  const { chainId } = useHelpers();
+  const { chainId, isSvm } = useHelpers();
   const { address } = useAccount();
   const { data } = useBalance({ address, chainId });
+  const formattedBalance = data?.formatted;
 
   useEffect(() => {
     if (address) {
       dispatch(setUserAccount(address));
-      dispatch(setUserBalance(data?.formatted));
+      dispatch(setUserBalance(formattedBalance));
     } else {
       dispatch(setLogout());
     }
-  }, [address]);
+  }, [address, formattedBalance, dispatch]);
 
-  const onConnect = (response) => {
-    dispatch(setUserAccount(response.address));
-    dispatch(setUserBalance(response.balance));
-  };
+  const onConnect = useCallback(
+    (response) => {
+      dispatch(setUserAccount(response.address));
+      dispatch(setUserBalance(response.balance));
+    },
+    [dispatch],
+  );
 
-  const onDisconnect = () => {
+  const onDisconnect = useCallback(() => {
     dispatch(setLogout());
-  };
+  }, [dispatch]);
 
-  const onError = (error) => {
-    dispatch(setErrorMessage(error));
-  };
+  const onError = useCallback(
+    (error) => {
+      dispatch(setErrorMessage(error));
+    },
+    [dispatch],
+  );
 
   return (
     <div>
       <LoginV2
+        isSvm={isSvm}
         onConnect={onConnect}
         onDisconnect={onDisconnect}
         onError={onError}

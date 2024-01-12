@@ -1,17 +1,24 @@
 import { useState } from 'react';
 import {
-  Input, Space, Button, Typography,
+  Input, Space, Button, Typography, Tooltip,
 } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { AddressLink } from '@autonolas/frontend-library';
 
-import { NAV_TYPES, SERVICE_STATE, TOTAL_VIEW_COUNT } from 'util/constants';
+import {
+  NAV_TYPES,
+  SERVICE_STATE,
+  SOLANA_CHAIN_NAMES,
+  TOTAL_VIEW_COUNT,
+} from 'util/constants';
 
 const { Title } = Typography;
 
 export const getTableColumns = (
   type,
-  { onViewClick, onUpdateClick, isMobile },
+  {
+    onViewClick, onUpdateClick, isMobile, chainName,
+  },
 ) => {
   if (type === NAV_TYPES.COMPONENT || type === NAV_TYPES.AGENT) {
     return [
@@ -74,9 +81,32 @@ export const getTableColumns = (
         dataIndex: 'owner',
         key: 'owner',
         width: 200,
-        render: (text) => (
-          <AddressLink text={text} suffixCount={isMobile ? 4 : 6} />
-        ),
+        render: (text) => {
+          // TODO: move to autonolas/frontend-library
+          const isSolana = chainName === SOLANA_CHAIN_NAMES.DEVNET
+            || chainName === SOLANA_CHAIN_NAMES.MAINNET;
+
+          if (isSolana) {
+            return (
+              <AddressLink
+                text={text}
+                suffixCount={isMobile ? 4 : 6}
+                onClick={() => {
+                  if (chainName === SOLANA_CHAIN_NAMES.DEVNET) {
+                    window.open(
+                      `https://solscan.io/account/${text}?cluster=devnet`,
+                      '_blank',
+                    );
+                  } else {
+                    window.open(`https://solscan.io/account/${text}`, '_blank');
+                  }
+                }}
+              />
+            );
+          }
+
+          return <AddressLink text={text} suffixCount={isMobile ? 4 : 6} />;
+        },
       },
       {
         title: 'State',
@@ -167,7 +197,11 @@ export const getData = (type, rawData, { current }) => {
 /**
  * tab content
  */
-export const useExtraTabContent = ({ title, onRegisterClick = () => {} }) => {
+export const useExtraTabContent = ({
+  title,
+  onRegisterClick = () => {},
+  isSvm = false,
+}) => {
   const [searchValue, setSearchValue] = useState('');
   const [value, setValue] = useState('');
   const clearSearch = () => {
@@ -175,26 +209,41 @@ export const useExtraTabContent = ({ title, onRegisterClick = () => {} }) => {
     setSearchValue('');
   };
 
+  const mintButton = (
+    <Button type="primary" onClick={onRegisterClick} disabled={isSvm}>
+      Mint
+    </Button>
+  );
+
   const extraTabContent = {
     left: <Title level={2}>{title}</Title>,
     right: (
       <>
-        <Input
-          prefix={<SearchOutlined className="site-form-item-icon" />}
-          placeholder="Owner or Hash"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-        />
-        <Button
-          ghost
-          type="primary"
-          onClick={() => setSearchValue(value || '')}
-        >
-          Search
-        </Button>
-        <Button type="primary" onClick={onRegisterClick}>
-          Mint
-        </Button>
+        {/* TODO: hiding search util feature is introduced */}
+        {isSvm ? null : (
+          <>
+            <Input
+              prefix={<SearchOutlined className="site-form-item-icon" />}
+              placeholder="Owner or Hash"
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+            />
+
+            <Button
+              ghost
+              type="primary"
+              onClick={() => setSearchValue(value || '')}
+            >
+              Search
+            </Button>
+          </>
+        )}
+
+        {isSvm ? (
+          <Tooltip title="Coming soon">{mintButton}</Tooltip>
+        ) : (
+          mintButton
+        )}
       </>
     ),
   };

@@ -86,7 +86,7 @@ export const RegisterMessage = ({ handleCancel }) => (
 RegisterMessage.propTypes = { handleCancel: PropTypes.func };
 RegisterMessage.defaultProps = { handleCancel: null };
 
-export const ListEmptyMessage = ({ type }) => {
+export const ListEmptyMessage = ({ message = '', type }) => {
   const getValues = () => {
     switch (type) {
       case 'component':
@@ -119,12 +119,15 @@ export const ListEmptyMessage = ({ type }) => {
   return (
     <EmptyMessage data-testid="not-registered-message">
       <div className="empty-message-logo" />
-      <p>{`No ${currentType.text}s registered`}</p>
+      <p>{message || `No ${currentType.text}s registered`}</p>
     </EmptyMessage>
   );
 };
-ListEmptyMessage.propTypes = { type: PropTypes.string };
-ListEmptyMessage.defaultProps = { type: null };
+ListEmptyMessage.propTypes = {
+  type: PropTypes.string,
+  message: PropTypes.string,
+};
+ListEmptyMessage.defaultProps = { type: null, message: '' };
 
 // AlertSuccess
 export const AlertSuccess = ({ type, information }) => {

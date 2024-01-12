@@ -31,6 +31,12 @@ const getCspHeader = (browserName) => {
     'https://safe-transaction-gnosis-chain.safe.global/api/',
     'https://safe-transaction-polygon.safe.global/api/',
     'https://vercel.live/',
+    'https://api.devnet.solana.com',
+    'wss://api.devnet.solana.com/',
+    'https://api.mainnet-beta.solana.com/',
+    'wss://api.mainnet-beta.solana.com/',
+    'https://holy-convincing-bird.solana-mainnet.quiknode.pro/',
+    'wss://holy-convincing-bird.solana-mainnet.quiknode.pro',
   ];
 
   if (isDev) {
@@ -38,7 +44,7 @@ const getCspHeader = (browserName) => {
     connectSrc.push('ws://localhost');
   }
 
-  const scriptSrc = ["'self'", 'https://vercel.live/'];
+  const scriptSrc = ["'self'", 'https://vercel.live/', 'https://fonts.googleapis.com/'];
 
   // Firefox blocks inline scripts by default and it's an issue with Metamask
   // reference: https://github.com/MetaMask/metamask-extension/issues/3133
