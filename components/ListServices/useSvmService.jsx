@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { BorshCoder } from '@project-serum/anchor';
 import { TransactionMessage, VersionedTransaction } from '@solana/web3.js';
+import { areAddressesEqual } from '@autonolas/frontend-library';
 
 import { SERVICE_STATE_KEY_MAP } from 'util/constants';
 import idl from 'common-util/AbiAndAddresses/ServiceRegistrySolana.json';
@@ -127,19 +128,11 @@ const useGetTotalForAllServices = () => {
 
 // returns the total number of services for the given account
 const useGetTotalForMyServices = () => {
-  const { getData } = useSvmDataFetch();
+  // TODO: implement this after fetching the account balance
 
-  const getTotalForMySvmServices = useCallback(
-    async (account) => {
-      const total = await getData('balanceOf', [account], null, {
-        noDecode: true,
-      });
-      return total;
-    },
-    [getData],
-  );
+  const { getTotalForAllSvmServices } = useGetTotalForAllServices();
 
-  return { getTotalForMySvmServices };
+  return { getTotalForMySvmServices: getTotalForAllSvmServices };
 };
 
 /**
@@ -199,8 +192,8 @@ const useGetMyServices = () => {
       }
 
       const results = (await Promise.all(promises)).map(transformServiceData);
-      const filteredResults = results.filter((e) => e.owner === account);
-      return filteredResults;
+      const ownerServiceList = results.filter((e) => areAddressesEqual(e.owner, account));
+      return ownerServiceList;
     },
     [getData],
   );

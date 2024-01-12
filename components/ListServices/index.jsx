@@ -3,7 +3,7 @@ import { Tabs } from 'antd';
 import { useRouter } from 'next/router';
 import { notifyError } from '@autonolas/frontend-library';
 
-import { VM_TYPE, NAV_TYPES } from 'util/constants';
+import { NAV_TYPES } from 'util/constants';
 import ListTable from 'common-util/List/ListTable';
 import {
   useExtraTabContent,
@@ -69,6 +69,7 @@ const ListServices = () => {
     getTotalForAllSvmServices,
     getTotalForMySvmServices,
     getSvmServices,
+    getMySvmServices,
   } = useServiceInfo();
 
   // fetch total (All services & My services)
@@ -78,11 +79,11 @@ const ListServices = () => {
         let totalTemp = null;
 
         if (currentTab === ALL_SERVICES) {
-          totalTemp = vmType === VM_TYPE.SVM
+          totalTemp = isSvm
             ? await getTotalForAllSvmServices(account)
             : await getTotalForAllServices();
         } else if (currentTab === MY_SERVICES && account) {
-          totalTemp = vmType === VM_TYPE.SVM
+          totalTemp = isSvm
             ? await getTotalForMySvmServices(account)
             : await getTotalForMyServices(account);
         }
@@ -105,7 +106,7 @@ const ListServices = () => {
     chainName,
     currentTab,
     searchValue,
-    vmType,
+    isSvm,
     getTotalForAllSvmServices,
     getTotalForMySvmServices,
     getSvmServices,
@@ -120,7 +121,7 @@ const ListServices = () => {
         // All services
         if (currentTab === ALL_SERVICES) {
           setList([]);
-          const everyComps = vmType === VM_TYPE.SVM
+          const everyComps = isSvm
             ? await getSvmServices(total)
             : await getServices(total, currentPage);
           setList(everyComps);
@@ -133,8 +134,16 @@ const ListServices = () => {
          */
         if (currentTab === MY_SERVICES && list.length === 0 && account) {
           setList([]);
-          const e = await getFilteredServices(account);
+
+          const e = isSvm
+            ? await getMySvmServices(account, total)
+            : await getFilteredServices(account);
           setList(e);
+
+          // TODO: remove this once `getTotalForMySvmServices` is fixed
+          if (isSvm) {
+            setTotal(e.length);
+          }
         }
       } catch (e) {
         console.error(e);
@@ -156,6 +165,7 @@ const ListServices = () => {
     vmType,
     currentTab,
     searchValue,
+    isSvm,
     // list?.length,
   ]);
 
@@ -235,7 +245,6 @@ const ListServices = () => {
         {
           key: MY_SERVICES,
           label: 'My Services',
-          disabled: isSvm,
           children: (
             <ListTable
               {...tableCommonProps}
