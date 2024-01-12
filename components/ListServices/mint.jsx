@@ -22,6 +22,25 @@ import { FormContainer } from '../styles';
 
 const { Title } = Typography;
 
+const ESTIMATED_GAS_LIMIT = 500_000;
+
+const getEstimatedGasLimit = async (fn, account) => {
+  if (!account) {
+    throw new Error('Invalid account passed to estimate gas limit');
+  }
+
+  try {
+    const estimatedGas = await fn.estimateGas({ from: account });
+    return Math.floor(estimatedGas);
+  } catch (error) {
+    window.console.warn(
+      `Error occured on estimating gas, defaulting to ${ESTIMATED_GAS_LIMIT}`,
+    );
+  }
+
+  return ESTIMATED_GAS_LIMIT;
+};
+
 const MintService = () => {
   const router = useRouter();
   const { account, chainName, doesNetworkHaveValidServiceManagerToken } = useHelpers();
@@ -69,20 +88,34 @@ const MintService = () => {
         ]
         : [values.owner_address, ...commonParams];
 
-      const fn = contract.methods.create(...params).send({ from: account });
-      sendTransaction(fn, account)
-        .then((result) => {
-          setInformation(result);
-          notifySuccess('Service minted');
-        })
-        .catch((e) => {
-          setError(e);
-          console.error(e);
-          notifyError('Error minting service');
-        })
-        .finally(() => {
-          setIsMinting(false);
+      try {
+        const createConstruct = contract.methods.create(...params);
+        const gasEstimate = await getEstimatedGasLimit(
+          createConstruct,
+          account,
+        );
+
+        const fn = createConstruct.send({
+          from: account,
+          gasLimit: gasEstimate,
         });
+        sendTransaction(fn, account)
+          .then((result) => {
+            setInformation(result);
+            notifySuccess('Service minted');
+          })
+          .catch((e) => {
+            setError(e);
+            console.error(e);
+            notifyError('Error minting service');
+          })
+          .finally(() => {
+            setIsMinting(false);
+          });
+      } catch (estimateGasError) {
+        window.console.log('Error occured when minting service');
+        throw estimateGasError;
+      }
     }
   };
 
