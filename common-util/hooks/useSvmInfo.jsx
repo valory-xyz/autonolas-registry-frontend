@@ -4,24 +4,18 @@ import { PublicKey } from '@solana/web3.js';
 
 import idl from 'common-util/AbiAndAddresses/ServiceRegistrySolana.json';
 import { SOLANA_ADDRESSES, SOLANA_DEVNET_ADDRESSES } from 'common-util/Contracts/addresses';
+import { SOLANA_CHAIN_NAMES } from 'util/constants';
 import { useHelpers } from '.';
 
 export const useSvmInfo = () => {
   const { connection } = useConnection();
   const wallet = useWallet();
-
   const { chainName } = useHelpers();
 
-  const getAddresses = () => {
-    if (chainName === 'solana') {
-      return SOLANA_ADDRESSES;
-    }
-    return SOLANA_DEVNET_ADDRESSES;
-  };
+  const solanaAddresses = (chainName === SOLANA_CHAIN_NAMES.SOLANA)
+    ? SOLANA_ADDRESSES : SOLANA_DEVNET_ADDRESSES;
 
-  const addresses = getAddresses();
-
-  const programId = new PublicKey(addresses.serviceRegistry);
+  const programId = new PublicKey(solanaAddresses.serviceRegistry);
 
   const anchorProvider = new AnchorProvider(connection, wallet, {
     commitment: 'processed',
@@ -32,6 +26,6 @@ export const useSvmInfo = () => {
   return {
     wallet,
     program,
-    getAddresses,
+    solanaAddresses,
   };
 };

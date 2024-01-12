@@ -15,7 +15,7 @@ import {
 import { SafeConnector } from 'wagmi/connectors/safe';
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 
-import { VM_TYPE } from 'util/constants';
+import { SOLANA_CHAIN_NAMES, VM_TYPE } from 'util/constants';
 import { RPC_URLS } from 'common-util/Contracts';
 
 export const projectId = process.env.NEXT_PUBLIC_WALLET_PROJECT_ID;
@@ -100,16 +100,30 @@ export const SVM_SUPPORTED_CHAINS = [
   {
     id: null,
     networkDisplayName: 'Solana',
-    networkName: 'solana',
+    networkName: SOLANA_CHAIN_NAMES.MAINNET,
+    clusterName: 'mainnet-beta',
     vmType: VM_TYPE.SVM,
   },
   {
     id: null,
     networkDisplayName: 'Solana Devnet',
-    networkName: 'solana-devnet',
+    networkName: SOLANA_CHAIN_NAMES.DEVNET,
+    clusterName: 'devnet',
     vmType: VM_TYPE.SVM,
   },
 ];
+
+const DEFAULT_SVM_CLUSTER = 'mainnet-beta';
+
+/**
+ * Get the cluster name for a given Solana network name.
+ * @param {string} networkName - The network name to get the cluster for.
+ * @returns {string} The cluster name associated with the network name.
+ */
+export const getSvmClusterName = (networkName) => {
+  const chain = SVM_SUPPORTED_CHAINS.find((c) => c.networkName === networkName);
+  return chain ? chain.clusterName : DEFAULT_SVM_CLUSTER;
+};
 
 /**
  * Returns the list of all supported chains.
