@@ -9,7 +9,6 @@ import {
 } from '@solana/wallet-adapter-react';
 import * as web3 from '@solana/web3.js';
 import * as wallet from '@solana/wallet-adapter-wallets';
-import { WalletModalProvider as ReactUIWalletModalProvider } from '@solana/wallet-adapter-react-ui';
 
 import { PAGES_TO_LOAD_WITHOUT_CHAINID, SVM, VM_TYPE } from 'util/constants';
 import { useHelpers } from 'common-util/hooks';
@@ -133,9 +132,7 @@ const LayoutWithWalletProvider = (props) => {
   return (
     <ConnectionProvider endpoint={endpoint}>
       <WalletProvider wallets={wallets} autoConnect={vmType === VM_TYPE.SVM}>
-        <ReactUIWalletModalProvider>
-          <Layout {...props}>{props.children}</Layout>
-        </ReactUIWalletModalProvider>
+        <Layout {...props}>{props.children}</Layout>
       </WalletProvider>
     </ConnectionProvider>
   );

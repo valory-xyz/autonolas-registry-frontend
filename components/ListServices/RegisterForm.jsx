@@ -12,9 +12,9 @@ import { commaMessage, DependencyLabel } from 'common-util/List/ListCommon';
 import { FormItemHash } from 'common-util/List/RegisterForm/helpers';
 import { IpfsHashGenerationModal } from 'common-util/List/IpfsHashGenerationModal';
 import { useHelpers } from 'common-util/hooks';
+import { useSvmConnectivity } from 'common-util/hooks/useSvmInfo';
 import { ComplexLabel } from 'common-util/List/styles';
 import { RegistryForm } from 'common-util/TransactionHelpers/RegistryForm';
-import { useSvmInfo } from 'common-util/hooks/useSvmInfo';
 
 export const FORM_NAME = 'serviceRegisterForm';
 
@@ -59,7 +59,7 @@ const RegisterForm = ({
   handleSubmit,
 }) => {
   const { account, doesNetworkHaveValidServiceManagerToken, isSvm } = useHelpers();
-  const { wallet } = useSvmInfo();
+  const { wallet } = useSvmConnectivity();
 
   const [form] = Form.useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);

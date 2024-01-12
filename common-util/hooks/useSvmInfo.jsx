@@ -1,37 +1,42 @@
+import { useMemo } from 'react';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { Program, AnchorProvider } from '@project-serum/anchor';
 import { PublicKey } from '@solana/web3.js';
 
+import { SVM } from 'util/constants';
 import idl from 'common-util/AbiAndAddresses/ServiceRegistrySolana.json';
-import { SOLANA_ADDRESSES, SOLANA_DEVNET_ADDRESSES } from 'common-util/Contracts/addresses';
-import { useHelpers } from '.';
+import {
+  SOLANA_ADDRESSES,
+  SOLANA_DEVNET_ADDRESSES,
+} from 'common-util/Contracts/addresses';
+import { useHelpers } from './index';
 
-export const useSvmInfo = () => {
+/**
+ * hook to get svm info
+ */
+export const useSvmConnectivity = () => {
   const { connection } = useConnection();
-  const wallet = useWallet();
+  const { publicKey, wallet } = useWallet();
 
   const { chainName } = useHelpers();
 
-  const getAddresses = () => {
-    if (chainName === 'solana') {
-      return SOLANA_ADDRESSES;
-    }
-    return SOLANA_DEVNET_ADDRESSES;
-  };
-
-  const addresses = getAddresses();
-
-  const programId = new PublicKey(addresses.serviceRegistry);
+  const solanaAddresses = useMemo(
+    () => (chainName === SVM.SOLANA ? SOLANA_ADDRESSES : SOLANA_DEVNET_ADDRESSES),
+    [chainName],
+  );
 
   const anchorProvider = new AnchorProvider(connection, wallet, {
     commitment: 'processed',
   });
 
+  const programId = new PublicKey(solanaAddresses.serviceRegistry);
   const program = new Program(idl, programId, anchorProvider);
 
   return {
+    publicKey,
     wallet,
+    connection,
     program,
-    getAddresses,
+    solanaAddresses,
   };
 };

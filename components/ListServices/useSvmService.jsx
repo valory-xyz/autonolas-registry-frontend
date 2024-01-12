@@ -1,21 +1,10 @@
 import { useCallback } from 'react';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { Program, AnchorProvider, BorshCoder } from '@project-serum/anchor';
-import {
-  PublicKey,
-  TransactionMessage,
-  VersionedTransaction,
-} from '@solana/web3.js';
+import { BorshCoder } from '@project-serum/anchor';
+import { TransactionMessage, VersionedTransaction } from '@solana/web3.js';
 
-import { SERVICE_STATE_KEY_MAP, SVM } from 'util/constants';
+import { SERVICE_STATE_KEY_MAP } from 'util/constants';
 import idl from 'common-util/AbiAndAddresses/ServiceRegistrySolana.json';
-import {
-  SOLANA_ADDRESSES,
-  SOLANA_DEVNET_ADDRESSES,
-} from 'common-util/Contracts/addresses';
-import { useHelpers } from 'common-util/hooks';
-
-const programId = new PublicKey(SOLANA_ADDRESSES.serviceRegistry);
+import { useSvmConnectivity } from 'common-util/hooks/useSvmInfo';
 
 /**
  * deseralize the program data
@@ -34,26 +23,10 @@ const deseralizeProgramData = (serializedValue, decodeTypeName) => {
   return decodedResult;
 };
 
-/**
- * hook to get svm info
- * @returns {object} publicKey, connection, program
- */
-const useSvmConnectivity = () => {
-  const { connection } = useConnection();
-  const { publicKey, wallet } = useWallet();
-
-  const anchorProvider = new AnchorProvider(connection, wallet, {
-    commitment: 'processed',
-  });
-
-  const program = new Program(idl, programId, anchorProvider);
-
-  return { publicKey, connection, program };
-};
-
 const useSvmDataFetch = () => {
-  const { publicKey, connection, program } = useSvmConnectivity();
-  const { chainName } = useHelpers();
+  const {
+    publicKey, connection, program, solanaAddresses,
+  } = useSvmConnectivity();
 
   const getTransactionLogs = useCallback(
     async (fn, fnArgs) => {
@@ -65,13 +38,10 @@ const useSvmDataFetch = () => {
         if (!publicKey || !program) return null;
 
         const latestBlock = await connection.getLatestBlockhash();
-        const dataAccount = chainName === SVM.SOLANA
-          ? SOLANA_ADDRESSES.storageAccount
-          : SOLANA_DEVNET_ADDRESSES.storageAccount;
 
         // Build the instruction
         const instruction = await program.methods[fn](...(fnArgs || []))
-          .accounts({ dataAccount })
+          .accounts({ dataAccount: solanaAddresses.storageAccount })
           .instruction();
 
         // Build a versioned transaction with the instruction
@@ -94,7 +64,7 @@ const useSvmDataFetch = () => {
         throw error;
       }
     },
-    [connection, program, publicKey, chainName],
+    [connection, program, publicKey, solanaAddresses],
   );
 
   /**

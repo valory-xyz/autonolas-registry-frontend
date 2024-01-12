@@ -16,7 +16,7 @@ import { getServiceManagerContract } from 'common-util/Contracts';
 import { sendTransaction } from 'common-util/functions';
 import { checkIfERC721Receive } from 'common-util/functions/requests';
 import { useHelpers } from 'common-util/hooks';
-import { useSvmInfo } from 'common-util/hooks/useSvmInfo';
+import { useSvmConnectivity } from 'common-util/hooks/useSvmInfo';
 import { BN } from '@project-serum/anchor';
 import RegisterForm from './RegisterForm';
 import { getAgentParams } from './utils';
@@ -28,13 +28,11 @@ const MintService = () => {
   const {
     account, doesNetworkHaveValidServiceManagerToken, vmType, isSvm,
   } = useHelpers();
-  const { getAddresses } = useSvmInfo();
+  const { solanaAddresses, wallet, program } = useSvmConnectivity();
 
   const [isMinting, setIsMinting] = useState(false);
   const [error, setError] = useState(null);
   const [information, setInformation] = useState(null);
-
-  const { wallet, program } = useSvmInfo();
 
   const buildSvmFn = async (values) => {
     const {
@@ -47,13 +45,13 @@ const MintService = () => {
     } = values;
 
     const serviceOwnerPublicKey = ownerAddress;
-    // // Convert hash to bytes32 Buffer
+    // Convert hash to bytes32 Buffer
     const configHash = Buffer.from(hash, 'hex');
-    // // Convert agent_ids to an array
+    // Convert agent_ids to an array
     const agentIds = convertStringToArray(agentIdsSrc);
-    // // Use agent_num_slots to define slots
+    // Use agent_num_slots to define slots
     const slots = convertStringToArray(slotsSrc).map(Number);
-    // // Convert bonds to an array of BN
+    // Convert bonds to an array of BN
     const bondsArray = convertStringToArray(bonds).map((bond) => new BN(bond));
     // numberfy threshold
     const threshold = Number(thresholdStr);
@@ -67,7 +65,7 @@ const MintService = () => {
         bondsArray,
         threshold,
       )
-      .accounts({ dataAccount: getAddresses().storageAccount })
+      .accounts({ dataAccount: solanaAddresses.storageAccount })
       .remainingAccounts([
         { pubkey: serviceOwnerPublicKey, isSigner: true, isWritable: true },
       ]);
