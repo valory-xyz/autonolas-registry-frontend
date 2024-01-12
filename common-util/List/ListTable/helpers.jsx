@@ -8,10 +8,9 @@ import { AddressLink } from '@autonolas/frontend-library';
 import {
   NAV_TYPES,
   SERVICE_STATE,
+  SOLANA_CHAIN_NAMES,
   TOTAL_VIEW_COUNT,
-  VM_TYPE,
 } from 'util/constants';
-import { SVM_SOLANA_DEVNET_CHAIN } from 'common-util/Login/config';
 
 const { Title } = Typography;
 
@@ -84,7 +83,8 @@ export const getTableColumns = (
         width: 200,
         render: (text) => {
           // TODO: move to autonolas/frontend-library
-          const isSolana = chainName && chainName.includes(VM_TYPE.SVM);
+          const isSolana = chainName === SOLANA_CHAIN_NAMES.DEVNET
+            || chainName === SOLANA_CHAIN_NAMES.MAINNET;
 
           if (isSolana) {
             return (
@@ -92,7 +92,7 @@ export const getTableColumns = (
                 text={text}
                 suffixCount={isMobile ? 4 : 6}
                 onClick={() => {
-                  if (chainName === SVM_SOLANA_DEVNET_CHAIN.networkName) {
+                  if (chainName === SOLANA_CHAIN_NAMES.DEVNET) {
                     window.open(
                       `https://solscan.io/account/${text}?cluster=devnet`,
                       '_blank',

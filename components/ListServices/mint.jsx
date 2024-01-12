@@ -28,7 +28,7 @@ const MintService = () => {
   const {
     account, doesNetworkHaveValidServiceManagerToken, vmType, isSvm,
   } = useHelpers();
-  const { solanaAddresses, wallet, program } = useSvmConnectivity();
+  const { solanaAddresses, publicKey, program } = useSvmConnectivity();
 
   const [isMinting, setIsMinting] = useState(false);
   const [error, setError] = useState(null);
@@ -74,7 +74,7 @@ const MintService = () => {
   };
 
   const handleSubmit = async (values) => {
-    if (isSvm ? !wallet.publicKey : !account) {
+    if (isSvm ? !publicKey : !account) {
       notifyError('Wallet not connected');
       return;
     }
