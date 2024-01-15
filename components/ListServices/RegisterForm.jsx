@@ -10,11 +10,11 @@ import { DEFAULT_SERVICE_CREATION_ETH_TOKEN } from 'util/constants';
 import { commaMessage, DependencyLabel } from 'common-util/List/ListCommon';
 import { FormItemHash } from 'common-util/List/RegisterForm/helpers';
 import { IpfsHashGenerationModal } from 'common-util/List/IpfsHashGenerationModal';
+import { RegistryForm } from 'common-util/TransactionHelpers/RegistryForm';
+import { isValidSolanaPublicKey } from 'common-util/functions';
 import { useHelpers } from 'common-util/hooks';
 import { useSvmConnectivity } from 'common-util/hooks/useSvmConnectivity';
 import { ComplexLabel } from 'common-util/List/styles';
-import { RegistryForm } from 'common-util/TransactionHelpers/RegistryForm';
-import { isValidSolanaPublicKey } from 'common-util/functions';
 
 export const FORM_NAME = 'serviceRegisterForm';
 
@@ -95,17 +95,24 @@ const RegisterForm = ({
     }
 
     // eg: 1, 2, 1 and sumOfSlots = 4
-    const sumOfSlots = form.getFieldValue('agent_num_slots')
+    const sumOfSlots = form
+      .getFieldValue('agent_num_slots')
       .split(',')
       .reduce((sum, num) => sum + parseInt(num.trim(), 10), 0);
 
-    // eg: 2/3 * 4 = 2.66 and 4 <= 4 then valid
+    // eg: 2/3 * 4 = 2.66
+    // Now, threshold should be at least 2.66 and not exceed the sum of no. of slots
+    // ie. threshold >= 2.66 && threshold <= 4
     const threshold = parseInt(value, 10);
-    if ((threshold >= (2 / 3) * sumOfSlots && threshold <= sumOfSlots)) {
+    if (threshold >= (2 / 3) * sumOfSlots && threshold <= sumOfSlots) {
       return Promise.resolve();
     }
 
-    return Promise.reject(new Error('Threshold must be at least 2/3 and not exceed the sum of no. of slots'));
+    return Promise.reject(
+      new Error(
+        'Threshold must be at least 2/3 and not exceed the sum of no. of slots',
+      ),
+    );
   };
 
   useDeepCompareEffect(() => {

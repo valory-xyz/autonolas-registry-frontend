@@ -129,7 +129,6 @@ const useGetTotalForAllServices = () => {
 // returns the total number of services for the given account
 // TODO: implement this after fetching the account balance
 const useGetTotalForMyServices = () => {
-  // const getTotalForMySvmServices = () => Promise.resolve(-1);
   const { getTotalForAllSvmServices: getTotalForMySvmServices } = useGetTotalForAllServices();
 
   return { getTotalForMySvmServices };
