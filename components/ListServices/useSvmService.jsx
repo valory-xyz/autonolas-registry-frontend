@@ -127,12 +127,11 @@ const useGetTotalForAllServices = () => {
 };
 
 // returns the total number of services for the given account
+// TODO: implement this after fetching the account balance
 const useGetTotalForMyServices = () => {
-  // TODO: implement this after fetching the account balance
+  const { getTotalForAllSvmServices: getTotalForMySvmServices } = useGetTotalForAllServices();
 
-  const { getTotalForAllSvmServices } = useGetTotalForAllServices();
-
-  return { getTotalForMySvmServices: getTotalForAllSvmServices };
+  return { getTotalForMySvmServices };
 };
 
 /**
