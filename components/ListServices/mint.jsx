@@ -6,7 +6,6 @@ import { BN } from '@project-serum/anchor';
 import {
   DEFAULT_SERVICE_CREATION_ETH_TOKEN,
   DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS,
-  VM_TYPE,
 } from 'util/constants';
 import {
   convertStringToArray,
@@ -17,7 +16,7 @@ import { getServiceManagerContract } from 'common-util/Contracts';
 import { sendTransaction } from 'common-util/functions';
 import { checkIfERC721Receive } from 'common-util/functions/requests';
 import { useHelpers } from 'common-util/hooks';
-import { useSvmInfo } from 'common-util/hooks/useSvmInfo';
+import { useSvmConnectivity } from 'common-util/hooks/useSvmConnectivity';
 import RegisterForm from './RegisterForm';
 import { getAgentParams } from './utils';
 import { FormContainer } from '../styles';
@@ -28,15 +27,13 @@ const MintService = () => {
   const {
     account, doesNetworkHaveValidServiceManagerToken, vmType, isSvm,
   } = useHelpers();
-  const { solanaAddresses } = useSvmInfo();
+  const { solanaAddresses, walletPublicKey, program } = useSvmConnectivity();
 
   const [isMinting, setIsMinting] = useState(false);
   const [error, setError] = useState(null);
   const [information, setInformation] = useState(null);
 
-  const { wallet, program } = useSvmInfo();
-
-  const buildSvmFn = (values) => {
+  const buildSvmFn = async (values) => {
     const {
       owner_address: ownerAddress,
       hash,
@@ -76,7 +73,7 @@ const MintService = () => {
   };
 
   const handleSubmit = async (values) => {
-    if (isSvm ? !wallet.publicKey : !account) {
+    if (isSvm ? !walletPublicKey : !account) {
       notifyError('Wallet not connected');
       return;
     }
@@ -87,7 +84,7 @@ const MintService = () => {
 
     let fn;
 
-    if (vmType === VM_TYPE.SVM) {
+    if (isSvm) {
       fn = buildSvmFn(values);
     } else {
       try {
@@ -143,7 +140,6 @@ const MintService = () => {
 
   return (
     <>
-
       <FormContainer>
         <Title level={2}>Mint Service</Title>
         <RegisterForm

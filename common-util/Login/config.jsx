@@ -97,21 +97,25 @@ export const EVM_SUPPORTED_CHAINS = SUPPORTED_CHAINS.map((chain) => {
 /**
  * Solana supported chains
  */
+export const SVM_SOLANA_CHAIN = {
+  id: null,
+  networkDisplayName: 'Solana',
+  networkName: SOLANA_CHAIN_NAMES.MAINNET,
+  clusterName: 'mainnet-beta',
+  vmType: VM_TYPE.SVM,
+};
+
+export const SVM_SOLANA_DEVNET_CHAIN = {
+  id: null,
+  networkDisplayName: 'Solana Devnet',
+  networkName: SOLANA_CHAIN_NAMES.DEVNET,
+  clusterName: 'devnet',
+  vmType: VM_TYPE.SVM,
+};
+
 export const SVM_SUPPORTED_CHAINS = [
-  {
-    id: null,
-    networkDisplayName: 'Solana',
-    networkName: SOLANA_CHAIN_NAMES.MAINNET,
-    clusterName: 'mainnet-beta',
-    vmType: VM_TYPE.SVM,
-  },
-  {
-    id: null,
-    networkDisplayName: 'Solana Devnet',
-    networkName: SOLANA_CHAIN_NAMES.DEVNET,
-    clusterName: 'devnet',
-    vmType: VM_TYPE.SVM,
-  },
+  { ...SVM_SOLANA_CHAIN },
+  { ...SVM_SOLANA_DEVNET_CHAIN },
 ];
 
 const DEFAULT_SVM_CLUSTER = 'mainnet-beta';
@@ -137,4 +141,25 @@ export const getSvmEndpoint = (networkName) => {
 export const ALL_SUPPORTED_CHAINS = [
   ...EVM_SUPPORTED_CHAINS,
   ...SVM_SUPPORTED_CHAINS,
-];
+].sort(
+  (a, b) => {
+    // sort in this order
+    const chainOrder = [
+      'ethereum',
+      'gnosis',
+      'polygon',
+      'solana',
+      'goerli',
+      'gnosis-chiado',
+      'polygon-mumbai',
+      'solana-devnet',
+    ];
+
+    const aIndex = chainOrder.indexOf(a.networkName);
+    const bIndex = chainOrder.indexOf(b.networkName);
+
+    if (aIndex === bIndex) return 0;
+    if (aIndex > bIndex) return 1;
+    return -1;
+  },
+);

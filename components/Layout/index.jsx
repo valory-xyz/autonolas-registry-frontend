@@ -8,9 +8,8 @@ import {
   WalletProvider,
 } from '@solana/wallet-adapter-react';
 import { PhantomWalletAdapter } from '@solana/wallet-adapter-wallets';
-import { WalletModalProvider as ReactUIWalletModalProvider } from '@solana/wallet-adapter-react-ui';
 
-import { PAGES_TO_LOAD_WITHOUT_CHAINID, VM_TYPE } from 'util/constants';
+import { PAGES_TO_LOAD_WITHOUT_CHAINID } from 'util/constants';
 import { useHelpers } from 'common-util/hooks';
 import { ALL_SUPPORTED_CHAINS, getSvmEndpoint } from 'common-util/Login/config';
 import { useHandleRoute } from 'common-util/hooks/useHandleRoute';
@@ -34,7 +33,9 @@ const { Content } = AntdLayout;
 const Layout = ({ children }) => {
   const router = useRouter();
   const { isMobile, isTablet } = useScreen();
-  const { vmType, chainId, chainName } = useHelpers();
+  const {
+    vmType, isSvm, chainId, chainName,
+  } = useHelpers();
   const path = router?.pathname || '';
 
   const { onHomeClick, updateChainId } = useHandleRoute();
@@ -78,7 +79,14 @@ const Layout = ({ children }) => {
                   // eg. /components, /agents, /services will be redirect to
                   // /<chainName>/components, /<chainName>/agents, /<chainName>/services
                   const replacedPath = router.asPath.replace(chainName, value);
-                  router.push(replacedPath);
+
+                  // reload the page if vmType is different
+                  // ie. user switched from svm to eth or vice versa
+                  if (vmType !== currentChainInfo.vmType) {
+                    window.open(replacedPath, '_self');
+                  } else {
+                    router.push(replacedPath);
+                  }
                 }
               }
             }}
@@ -96,7 +104,7 @@ const Layout = ({ children }) => {
               OR the page doesn't depends on the chain Id
               OR it is SOLANA */}
           {chainId
-          || VM_TYPE.SVM === vmType
+          || isSvm
           || PAGES_TO_LOAD_WITHOUT_CHAINID.some((e) => e === path)
             ? children
             : null}
@@ -112,16 +120,13 @@ Layout.propTypes = { children: PropTypes.element };
 Layout.defaultProps = { children: null };
 
 const LayoutWithWalletProvider = (props) => {
-  const { chainName } = useHelpers();
-
+  const { chainName, isSvm } = useHelpers();
   const endpoint = getSvmEndpoint(chainName);
 
   return (
     <ConnectionProvider endpoint={endpoint}>
-      <WalletProvider wallets={wallets} autoConnect>
-        <ReactUIWalletModalProvider>
-          <Layout {...props}>{props.children}</Layout>
-        </ReactUIWalletModalProvider>
+      <WalletProvider wallets={wallets} autoConnect={isSvm}>
+        <Layout {...props}>{props.children}</Layout>
       </WalletProvider>
     </ConnectionProvider>
   );
@@ -129,5 +134,4 @@ const LayoutWithWalletProvider = (props) => {
 
 LayoutWithWalletProvider.propTypes = { children: PropTypes.element };
 LayoutWithWalletProvider.defaultProps = { children: null };
-
 export default LayoutWithWalletProvider;

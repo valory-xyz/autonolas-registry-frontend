@@ -11,9 +11,9 @@ import { commaMessage, DependencyLabel } from 'common-util/List/ListCommon';
 import { FormItemHash } from 'common-util/List/RegisterForm/helpers';
 import { IpfsHashGenerationModal } from 'common-util/List/IpfsHashGenerationModal';
 import { useHelpers } from 'common-util/hooks';
+import { useSvmConnectivity } from 'common-util/hooks/useSvmConnectivity';
 import { ComplexLabel } from 'common-util/List/styles';
 import { RegistryForm } from 'common-util/TransactionHelpers/RegistryForm';
-import { useSvmInfo } from 'common-util/hooks/useSvmInfo';
 import { isValidSolanaPublicKey } from 'common-util/functions';
 
 export const FORM_NAME = 'serviceRegisterForm';
@@ -51,7 +51,7 @@ const RegisterForm = ({
   handleSubmit,
 }) => {
   const { account, doesNetworkHaveValidServiceManagerToken, isSvm } = useHelpers();
-  const { wallet } = useSvmInfo();
+  const { walletPublicKey } = useSvmConnectivity();
 
   const [form] = Form.useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -84,9 +84,7 @@ const RegisterForm = ({
     if (isValidAddress(value)) return Promise.resolve();
 
     return Promise.reject(
-      new Error(
-        `Please input a valid address for the ${listType} Owner`,
-      ),
+      new Error(`Please input a valid address for the ${listType} Owner`),
     );
   };
 
@@ -149,7 +147,7 @@ const RegisterForm = ({
 
       form.validateFields(fieldsToValidate);
     }
-  }, [agentIds]);
+  }, [agentIds, form]);
 
   /**
    * form helper functions
@@ -163,8 +161,7 @@ const RegisterForm = ({
   };
 
   const hashValue = form.getFieldValue('hash');
-
-  const isVmWalletAbsent = isSvm ? !wallet.publicKey : !account;
+  const isVmWalletAbsent = isSvm ? !walletPublicKey : !account;
 
   const handlePrefillAddress = () => {
     if (isVmWalletAbsent) {
@@ -172,9 +169,7 @@ const RegisterForm = ({
       return;
     }
 
-    form.setFieldsValue(
-      { owner_address: isSvm ? wallet.publicKey : account },
-    );
+    form.setFieldsValue({ owner_address: isSvm ? walletPublicKey : account });
   };
 
   return (
@@ -205,7 +200,10 @@ const RegisterForm = ({
             }),
           ]}
         >
-          <Input placeholder={isSvm ? 'pWK1v…' : '0x862…'} disabled={isUpdateForm} />
+          <Input
+            placeholder={isSvm ? 'pWK1v…' : '0x862…'}
+            disabled={isUpdateForm}
+          />
         </Form.Item>
 
         <Form.Item className="mb-0">

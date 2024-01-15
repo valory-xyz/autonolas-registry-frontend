@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Tabs } from 'antd';
 import { useRouter } from 'next/router';
 import { notifyError } from '@autonolas/frontend-library';
 
-import { VM_TYPE, NAV_TYPES } from 'util/constants';
+import { NAV_TYPES } from 'util/constants';
 import ListTable from 'common-util/List/ListTable';
 import {
   useExtraTabContent,
@@ -12,12 +12,14 @@ import {
 } from 'common-util/List/ListTable/helpers';
 import { getMyListOnPagination } from 'common-util/ContractUtils/myList';
 import { useHelpers } from 'common-util/hooks';
+import { useSvmConnectivity } from 'common-util/hooks/useSvmConnectivity';
 import {
   getServices,
   getFilteredServices,
   getTotalForAllServices,
   getTotalForMyServices,
 } from './utils';
+import { useServiceInfo } from './useSvmService';
 
 const ALL_SERVICES = 'all-services';
 const MY_SERVICES = 'my-services';
@@ -29,9 +31,15 @@ const ListServices = () => {
     isMyTab(hash) ? MY_SERVICES : ALL_SERVICES,
   );
 
+  const { walletPublicKey } = useSvmConnectivity();
   const {
-    account, chainId, links, vmType,
+    account: ethAccount, chainName, links, isSvm,
   } = useHelpers();
+
+  const account = useMemo(() => {
+    if (isSvm) return walletPublicKey;
+    return ethAccount;
+  }, [ethAccount, isSvm, walletPublicKey]);
 
   /**
    * extra tab content & view click
@@ -39,6 +47,7 @@ const ListServices = () => {
   const { searchValue, extraTabContent, clearSearch } = useExtraTabContent({
     title: 'Services',
     onRegisterClick: () => router.push(links.MINT_SERVICE),
+    isSvm,
   });
   const onViewClick = (id) => router.push(`${links.SERVICES}/${id}`);
 
@@ -54,102 +63,108 @@ const ListServices = () => {
   useEffect(() => {
     setCurrentTab(isMyTab(hash) ? MY_SERVICES : ALL_SERVICES);
     setList([]);
-  }, [
-    router.asPath,
-    // hash
-  ]);
+  }, [router.asPath, hash]);
 
-  // fetch total
+  const {
+    getTotalForAllSvmServices,
+    getTotalForMySvmServices,
+    getSvmServices,
+    getMySvmServices,
+  } = useServiceInfo();
+
+  // fetch total (All services & My services)
   useEffect(() => {
-    (async () => {
-      if (searchValue === '') {
-        try {
-          // TODO: remove this once solana is ready
-          if (vmType === VM_TYPE.SVM) {
-            setTotal(0);
-            setIsLoading(false);
-            return;
-          }
+    const getTotal = async () => {
+      try {
+        let totalTemp = null;
 
-          /* ethereum & its testnets */
-          let totalTemp = null;
-
-          // All services
-          if (currentTab === ALL_SERVICES) {
-            totalTemp = await getTotalForAllServices();
-          }
-
-          // My services
-          if (currentTab === MY_SERVICES && account) {
-            totalTemp = await getTotalForMyServices(account);
-          }
-
-          setTotal(Number(totalTemp));
-          if (Number(totalTemp) === 0) {
-            setIsLoading(false);
-          }
-        } catch (e) {
-          console.error(e);
-          notifyError('Error fetching services');
+        if (currentTab === ALL_SERVICES) {
+          totalTemp = isSvm
+            ? await getTotalForAllSvmServices(account)
+            : await getTotalForAllServices();
+        } else if (currentTab === MY_SERVICES && account) {
+          totalTemp = isSvm
+            ? await getTotalForMySvmServices(account)
+            : await getTotalForMyServices(account);
         }
+
+        setTotal(Number(totalTemp));
+        if (Number(totalTemp) === 0) {
+          setIsLoading(false);
+        }
+      } catch (e) {
+        console.error(e);
+        notifyError('Error fetching services');
       }
-    })();
+    };
+
+    if (searchValue === '') {
+      getTotal();
+    }
   }, [
     account,
-    chainId,
+    chainName,
     currentTab,
     searchValue,
-    vmType,
+    isSvm,
+    getTotalForAllSvmServices,
+    getTotalForMySvmServices,
+    getSvmServices,
   ]);
 
   // fetch the list (without search)
   useEffect(() => {
-    (async () => {
-      if (total && currentPage && !searchValue) {
-        setIsLoading(true);
+    const getList = async () => {
+      setIsLoading(true);
 
-        try {
-          // TODO: remove this once solana is ready
-          if (vmType === VM_TYPE.SVM) {
-            setList([]);
-            setIsLoading(false);
-            return;
-          }
-
-          /* ethereum & its testnets */
-          // All services
-          if (currentTab === ALL_SERVICES) {
-            setList([]);
-            const everyComps = await getServices(total, currentPage);
-            setList(everyComps);
-          }
-
-          /**
-           * My services
-           * - search by `account` as searchValue
-           * - API will be called only once & store the complete list
-           */
-          if (currentTab === MY_SERVICES && list.length === 0 && account) {
-            setList([]);
-            const e = await getFilteredServices(account);
-            setList(e);
-          }
-        } catch (e) {
-          console.error(e);
-          notifyError('Error fetching services list');
-        } finally {
-          setIsLoading(false);
+      try {
+        // All services
+        if (currentTab === ALL_SERVICES) {
+          setList([]);
+          const everyComps = isSvm
+            ? await getSvmServices(total)
+            : await getServices(total, currentPage);
+          setList(everyComps);
         }
+
+        /**
+         * My services
+         * - search by `account` as searchValue
+         * - API will be called only once & store the complete list
+         */
+        if (currentTab === MY_SERVICES && list.length === 0 && account) {
+          setList([]);
+
+          const e = isSvm
+            ? await getMySvmServices(account, total)
+            : await getFilteredServices(account);
+          setList(e);
+
+          // TODO: remove this once `getTotalForMySvmServices` is fixed
+          if (isSvm) {
+            setTotal(e.length);
+          }
+        }
+      } catch (e) {
+        console.error(e);
+        notifyError('Error fetching services list');
+      } finally {
+        setIsLoading(false);
       }
-    })();
+    };
+
+    if (total && currentPage && !searchValue) {
+      getList();
+    }
+    /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, [
     account,
-    chainId,
+    chainName,
     total,
     currentPage,
-    vmType,
     currentTab,
-    // searchValue,
+    searchValue,
+    isSvm,
     // list?.length,
   ]);
 
@@ -180,12 +195,7 @@ const ListServices = () => {
         }
       }
     })();
-  }, [
-    account,
-    chainId,
-    searchValue,
-    currentTab,
-  ]);
+  }, [account, chainName, searchValue, currentTab]);
 
   const tableCommonProps = {
     type: NAV_TYPES.SERVICE,
