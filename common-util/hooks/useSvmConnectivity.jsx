@@ -35,7 +35,7 @@ export const useSvmConnectivity = () => {
   const program = new Program(idl, programId, anchorProvider);
 
   return {
-    walletPublicKey: wallet.publicKey,
+    walletPublicKey: wallet?.publicKey,
     connection,
     program,
     solanaAddresses,

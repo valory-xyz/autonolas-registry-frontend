@@ -112,7 +112,7 @@ const ListServices = () => {
     getSvmServices,
   ]);
 
-  // fetch the list (without search)
+  // fetch the list (All services, My Services) - WITHOUT search
   useEffect(() => {
     const getList = async () => {
       setIsLoading(true);
@@ -169,7 +169,7 @@ const ListServices = () => {
   ]);
 
   /**
-   * Search (All services, My Services)
+   * fetch the list (All services, My Services) - WITH search
    * - no pagination as we won't know total beforehand as we have to
    *   traverse the entire list
    */
@@ -248,6 +248,7 @@ const ListServices = () => {
             <ListTable
               {...tableCommonProps}
               list={myServiceList}
+              isPaginationRequired={!isSvm}
               onUpdateClick={(serviceId) => router.push(`${links.UPDATE_SERVICE}/${serviceId}`)}
               isAccountRequired
             />
