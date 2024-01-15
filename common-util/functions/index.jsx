@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { isString, toLower } from 'lodash';
+import { isObject, isString, toLower } from 'lodash';
 import {
   isValidAddress,
   getChainIdOrDefaultToMainnet as getChainIdOrDefaultToMainnetFn,
@@ -104,8 +104,8 @@ export const getChainIdOrDefaultToMainnet = (chainId) => {
  * @param {object} obj - The object to check.
  * @returns {boolean} - True if the object is a MethodsBuilder object, false otherwise.
  */
-const isMethodsBuilderObject = (obj) => {
-  if (typeof obj !== 'object' || obj === null) {
+const isMethodsBuilderInstance = (obj) => {
+  if (!isObject(obj)) {
     throw new Error('sendTransaction: Input must be an object.');
   }
   // Check for a unique property that should always exist
@@ -114,10 +114,10 @@ const isMethodsBuilderObject = (obj) => {
 
   // Check for a complex property with a specific structure,
   // eslint-disable-next-line no-underscore-dangle
-  const argsCorrect = Array.isArray(obj._args) && obj._args.length === 6;
+  const hasValidArgs = Array.isArray(obj._args) && obj._args.length === 6;
 
   // Return true if both characteristic properties are as expected
-  return hasProgramId && argsCorrect;
+  return hasProgramId && hasValidArgs;
 };
 
 /**
@@ -132,7 +132,8 @@ const isMethodsBuilderObject = (obj) => {
  */
 export const sendTransaction = (method, account, vmType) => {
   if (vmType === VM_TYPE.SVM) {
-    if (!isMethodsBuilderObject(method)) {
+    // Check if something resembling an SVM method is being passed
+    if (!isMethodsBuilderInstance(method)) {
       notifyError('Invalid method object');
       throw new Error('Invalid method object');
     }
