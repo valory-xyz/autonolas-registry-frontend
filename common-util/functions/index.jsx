@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { isObject, isString, toLower } from 'lodash';
+import { isString, toLower } from 'lodash';
 import {
   isValidAddress,
   getChainIdOrDefaultToMainnet as getChainIdOrDefaultToMainnetFn,
@@ -109,11 +109,10 @@ const isMethodsBuilderInstance = (builderIns, registryAddress) => {
     throw new Error('sendTransaction: Input must be an object.');
   }
 
-  // eslint-disable-next-line no-underscore-dangle
-  const programId = builderIns._programId.toString();
+  const programId = '_programId' in builderIns ? builderIns?._programId?.toString() : null; // eslint-disable-line no-underscore-dangle
 
-  // Check for a unique property that should always exist
-  const hasProgramId = '_programId' in builderIns && programId === registryAddress;
+  // Check if the programId is the same as the registry address
+  const hasProgramId = programId === registryAddress;
 
   // Check for a complex property with a specific structure,
   // eslint-disable-next-line no-underscore-dangle
