@@ -1,5 +1,4 @@
 import { useRouter } from 'next/router';
-import { Result } from 'antd';
 
 import Details from 'common-util/Details';
 import { useHelpers } from 'common-util/hooks';
@@ -13,16 +12,7 @@ import {
 const Service = () => {
   const router = useRouter();
   const id = router?.query?.id;
-  const { links, isSvm } = useHelpers();
-
-  if (isSvm) {
-    return (
-      <Result
-        status="warning"
-        title="This page is not available for SVM services yet!"
-      />
-    );
-  }
+  const { links } = useHelpers();
 
   return (
     <Details
