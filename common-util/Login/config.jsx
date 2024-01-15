@@ -124,7 +124,7 @@ const DEFAULT_SVM_CLUSTER = 'mainnet-beta';
  * Get the endpoint for a given Solana network name.
  * If it's mainnet, directly return the endpoint at process.env.NEXT_PUBLIC_SOLANA_MAINNET_URL.
  * Otherwise, return web3.clusterApiUrl and pass in the devnet cluster name.
- * @param {string} networkName - The network name to get the cluster for.
+ * @param {string} networkName - The network name to get the endpoint for.
  * @returns {string} The endpoint URL associated with the network name.
  */
 export const getSvmEndpoint = (networkName) => {
