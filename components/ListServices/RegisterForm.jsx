@@ -90,14 +90,18 @@ const RegisterForm = ({
 
   // This function validates the owner address based on the network type
   const validateThreshold = (getFieldValue, value) => {
+    if (!value || !getFieldValue('agent_num_slots')) {
+      Promise.resolve();
+    }
+
     // eg: 1, 2, 1 and sumOfSlots = 4
-    const sumOfSlots = getFieldValue('agent_num_slots')
+    const sumOfSlots = form.getFieldValue('agent_num_slots')
       .split(',')
       .reduce((sum, num) => sum + parseInt(num.trim(), 10), 0);
 
     // eg: 2/3 * 4 = 2.66 and 4 <= 4 then valid
     const threshold = parseInt(value, 10);
-    if (!value || (threshold >= (2 / 3) * sumOfSlots && threshold <= sumOfSlots)) {
+    if ((threshold >= (2 / 3) * sumOfSlots && threshold <= sumOfSlots)) {
       return Promise.resolve();
     }
 

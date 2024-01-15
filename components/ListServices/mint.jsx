@@ -85,7 +85,7 @@ const MintService = () => {
     let fn;
 
     if (isSvm) {
-      fn = buildSvmFn(values);
+      fn = await buildSvmFn(values);
     } else {
       try {
         const isValid = await checkIfERC721Receive(
@@ -123,7 +123,10 @@ const MintService = () => {
       fn = contract.methods.create(...params).send({ from: account });
     }
 
-    sendTransaction(fn, account || undefined, vmType)
+    sendTransaction(fn, account || undefined, {
+      vmType,
+      registryAddress: solanaAddresses.serviceRegistry,
+    })
       .then((result) => {
         setInformation(result);
         notifySuccess('Service minted');
