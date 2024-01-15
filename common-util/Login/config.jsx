@@ -121,7 +121,7 @@ export const SVM_SUPPORTED_CHAINS = [
 const DEFAULT_SVM_CLUSTER = 'mainnet-beta';
 
 /**
- * Get the cluster name for a given Solana network name.
+ * Get the endpoint for a given Solana network name.
  * If it's mainnet, directly return the endpoint at process.env.NEXT_PUBLIC_SOLANA_MAINNET_URL.
  * Otherwise, return web3.clusterApiUrl and pass in the devnet cluster name.
  * @param {string} networkName - The network name to get the cluster for.
