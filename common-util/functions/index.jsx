@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { isObject, isString, toLower } from 'lodash';
+import { isString, toLower } from 'lodash';
 import {
   isValidAddress,
   getChainIdOrDefaultToMainnet as getChainIdOrDefaultToMainnetFn,
@@ -101,20 +101,22 @@ export const getChainIdOrDefaultToMainnet = (chainId) => {
  * A MethodsBuilder object is expected to have certain properties that are
  * used to interact with the blockchain.
  *
- * @param {object} obj - The object to check.
+ * @param {object} builderIns - The object to check.
  * @returns {boolean} - True if the object is a MethodsBuilder object, false otherwise.
  */
-const isMethodsBuilderInstance = (obj) => {
-  if (!isObject(obj)) {
+const isMethodsBuilderInstance = (builderIns, registryAddress) => {
+  if (typeof builderIns !== 'object' || builderIns === null) {
     throw new Error('sendTransaction: Input must be an object.');
   }
-  // Check for a unique property that should always exist
-  // eslint-disable-next-line no-underscore-dangle
-  const hasProgramId = '_programId' in obj && obj._programId instanceof PublicKey;
+
+  const programId = '_programId' in builderIns ? builderIns?._programId?.toString() : null; // eslint-disable-line no-underscore-dangle
+
+  // Check if the programId is the same as the registry address
+  const hasProgramId = programId === registryAddress;
 
   // Check for a complex property with a specific structure,
   // eslint-disable-next-line no-underscore-dangle
-  const hasValidArgs = Array.isArray(obj._args) && obj._args.length === 6;
+  const hasValidArgs = Array.isArray(builderIns._args) && builderIns._args.length === 6;
 
   // Return true if both characteristic properties are as expected
   return hasProgramId && hasValidArgs;
@@ -128,12 +130,19 @@ const isMethodsBuilderInstance = (obj) => {
  * @param {Function} method - The transaction method to be executed.
  * @param {string} account - The account address that is sending the transaction.
  *                           Only required when vmType is EVM
- * @param {string} vmType - The type of virtual machine ('svm' or 'evm).
+ * @param {Object} extra
+ * @param {string} extra.vmType - The virtual machine type to use.
+ * @param {string} extra.registryAddress - The address of the registry contract.
+ *
  */
-export const sendTransaction = (method, account, vmType) => {
+export const sendTransaction = (
+  method,
+  account,
+  { vmType, registryAddress },
+) => {
   if (vmType === VM_TYPE.SVM) {
     // Check if something resembling an SVM method is being passed
-    if (!isMethodsBuilderInstance(method)) {
+    if (!isMethodsBuilderInstance(method, registryAddress)) {
       notifyError('Invalid method object');
       throw new Error('Invalid method object');
     }
