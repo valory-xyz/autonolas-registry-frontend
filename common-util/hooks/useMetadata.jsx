@@ -2,8 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { get } from 'lodash';
 import { notifyError, NA } from '@autonolas/frontend-library';
 
-import { GATEWAY_URL } from 'util/constants';
-import { HASH_DETAILS_STATE } from '../Details/constants';
+import { GATEWAY_URL, HASH_DETAILS_STATE } from 'util/constants';
 
 const pattern = /https:\/\/localhost\/(agent|component|service)\/+/g;
 const getAutonolasTokenUri = (tokenUri) => (tokenUri || '').replace(pattern, GATEWAY_URL);

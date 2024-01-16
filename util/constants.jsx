@@ -84,3 +84,12 @@ export const SOLANA_CHAIN_NAMES = {
   MAINNET: 'solana',
   DEVNET: 'solana-devnet',
 };
+
+/**
+ * Constants for the different types of Hash Details states
+ */
+export const HASH_DETAILS_STATE = {
+  IS_LOADING: 'IS_LOADING',
+  LOADED: 'LOADED',
+  FAILED: 'FAILED',
+};

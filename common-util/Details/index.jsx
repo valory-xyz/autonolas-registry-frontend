@@ -1,16 +1,17 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 import capitalize from 'lodash/capitalize';
 import {
   Row, Col, Button, Typography,
 } from 'antd';
 import { get } from 'lodash';
-import { notifyError, Loader, NA } from '@autonolas/frontend-library';
+import { Loader, NA } from '@autonolas/frontend-library';
 
 import { NAV_TYPES } from 'util/constants';
 import { useHelpers } from 'common-util/hooks';
 import { useMetadata } from 'common-util/hooks/useMetadata';
 import { IpfsHashGenerationModal } from '../List/IpfsHashGenerationModal';
+import { useDetails } from './useDetails';
 import { NftImage } from './NFTImage';
 import { ServiceState } from './ServiceState';
 import { DetailsSubInfo } from './DetailsSubInfo';
@@ -28,54 +29,23 @@ const Details = ({
   onUpdateHash,
   onDependencyClick,
 }) => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [info, setInfo] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [ownerAddress, setDetailsOwner] = useState(NA);
-  const [tokenUri, setTokenUri] = useState(null);
-  const { isSvm } = useHelpers();
 
-  const { account, chainId } = useHelpers();
+  const { account, isSvm } = useHelpers();
+  const {
+    isLoading, info, ownerAddress, tokenUri, updateDetails, isOwner,
+  } = useDetails({
+    id,
+    type,
+    getDetails,
+    getOwner,
+    getTokenUri,
+  });
   const { nftImageUrl } = useMetadata(tokenUri);
 
-  // metadata details (from IPFS)
-
-  const isOwner = account && account.toLowerCase() === ownerAddress.toLowerCase();
-
-  const updateDetails = useCallback(async () => {
-    try {
-      const details = await getDetails();
-      setInfo(details);
-    } catch (e) {
-      console.error(e);
-      notifyError(`Error fetching ${type} details`);
-    }
-  }, [chainId, type]); /* eslint-disable-line react-hooks/exhaustive-deps */
-
-  // fetch details, owner and tokenUri
-  useEffect(() => {
-    (async () => {
-      setIsLoading(true);
-      setInfo([]);
-
-      try {
-        const temp = await getDetails();
-        setInfo(temp);
-
-        const ownerAccount = await getOwner();
-        setDetailsOwner(ownerAccount || '');
-
-        const tempTokenUri = await getTokenUri();
-        setTokenUri(tempTokenUri);
-      } catch (e) {
-        console.error(e);
-        notifyError(`Error fetching ${type} details`);
-      } finally {
-        setIsLoading(false);
-      }
-    })();
-    /* eslint-disable-next-line react-hooks/exhaustive-deps */
-  }, [account, chainId, id, type]);
+  // Update button to be show only if the connected account is the owner
+  // and only for agent and component
+  const canShowUpdateBtn = isOwner && type !== NAV_TYPES.SERVICE;
 
   if (isLoading) {
     return <Loader timeoutMessage="Details couldn’t be loaded" />;
@@ -91,9 +61,8 @@ const Details = ({
           </DetailsTitle>
         </div>
 
-        {/* Update button to be show only if the connected account is the owner */}
         <div className="right-content">
-          {isOwner && type !== NAV_TYPES.SERVICE && (
+          {canShowUpdateBtn && (
             <Button
               disabled={!handleUpdate}
               type="primary"

@@ -42,15 +42,26 @@ const Service = () => {
     return e;
   }, [id, isSvm, getSvmTokenUri]);
 
+  const handleUpdate = useCallback(() => {
+    router.push(`${links.UPDATE_SERVICE}/${id}`);
+  }, [id, router, links]);
+
+  const onDependencyClick = useCallback(
+    (e) => {
+      router.push(`${links.AGENTS}/${e}`);
+    },
+    [router, links],
+  );
+
   return (
     <Details
       type="service"
       id={id}
       getDetails={getDetails}
       getOwner={getOwner}
-      getTokenUri={() => getTokenUri(id)}
-      handleUpdate={() => router.push(`${links.UPDATE_SERVICE}/${id}`)}
-      onDependencyClick={(e) => router.push(`${links.AGENTS}/${e}`)}
+      getTokenUri={getTokenUri}
+      handleUpdate={handleUpdate}
+      onDependencyClick={onDependencyClick}
     />
   );
 };

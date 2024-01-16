@@ -1,16 +1,16 @@
 /* eslint-disable react/prop-types */
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Typography, Alert } from 'antd';
 import { NA } from '@autonolas/frontend-library';
 
 import {
   DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS,
   NAV_TYPES,
+  HASH_DETAILS_STATE,
 } from 'util/constants';
 import { Circle } from 'common-util/svg/Circle';
 import { useHelpers } from 'common-util/hooks';
 import { useMetadata } from 'common-util/hooks/useMetadata';
-import { HASH_DETAILS_STATE } from './constants';
 import { NftImage } from './NFTImage';
 import { getTokenDetailsRequest } from './ServiceState/utils';
 import {
@@ -43,8 +43,29 @@ const MetadataUnpinnedMessage = () => (
   />
 );
 
+const ViewHashAndCode = ({
+  type, metadataLoadState, hashUrl, codeHref,
+}) => {
+  if (HASH_DETAILS_STATE.LOADED !== metadataLoadState) return null;
+
+  return (
+    <>
+      {type === NAV_TYPES.SERVICE && <>&nbsp;•&nbsp;</>}
+      <Link target="_blank" data-testid="view-hash-link" href={hashUrl}>
+        View Hash&nbsp;
+        <ArrowLink />
+      </Link>
+      &nbsp;•&nbsp;
+      <Link target="_blank" data-testid="view-code-link" href={codeHref}>
+        View Code&nbsp;
+        <ArrowLink />
+      </Link>
+    </>
+  );
+};
+
 /**
- * Agent/Component/Service details component
+ * Agent | Component | Service - details component
  */
 export const DetailsSubInfo = ({
   id,
@@ -100,25 +121,19 @@ export const DetailsSubInfo = ({
     }
   }, [id, type, isSvm, doesNetworkHaveValidServiceManagerToken]);
 
-  const getViewHashAndCode = useCallback(() => {
-    if (HASH_DETAILS_STATE.LOADED !== metadataLoadState) return null;
+  const viewHashAndCode = (
+    <ViewHashAndCode
+      type={type}
+      metadataLoadState={metadataLoadState}
+      hashUrl={hashUrl}
+      codeHref={codeHref}
+    />
+  );
 
-    return (
-      <>
-        {type === NAV_TYPES.SERVICE && <>&nbsp;•&nbsp;</>}
-        <Link target="_blank" data-testid="view-hash-link" href={hashUrl}>
-          View Hash&nbsp;
-          <ArrowLink />
-        </Link>
-        &nbsp;•&nbsp;
-        <Link target="_blank" data-testid="view-code-link" href={codeHref}>
-          View Code&nbsp;
-          <ArrowLink />
-        </Link>
-      </>
-    );
-  }, [metadataLoadState, type, hashUrl, codeHref]);
-
+  /**
+   * contains common details for agent, component & service
+   * ie, description, version, metadata unpinned alert, owner address
+   */
   const getCommonDetails = () => {
     const commonDetails = [];
 
@@ -159,12 +174,24 @@ export const DetailsSubInfo = ({
       </>
     ) : null;
 
+    const getDependencyValue = () => {
+      if (componentAndAgentDependencies?.length === 0) return 'None';
+
+      return componentAndAgentDependencies.map((e) => (
+        <li key={`${type}-dependency-${e}`}>
+          <Button type="link" onClick={() => onDependencyClick(e)}>
+            {e}
+          </Button>
+        </li>
+      ));
+    };
+
     return [
       {
         dataTestId: 'hashes-list',
         value: (
           <>
-            {getViewHashAndCode()}
+            {viewHashAndCode}
             {updateHashBtn}
           </>
         ),
@@ -173,22 +200,15 @@ export const DetailsSubInfo = ({
       {
         title: 'Component Dependencies',
         dataTestId: 'details-dependency',
-        value:
-          componentAndAgentDependencies?.length === 0 ? (
-            <>None</>
-          ) : (
-            componentAndAgentDependencies.map((e) => (
-              <li key={`${type}-dependency-${e}`}>
-                <Button type="link" onClick={() => onDependencyClick(e)}>
-                  {e}
-                </Button>
-              </li>
-            ))
-          ),
+        value: getDependencyValue(),
       },
     ];
   };
 
+  /**
+   * contains details for service
+   * ie, service status, NFT Image, threshold, token address, operator whitelisting
+   */
   const getServiceValues = () => {
     const serviceState = ['2', '3', '4'].includes(serviceCurrentState);
     const serviceDetailsList = [
@@ -197,7 +217,7 @@ export const DetailsSubInfo = ({
         value: (
           <>
             <ServiceStatus serviceState={serviceState} />
-            {getViewHashAndCode()}
+            {viewHashAndCode}
           </>
         ),
       },

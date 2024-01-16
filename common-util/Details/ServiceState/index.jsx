@@ -46,6 +46,7 @@ export const ServiceState = ({
   const threshold = get(details, 'threshold') || '';
   const owner = get(details, 'owner') || '';
   const securityDeposit = get(details, 'securityDeposit');
+  const canShowMultisigSameAddress = get(details, 'multisig') !== `0x${'0'.repeat(40)}`;
 
   useEffect(() => {
     let isMounted = true;
@@ -161,9 +162,7 @@ export const ServiceState = ({
           owner={owner}
           handleTerminate={handleTerminate}
           // show multisig (2nd radio button option) if the service multisig !== 0
-          canShowMultisigSameAddress={
-            get(details, 'multisig') !== `0x${'0'.repeat(40)}`
-          }
+          canShowMultisigSameAddress={canShowMultisigSameAddress}
           {...commonProps}
         />
       ),
