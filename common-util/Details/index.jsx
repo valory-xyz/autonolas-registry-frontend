@@ -58,7 +58,7 @@ const Details = ({
       console.error(e);
       notifyError(`Error fetching ${type} details`);
     }
-  }, [chainId, type]);
+  }, [chainId, type]); /* eslint-disable-line react-hooks/exhaustive-deps */
 
   // fetch details, owner and tokenUri
   useEffect(() => {
@@ -82,6 +82,7 @@ const Details = ({
         setIsLoading(false);
       }
     })();
+    /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, [account, chainId, id, type]);
 
   // fetch metadata from IPFS
@@ -179,9 +180,9 @@ const Details = ({
               {/* TODO: isSvm to be removed once read-omly is completed */}
               {!isSvm && (
                 <ServiceState
-                  isOwner={isOwner}
                   id={id}
                   account={account}
+                  isOwner={isOwner}
                   details={info}
                   updateDetails={updateDetails}
                 />

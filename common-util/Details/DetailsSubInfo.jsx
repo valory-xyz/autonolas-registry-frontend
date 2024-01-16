@@ -1,8 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useCallback, useEffect, useState } from 'react';
-import {
-  Button, Typography, Alert, Switch,
-} from 'antd';
+import { Button, Typography, Alert } from 'antd';
 import { NA } from '@autonolas/frontend-library';
 
 import {
@@ -13,15 +11,7 @@ import { Circle } from 'common-util/svg/Circle';
 import { useHelpers } from 'common-util/hooks';
 import { HASH_DETAILS_STATE } from './constants';
 import { NftImage } from './NFTImage';
-import {
-  SetOperatorStatus,
-  OperatorWhitelist,
-} from './ServiceDetails/ServiceDetailsHelper';
-import {
-  getTokenDetailsRequest,
-  setOperatorsCheckRequest,
-  checkIfServiceRequiresWhitelisting,
-} from './ServiceState/utils';
+import { getTokenDetailsRequest } from './ServiceState/utils';
 import {
   SubTitle,
   Info,
@@ -30,6 +20,7 @@ import {
   ServiceStatusContainer,
   ArrowLink,
 } from './styles';
+import { useOperatorWhitelistComponent } from './ServiceDetails/useOperatorWhitelistComponent';
 
 const { Link, Text } = Typography;
 
@@ -77,26 +68,15 @@ export const DetailsSubInfo = ({
   setIsModalVisible,
   onDependencyClick,
 }) => {
-  const { account, doesNetworkHaveValidServiceManagerToken, isSvm } = useHelpers();
+  const { doesNetworkHaveValidServiceManagerToken, isSvm } = useHelpers();
   const [tokenAddress, setTokenAddress] = useState(null);
 
   // switch state
-  const [isWhiteListed, setIsWhiteListed] = useState(false);
-  const [switchValue, setSwitchValue] = useState(isWhiteListed);
-  useEffect(() => {
-    setSwitchValue(isWhiteListed);
-  }, [isWhiteListed]);
-  const [isWhiteListingLoading, setIsWhiteListingLoading] = useState(false);
-
-  // get operator whitelist
-  const setOpWhitelist = useCallback(async () => {
-    try {
-      const whiteListRes = await checkIfServiceRequiresWhitelisting(id);
-      setIsWhiteListed(whiteListRes);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [id]);
+  const {
+    operatorWhitelistTitle,
+    operatorWhitelistValue,
+    operatorStatusValue,
+  } = useOperatorWhitelistComponent(id);
 
   // get token address for service on load
   useEffect(() => {
@@ -105,7 +85,6 @@ export const DetailsSubInfo = ({
         try {
           const response = await getTokenDetailsRequest(id);
           setTokenAddress(response.token);
-          await setOpWhitelist(id);
         } catch (error) {
           console.error(error);
         }
@@ -117,13 +96,7 @@ export const DetailsSubInfo = ({
     if (id && doesNetworkHaveValidServiceManagerToken && !isSvm) {
       getData();
     }
-  }, [
-    id,
-    type,
-    isSvm,
-    setOpWhitelist,
-    doesNetworkHaveValidServiceManagerToken,
-  ]);
+  }, [id, type, isSvm, doesNetworkHaveValidServiceManagerToken]);
 
   const getViewHashAndCode = useCallback(() => {
     if (HASH_DETAILS_STATE.LOADED !== metadataLoadState) return null;
@@ -259,47 +232,14 @@ export const DetailsSubInfo = ({
     // operator whitelisting is only available for service & L1 networks
     if (doesNetworkHaveValidServiceManagerToken && !isSvm) {
       serviceDetailsList.push({
-        title: (
-          <>
-            Operator Whitelisting&nbsp;
-            <Switch
-              disabled={!isOwner}
-              checked={switchValue}
-              checkedChildren="Enabled"
-              unCheckedChildren="Disabled"
-              loading={isWhiteListingLoading}
-              onChange={async (checked) => {
-                try {
-                  setIsWhiteListingLoading(true);
-                  await setOperatorsCheckRequest({
-                    account,
-                    serviceId: id,
-                    isChecked: checked,
-                  });
-                  setSwitchValue(checked);
-                  await setOpWhitelist();
-                } catch (error) {
-                  console.error(error);
-                } finally {
-                  setIsWhiteListingLoading(false);
-                }
-              }}
-            />
-          </>
-        ),
-        value: (
-          <OperatorWhitelist
-            id={id}
-            setOpWhitelist={setOpWhitelist}
-            isWhiteListed={isWhiteListed}
-          />
-        ),
+        title: operatorWhitelistTitle,
+        value: operatorWhitelistValue,
       });
 
       if (isOwner) {
         serviceDetailsList.push({
           title: 'Set operators statuses',
-          value: <SetOperatorStatus id={id} setOpWhitelist={setOpWhitelist} />,
+          value: operatorStatusValue,
         });
       }
     }
