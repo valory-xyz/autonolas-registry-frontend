@@ -1,6 +1,10 @@
 import { useCallback } from 'react';
 import { BorshCoder } from '@project-serum/anchor';
-import { TransactionMessage, VersionedTransaction } from '@solana/web3.js';
+import {
+  TransactionMessage,
+  VersionedTransaction,
+  PublicKey,
+} from '@solana/web3.js';
 import { areAddressesEqual } from '@autonolas/frontend-library';
 
 import { SERVICE_STATE_KEY_MAP } from 'util/constants';
@@ -16,6 +20,11 @@ import { useSvmConnectivity } from 'common-util/hooks/useSvmConnectivity';
  *
  */
 const deseralizeProgramData = (serializedValue, decodeTypeName) => {
+  if (decodeTypeName === 'publicKey') {
+    const publicKey = new PublicKey(serializedValue);
+    return publicKey.toBase58();
+  }
+
   const borshCoder = new BorshCoder(idl);
   const decodedResult = borshCoder.types.decode(
     decodeTypeName,
@@ -160,21 +169,35 @@ const transformServiceData = (e, index) => {
   };
 };
 
+export const useGetServiceDetails = () => {
+  const { getData } = useSvmDataFetch();
+
+  const getSvmServiceDetails = useCallback(
+    async (id) => {
+      const details = await getData('getService', [id], 'Service');
+      return details;
+    },
+    [getData],
+  );
+
+  return { getSvmServiceDetails };
+};
+
 // returns the list of services
 const useGetServices = () => {
-  const { getData } = useSvmDataFetch();
+  const { getSvmServiceDetails } = useGetServiceDetails();
 
   const getSvmServices = useCallback(
     async (total) => {
       const promises = [];
       for (let i = 1; i <= total; i += 1) {
-        promises.push(getData('getService', [i], 'Service'));
+        promises.push(getSvmServiceDetails(i));
       }
 
       const results = (await Promise.all(promises)).map(transformServiceData);
       return results;
     },
-    [getData],
+    [getSvmServiceDetails],
   );
 
   return { getSvmServices };
@@ -213,4 +236,18 @@ export const useServiceInfo = () => {
     getSvmServices,
     getMySvmServices,
   };
+};
+
+export const useServiceOwner = () => {
+  const { getData } = useSvmDataFetch();
+
+  const getSvmServiceOwner = useCallback(
+    async (id) => {
+      const owner = await getData('ownerOf', [id], 'publicKey');
+      return owner;
+    },
+    [getData],
+  );
+
+  return { getSvmServiceOwner };
 };
