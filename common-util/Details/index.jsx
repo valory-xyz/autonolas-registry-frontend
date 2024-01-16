@@ -27,7 +27,6 @@ const Details = ({
   id,
   type,
   getDetails,
-  // getHashes,
   getTokenUri,
   handleUpdate,
   getOwner,
@@ -114,14 +113,11 @@ const Details = ({
     return image.replace('ipfs://', GATEWAY_URL);
   }, [metadata]);
 
-  const codeHref = useMemo(
-    () => {
-      const codeUri = get(metadata, 'code_uri');
-      if (!codeUri) return null;
-      return codeUri.replace('ipfs://', GATEWAY_URL);
-    },
-    [metadata],
-  );
+  const codeHref = useMemo(() => {
+    const codeUri = get(metadata, 'code_uri');
+    if (!codeUri) return null;
+    return codeUri.replace('ipfs://', GATEWAY_URL);
+  }, [metadata]);
 
   if (isLoading) {
     return <Loader timeoutMessage="Details couldn’t be loaded" />;
@@ -215,7 +211,6 @@ Details.propTypes = {
     NAV_TYPES.SERVICE,
   ]).isRequired,
   getDetails: PropTypes.func.isRequired,
-  // getHashes: PropTypes.func,
   getTokenUri: PropTypes.func,
   getOwner: PropTypes.func,
   handleUpdate: PropTypes.func,
@@ -225,7 +220,6 @@ Details.propTypes = {
 
 Details.defaultProps = {
   handleUpdate: null,
-  // getHashes: () => {},
   getTokenUri: () => {},
   getOwner: () => {},
   onUpdateHash: () => {},

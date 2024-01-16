@@ -4,7 +4,6 @@ import Details from 'common-util/Details';
 import { useHelpers } from 'common-util/hooks';
 import {
   getComponentDetails,
-  getComponentHashes,
   updateComponentHashes,
   getComponentOwner,
   getTokenUri,
@@ -20,7 +19,6 @@ const Component = () => {
       type="component"
       id={id}
       getDetails={() => getComponentDetails(id)}
-      getHashes={() => getComponentHashes(id)}
       getOwner={() => getComponentOwner(id)}
       getTokenUri={() => getTokenUri(id)}
       onUpdateHash={async (newHash) => {

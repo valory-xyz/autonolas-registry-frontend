@@ -4,7 +4,6 @@ import Details from 'common-util/Details';
 import { useHelpers } from 'common-util/hooks';
 import {
   getAgentDetails,
-  getAgentHashes,
   updateAgentHashes,
   getAgentOwner,
   getTokenUri,
@@ -20,7 +19,6 @@ const Agent = () => {
       type="agent"
       id={id}
       getDetails={() => getAgentDetails(id)}
-      getHashes={() => getAgentHashes(id)}
       getTokenUri={() => getTokenUri(id)}
       getOwner={() => getAgentOwner(id)}
       onUpdateHash={async (newHash) => {
