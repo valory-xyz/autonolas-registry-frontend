@@ -15,7 +15,7 @@ import { IpfsHashGenerationModal } from '../List/IpfsHashGenerationModal';
 import { NftImage } from './NFTImage';
 import { ServiceState } from './ServiceState';
 import { HASH_DETAILS_STATE } from './constants';
-import { DetailsInfo } from './helpers';
+import { DetailsSubInfo } from './DetailsSubInfo';
 import { Header, DetailsTitle } from './styles';
 
 const { Text } = Typography;
@@ -150,7 +150,7 @@ const Details = ({
 
       <Row>
         <Col md={12} xs={24}>
-          <DetailsInfo
+          <DetailsSubInfo
             id={id}
             isOwner={isOwner}
             type={type}
@@ -174,19 +174,23 @@ const Details = ({
         </Col>
 
         <Col md={12} xs={24}>
-          {type !== NAV_TYPES.SERVICE && (
+          {type === NAV_TYPES.SERVICE ? (
+            <>
+              {/* TODO: isSvm to be removed once read-omly is completed */}
+              {!isSvm && (
+                <ServiceState
+                  isOwner={isOwner}
+                  id={id}
+                  account={account}
+                  details={info}
+                  updateDetails={updateDetails}
+                />
+              )}
+            </>
+          ) : (
+            // NftImage for "service" is shown in DetailsSubInfo component
+            // in the left column
             <NftImage imageUrl={nftImageUrl} isSmallSize={NAV_TYPES.SERVICE} />
-          )}
-
-          {/* TODO: isSvm to be removed once read-omly is completed */}
-          {type === NAV_TYPES.SERVICE && !isSvm && (
-            <ServiceState
-              isOwner={isOwner}
-              id={id}
-              account={account}
-              details={info}
-              updateDetails={updateDetails}
-            />
           )}
         </Col>
       </Row>

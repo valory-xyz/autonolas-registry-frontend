@@ -54,7 +54,7 @@ const MetadataUnpinnedMessage = () => (
 /**
  * Agent/Component/Service details component
  */
-export const DetailsInfo = ({
+export const DetailsSubInfo = ({
   id,
   isOwner,
   type,
@@ -112,10 +112,18 @@ export const DetailsInfo = ({
       }
     };
 
-    if (id && doesNetworkHaveValidServiceManagerToken) {
+    // get token details only if it is service and network is L1
+    // and not SVM
+    if (id && doesNetworkHaveValidServiceManagerToken && !isSvm) {
       getData();
     }
-  }, [id, type, setOpWhitelist, doesNetworkHaveValidServiceManagerToken]);
+  }, [
+    id,
+    type,
+    isSvm,
+    setOpWhitelist,
+    doesNetworkHaveValidServiceManagerToken,
+  ]);
 
   const getViewHashAndCode = useCallback(() => {
     if (HASH_DETAILS_STATE.LOADED !== metadataLoadState) return null;

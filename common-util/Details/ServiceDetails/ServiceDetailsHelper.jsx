@@ -31,7 +31,7 @@ export const OperatorWhitelist = ({ isWhiteListed, setOpWhitelist, id }) => {
     };
 
     if (id) getData();
-  }, [id, chainId]);
+  }, [id, chainId, setOpWhitelist]);
 
   const onCheck = async (values) => {
     try {
