@@ -1,6 +1,4 @@
-import {
-  useState, useEffect, useCallback, useMemo,
-} from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import capitalize from 'lodash/capitalize';
 import {
@@ -9,19 +7,16 @@ import {
 import { get } from 'lodash';
 import { notifyError, Loader, NA } from '@autonolas/frontend-library';
 
-import { GATEWAY_URL, NAV_TYPES } from 'util/constants';
+import { NAV_TYPES } from 'util/constants';
 import { useHelpers } from 'common-util/hooks';
+import { useMetadata } from 'common-util/hooks/useMetadata';
 import { IpfsHashGenerationModal } from '../List/IpfsHashGenerationModal';
 import { NftImage } from './NFTImage';
 import { ServiceState } from './ServiceState';
-import { HASH_DETAILS_STATE } from './constants';
 import { DetailsSubInfo } from './DetailsSubInfo';
 import { Header, DetailsTitle } from './styles';
 
 const { Text } = Typography;
-
-const pattern = /https:\/\/localhost\/(agent|component|service)\/+/g;
-const getAutonolasTokenUri = (tokenUri) => (tokenUri || '').replace(pattern, GATEWAY_URL);
 
 const Details = ({
   id,
@@ -41,12 +36,9 @@ const Details = ({
   const { isSvm } = useHelpers();
 
   const { account, chainId } = useHelpers();
+  const { nftImageUrl } = useMetadata(tokenUri);
 
   // metadata details (from IPFS)
-  const [metadata, setMetadata] = useState(null);
-  const [metadataLoadState, setMetadataState] = useState(
-    HASH_DETAILS_STATE.IS_LOADING,
-  );
 
   const isOwner = account && account.toLowerCase() === ownerAddress.toLowerCase();
 
@@ -85,41 +77,6 @@ const Details = ({
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, [account, chainId, id, type]);
 
-  // fetch metadata from IPFS
-  useEffect(() => {
-    const getMetadata = async () => {
-      setMetadataState(HASH_DETAILS_STATE.IS_LOADING);
-      try {
-        const ipfsUrl = getAutonolasTokenUri(tokenUri);
-        const response = await fetch(ipfsUrl);
-        const json = await response.json();
-        setMetadata(json);
-        setMetadataState(HASH_DETAILS_STATE.LOADED);
-      } catch (e) {
-        setMetadataState(HASH_DETAILS_STATE.FAILED);
-        console.error(e);
-        notifyError('Error fetching metadata from IPFS');
-      }
-    };
-
-    if (tokenUri) getMetadata();
-  }, [tokenUri]);
-
-  // NFT details 👇
-  const hashUrl = useMemo(() => getAutonolasTokenUri(tokenUri), [tokenUri]);
-
-  const nftImageUrl = useMemo(() => {
-    const image = get(metadata, 'image');
-    if (!image) return null;
-    return image.replace('ipfs://', GATEWAY_URL);
-  }, [metadata]);
-
-  const codeHref = useMemo(() => {
-    const codeUri = get(metadata, 'code_uri');
-    if (!codeUri) return null;
-    return codeUri.replace('ipfs://', GATEWAY_URL);
-  }, [metadata]);
-
   if (isLoading) {
     return <Loader timeoutMessage="Details couldn’t be loaded" />;
   }
@@ -156,13 +113,6 @@ const Details = ({
             isOwner={isOwner}
             type={type}
             tokenUri={tokenUri}
-            // metadata details 👇
-            metadataLoadState={metadataLoadState}
-            hashUrl={hashUrl}
-            codeHref={codeHref}
-            nftImageUrl={nftImageUrl}
-            description={get(metadata, 'description') || NA}
-            version={get(metadata, 'attributes[0].value') || NA}
             // other details 👇
             ownerAddress={ownerAddress || NA}
             componentAndAgentDependencies={get(info, 'dependencies')}

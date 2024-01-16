@@ -9,6 +9,7 @@ import {
 } from 'util/constants';
 import { Circle } from 'common-util/svg/Circle';
 import { useHelpers } from 'common-util/hooks';
+import { useMetadata } from 'common-util/hooks/useMetadata';
 import { HASH_DETAILS_STATE } from './constants';
 import { NftImage } from './NFTImage';
 import { getTokenDetailsRequest } from './ServiceState/utils';
@@ -49,14 +50,7 @@ export const DetailsSubInfo = ({
   id,
   isOwner,
   type,
-
-  // metadata details 👇
-  hashUrl,
-  metadataLoadState,
-  codeHref,
-  nftImageUrl,
-  description,
-  version,
+  tokenUri,
 
   // other details 👇
   ownerAddress,
@@ -70,6 +64,14 @@ export const DetailsSubInfo = ({
 }) => {
   const { doesNetworkHaveValidServiceManagerToken, isSvm } = useHelpers();
   const [tokenAddress, setTokenAddress] = useState(null);
+  const {
+    hashUrl,
+    metadataLoadState,
+    codeHref,
+    nftImageUrl,
+    description,
+    version,
+  } = useMetadata(tokenUri);
 
   // switch state
   const {
