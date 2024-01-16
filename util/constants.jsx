@@ -30,12 +30,12 @@ export const SERVICE_STATE = {
 };
 
 export const SERVICE_STATE_KEY_MAP = {
-  nonExistent: 0,
-  preRegistration: 1,
-  activeRegistration: 2,
-  finishedRegistration: 3,
-  deployed: 4,
-  terminatedBonded: 5,
+  nonExistent: '0',
+  preRegistration: '1',
+  activeRegistration: '2',
+  finishedRegistration: '3',
+  deployed: '4',
+  terminatedBonded: '5',
 };
 
 // should not display contracts on homepage nor load with chain Ids

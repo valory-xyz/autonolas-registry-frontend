@@ -61,6 +61,7 @@ const Details = ({
     }
   }, [chainId, type]);
 
+  // fetch details, owner and tokenUri
   useEffect(() => {
     (async () => {
       setIsLoading(true);
@@ -69,15 +70,12 @@ const Details = ({
       try {
         const temp = await getDetails();
         setInfo(temp);
-        // console.log({ details: temp });
 
         const ownerAccount = await getOwner();
         setDetailsOwner(ownerAccount || '');
-        // console.log({ ownerAccount });
 
         const tempTokenUri = await getTokenUri();
         setTokenUri(tempTokenUri);
-        // console.log({ tempTokenUri });
       } catch (e) {
         console.error(e);
         notifyError(`Error fetching ${type} details`);
@@ -85,8 +83,9 @@ const Details = ({
         setIsLoading(false);
       }
     })();
-  }, [account, chainId, id]);
+  }, [account, chainId, id, type]);
 
+  // fetch metadata from IPFS
   useEffect(() => {
     const getMetadata = async () => {
       setMetadataState(HASH_DETAILS_STATE.IS_LOADING);

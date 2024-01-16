@@ -77,7 +77,7 @@ export const DetailsInfo = ({
   setIsModalVisible,
   onDependencyClick,
 }) => {
-  const { account, doesNetworkHaveValidServiceManagerToken } = useHelpers();
+  const { account, doesNetworkHaveValidServiceManagerToken, isSvm } = useHelpers();
   const [tokenAddress, setTokenAddress] = useState(null);
 
   // switch state
@@ -100,16 +100,11 @@ export const DetailsInfo = ({
 
   // get token address for service on load
   useEffect(() => {
-    let isMounted = true;
-
     const getData = async () => {
       if (type === NAV_TYPES.SERVICE) {
         try {
           const response = await getTokenDetailsRequest(id);
-          if (isMounted) {
-            setTokenAddress(response.token);
-          }
-
+          setTokenAddress(response.token);
           await setOpWhitelist(id);
         } catch (error) {
           console.error(error);
@@ -120,11 +115,7 @@ export const DetailsInfo = ({
     if (id && doesNetworkHaveValidServiceManagerToken) {
       getData();
     }
-
-    return () => {
-      isMounted = false;
-    };
-  }, [id, doesNetworkHaveValidServiceManagerToken]);
+  }, [id, type, setOpWhitelist, doesNetworkHaveValidServiceManagerToken]);
 
   const getViewHashAndCode = useCallback(() => {
     if (HASH_DETAILS_STATE.LOADED !== metadataLoadState) return null;
@@ -229,8 +220,9 @@ export const DetailsInfo = ({
       },
     ];
 
-    // show NFT image only if metadata is available
-    if (HASH_DETAILS_STATE.LOADED === metadataLoadState) {
+    // show NFT image only if metadata is available,
+    // also, NFT is not available for SVM
+    if (HASH_DETAILS_STATE.LOADED === metadataLoadState && !isSvm) {
       serviceDetailsList.push({
         dataTestId: 'service-nft-image',
         value: (
@@ -244,10 +236,11 @@ export const DetailsInfo = ({
       value: serviceThreshold,
     });
 
-    // show token address only if it is not ETH
+    // show token address only if it is not ETH and not SVM
     if (
       doesNetworkHaveValidServiceManagerToken
       && tokenAddress !== DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS
+      && !isSvm
     ) {
       serviceDetailsList.push({
         title: 'Token Address',
@@ -256,7 +249,7 @@ export const DetailsInfo = ({
     }
 
     // operator whitelisting is only available for service & L1 networks
-    if (doesNetworkHaveValidServiceManagerToken) {
+    if (doesNetworkHaveValidServiceManagerToken && !isSvm) {
       serviceDetailsList.push({
         title: (
           <>
