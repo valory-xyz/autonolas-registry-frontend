@@ -8,38 +8,14 @@ import {
 } from 'react';
 import {
   getServiceDetails,
-  getServiceHashes,
   getServiceOwner,
-  getTokenUri,
+  getTokenUri as getEvmTokenUri,
 } from './utils';
-import { useGetServiceDetails, useServiceOwner } from './useSvmService';
-
-// const useServiceDetails = (serviceId) => {
-//   const { isSvm } = useHelpers();
-//   const { getSvmServiceDetails } = useGetServiceDetails();
-//   const [details, setDetails] = useState({});
-
-//   useEffect(() => {
-//     console.log({ isSvm, serviceId });
-//     const getInfo = async () => {
-//       if (isSvm) {
-//         const e = await getSvmServiceDetails(serviceId);
-//         setDetails(e);
-//       } else {
-//         // const e = getServiceDetails(serviceId);
-//         // setDetails(e);
-//       }
-//     };
-
-//     setTimeout(() => {
-//       getInfo();
-//     }, 5000);
-//   }, [isSvm, serviceId, getSvmServiceDetails]);
-
-//   return {
-//     ...details,
-//   };
-// };
+import {
+  useGetServiceDetails,
+  useServiceOwner,
+  useTokenUri,
+} from './useSvmService';
 
 const Service = () => {
   const router = useRouter();
@@ -47,30 +23,30 @@ const Service = () => {
   const { links, isSvm } = useHelpers();
   const { getSvmServiceDetails } = useGetServiceDetails();
   const { getSvmServiceOwner } = useServiceOwner();
+  const { getSvmTokenUri } = useTokenUri();
 
-  const getDetails = useCallback(
-    async () => {
-      const e = isSvm
-        ? await getSvmServiceDetails(id)
-        : await getServiceDetails(id);
-      return e;
-    },
-    [id, isSvm, getSvmServiceDetails],
-  );
-
-  const getOwner = useCallback(async () => {
+  const getDetails = useCallback(async () => {
     const e = isSvm
-      ? await getSvmServiceOwner(id)
+      ? await getSvmServiceDetails(id)
       : await getServiceDetails(id);
     return e;
+  }, [id, isSvm, getSvmServiceDetails]);
+
+  const getOwner = useCallback(async () => {
+    const e = isSvm ? await getSvmServiceOwner(id) : await getServiceOwner(id);
+    return e;
   }, [id, isSvm, getSvmServiceOwner]);
+
+  const getTokenUri = useCallback(async () => {
+    const e = isSvm ? await getSvmTokenUri(id) : await getEvmTokenUri(id);
+    return e;
+  }, [id, isSvm, getSvmTokenUri]);
 
   return (
     <Details
       type="service"
       id={id}
       getDetails={getDetails}
-      getHashes={() => getServiceHashes(id)}
       getOwner={getOwner}
       getTokenUri={() => getTokenUri(id)}
       handleUpdate={() => router.push(`${links.UPDATE_SERVICE}/${id}`)}

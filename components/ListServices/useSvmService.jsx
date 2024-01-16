@@ -20,6 +20,10 @@ import { useSvmConnectivity } from 'common-util/hooks/useSvmConnectivity';
  *
  */
 const deseralizeProgramData = (serializedValue, decodeTypeName) => {
+  if (decodeTypeName === 'string') {
+    return Buffer.from(serializedValue).toString();
+  }
+
   if (decodeTypeName === 'publicKey') {
     const publicKey = new PublicKey(serializedValue);
     return publicKey.toBase58();
@@ -175,7 +179,7 @@ export const useGetServiceDetails = () => {
   const getSvmServiceDetails = useCallback(
     async (id) => {
       const details = await getData('getService', [id], 'Service');
-      return details;
+      return transformServiceData(details);
     },
     [getData],
   );
@@ -250,4 +254,18 @@ export const useServiceOwner = () => {
   );
 
   return { getSvmServiceOwner };
+};
+
+export const useTokenUri = () => {
+  const { getData } = useSvmDataFetch();
+
+  const getSvmTokenUri = useCallback(
+    async (id) => {
+      const tokenUri = await getData('tokenURI', [id], 'string');
+      return tokenUri;
+    },
+    [getData],
+  );
+
+  return { getSvmTokenUri };
 };

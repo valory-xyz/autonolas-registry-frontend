@@ -33,10 +33,10 @@ const Details = ({
 }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [info, setInfo] = useState({});
-  const [hashes, setHashes] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [detailsOwner, setDetailsOwner] = useState('');
   const [tokenUri, setTokenUri] = useState(null);
+  const { isSvm } = useHelpers();
 
   const { account, chainId } = useHelpers();
 
@@ -47,16 +47,6 @@ const Details = ({
   );
 
   const isOwner = account && account.toLowerCase() === detailsOwner.toLowerCase();
-
-  const getUpdatedHashes = useCallback(async () => {
-    try {
-      const hashesResponse = await getHashes();
-      setHashes(hashesResponse);
-    } catch (e) {
-      console.error(e);
-      notifyError(`Error fetching ${type} hashes`);
-    }
-  }, [chainId]);
 
   const updateDetails = useCallback(async () => {
     try {
@@ -76,14 +66,15 @@ const Details = ({
       try {
         const temp = await getDetails();
         setInfo(temp);
+        // console.log({ details: temp });
 
         const ownerAccount = await getOwner();
         setDetailsOwner(ownerAccount || '');
+        // console.log({ ownerAccount });
 
         const tempTokenUri = await getTokenUri();
         setTokenUri(tempTokenUri);
-
-        await getUpdatedHashes();
+        // console.log({ tempTokenUri });
       } catch (e) {
         console.error(e);
         notifyError(`Error fetching ${type} details`);
@@ -121,7 +112,6 @@ const Details = ({
   };
 
   const onCancel = async () => {
-    await getUpdatedHashes();
     setIsModalVisible(false);
   };
 
@@ -157,7 +147,6 @@ const Details = ({
             isOwner={isOwner}
             type={type}
             tokenUri={tokenUri}
-            hashes={hashes}
             info={info}
             metadata={metadata}
             metadataState={metadataState}
