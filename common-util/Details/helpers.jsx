@@ -3,12 +3,10 @@ import { useCallback, useEffect, useState } from 'react';
 import {
   Button, Typography, Alert, Switch,
 } from 'antd';
-import get from 'lodash/get';
 import { NA } from '@autonolas/frontend-library';
 
 import {
   DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS,
-  GATEWAY_URL,
   NAV_TYPES,
 } from 'util/constants';
 import { Circle } from 'common-util/svg/Circle';
@@ -35,9 +33,6 @@ import {
 
 const { Link, Text } = Typography;
 
-const pattern = /https:\/\/localhost\/(agent|component|service)\/+/g;
-export const getAutonolasTokenUri = (tokenUri) => (tokenUri || '').replace(pattern, GATEWAY_URL);
-
 const ServiceStatus = ({ serviceState }) => (
   <ServiceStatusContainer
     className={serviceState ? 'active' : 'inactive'}
@@ -63,12 +58,21 @@ export const DetailsInfo = ({
   id,
   isOwner,
   type,
+
+  // metadata details 👇
+  hashUrl,
+  metadataLoadState,
+  codeHref,
   nftImageUrl,
-  tokenUri,
-  info,
-  metadata,
-  metadataState,
-  detailsOwner,
+  description,
+  version,
+
+  // other details 👇
+  ownerAddress,
+  componentAndAgentDependencies,
+  serviceThreshold,
+  serviceCurrentState,
+
   onUpdateHash,
   setIsModalVisible,
   onDependencyClick,
@@ -122,22 +126,13 @@ export const DetailsInfo = ({
     };
   }, [id, doesNetworkHaveValidServiceManagerToken]);
 
-  const codeHref = (get(metadata, 'code_uri') || '').replace(
-    'ipfs://',
-    GATEWAY_URL,
-  );
-
   const getViewHashAndCode = useCallback(() => {
-    if (HASH_DETAILS_STATE.LOADED !== metadataState) return null;
+    if (HASH_DETAILS_STATE.LOADED !== metadataLoadState) return null;
 
     return (
       <>
         {type === NAV_TYPES.SERVICE && <>&nbsp;•&nbsp;</>}
-        <Link
-          target="_blank"
-          data-testid="view-hash-link"
-          href={getAutonolasTokenUri(tokenUri)}
-        >
+        <Link target="_blank" data-testid="view-hash-link" href={hashUrl}>
           View Hash&nbsp;
           <ArrowLink />
         </Link>
@@ -148,29 +143,21 @@ export const DetailsInfo = ({
         </Link>
       </>
     );
-  }, [metadataState, type, tokenUri, codeHref]);
+  }, [metadataLoadState, type, hashUrl, codeHref]);
 
   const getCommonDetails = () => {
     const commonDetails = [];
 
-    if (HASH_DETAILS_STATE.LOADED === metadataState) {
+    if (HASH_DETAILS_STATE.LOADED === metadataLoadState) {
       commonDetails.push(
-        {
-          title: 'Description',
-          dataTestId: 'description',
-          value: get(metadata, 'description') || NA,
-        },
-        {
-          title: 'Version',
-          dataTestId: 'version',
-          value: get(metadata, 'attributes[0].value') || NA,
-        },
+        { title: 'Description', dataTestId: 'description', value: description },
+        { title: 'Version', dataTestId: 'version', value: version },
       );
     }
 
     // If metadata failed, that means it has been unpinned from IPFS
     // and show an alert indicating the user
-    if (HASH_DETAILS_STATE.FAILED === metadataState) {
+    if (HASH_DETAILS_STATE.FAILED === metadataLoadState) {
       commonDetails.push({
         dataTestId: 'metadata-failed-to-load',
         value: <MetadataUnpinnedMessage />,
@@ -180,34 +167,31 @@ export const DetailsInfo = ({
     commonDetails.push({
       title: 'Owner Address',
       dataTestId: 'owner-address',
-      value: detailsOwner || NA,
+      value: ownerAddress,
     });
 
     return commonDetails;
   };
 
   const getComponentAndAgentValues = () => {
-    const dependencies = get(info, 'dependencies') || [];
+    const updateHashBtn = isOwner ? (
+      <>
+        &nbsp;•&nbsp;
+        {onUpdateHash && (
+          <Button type="primary" ghost onClick={() => setIsModalVisible(true)}>
+            Update Hash
+          </Button>
+        )}
+      </>
+    ) : null;
+
     return [
       {
         dataTestId: 'hashes-list',
         value: (
           <>
             {getViewHashAndCode()}
-            {isOwner ? (
-              <>
-                &nbsp;•&nbsp;
-                {onUpdateHash && (
-                  <Button
-                    type="primary"
-                    ghost
-                    onClick={() => setIsModalVisible(true)}
-                  >
-                    Update Hash
-                  </Button>
-                )}
-              </>
-            ) : null}
+            {updateHashBtn}
           </>
         ),
       },
@@ -216,10 +200,10 @@ export const DetailsInfo = ({
         title: 'Component Dependencies',
         dataTestId: 'details-dependency',
         value:
-          dependencies.length === 0 ? (
+          componentAndAgentDependencies?.length === 0 ? (
             <>None</>
           ) : (
-            dependencies.map((e) => (
+            componentAndAgentDependencies.map((e) => (
               <li key={`${type}-dependency-${e}`}>
                 <Button type="link" onClick={() => onDependencyClick(e)}>
                   {e}
@@ -232,8 +216,7 @@ export const DetailsInfo = ({
   };
 
   const getServiceValues = () => {
-    const serviceState = ['2', '3', '4'].includes(get(info, 'state'));
-
+    const serviceState = ['2', '3', '4'].includes(serviceCurrentState);
     const serviceDetailsList = [
       {
         dataTestId: 'hashes-list',
@@ -247,7 +230,7 @@ export const DetailsInfo = ({
     ];
 
     // show NFT image only if metadata is available
-    if (HASH_DETAILS_STATE.LOADED === metadataState) {
+    if (HASH_DETAILS_STATE.LOADED === metadataLoadState) {
       serviceDetailsList.push({
         dataTestId: 'service-nft-image',
         value: (
@@ -258,7 +241,7 @@ export const DetailsInfo = ({
 
     serviceDetailsList.push(...getCommonDetails(), {
       title: 'Threshold',
-      value: get(info, 'threshold', null) || NA,
+      value: serviceThreshold,
     });
 
     // show token address only if it is not ETH

@@ -1,11 +1,13 @@
-import { useState, useEffect, useCallback } from 'react';
+import {
+  useState, useEffect, useCallback, useMemo,
+} from 'react';
 import PropTypes from 'prop-types';
 import capitalize from 'lodash/capitalize';
 import {
   Row, Col, Button, Typography,
 } from 'antd';
 import { get } from 'lodash';
-import { notifyError, Loader } from '@autonolas/frontend-library';
+import { notifyError, Loader, NA } from '@autonolas/frontend-library';
 
 import { GATEWAY_URL, NAV_TYPES } from 'util/constants';
 import { useHelpers } from 'common-util/hooks';
@@ -13,16 +15,19 @@ import { IpfsHashGenerationModal } from '../List/IpfsHashGenerationModal';
 import { NftImage } from './NFTImage';
 import { ServiceState } from './ServiceState';
 import { HASH_DETAILS_STATE } from './constants';
-import { getAutonolasTokenUri, DetailsInfo } from './helpers';
+import { DetailsInfo } from './helpers';
 import { Header, DetailsTitle } from './styles';
 
 const { Text } = Typography;
+
+const pattern = /https:\/\/localhost\/(agent|component|service)\/+/g;
+const getAutonolasTokenUri = (tokenUri) => (tokenUri || '').replace(pattern, GATEWAY_URL);
 
 const Details = ({
   id,
   type,
   getDetails,
-  getHashes,
+  // getHashes,
   getTokenUri,
   handleUpdate,
   getOwner,
@@ -32,7 +37,7 @@ const Details = ({
   const [isLoading, setIsLoading] = useState(true);
   const [info, setInfo] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [detailsOwner, setDetailsOwner] = useState('');
+  const [ownerAddress, setDetailsOwner] = useState(NA);
   const [tokenUri, setTokenUri] = useState(null);
   const { isSvm } = useHelpers();
 
@@ -40,11 +45,11 @@ const Details = ({
 
   // metadata details (from IPFS)
   const [metadata, setMetadata] = useState(null);
-  const [metadataState, setMetadataState] = useState(
+  const [metadataLoadState, setMetadataState] = useState(
     HASH_DETAILS_STATE.IS_LOADING,
   );
 
-  const isOwner = account && account.toLowerCase() === detailsOwner.toLowerCase();
+  const isOwner = account && account.toLowerCase() === ownerAddress.toLowerCase();
 
   const updateDetails = useCallback(async () => {
     try {
@@ -101,22 +106,27 @@ const Details = ({
     if (tokenUri) getMetadata();
   }, [tokenUri]);
 
-  const onUpdate = () => {
-    if (handleUpdate) handleUpdate();
-  };
+  // NFT details 👇
+  const hashUrl = useMemo(() => getAutonolasTokenUri(tokenUri), [tokenUri]);
 
-  const onCancel = async () => {
-    setIsModalVisible(false);
-  };
+  const nftImageUrl = useMemo(() => {
+    const image = get(metadata, 'image');
+    if (!image) return null;
+    return image.replace('ipfs://', GATEWAY_URL);
+  }, [metadata]);
+
+  const codeHref = useMemo(
+    () => {
+      const codeUri = get(metadata, 'code_uri');
+      if (!codeUri) return null;
+      return codeUri.replace('ipfs://', GATEWAY_URL);
+    },
+    [metadata],
+  );
 
   if (isLoading) {
     return <Loader timeoutMessage="Details couldn’t be loaded" />;
   }
-
-  const nftImageUrl = (get(metadata, 'image') || '').replace(
-    'ipfs://',
-    GATEWAY_URL,
-  );
 
   return (
     <>
@@ -135,7 +145,7 @@ const Details = ({
               disabled={!handleUpdate}
               type="primary"
               ghost
-              onClick={onUpdate}
+              onClick={() => handleUpdate?.()}
             >
               Update
             </Button>
@@ -150,11 +160,18 @@ const Details = ({
             isOwner={isOwner}
             type={type}
             tokenUri={tokenUri}
-            info={info}
-            metadata={metadata}
+            // metadata details 👇
+            metadataLoadState={metadataLoadState}
+            hashUrl={hashUrl}
+            codeHref={codeHref}
             nftImageUrl={nftImageUrl}
-            metadataState={metadataState}
-            detailsOwner={detailsOwner}
+            description={get(metadata, 'description') || NA}
+            version={get(metadata, 'attributes[0].value') || NA}
+            // other details 👇
+            ownerAddress={ownerAddress || NA}
+            componentAndAgentDependencies={get(info, 'dependencies')}
+            serviceThreshold={get(info, 'threshold') || NA}
+            serviceCurrentState={get(info, 'state') || NA}
             onUpdateHash={onUpdateHash}
             setIsModalVisible={setIsModalVisible}
             onDependencyClick={onDependencyClick}
@@ -184,7 +201,7 @@ const Details = ({
           visible={isModalVisible}
           type={type}
           onUpdateHash={onUpdateHash}
-          handleCancel={onCancel}
+          handleCancel={() => setIsModalVisible(false)}
         />
       )}
     </>
@@ -199,7 +216,7 @@ Details.propTypes = {
     NAV_TYPES.SERVICE,
   ]).isRequired,
   getDetails: PropTypes.func.isRequired,
-  getHashes: PropTypes.func,
+  // getHashes: PropTypes.func,
   getTokenUri: PropTypes.func,
   getOwner: PropTypes.func,
   handleUpdate: PropTypes.func,
@@ -209,7 +226,7 @@ Details.propTypes = {
 
 Details.defaultProps = {
   handleUpdate: null,
-  getHashes: () => {},
+  // getHashes: () => {},
   getTokenUri: () => {},
   getOwner: () => {},
   onUpdateHash: () => {},
