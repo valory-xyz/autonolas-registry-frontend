@@ -1,0 +1,5 @@
+export const HASH_DETAILS_STATE = {
+  IS_LOADING: 'IS_LOADING',
+  LOADED: 'LOADED',
+  FAILED: 'FAILED',
+};

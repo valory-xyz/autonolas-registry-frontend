@@ -4,18 +4,16 @@ import capitalize from 'lodash/capitalize';
 import {
   Row, Col, Button, Typography,
 } from 'antd';
+import { get } from 'lodash';
 import { notifyError, Loader } from '@autonolas/frontend-library';
 
-import { NAV_TYPES } from 'util/constants';
+import { GATEWAY_URL, NAV_TYPES } from 'util/constants';
 import { useHelpers } from 'common-util/hooks';
 import { IpfsHashGenerationModal } from '../List/IpfsHashGenerationModal';
 import { NftImage } from './NFTImage';
 import { ServiceState } from './ServiceState';
-import {
-  getAutonolasTokenUri,
-  DetailsInfo,
-  HASH_DETAILS_STATE,
-} from './helpers';
+import { HASH_DETAILS_STATE } from './constants';
+import { getAutonolasTokenUri, DetailsInfo } from './helpers';
 import { Header, DetailsTitle } from './styles';
 
 const { Text } = Typography;
@@ -40,7 +38,7 @@ const Details = ({
 
   const { account, chainId } = useHelpers();
 
-  // metadata details
+  // metadata details (from IPFS)
   const [metadata, setMetadata] = useState(null);
   const [metadataState, setMetadataState] = useState(
     HASH_DETAILS_STATE.IS_LOADING,
@@ -56,7 +54,7 @@ const Details = ({
       console.error(e);
       notifyError(`Error fetching ${type} details`);
     }
-  }, [chainId]);
+  }, [chainId, type]);
 
   useEffect(() => {
     (async () => {
@@ -85,27 +83,23 @@ const Details = ({
   }, [account, chainId, id]);
 
   useEffect(() => {
-    (async () => {
-      if (tokenUri) {
-        setMetadataState(HASH_DETAILS_STATE.IS_LOADING);
-        try {
-          const ipfsUrl = getAutonolasTokenUri(tokenUri);
-          const response = await fetch(ipfsUrl);
-          const json = await response.json();
-          setMetadata(json);
-          setMetadataState(HASH_DETAILS_STATE.LOADED);
-        } catch (e) {
-          setMetadataState(HASH_DETAILS_STATE.FAILED);
-          console.error(e);
-          notifyError('Error fetching metadata from IPFS');
-        }
+    const getMetadata = async () => {
+      setMetadataState(HASH_DETAILS_STATE.IS_LOADING);
+      try {
+        const ipfsUrl = getAutonolasTokenUri(tokenUri);
+        const response = await fetch(ipfsUrl);
+        const json = await response.json();
+        setMetadata(json);
+        setMetadataState(HASH_DETAILS_STATE.LOADED);
+      } catch (e) {
+        setMetadataState(HASH_DETAILS_STATE.FAILED);
+        console.error(e);
+        notifyError('Error fetching metadata from IPFS');
       }
-    })();
-  }, [tokenUri]);
+    };
 
-  if (isLoading) {
-    return <Loader timeoutMessage="Details couldn’t be loaded" />;
-  }
+    if (tokenUri) getMetadata();
+  }, [tokenUri]);
 
   const onUpdate = () => {
     if (handleUpdate) handleUpdate();
@@ -114,6 +108,15 @@ const Details = ({
   const onCancel = async () => {
     setIsModalVisible(false);
   };
+
+  if (isLoading) {
+    return <Loader timeoutMessage="Details couldn’t be loaded" />;
+  }
+
+  const nftImageUrl = (get(metadata, 'image') || '').replace(
+    'ipfs://',
+    GATEWAY_URL,
+  );
 
   return (
     <>
@@ -149,6 +152,7 @@ const Details = ({
             tokenUri={tokenUri}
             info={info}
             metadata={metadata}
+            nftImageUrl={nftImageUrl}
             metadataState={metadataState}
             detailsOwner={detailsOwner}
             onUpdateHash={onUpdateHash}
@@ -159,10 +163,11 @@ const Details = ({
 
         <Col md={12} xs={24}>
           {type !== NAV_TYPES.SERVICE && (
-            <NftImage metadata={metadata} type={type} />
+            <NftImage imageUrl={nftImageUrl} isSmallSize={NAV_TYPES.SERVICE} />
           )}
 
-          {type === NAV_TYPES.SERVICE && (
+          {/* TODO: isSvm to be removed once read-omly is completed */}
+          {type === NAV_TYPES.SERVICE && !isSvm && (
             <ServiceState
               isOwner={isOwner}
               id={id}

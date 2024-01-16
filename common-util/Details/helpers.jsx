@@ -1,9 +1,8 @@
 /* eslint-disable react/prop-types */
-import { memo, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   Button, Typography, Alert, Switch,
 } from 'antd';
-import { ArrowRightOutlined } from '@ant-design/icons';
 import get from 'lodash/get';
 import { NA } from '@autonolas/frontend-library';
 
@@ -14,8 +13,12 @@ import {
 } from 'util/constants';
 import { Circle } from 'common-util/svg/Circle';
 import { useHelpers } from 'common-util/hooks';
+import { HASH_DETAILS_STATE } from './constants';
 import { NftImage } from './NFTImage';
-import { SetOperatorStatus, OperatorWhitelist } from './ServiceDetailsHelper';
+import {
+  SetOperatorStatus,
+  OperatorWhitelist,
+} from './ServiceDetails/ServiceDetailsHelper';
 import {
   getTokenDetailsRequest,
   setOperatorsCheckRequest,
@@ -26,36 +29,41 @@ import {
   Info,
   SectionContainer,
   EachSection,
-  ServiceStatus,
+  ServiceStatusContainer,
+  ArrowLink,
 } from './styles';
 
 const { Link, Text } = Typography;
 
 const pattern = /https:\/\/localhost\/(agent|component|service)\/+/g;
-
 export const getAutonolasTokenUri = (tokenUri) => (tokenUri || '').replace(pattern, GATEWAY_URL);
 
-export const HASH_DETAILS_STATE = {
-  IS_LOADING: 'IS_LOADING',
-  LOADED: 'LOADED',
-  FAILED: 'FAILED',
-};
+const ServiceStatus = ({ serviceState }) => (
+  <ServiceStatusContainer
+    className={serviceState ? 'active' : 'inactive'}
+    data-testid="service-status"
+  >
+    <Circle size={8} />
+    <Text>{serviceState ? 'Active' : 'Inactive'}</Text>
+  </ServiceStatusContainer>
+);
 
-const ArrowLink = memo(() => (
-  <ArrowRightOutlined
-    style={{
-      width: 14,
-      transform: 'rotate(320deg)',
-      position: 'relative',
-      top: '-4px',
-    }}
+const MetadataUnpinnedMessage = () => (
+  <Alert
+    message="Metadata is unpinned from IPFS server"
+    type="warning"
+    showIcon
   />
-));
+);
 
+/**
+ * Agent/Component/Service details component
+ */
 export const DetailsInfo = ({
   id,
   isOwner,
   type,
+  nftImageUrl,
   tokenUri,
   info,
   metadata,
@@ -77,14 +85,14 @@ export const DetailsInfo = ({
   const [isWhiteListingLoading, setIsWhiteListingLoading] = useState(false);
 
   // get operator whitelist
-  const setOpWhitelist = async () => {
+  const setOpWhitelist = useCallback(async () => {
     try {
       const whiteListRes = await checkIfServiceRequiresWhitelisting(id);
       setIsWhiteListed(whiteListRes);
     } catch (error) {
       console.error(error);
     }
-  };
+  }, [id]);
 
   // get token address for service on load
   useEffect(() => {
@@ -114,42 +122,33 @@ export const DetailsInfo = ({
     };
   }, [id, doesNetworkHaveValidServiceManagerToken]);
 
-  const updateHashBtn = isOwner ? (
-    <>
-      &nbsp;•&nbsp;
-      {onUpdateHash && (
-        <Button type="primary" ghost onClick={() => setIsModalVisible(true)}>
-          Update Hash
-        </Button>
-      )}
-    </>
-  ) : null;
+  const codeHref = (get(metadata, 'code_uri') || '').replace(
+    'ipfs://',
+    GATEWAY_URL,
+  );
 
-  const viewHashAndCode = HASH_DETAILS_STATE.LOADED === metadataState ? (
-    <>
-      {type === NAV_TYPES.SERVICE && <>&nbsp;•&nbsp;</>}
-      <Link
-        target="_blank"
-        data-testid="view-hash-link"
-        href={getAutonolasTokenUri(tokenUri)}
-      >
-        View Hash&nbsp;
-        <ArrowLink />
-      </Link>
+  const getViewHashAndCode = useCallback(() => {
+    if (HASH_DETAILS_STATE.LOADED !== metadataState) return null;
+
+    return (
+      <>
+        {type === NAV_TYPES.SERVICE && <>&nbsp;•&nbsp;</>}
+        <Link
+          target="_blank"
+          data-testid="view-hash-link"
+          href={getAutonolasTokenUri(tokenUri)}
+        >
+          View Hash&nbsp;
+          <ArrowLink />
+        </Link>
         &nbsp;•&nbsp;
-      <Link
-        target="_blank"
-        data-testid="view-code-link"
-        href={(get(metadata, 'code_uri') || '').replace(
-          'ipfs://',
-          GATEWAY_URL,
-        )}
-      >
-        View Code&nbsp;
-        <ArrowLink />
-      </Link>
-    </>
-  ) : null;
+        <Link target="_blank" data-testid="view-code-link" href={codeHref}>
+          View Code&nbsp;
+          <ArrowLink />
+        </Link>
+      </>
+    );
+  }, [metadataState, type, tokenUri, codeHref]);
 
   const getCommonDetails = () => {
     const commonDetails = [];
@@ -174,13 +173,7 @@ export const DetailsInfo = ({
     if (HASH_DETAILS_STATE.FAILED === metadataState) {
       commonDetails.push({
         dataTestId: 'metadata-failed-to-load',
-        value: (
-          <Alert
-            message="Metadata is unpinned from IPFS server"
-            type="warning"
-            showIcon
-          />
-        ),
+        value: <MetadataUnpinnedMessage />,
       });
     }
 
@@ -200,8 +193,21 @@ export const DetailsInfo = ({
         dataTestId: 'hashes-list',
         value: (
           <>
-            {viewHashAndCode}
-            {updateHashBtn}
+            {getViewHashAndCode()}
+            {isOwner ? (
+              <>
+                &nbsp;•&nbsp;
+                {onUpdateHash && (
+                  <Button
+                    type="primary"
+                    ghost
+                    onClick={() => setIsModalVisible(true)}
+                  >
+                    Update Hash
+                  </Button>
+                )}
+              </>
+            ) : null}
           </>
         ),
       },
@@ -233,14 +239,8 @@ export const DetailsInfo = ({
         dataTestId: 'hashes-list',
         value: (
           <>
-            <ServiceStatus
-              className={serviceState ? 'active' : 'inactive'}
-              data-testid="service-status"
-            >
-              <Circle size={8} />
-              <Text>{serviceState ? 'Active' : 'Inactive'}</Text>
-            </ServiceStatus>
-            {viewHashAndCode}
+            <ServiceStatus serviceState={serviceState} />
+            {getViewHashAndCode()}
           </>
         ),
       },
@@ -250,7 +250,9 @@ export const DetailsInfo = ({
     if (HASH_DETAILS_STATE.LOADED === metadataState) {
       serviceDetailsList.push({
         dataTestId: 'service-nft-image',
-        value: <NftImage metadata={metadata} type={type} />,
+        value: (
+          <NftImage imageUrl={nftImageUrl} isSmallSize={NAV_TYPES.SERVICE} />
+        ),
       });
     }
 

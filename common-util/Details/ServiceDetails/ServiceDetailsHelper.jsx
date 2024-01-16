@@ -15,7 +15,7 @@ import { useHelpers } from 'common-util/hooks';
 import {
   checkIfServiceIsWhitelisted,
   setOperatorsStatusesRequest,
-} from './ServiceState/utils';
+} from '../ServiceState/utils';
 
 const { Text } = Typography;
 
