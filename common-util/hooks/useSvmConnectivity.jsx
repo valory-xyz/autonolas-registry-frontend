@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useAnchorWallet, useConnection } from '@solana/wallet-adapter-react';
 import { Program, AnchorProvider } from '@project-serum/anchor';
 import { PublicKey } from '@solana/web3.js';
 
@@ -16,7 +16,7 @@ import { useHelpers } from './index';
  */
 export const useSvmConnectivity = () => {
   const { connection } = useConnection();
-  const { publicKey, wallet } = useWallet();
+  const wallet = useAnchorWallet();
 
   const { chainName } = useHelpers();
 
@@ -35,7 +35,7 @@ export const useSvmConnectivity = () => {
   const program = new Program(idl, programId, anchorProvider);
 
   return {
-    walletPublicKey: publicKey,
+    walletPublicKey: wallet?.publicKey,
     connection,
     program,
     solanaAddresses,

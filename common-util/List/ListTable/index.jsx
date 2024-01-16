@@ -12,6 +12,7 @@ const ListTable = ({
   isLoading,
   type,
   searchValue,
+  isPaginationRequired,
   list,
   total,
   currentPage,
@@ -26,7 +27,7 @@ const ListTable = ({
   /**
    * no pagination on search as we won't know total beforehand
    */
-  const isPaginationRequired = !searchValue;
+  const canShowPagination = isPaginationRequired ? !searchValue : false;
   const { isMobile } = useScreen();
 
   const { scrollX } = extra;
@@ -60,7 +61,7 @@ const ListTable = ({
   const pagination = {
     total,
     current: currentPage,
-    defaultPageSize: TOTAL_VIEW_COUNT,
+    defaultPageSize: canShowPagination ? TOTAL_VIEW_COUNT : total,
     onChange: (e) => setCurrentPage(e),
     showSizeChanger: false,
   };
@@ -76,7 +77,7 @@ const ListTable = ({
         <Table
           columns={columns}
           dataSource={dataSource}
-          pagination={isPaginationRequired ? pagination : false}
+          pagination={canShowPagination ? pagination : false}
           scroll={{ x: scrollX || 1200 }}
           rowKey={(record) => `${type}-row-${record.id}`}
         />
@@ -88,6 +89,7 @@ const ListTable = ({
 ListTable.propTypes = {
   type: PropTypes.string.isRequired,
   searchValue: PropTypes.string.isRequired,
+  isPaginationRequired: PropTypes.bool,
   isLoading: PropTypes.bool,
   list: PropTypes.arrayOf(PropTypes.object),
   total: PropTypes.number,
@@ -101,6 +103,7 @@ ListTable.propTypes = {
 
 ListTable.defaultProps = {
   isLoading: false,
+  isPaginationRequired: true,
   list: [],
   total: 0,
   currentPage: 0,
