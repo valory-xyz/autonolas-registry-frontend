@@ -180,7 +180,7 @@ export const useGetServiceDetails = () => {
   const getSvmServiceDetails = useCallback(
     async (id) => {
       const details = await getData('getService', [id], 'Service');
-      return transformServiceData(details);
+      return transformServiceData(details, id);
     },
     [getData],
   );

@@ -228,9 +228,7 @@ export const DetailsSubInfo = ({
     if (HASH_DETAILS_STATE.LOADED === metadataLoadState && !isSvm) {
       serviceDetailsList.push({
         dataTestId: 'service-nft-image',
-        value: (
-          <NftImage imageUrl={nftImageUrl} isSmallSize={NAV_TYPES.SERVICE} />
-        ),
+        value: <NftImage imageUrl={nftImageUrl} isSmallSize />,
       });
     }
 

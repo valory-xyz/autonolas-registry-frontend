@@ -110,7 +110,7 @@ const Details = ({
           ) : (
             // NftImage for "service" is shown in DetailsSubInfo component
             // in the left column
-            <NftImage imageUrl={nftImageUrl} isSmallSize={NAV_TYPES.SERVICE} />
+            <NftImage imageUrl={nftImageUrl} />
           )}
         </Col>
       </Row>

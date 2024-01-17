@@ -1,5 +1,4 @@
 import { useState, useEffect, useMemo } from 'react';
-import { get } from 'lodash';
 import { notifyError, NA } from '@autonolas/frontend-library';
 
 import { GATEWAY_URL, HASH_DETAILS_STATE } from 'util/constants';
@@ -40,13 +39,13 @@ export const useMetadata = (tokenUri) => {
   const hashUrl = useMemo(() => getAutonolasTokenUri(tokenUri), [tokenUri]);
 
   const nftImageUrl = useMemo(() => {
-    const image = get(metadata, 'image');
+    const image = metadata?.image;
     if (!image) return null;
     return image.replace('ipfs://', GATEWAY_URL);
   }, [metadata]);
 
   const codeHref = useMemo(() => {
-    const codeUri = get(metadata, 'code_uri');
+    const codeUri = metadata?.code_uri;
     if (!codeUri) return null;
     return codeUri.replace('ipfs://', GATEWAY_URL);
   }, [metadata]);
@@ -57,7 +56,7 @@ export const useMetadata = (tokenUri) => {
     hashUrl,
     nftImageUrl,
     codeHref,
-    description: get(metadata, 'description') || NA,
-    version: get(metadata, 'attributes[0].value') || NA,
+    description: metadata?.description || NA,
+    version: metadata?.attributes?.[0]?.value || NA,
   };
 };

@@ -37,16 +37,18 @@ const ListTable = ({
   const isAccountRequiredForList = isAccountRequired || hasNoSvmPublicKey;
 
   if (isLoading || hasNoSvmPublicKey) {
+    const connectWalletMessage = isSvm
+      ? 'connect a wallet that holds SOL'
+      : 'connect wallet';
+
+    const notConnectedMessage = isAccountRequiredForList
+      ? `To see your ${type}s, ${connectWalletMessage}.`
+      : '';
+
     return (
       <Loader
         isAccountRequired={isAccountRequiredForList}
-        notConnectedMessage={
-          isAccountRequiredForList
-            ? `To see your ${type}s, ${
-              isSvm ? 'connect a wallet that holds SOL' : 'connect wallet'
-            }.`
-            : ''
-        }
+        notConnectedMessage={notConnectedMessage}
       />
     );
   }

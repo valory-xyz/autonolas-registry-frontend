@@ -1,5 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
-import { notifyError, NA } from '@autonolas/frontend-library';
+import {
+  notifyError,
+  NA,
+  areAddressesEqual,
+} from '@autonolas/frontend-library';
 import { useHelpers } from '../hooks';
 
 export const useDetails = ({
@@ -47,7 +51,7 @@ export const useDetails = ({
     }
   }, [type, getDetails]);
 
-  const isOwner = account && account.toLowerCase() === ownerAddress.toLowerCase();
+  const isOwner = account ? areAddressesEqual(account, ownerAddress) : false;
 
   return {
     isLoading,
