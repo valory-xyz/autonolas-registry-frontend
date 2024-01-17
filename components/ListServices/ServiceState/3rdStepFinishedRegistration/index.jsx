@@ -110,25 +110,27 @@ export const FinishedRegistration = ({
 
   return (
     <div className="step-3-finished-registration">
-      <Radio.Group
-        value={radioValue}
-        onChange={(e) => setRadioValue(e.target.value)}
-        disabled={btnProps.disabled}
-        className="mt-8"
-      >
-        {options.map((multisigAddress) => (
-          <div className="mb-12" key={`mutisig-${multisigAddress}`}>
-            <RadioLabel disabled={btnProps.disabled}>
-              {multisigAddress === isMultiSig && OPTION_1}
-              {multisigAddress !== isMultiSig && OPTION_2}
-            </RadioLabel>
+      {options?.length ? (
+        <Radio.Group
+          value={radioValue}
+          onChange={(e) => setRadioValue(e.target.value)}
+          disabled={btnProps.disabled}
+          className="mt-8"
+        >
+          {options.map((multisigAddress) => (
+            <div className="mb-12" key={`mutisig-${multisigAddress}`}>
+              <RadioLabel disabled={btnProps.disabled}>
+                {multisigAddress === isMultiSig && OPTION_1}
+                {multisigAddress !== isMultiSig && OPTION_2}
+              </RadioLabel>
 
-            <Radio key={multisigAddress} value={multisigAddress}>
-              {multisigAddress}
-            </Radio>
-          </div>
-        ))}
-      </Radio.Group>
+              <Radio key={multisigAddress} value={multisigAddress}>
+                {multisigAddress}
+              </Radio>
+            </div>
+          ))}
+        </Radio.Group>
+      ) : null}
 
       {/* form should be shown only if 1st radio button is selected
       2nd radio button means everything will be handled by the backend */}
