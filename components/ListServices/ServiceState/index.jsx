@@ -12,8 +12,7 @@ import { ActiveRegistration } from './2StepActiveRegistration';
 import { FinishedRegistration } from './3rdStepFinishedRegistration';
 import { Deployed } from './4thStepDeployed';
 import { Unbond } from './5StepUnbond';
-import { InfoSubHeader } from '../styles';
-import { GenericLabel, ServiceStateContainer } from './styles';
+import { InfoSubHeader, GenericLabel, ServiceStateContainer } from './styles';
 
 const SERVICE_STATE_HELPER_LABELS = {
   'pre-registration': 'The service has just been minted.',
@@ -28,17 +27,15 @@ const SERVICE_STATE_HELPER_LABELS = {
 };
 
 export const ServiceState = ({
-  account,
-  isOwner,
-  id,
-  details,
-  updateDetails,
+  isOwner, id, details, updateDetails,
 }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [dataSource, setDataSource] = useState([]);
   const [isEthToken, setIsEthToken] = useState(true); // by default, assume it's an eth token
   const [isStateImageVisible, setIsStateImageVisible] = useState(false);
-  const { chainId, doesNetworkHaveValidServiceManagerToken } = useHelpers();
+  const {
+    account, chainId, isSvm, doesNetworkHaveValidServiceManagerToken,
+  } = useHelpers();
 
   const status = get(details, 'state');
   const agentIds = get(details, 'agentIds');
@@ -49,28 +46,20 @@ export const ServiceState = ({
   const canShowMultisigSameAddress = get(details, 'multisig') !== `0x${'0'.repeat(40)}`;
 
   useEffect(() => {
-    let isMounted = true;
-    (async () => {
+    const getData = async () => {
       if (id && (agentIds || []).length !== 0) {
         const temp = await getServiceTableDataSource(id, agentIds || []);
-        if (isMounted) {
-          setDataSource(temp);
-        }
+        setDataSource(temp);
       }
-
       // if valid service id, check if it's an eth token
       if (id && chainId && doesNetworkHaveValidServiceManagerToken) {
         const isEth = await checkIfEth(id);
-        if (isMounted) {
-          setIsEthToken(isEth);
-        }
+        setIsEthToken(isEth);
       }
-    })();
-
-    return () => {
-      isMounted = false;
     };
-  }, [id, agentIds, chainId, doesNetworkHaveValidServiceManagerToken]);
+
+    if (!isSvm) getData();
+  }, [id, agentIds, isSvm, chainId, doesNetworkHaveValidServiceManagerToken]);
 
   useEffect(() => {
     setCurrentStep(Number(status) - 1);
@@ -80,17 +69,17 @@ export const ServiceState = ({
   const getButton = (button, otherArgs) => {
     const { message, condition = isOwner, step } = otherArgs || {};
 
+    let messageToDisplay = message || 'Only the service owner can take this action';
+    if (isSvm) messageToDisplay = 'Not yet available on SVM';
+
     // if not the current step, just return the button without showing tooltip
     if (step !== currentStep + 1) return button;
 
+    // if the condition is true, return the button without showing tooltip
     if (condition) return button;
 
     return (
-      <Tooltip
-        title={message || 'Only the service owner can take this action'}
-        placement="right"
-        align="center"
-      >
+      <Tooltip title={messageToDisplay} placement="right" align="center">
         {button}
       </Tooltip>
     );
@@ -233,7 +222,6 @@ export const ServiceState = ({
 };
 
 ServiceState.propTypes = {
-  account: PropTypes.string,
   id: PropTypes.string.isRequired,
   isOwner: PropTypes.bool,
   details: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
@@ -241,7 +229,6 @@ ServiceState.propTypes = {
 };
 
 ServiceState.defaultProps = {
-  account: null,
   details: [],
   isOwner: false,
   updateDetails: () => {},

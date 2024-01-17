@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useScreen } from 'common-util/hooks/useScreen';
+
+import { useScreen } from '../../hooks/useScreen';
 import { NftImageContainer } from '../styles';
 
 const DEFAULT_SIZE = { width: 500, height: 500 };

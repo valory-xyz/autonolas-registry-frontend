@@ -8,12 +8,10 @@ import { get } from 'lodash';
 import { Loader, NA } from '@autonolas/frontend-library';
 
 import { NAV_TYPES } from 'util/constants';
-import { useHelpers } from 'common-util/hooks';
 import { useMetadata } from 'common-util/hooks/useMetadata';
 import { IpfsHashGenerationModal } from '../List/IpfsHashGenerationModal';
 import { useDetails } from './useDetails';
 import { NftImage } from './NFTImage';
-import { ServiceState } from './ServiceState';
 import { DetailsSubInfo } from './DetailsSubInfo';
 import { Header, DetailsTitle } from './styles';
 
@@ -28,10 +26,10 @@ const Details = ({
   getOwner,
   onUpdateHash,
   onDependencyClick,
+  renderServiceState,
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const { account, isSvm } = useHelpers();
   const {
     isLoading, info, ownerAddress, tokenUri, updateDetails, isOwner,
   } = useDetails({
@@ -95,16 +93,9 @@ const Details = ({
         <Col md={12} xs={24}>
           {type === NAV_TYPES.SERVICE ? (
             <>
-              {/* TODO: isSvm to be removed once read-omly is completed */}
-              {!isSvm && (
-                <ServiceState
-                  id={id}
-                  account={account}
-                  isOwner={isOwner}
-                  details={info}
-                  updateDetails={updateDetails}
-                />
-              )}
+              {renderServiceState
+                ? renderServiceState({ isOwner, details: info, updateDetails })
+                : null}
             </>
           ) : (
             // NftImage for "service" is shown in DetailsSubInfo component
@@ -139,6 +130,7 @@ Details.propTypes = {
   handleUpdate: PropTypes.func,
   onUpdateHash: PropTypes.func,
   onDependencyClick: PropTypes.func,
+  renderServiceState: PropTypes.func,
 };
 
 Details.defaultProps = {
@@ -147,6 +139,7 @@ Details.defaultProps = {
   getOwner: () => {},
   onUpdateHash: () => {},
   onDependencyClick: () => {},
+  renderServiceState: null,
 };
 
 export default Details;

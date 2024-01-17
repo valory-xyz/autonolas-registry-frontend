@@ -9,13 +9,13 @@ import {
   notifyWarning,
 } from '@autonolas/frontend-library';
 
-import { DynamicFieldsForm } from 'common-util/DynamicFieldsForm';
-import { addressValidator } from 'common-util/functions';
-import { useHelpers } from 'common-util/hooks';
+import { addressValidator } from '../../functions';
+import { useHelpers } from '../../hooks';
+import { DynamicFieldsForm } from '../../DynamicFieldsForm';
 import {
   checkIfServiceIsWhitelisted,
   setOperatorsStatusesRequest,
-} from '../ServiceState/utils';
+} from '../utils';
 
 const { Text } = Typography;
 

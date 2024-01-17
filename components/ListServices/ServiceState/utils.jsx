@@ -5,13 +5,13 @@ import { notifySuccess, notifyError } from '@autonolas/frontend-library';
 import { DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS } from 'util/constants';
 import {
   getGenericErc20Contract,
-  getOperatorWhitelistContract,
   getServiceContract,
   getServiceManagerContract,
   getServiceRegistryTokenUtilityContract,
 } from 'common-util/Contracts';
 import { ADDRESSES } from 'common-util/Contracts/addresses';
 import { sendTransaction } from 'common-util/functions';
+import { getTokenDetailsRequest } from 'common-util/Details/utils';
 
 /* ----- helper functions ----- */
 
@@ -96,14 +96,6 @@ export const getServiceOwner = async (id) => {
   const contract = getServiceContract();
   const response = await contract.methods.ownerOf(id).call();
   return response;
-};
-
-export const getTokenDetailsRequest = async (serviceId) => {
-  const contract = getServiceRegistryTokenUtilityContract();
-  const deposit = await contract.methods
-    .mapServiceIdTokenDeposit(serviceId)
-    .call();
-  return deposit;
 };
 
 const hasSufficientTokenRequest = async ({ account, chainId, serviceId }) => {
@@ -319,55 +311,6 @@ export const getAgentInstanceAndOperator = async (id) => {
 export const onStep5Unbond = async (account, id) => {
   const contract = getServiceManagerContract();
   const fn = contract.methods.unbond(id).send({ from: account });
-  const response = await sendTransaction(fn, account);
-  return response;
-};
-
-/* ----- operator whitelist functions ----- */
-export const checkIfServiceRequiresWhitelisting = async (serviceId) => {
-  const contract = getOperatorWhitelistContract();
-  // if true: it is whitelisted by default
-  // else we can whitelist using the input field
-  const response = await contract.methods
-    .mapServiceIdOperatorsCheck(serviceId)
-    .call();
-  return response;
-};
-
-export const checkIfServiceIsWhitelisted = async (
-  serviceId,
-  operatorAddress,
-) => {
-  const contract = getOperatorWhitelistContract();
-  const response = await contract.methods
-    .isOperatorWhitelisted(serviceId, operatorAddress)
-    .call();
-  return response;
-};
-
-export const setOperatorsStatusesRequest = async ({
-  account,
-  serviceId,
-  operatorAddresses,
-  operatorStatuses,
-}) => {
-  const contract = getOperatorWhitelistContract();
-  const fn = contract.methods
-    .setOperatorsStatuses(serviceId, operatorAddresses, operatorStatuses, true)
-    .send({ from: account });
-  const response = await sendTransaction(fn, account);
-  return response;
-};
-
-export const setOperatorsCheckRequest = async ({
-  account,
-  serviceId,
-  isChecked,
-}) => {
-  const contract = getOperatorWhitelistContract();
-  const fn = contract.methods
-    .setOperatorsCheck(serviceId, isChecked)
-    .send({ from: account });
   const response = await sendTransaction(fn, account);
   return response;
 };

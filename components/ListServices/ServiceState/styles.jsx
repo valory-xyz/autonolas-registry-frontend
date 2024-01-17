@@ -103,3 +103,14 @@ export const GenericLabel = styled.div`
   line-height: normal;
   margin-bottom: 0.5rem;
 `;
+
+export const InfoSubHeader = styled.div`
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+  color: ${COLOR.BLACK};
+  .ant-btn {
+    font-size: 18px;
+  }
+`;

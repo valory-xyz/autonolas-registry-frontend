@@ -8,11 +8,12 @@ import {
   NAV_TYPES,
   HASH_DETAILS_STATE,
 } from 'util/constants';
-import { Circle } from 'common-util/svg/Circle';
-import { useHelpers } from 'common-util/hooks';
-import { useMetadata } from 'common-util/hooks/useMetadata';
+import { Circle } from '../svg/Circle';
+import { useHelpers } from '../hooks';
+import { useMetadata } from '../hooks/useMetadata';
 import { NftImage } from './NFTImage';
-import { getTokenDetailsRequest } from './ServiceState/utils';
+import { getTokenDetailsRequest } from './utils';
+import { useOperatorWhitelistComponent } from './ServiceDetails/useOperatorWhitelistComponent';
 import {
   SubTitle,
   Info,
@@ -21,7 +22,6 @@ import {
   ServiceStatusContainer,
   ArrowLink,
 } from './styles';
-import { useOperatorWhitelistComponent } from './ServiceDetails/useOperatorWhitelistComponent';
 
 const { Link, Text } = Typography;
 

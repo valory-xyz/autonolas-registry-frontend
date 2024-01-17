@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Switch } from 'antd';
+
 import {
   checkIfServiceRequiresWhitelisting,
   setOperatorsCheckRequest,
-} from '../ServiceState/utils';
+} from '../utils';
 import { useHelpers } from '../../hooks';
 import { OperatorWhitelist, SetOperatorStatus } from './OperatorWhitelist';
 

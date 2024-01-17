@@ -6,7 +6,7 @@ import {
 import { getServiceContract } from 'common-util/Contracts';
 import { convertStringToArray } from 'common-util/List/ListCommon';
 import { filterByOwner } from 'common-util/ContractUtils/myList';
-import { getTokenDetailsRequest } from 'common-util/Details/ServiceState/utils';
+import { getTokenDetailsRequest } from 'common-util/Details/utils';
 
 // --------- HELPER METHODS ---------
 export const getServiceOwner = async (id) => {

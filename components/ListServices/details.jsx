@@ -1,11 +1,8 @@
+import { useCallback } from 'react';
 import { useRouter } from 'next/router';
 
 import Details from 'common-util/Details';
 import { useHelpers } from 'common-util/hooks';
-import {
-  useCallback,
-  // useEffect, useState
-} from 'react';
 import {
   getServiceDetails,
   getServiceOwner,
@@ -16,6 +13,7 @@ import {
   useServiceOwner,
   useTokenUri,
 } from './useSvmService';
+import { ServiceState } from './ServiceState';
 
 const Service = () => {
   const router = useRouter();
@@ -62,6 +60,14 @@ const Service = () => {
       getTokenUri={getTokenUri}
       handleUpdate={handleUpdate}
       onDependencyClick={onDependencyClick}
+      renderServiceState={({ isOwner, details, updateDetails }) => (
+        <ServiceState
+          isOwner={isOwner}
+          id={id}
+          details={details}
+          updateDetails={updateDetails}
+        />
+      )}
     />
   );
 };
