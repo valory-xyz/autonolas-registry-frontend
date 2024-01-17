@@ -1,13 +1,14 @@
-/* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react';
 import { Button, Typography, Alert } from 'antd';
 import { NA } from '@autonolas/frontend-library';
+import PropTypes from 'prop-types';
 
 import {
   DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS,
   NAV_TYPES,
   HASH_DETAILS_STATE,
 } from 'util/constants';
+import { typePropType } from 'common-util/propTypes';
 import { Circle } from '../svg/Circle';
 import { useHelpers } from '../hooks';
 import { useMetadata } from '../hooks/useMetadata';
@@ -25,6 +26,9 @@ import {
 
 const { Link, Text } = Typography;
 
+/**
+ * Displays service status (active/inactive)
+ */
 const ServiceStatus = ({ serviceState }) => (
   <ServiceStatusContainer
     className={serviceState ? 'active' : 'inactive'}
@@ -34,6 +38,8 @@ const ServiceStatus = ({ serviceState }) => (
     <Text>{serviceState ? 'Active' : 'Inactive'}</Text>
   </ServiceStatusContainer>
 );
+ServiceStatus.propTypes = { serviceState: PropTypes.bool };
+ServiceStatus.defaultProps = { serviceState: false };
 
 const MetadataUnpinnedMessage = () => (
   <Alert
@@ -43,6 +49,10 @@ const MetadataUnpinnedMessage = () => (
   />
 );
 
+/**
+ * Displays view hash and view code buttons redirecting to
+ * links respectively
+ */
 const ViewHashAndCode = ({
   type, metadataLoadState, hashUrl, codeHref,
 }) => {
@@ -62,6 +72,18 @@ const ViewHashAndCode = ({
       </Link>
     </>
   );
+};
+ViewHashAndCode.propTypes = {
+  type: typePropType,
+  metadataLoadState: PropTypes.string,
+  hashUrl: PropTypes.string,
+  codeHref: PropTypes.string,
+};
+ViewHashAndCode.defaultProps = {
+  type: null,
+  metadataLoadState: '',
+  hashUrl: '',
+  codeHref: '',
 };
 
 /**
@@ -83,7 +105,7 @@ export const DetailsSubInfo = ({
   setIsModalVisible,
   onDependencyClick,
 }) => {
-  const { doesNetworkHaveValidServiceManagerToken, isSvm } = useHelpers();
+  const { isSvm, doesNetworkHaveValidServiceManagerToken } = useHelpers();
   const [tokenAddress, setTokenAddress] = useState(null);
   const {
     hashUrl,
@@ -94,14 +116,14 @@ export const DetailsSubInfo = ({
     version,
   } = useMetadata(tokenUri);
 
-  // switch state
+  // get operator whitelist component
   const {
     operatorWhitelistTitle,
     operatorWhitelistValue,
     operatorStatusValue,
   } = useOperatorWhitelistComponent(id);
 
-  // get token address for service on load
+  // get token address for service
   useEffect(() => {
     const getData = async () => {
       if (type === NAV_TYPES.SERVICE) {
@@ -114,14 +136,13 @@ export const DetailsSubInfo = ({
       }
     };
 
-    // get token details only if it is service and network is L1
-    // and not SVM
+    // token details is only available for L1 networks
     if (id && doesNetworkHaveValidServiceManagerToken && !isSvm) {
       getData();
     }
   }, [id, type, isSvm, doesNetworkHaveValidServiceManagerToken]);
 
-  const viewHashAndCode = (
+  const viewHashAndCodeButtons = (
     <ViewHashAndCode
       type={type}
       metadataLoadState={metadataLoadState}
@@ -163,7 +184,7 @@ export const DetailsSubInfo = ({
   };
 
   const getComponentAndAgentValues = () => {
-    const updateHashBtn = isOwner ? (
+    const updateHashButton = isOwner ? (
       <>
         &nbsp;•&nbsp;
         {onUpdateHash && (
@@ -175,8 +196,7 @@ export const DetailsSubInfo = ({
     ) : null;
 
     const getDependencyValue = () => {
-      if (componentAndAgentDependencies?.length === 0) return 'None';
-
+      if ((componentAndAgentDependencies || []).length === 0) return 'None';
       return componentAndAgentDependencies.map((e) => (
         <li key={`${type}-dependency-${e}`}>
           <Button type="link" onClick={() => onDependencyClick(e)}>
@@ -191,8 +211,8 @@ export const DetailsSubInfo = ({
         dataTestId: 'hashes-list',
         value: (
           <>
-            {viewHashAndCode}
-            {updateHashBtn}
+            {viewHashAndCodeButtons}
+            {updateHashButton}
           </>
         ),
       },
@@ -217,7 +237,7 @@ export const DetailsSubInfo = ({
         value: (
           <>
             <ServiceStatus serviceState={serviceState} />
-            {viewHashAndCode}
+            {viewHashAndCodeButtons}
           </>
         ),
       },
@@ -237,7 +257,7 @@ export const DetailsSubInfo = ({
       value: serviceThreshold,
     });
 
-    // show token address only if it is not ETH and not SVM
+    // token address is only available for L1 networks
     if (
       doesNetworkHaveValidServiceManagerToken
       && tokenAddress !== DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS
@@ -249,7 +269,7 @@ export const DetailsSubInfo = ({
       });
     }
 
-    // operator whitelisting is only available for service & L1 networks
+    // operator whitelisting is only available for L1 networks
     if (doesNetworkHaveValidServiceManagerToken && !isSvm) {
       serviceDetailsList.push({
         title: operatorWhitelistTitle,
@@ -281,4 +301,32 @@ export const DetailsSubInfo = ({
       ))}
     </SectionContainer>
   );
+};
+
+DetailsSubInfo.propTypes = {
+  id: PropTypes.string,
+  isOwner: PropTypes.bool,
+  type: typePropType,
+  tokenUri: PropTypes.string,
+  ownerAddress: PropTypes.string,
+  componentAndAgentDependencies: PropTypes.arrayOf(PropTypes.string),
+  serviceThreshold: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  serviceCurrentState: PropTypes.string,
+  onUpdateHash: PropTypes.func,
+  setIsModalVisible: PropTypes.func,
+  onDependencyClick: PropTypes.func,
+};
+
+DetailsSubInfo.defaultProps = {
+  id: '',
+  isOwner: false,
+  type: null,
+  tokenUri: '',
+  ownerAddress: '',
+  componentAndAgentDependencies: [],
+  serviceThreshold: '',
+  serviceCurrentState: '',
+  onUpdateHash: null,
+  setIsModalVisible: null,
+  onDependencyClick: null,
 };

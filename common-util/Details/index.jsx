@@ -9,6 +9,7 @@ import { Loader, NA } from '@autonolas/frontend-library';
 
 import { NAV_TYPES } from 'util/constants';
 import { useMetadata } from 'common-util/hooks/useMetadata';
+import { typePropType } from 'common-util/propTypes';
 import { IpfsHashGenerationModal } from '../List/IpfsHashGenerationModal';
 import { useDetails } from './useDetails';
 import { NftImage } from './NFTImage';
@@ -119,11 +120,7 @@ const Details = ({
 
 Details.propTypes = {
   id: PropTypes.string.isRequired,
-  type: PropTypes.oneOf([
-    NAV_TYPES.AGENT,
-    NAV_TYPES.COMPONENT,
-    NAV_TYPES.SERVICE,
-  ]).isRequired,
+  type: typePropType.isRequired,
   getDetails: PropTypes.func.isRequired,
   getTokenUri: PropTypes.func,
   getOwner: PropTypes.func,

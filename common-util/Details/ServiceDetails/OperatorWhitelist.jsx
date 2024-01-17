@@ -1,8 +1,8 @@
-/* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react';
 import {
   Button, Typography, Input, Form,
 } from 'antd';
+import PropTypes from 'prop-types';
 import {
   notifyError,
   notifySuccess,
@@ -19,7 +19,7 @@ import {
 
 const { Text } = Typography;
 
-export const OperatorWhitelist = ({ isWhiteListed, setOpWhitelist, id }) => {
+export const OperatorWhitelist = ({ id, isWhiteListed, setOpWhitelist }) => {
   const { account, chainId } = useHelpers();
   const [form] = Form.useForm();
 
@@ -30,7 +30,7 @@ export const OperatorWhitelist = ({ isWhiteListed, setOpWhitelist, id }) => {
       await setOpWhitelist(id);
     };
 
-    if (id) getData();
+    if (id && setOpWhitelist) getData();
   }, [id, chainId, setOpWhitelist]);
 
   const onCheck = async (values) => {
@@ -52,8 +52,8 @@ export const OperatorWhitelist = ({ isWhiteListed, setOpWhitelist, id }) => {
       setIsCheckLoading(false);
     }
   };
-  if (!isWhiteListed) return null;
 
+  if (!isWhiteListed) return null;
   return (
     <>
       <Text>Check if Operator Address is whitelisted?</Text>
@@ -87,6 +87,16 @@ export const OperatorWhitelist = ({ isWhiteListed, setOpWhitelist, id }) => {
       </Form>
     </>
   );
+};
+OperatorWhitelist.propTypes = {
+  id: PropTypes.string,
+  isWhiteListed: PropTypes.bool,
+  setOpWhitelist: PropTypes.func,
+};
+OperatorWhitelist.defaultProps = {
+  id: '',
+  isWhiteListed: false,
+  setOpWhitelist: null,
 };
 
 export const SetOperatorStatus = ({ id, setOpWhitelist }) => {
@@ -124,4 +134,12 @@ export const SetOperatorStatus = ({ id, setOpWhitelist }) => {
       </Text>
     </>
   );
+};
+SetOperatorStatus.propTypes = {
+  id: PropTypes.string,
+  setOpWhitelist: PropTypes.func,
+};
+SetOperatorStatus.defaultProps = {
+  id: '',
+  setOpWhitelist: null,
 };

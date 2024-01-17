@@ -4,6 +4,7 @@ import {
   NA,
   areAddressesEqual,
 } from '@autonolas/frontend-library';
+
 import { useHelpers } from '../hooks';
 
 export const useDetails = ({
@@ -16,14 +17,16 @@ export const useDetails = ({
   const [ownerAddress, setDetailsOwner] = useState(NA);
   const [tokenUri, setTokenUri] = useState(null);
 
+  // fetch details such as service details, owner of agent/component/service,
+  // token uri
   useEffect(() => {
     const getData = async () => {
       setIsLoading(true);
       setInfo([]);
 
       try {
-        const temp = await getDetails();
-        setInfo(temp);
+        const tempDetails = await getDetails();
+        setInfo(tempDetails);
 
         const ownerAccount = await getOwner();
         setDetailsOwner(ownerAccount || '');
@@ -54,14 +57,12 @@ export const useDetails = ({
     }
   }, [type, getDetails]);
 
-  const isOwner = account ? areAddressesEqual(account, ownerAddress) : false;
-
   return {
     isLoading,
     info,
     ownerAddress,
     tokenUri,
-    isOwner,
+    isOwner: account ? areAddressesEqual(account, ownerAddress) : false,
     updateDetails,
   };
 };

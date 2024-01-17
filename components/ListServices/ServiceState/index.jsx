@@ -79,21 +79,31 @@ export const ServiceState = ({
   const securityDeposit = get(details, 'securityDeposit');
   const canShowMultisigSameAddress = get(details, 'multisig') !== `0x${'0'.repeat(40)}`;
 
+  // get service table data source and check if it's an eth token
   useEffect(() => {
+    let isMounted = true;
     const getData = async () => {
       if (id && (agentIds || []).length !== 0) {
         const temp = await getServiceTableDataSource(id, agentIds || []);
-        setDataSource(temp);
+        if (isMounted) {
+          setDataSource(temp);
+        }
       }
       // if valid service id, check if it's an eth token
       if (id && chainId && doesNetworkHaveValidServiceManagerToken) {
         const isEth = await checkIfEth(id);
-        setIsEthToken(isEth);
+        if (isMounted) {
+          setIsEthToken(isEth);
+        }
       }
     };
 
     // TODO: remove this check once SVM integration is ready
     if (!isSvm) getData();
+
+    return () => {
+      isMounted = false;
+    };
   }, [id, agentIds, isSvm, chainId, doesNetworkHaveValidServiceManagerToken]);
 
   useEffect(() => {

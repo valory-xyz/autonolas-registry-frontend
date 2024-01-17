@@ -18,7 +18,6 @@ const useOperatorWhitelist = (id) => {
 
   const { doesNetworkHaveValidServiceManagerToken, isSvm } = useHelpers();
 
-  // get operator whitelist
   const setOpWhitelist = useCallback(async () => {
     try {
       const whiteListRes = await checkIfServiceRequiresWhitelisting(id);
@@ -28,7 +27,7 @@ const useOperatorWhitelist = (id) => {
     }
   }, [id]);
 
-  // on load, get operator whitelist
+  // Get operator whitelist
   useEffect(() => {
     const getData = async () => {
       await setOpWhitelist();
@@ -50,7 +49,6 @@ const useOperatorWhitelist = (id) => {
 
 export const useOperatorWhitelistComponent = (id, isOwner) => {
   const { account } = useHelpers();
-
   const {
     isWhiteListed,
     switchValue,
@@ -60,6 +58,9 @@ export const useOperatorWhitelistComponent = (id, isOwner) => {
     setOpWhitelist,
   } = useOperatorWhitelist(id);
 
+  /**
+   * Operator Whitelist header
+   */
   const operatorWhitelistTitle = (
     <>
       Operator Whitelisting&nbsp;
@@ -89,6 +90,9 @@ export const useOperatorWhitelistComponent = (id, isOwner) => {
     </>
   );
 
+  /**
+   * Operator Whitelist component
+   */
   const operatorWhitelistValue = (
     <OperatorWhitelist
       id={id}

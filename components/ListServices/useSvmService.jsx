@@ -22,6 +22,8 @@ import { useSvmConnectivity } from 'common-util/hooks/useSvmConnectivity';
 const deseralizeProgramData = (serializedValue, decodeTypeName) => {
   if (decodeTypeName === 'string') {
     const value = serializedValue.toString();
+    // NOTE: This is a hack to remove the extra bytes added by the program
+    // not sure why this is happening, but this is a workaround
     const strippedValue = value.replace('m\u0000\u0000\u0000', '');
     return strippedValue;
   }
