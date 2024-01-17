@@ -17,13 +17,12 @@ import {
   onStep2RegisterAgents,
   checkIfAgentInstancesAreValid,
 } from '../utils';
-import ActiveRegistrationTable from './ActiveRegistrationTable';
+import { ActiveRegistrationTable } from './ActiveRegistrationTable';
 
 const { Text } = Typography;
-
 const STEP = 2;
 
-const ActiveRegistration = ({
+export const ActiveRegistration = ({
   serviceId,
   dataSource,
   setDataSource,
@@ -223,5 +222,3 @@ ActiveRegistration.propTypes = {
 ActiveRegistration.defaultProps = {
   serviceId: null,
 };
-
-export default ActiveRegistration;

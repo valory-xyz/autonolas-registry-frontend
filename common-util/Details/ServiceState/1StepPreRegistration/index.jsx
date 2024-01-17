@@ -12,7 +12,7 @@ import {
   onActivateRegistration,
 } from '../utils';
 
-const PreRegistration = ({
+export const PreRegistration = ({
   serviceId,
   isOwner,
   securityDeposit,
@@ -103,5 +103,3 @@ PreRegistration.defaultProps = {
   serviceId: null,
   securityDeposit: '0',
 };
-
-export default PreRegistration;

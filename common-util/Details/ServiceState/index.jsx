@@ -7,11 +7,11 @@ import get from 'lodash/get';
 
 import { useHelpers } from 'common-util/hooks';
 import { getServiceTableDataSource, onTerminate, checkIfEth } from './utils';
-import StepPreRegistration from './1StepPreRegistration';
-import StepActiveRegistration from './2StepActiveRegistration';
-import StepFinishedRegistration from './3rdStepFinishedRegistration';
-import Deployed from './4thStepDeployed';
-import Unbond from './5StepUnbond';
+import { PreRegistration } from './1StepPreRegistration';
+import { ActiveRegistration } from './2StepActiveRegistration';
+import { FinishedRegistration } from './3rdStepFinishedRegistration';
+import { Deployed } from './4thStepDeployed';
+import { Unbond } from './5StepUnbond';
 import { InfoSubHeader } from '../styles';
 import { GenericLabel, ServiceStateContainer } from './styles';
 
@@ -132,7 +132,7 @@ export const ServiceState = ({
       id: 'pre-registration',
       title: 'Pre-Registration',
       component: (
-        <StepPreRegistration
+        <PreRegistration
           isEthToken={isEthToken}
           securityDeposit={securityDeposit}
           {...commonProps}
@@ -143,7 +143,7 @@ export const ServiceState = ({
       id: 'active-registration',
       title: 'Active Registration',
       component: (
-        <StepActiveRegistration
+        <ActiveRegistration
           dataSource={dataSource}
           setDataSource={setDataSource}
           handleTerminate={handleTerminate}
@@ -156,7 +156,7 @@ export const ServiceState = ({
       id: 'finished-registration',
       title: 'Finished Registration',
       component: (
-        <StepFinishedRegistration
+        <FinishedRegistration
           multisig={multisig}
           threshold={threshold}
           owner={owner}

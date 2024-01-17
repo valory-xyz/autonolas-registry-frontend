@@ -82,7 +82,6 @@ const Details = ({
             isOwner={isOwner}
             type={type}
             tokenUri={tokenUri}
-            // other details 👇
             ownerAddress={ownerAddress || NA}
             componentAndAgentDependencies={get(info, 'dependencies')}
             serviceThreshold={get(info, 'threshold') || NA}

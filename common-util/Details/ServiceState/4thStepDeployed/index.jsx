@@ -10,7 +10,7 @@ import { useHelpers } from 'common-util/hooks/useHelpers';
 import { SendTransactionButton } from 'common-util/TransactionHelpers/SendTransactionButton';
 import { getAgentInstanceAndOperator, onTerminate } from '../utils';
 
-const Deployed = ({
+export const Deployed = ({
   serviceId,
   multisig,
   isShowAgentInstanceVisible,
@@ -118,5 +118,3 @@ Deployed.defaultProps = {
   isShowAgentInstanceVisible: false,
   isOwner: false,
 };
-
-export default Deployed;

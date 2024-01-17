@@ -22,7 +22,7 @@ const STEP = 3;
 const OPTION_1 = 'Creates a new service multisig with currently registered agent instances';
 const OPTION_2 = 'Updates an existent service multisig with currently registered agent instances. Please note that the only service multisig owner must be the current service owner address';
 
-const StepThreePayload = ({
+export const FinishedRegistration = ({
   isOwner,
   serviceId,
   owner: serviceOwner,
@@ -286,7 +286,7 @@ const StepThreePayload = ({
   );
 };
 
-StepThreePayload.propTypes = {
+FinishedRegistration.propTypes = {
   isOwner: PropTypes.bool.isRequired,
   serviceId: PropTypes.string.isRequired,
   multisig: PropTypes.string.isRequired,
@@ -300,9 +300,7 @@ StepThreePayload.propTypes = {
   updateDetails: PropTypes.func.isRequired,
 };
 
-StepThreePayload.defaultProps = {
+FinishedRegistration.defaultProps = {
   canShowMultisigSameAddress: false,
   handleTerminate: () => {},
 };
-
-export default StepThreePayload;
