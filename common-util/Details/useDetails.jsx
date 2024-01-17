@@ -41,7 +41,10 @@ export const useDetails = ({
     getData();
   }, [account, chainId, id, type, getDetails, getOwner, getTokenUri]);
 
-  const updateDetailsFn = useCallback(async () => {
+  /**
+   * function to update details (ie, service info)
+   */
+  const updateDetails = useCallback(async () => {
     try {
       const details = await getDetails();
       setInfo(details);
@@ -58,7 +61,7 @@ export const useDetails = ({
     info,
     ownerAddress,
     tokenUri,
-    updateDetailsFn,
     isOwner,
+    updateDetails,
   };
 };

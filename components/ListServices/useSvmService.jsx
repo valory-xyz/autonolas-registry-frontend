@@ -161,16 +161,18 @@ const useGetTotalForMyServices = () => {
  * @param {Service}
  *
  */
-const transformServiceData = (e, index) => {
-  const owner = e.serviceOwner?.toString();
-  const stateName = Object.keys(e.state || {})[0];
+const transformServiceData = (service, index) => {
+  const owner = service.serviceOwner?.toString();
+  const stateName = Object.keys(service.state || {})[0];
+  const publicKey = new PublicKey(service.multisig);
 
   // TODO: transform more data for service details page
   return {
-    ...e,
+    ...service,
     id: index + 1,
     owner,
     state: SERVICE_STATE_KEY_MAP[stateName],
+    multisig: publicKey.toBase58(),
   };
 };
 

@@ -31,7 +31,7 @@ const Details = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const {
-    isLoading, info, ownerAddress, tokenUri, updateDetails, isOwner,
+    isLoading, isOwner, info, ownerAddress, tokenUri, updateDetails,
   } = useDetails({
     id,
     type,
@@ -98,8 +98,8 @@ const Details = ({
                 : null}
             </>
           ) : (
-            // NftImage for "service" is shown in DetailsSubInfo component
-            // in the left column
+            // NftImage for "service" is shown in `DetailsSubInfo` component
+            // in the left column & for "agent" and "component" is shown here
             <NftImage imageUrl={nftImageUrl} />
           )}
         </Col>

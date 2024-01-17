@@ -33,7 +33,9 @@ export const ActiveRegistration = ({
   isEthToken,
   updateDetails,
 }) => {
-  const { account, chainId, doesNetworkHaveValidServiceManagerToken } = useHelpers();
+  const {
+    isSvm, account, chainId, doesNetworkHaveValidServiceManagerToken,
+  } = useHelpers();
 
   const [totalBonds, setTotalBond] = useState(null);
   const [ethTokenBonds, setEthTokenBonds] = useState([]);
@@ -46,7 +48,8 @@ export const ActiveRegistration = ({
     // hence need to check if the component is actually mounted
     let isMounted = true;
     (async () => {
-      if (serviceId) {
+      // TODO: remove this check once SVM integration is ready
+      if (serviceId && !isSvm) {
         try {
           const { totalBonds: totalBondsRes } = await getBonds(
             serviceId,
@@ -76,6 +79,7 @@ export const ActiveRegistration = ({
     serviceId,
     dataSource,
     isEthToken,
+    isSvm,
   ]);
 
   const handleStep2RegisterAgents = async () => {

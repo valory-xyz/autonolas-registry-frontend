@@ -21,7 +21,7 @@ export const Deployed = ({
   updateDetails,
 }) => {
   const dispatch = useDispatch();
-  const { account, chainId } = useHelpers();
+  const { account, chainId, isSvm } = useHelpers();
   const data = useSelector(
     (state) => state?.service?.serviceState?.agentInstancesAndOperators,
   );
@@ -32,7 +32,8 @@ export const Deployed = ({
     let isMounted = true;
     (async () => {
       // fetch agent instances and operators if service state is moved to step 4
-      if (serviceId || currentStep === 3) {
+      // TODO: remove "!isSvm" check once SVM integration is ready
+      if ((serviceId || currentStep === 3) && !isSvm) {
         const tempData = await getAgentInstanceAndOperator(serviceId);
         if (isMounted) {
           dispatch(setAgentInstancesAndOperators(tempData));
@@ -43,7 +44,7 @@ export const Deployed = ({
     return () => {
       isMounted = false;
     };
-  }, [serviceId, chainId, currentStep, dispatch]);
+  }, [serviceId, chainId, currentStep, dispatch, isSvm]);
 
   const handleTerminate = async () => {
     try {

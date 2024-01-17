@@ -34,13 +34,29 @@ export const FinishedRegistration = ({
   getButton,
   updateDetails,
 }) => {
-  const { account, chainId } = useHelpers();
+  const { account, chainId, isSvm } = useHelpers();
 
   const [form] = Form.useForm();
   const [radioValue, setRadioValue] = useState(null);
   const [agentInstances, setAgentInstances] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isTerminating, setIsTerminating] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+    (async () => {
+      if (!isSvm) {
+        const response = await getServiceAgentInstances(serviceId);
+        if (isMounted) {
+          setAgentInstances(response);
+        }
+      }
+    })();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [serviceId, chainId, isSvm]);
 
   const handleStep3Deploy = async (radioValuePassed, payload) => {
     try {
@@ -79,20 +95,6 @@ export const FinishedRegistration = ({
 
     handleStep3Deploy(radioValue, payload);
   };
-
-  useEffect(() => {
-    let isMounted = true;
-    (async () => {
-      const response = await getServiceAgentInstances(serviceId);
-      if (isMounted) {
-        setAgentInstances(response);
-      }
-    })();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [serviceId, chainId]);
 
   const onFinishFailed = (errorInfo) => {
     console.log('Failed:', errorInfo); /* eslint-disable-line no-console */

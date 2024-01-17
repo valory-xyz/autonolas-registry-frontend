@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import {
   Button, Steps, Tooltip, Image,
@@ -26,16 +26,50 @@ const SERVICE_STATE_HELPER_LABELS = {
     'The service has been terminated by the service owner. Waiting for the operators to unbond all registered agents.',
 };
 
+const ServiceStateHeader = () => {
+  const [isStateImageVisible, setIsStateImageVisible] = useState(false);
+  const onLearnAbout = () => setIsStateImageVisible(true);
+  return (
+    <>
+      <InfoSubHeader>
+        State
+        <Button type="link" size="large" onClick={onLearnAbout}>
+          Learn about service states
+        </Button>
+      </InfoSubHeader>
+
+      {isStateImageVisible && (
+        <Image
+          width={200}
+          src="/images/service-lifecycle.png"
+          preview={{
+            visible: isStateImageVisible,
+            src: '/images/service-lifecycle.png',
+            onVisibleChange: (value) => {
+              setIsStateImageVisible(value);
+            },
+          }}
+        />
+      )}
+    </>
+  );
+};
+
 export const ServiceState = ({
   isOwner, id, details, updateDetails,
 }) => {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [dataSource, setDataSource] = useState([]);
-  const [isEthToken, setIsEthToken] = useState(true); // by default, assume it's an eth token
-  const [isStateImageVisible, setIsStateImageVisible] = useState(false);
   const {
     account, chainId, isSvm, doesNetworkHaveValidServiceManagerToken,
   } = useHelpers();
+  const [currentStep, setCurrentStep] = useState(1);
+  const [dataSource, setDataSource] = useState([]);
+
+  // by default, assume it's an eth token
+  // if svm, then it's not an eth token
+  const [isEthToken, setIsEthToken] = useState(!isSvm);
+  useEffect(() => {
+    if (isSvm) setIsEthToken(false);
+  }, [isSvm]);
 
   const status = get(details, 'state');
   const agentIds = get(details, 'agentIds');
@@ -58,6 +92,7 @@ export const ServiceState = ({
       }
     };
 
+    // TODO: remove this check once SVM integration is ready
     if (!isSvm) getData();
   }, [id, agentIds, isSvm, chainId, doesNetworkHaveValidServiceManagerToken]);
 
@@ -70,6 +105,8 @@ export const ServiceState = ({
     const { message, condition = isOwner, step } = otherArgs || {};
 
     let messageToDisplay = message || 'Only the service owner can take this action';
+
+    // TODO: remove this check once SVM integration is ready
     if (isSvm) messageToDisplay = 'Not yet available on SVM';
 
     // if not the current step, just return the button without showing tooltip
@@ -86,14 +123,14 @@ export const ServiceState = ({
   };
 
   /* ----- common functions ----- */
-  const handleTerminate = async () => {
+  const handleTerminate = useCallback(async () => {
     try {
       await onTerminate(account, id);
       await updateDetails();
     } catch (e) {
       console.error(e);
     }
-  };
+  }, [account, id, updateDetails]);
 
   /**
    *
@@ -110,8 +147,8 @@ export const ServiceState = ({
 
   const commonProps = {
     serviceId: id,
-    updateDetails,
     isOwner,
+    updateDetails,
     getButton,
     getOtherBtnProps,
   };
@@ -178,31 +215,7 @@ export const ServiceState = ({
 
   return (
     <ServiceStateContainer>
-      <InfoSubHeader>
-        State
-        <Button
-          type="link"
-          size="large"
-          onClick={() => setIsStateImageVisible(true)}
-        >
-          Learn about service states
-        </Button>
-      </InfoSubHeader>
-
-      {isStateImageVisible && (
-        <Image
-          width={200}
-          src="/images/service-lifecycle.png"
-          preview={{
-            visible: isStateImageVisible,
-            src: '/images/service-lifecycle.png',
-            onVisibleChange: (value) => {
-              setIsStateImageVisible(value);
-            },
-          }}
-        />
-      )}
-
+      <ServiceStateHeader />
       <Steps
         direction="vertical"
         current={currentStep}
