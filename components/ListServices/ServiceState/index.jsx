@@ -12,6 +12,7 @@ import { ActiveRegistration } from './2StepActiveRegistration';
 import { FinishedRegistration } from './3rdStepFinishedRegistration';
 import { Deployed } from './4thStepDeployed';
 import { Unbond } from './5StepUnbond';
+import { useSvmServiceTableDataSource } from '../useSvmService';
 import { InfoSubHeader, GenericLabel, ServiceStateContainer } from './styles';
 
 const SERVICE_STATE_HELPER_LABELS = {
@@ -71,6 +72,9 @@ export const ServiceState = ({
     if (isSvm) setIsEthToken(false);
   }, [isSvm]);
 
+  // hooks for SVM
+  const { getSvmServiceTableDataSource } = useSvmServiceTableDataSource();
+
   const status = get(details, 'state');
   const agentIds = get(details, 'agentIds');
   const multisig = get(details, 'multisig') || '';
@@ -84,13 +88,16 @@ export const ServiceState = ({
     let isMounted = true;
     const getData = async () => {
       if (id && (agentIds || []).length !== 0) {
-        const temp = await getServiceTableDataSource(id, agentIds || []);
+        const temp = isSvm
+          ? await getSvmServiceTableDataSource(id, agentIds || [])
+          : await getServiceTableDataSource(id, agentIds || []);
         if (isMounted) {
           setDataSource(temp);
         }
       }
       // if valid service id, check if it's an eth token
-      if (id && chainId && doesNetworkHaveValidServiceManagerToken) {
+      // and SVM is not eth token
+      if (id && chainId && doesNetworkHaveValidServiceManagerToken && !isSvm) {
         const isEth = await checkIfEth(id);
         if (isMounted) {
           setIsEthToken(isEth);
@@ -98,13 +105,19 @@ export const ServiceState = ({
       }
     };
 
-    // TODO: remove this check once SVM integration is ready
-    if (!isSvm) getData();
+    getData();
 
     return () => {
       isMounted = false;
     };
-  }, [id, agentIds, isSvm, chainId, doesNetworkHaveValidServiceManagerToken]);
+  }, [
+    id,
+    agentIds,
+    isSvm,
+    chainId,
+    doesNetworkHaveValidServiceManagerToken,
+    getSvmServiceTableDataSource,
+  ]);
 
   useEffect(() => {
     setCurrentStep(Number(status) - 1);

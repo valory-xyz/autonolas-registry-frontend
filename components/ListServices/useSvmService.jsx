@@ -10,6 +10,10 @@ import { areAddressesEqual } from '@autonolas/frontend-library';
 import { SERVICE_STATE_KEY_MAP } from 'util/constants';
 import idl from 'common-util/AbiAndAddresses/ServiceRegistrySolana.json';
 import { useSvmConnectivity } from 'common-util/hooks/useSvmConnectivity';
+import {
+  transformDatasourceForServiceTable,
+  transformSlotsAndBonds,
+} from './helpers';
 
 /**
  * deseralize the program data
@@ -273,4 +277,72 @@ export const useTokenUri = () => {
   );
 
   return { getSvmTokenUri };
+};
+
+// *********** HOOKS TO FETCH SERVICES STATE DATA ***********
+
+export const useSvmBonds = () => {
+  const { getData } = useSvmDataFetch();
+
+  const getSvmBonds = useCallback(
+    async (id, tableDataSource) => {
+      const response = await getData(
+        'getAgentParams',
+        [id],
+        'getAgentParams_returns',
+      );
+
+      const bondsArray = [];
+      const slotsArray = [];
+      for (let i = 0; i < response.numAgentIds; i += 1) {
+        /**
+         * agentParams = [{ slots: 2, bond: 2000 }, { slots: 3, bond: 4000 }]
+         * slotsArray = [2, 3]
+         * bondsArray = [2000, 4000]
+         */
+
+        slotsArray.push(response.slots[i]);
+        bondsArray.push(response.bonds[i].toString()); // convert to string from BN
+      }
+
+      return transformSlotsAndBonds(slotsArray, bondsArray, tableDataSource);
+    },
+    [getData],
+  );
+
+  return { getSvmBonds };
+};
+
+export const useSvmServiceTableDataSource = () => {
+  const { getData } = useSvmDataFetch();
+  const { getSvmBonds } = useSvmBonds();
+
+  const getSvmServiceTableDataSource = useCallback(
+    async (id, agentIds) => {
+      const { bonds, slots } = await getSvmBonds(id);
+
+      const numAgentInstances = await Promise.all(
+        agentIds.map(async (agentId) => {
+          const info = await getData(
+            'getInstancesForAgentId',
+            [id, agentId],
+            'getInstancesForAgentId_returns',
+          );
+          return info.numAgentInstances;
+        }),
+      );
+
+      const dataSource = transformDatasourceForServiceTable({
+        agentIds,
+        numAgentInstances,
+        bonds,
+        slots,
+      });
+
+      return dataSource;
+    },
+    [getData, getSvmBonds],
+  );
+
+  return { getSvmServiceTableDataSource };
 };

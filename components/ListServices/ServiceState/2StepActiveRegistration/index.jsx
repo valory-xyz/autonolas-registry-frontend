@@ -12,11 +12,11 @@ import { SendTransactionButton } from 'common-util/TransactionHelpers/SendTransa
 import {
   getBonds,
   getTokenBondRequest,
-  getNumberOfAgentAddress,
   checkAndApproveToken,
   onStep2RegisterAgents,
   checkIfAgentInstancesAreValid,
 } from '../utils';
+import { getNumberOfAgentAddress } from '../../helpers';
 import { ActiveRegistrationTable } from './ActiveRegistrationTable';
 
 const { Text } = Typography;
