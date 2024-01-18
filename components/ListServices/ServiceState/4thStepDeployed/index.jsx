@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Table, Space } from 'antd';
@@ -8,6 +8,7 @@ import { setAgentInstancesAndOperators } from 'store/service/state/actions';
 import { useScreen } from 'common-util/hooks/useScreen';
 import { useHelpers } from 'common-util/hooks/useHelpers';
 import { SendTransactionButton } from 'common-util/TransactionHelpers/SendTransactionButton';
+import { useAgentInstanceAndOperator } from '../../useSvmService';
 import { getAgentInstanceAndOperator, onTerminate } from '../utils';
 
 export const Deployed = ({
@@ -24,19 +25,21 @@ export const Deployed = ({
   const {
     account, chainId, isSvm, chainName,
   } = useHelpers();
+  const { isMobile } = useScreen();
   const data = useSelector(
     (state) => state?.service?.serviceState?.agentInstancesAndOperators,
   );
   const [isTerminating, setIsTerminating] = useState(false);
-  const { isMobile } = useScreen();
+  const { getSvmAgentInstanceAndOperator } = useAgentInstanceAndOperator();
 
   useEffect(() => {
     let isMounted = true;
     (async () => {
       // fetch agent instances and operators if service state is moved to step 4
-      // TODO: remove "!isSvm" check once SVM integration is ready
-      if ((serviceId || currentStep === 3) && !isSvm) {
-        const tempData = await getAgentInstanceAndOperator(serviceId);
+      if (serviceId || currentStep === 3) {
+        const tempData = isSvm
+          ? await getSvmAgentInstanceAndOperator(serviceId)
+          : await getAgentInstanceAndOperator(serviceId);
         if (isMounted) {
           dispatch(setAgentInstancesAndOperators(tempData));
         }
@@ -46,7 +49,14 @@ export const Deployed = ({
     return () => {
       isMounted = false;
     };
-  }, [serviceId, chainId, currentStep, dispatch, isSvm]);
+  }, [
+    serviceId,
+    chainId,
+    isSvm,
+    currentStep,
+    dispatch,
+    getSvmAgentInstanceAndOperator,
+  ]);
 
   const handleTerminate = async () => {
     try {
@@ -60,22 +70,30 @@ export const Deployed = ({
     }
   };
 
+  const addressLinkProps = useMemo(
+    () => ({
+      chainName,
+      suffixCount: isMobile ? 4 : 6,
+    }),
+    [chainName, isMobile],
+  );
+
   return (
     <div className="step-4-terminate">
       <Space direction="vertical" size={10}>
         {isShowAgentInstanceVisible && (
           <Table
+            dataSource={data}
+            pagination={false}
+            bordered
+            rowKey="id"
             columns={[
               {
                 title: 'Agent Instances',
                 dataIndex: 'agentInstance',
                 key: 'agentInstance',
                 render: (text) => (
-                  <AddressLink
-                    text={text}
-                    chainName={chainName}
-                    suffixCount={isMobile ? 4 : 6}
-                  />
+                  <AddressLink text={text} {...addressLinkProps} />
                 ),
               },
               {
@@ -83,18 +101,10 @@ export const Deployed = ({
                 dataIndex: 'operatorAddress',
                 key: 'operatorAddress',
                 render: (text) => (
-                  <AddressLink
-                    text={text}
-                    chainName={chainName}
-                    suffixCount={isMobile ? 4 : 6}
-                  />
+                  <AddressLink text={text} {...addressLinkProps} />
                 ),
               },
             ]}
-            dataSource={data}
-            pagination={false}
-            bordered
-            rowKey="id"
           />
         )}
         <div>{`Safe contract address: ${multisig}`}</div>

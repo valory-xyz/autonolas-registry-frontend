@@ -17,7 +17,11 @@ import {
 
 /**
  * deseralize the program data
- * @xample
+ * @param {Uint8Array} serializedValue serialized program data
+ * @param {string | "publicKey" | "string"} decodeTypeName type name to decode, check
+ * ServiceRegistrySolana.json for the type names
+ *
+ * @example
  * serializedValue = Uint8Array(32) [0, 0, ...]
  * @returns {object} deseralized program data
  * example: { name: "serviceOwner", type: "publicKey" },
@@ -175,7 +179,7 @@ const transformServiceData = (service, index) => {
   // TODO: transform more data for service details page
   return {
     ...service,
-    id: index + 1,
+    id: index,
     owner,
     state: SERVICE_STATE_KEY_MAP[stateName],
     multisig: publicKey.toBase58(),
@@ -218,20 +222,24 @@ const useGetServices = () => {
 
 // return the list of services for the given account
 const useGetMyServices = () => {
-  const { getData } = useSvmDataFetch();
+  const { getSvmServiceDetails } = useGetServiceDetails();
 
   const getMySvmServices = useCallback(
     async (account, total) => {
       const promises = [];
+
+      // TODO: use the account balance to get the total
+      // instead of passing the total as an argument.
+      // It is work around for now.
       for (let i = 1; i <= total; i += 1) {
-        promises.push(getData('getService', [i], 'Service'));
+        promises.push(getSvmServiceDetails(i));
       }
 
-      const results = (await Promise.all(promises)).map(transformServiceData);
+      const results = await Promise.all(promises);
       const ownerServiceList = results.filter((e) => areAddressesEqual(e.owner, account));
       return ownerServiceList;
     },
-    [getData],
+    [getSvmServiceDetails],
   );
 
   return { getMySvmServices };
@@ -345,4 +353,39 @@ export const useSvmServiceTableDataSource = () => {
   );
 
   return { getSvmServiceTableDataSource };
+};
+
+/* ----- step 4 functions ----- */
+export const useAgentInstanceAndOperator = () => {
+  const { getData } = useSvmDataFetch();
+
+  const getSvmAgentInstanceAndOperator = useCallback(
+    async (id) => {
+      const response = await getData(
+        'getAgentInstances',
+        [id],
+        'getAgentInstances_returns',
+      );
+
+      const data = await Promise.all(
+        (response?.agentInstances || []).map(async (agentInstance, index) => {
+          const operatorAddress = await getData(
+            'mapAgentInstanceOperators',
+            [agentInstance],
+            'publicKey',
+          );
+          return {
+            id: `agent-instance-row-${index + 1}`,
+            operatorAddress,
+            agentInstance: agentInstance.toString(), // convert to string from BN
+          };
+        }),
+      );
+
+      return data;
+    },
+    [getData],
+  );
+
+  return { getSvmAgentInstanceAndOperator };
 };
