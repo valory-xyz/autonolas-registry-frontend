@@ -143,7 +143,7 @@ const EditableCell = ({
 /**
  * Step 2 Table
  */
-const ActiveRegistrationTable = ({
+export const ActiveRegistrationTable = ({
   data,
   setDataSource,
   isDisabled,
@@ -252,5 +252,3 @@ ActiveRegistrationTable.propTypes = {
 };
 
 ActiveRegistrationTable.defaultProps = {};
-
-export default ActiveRegistrationTable;

@@ -1,31 +1,24 @@
 import { ethers } from 'ethers';
-import compact from 'lodash/compact';
 import { notifySuccess, notifyError } from '@autonolas/frontend-library';
 
 import { DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS } from 'util/constants';
 import {
   getGenericErc20Contract,
-  getOperatorWhitelistContract,
   getServiceContract,
   getServiceManagerContract,
   getServiceRegistryTokenUtilityContract,
 } from 'common-util/Contracts';
 import { ADDRESSES } from 'common-util/Contracts/addresses';
 import { sendTransaction } from 'common-util/functions';
+import { getTokenDetailsRequest } from 'common-util/Details/utils';
+import {
+  transformDatasourceForServiceTable,
+  transformSlotsAndBonds,
+} from '../helpers';
 
 /* ----- helper functions ----- */
 
 // params.agentParams.slots[i] = total initial available Slots for the i-th service.agentIds;
-
-export const getNumberOfAgentAddress = (agentAddresses) => {
-  /**
-   * get the number of addresses
-   * g1. ['0x123', '0x456'] => 2
-   * eg2. ['0x123', '0x456', ''] => 2 // empty string (falsy) is ignored
-   */
-  const addressCount = compact((agentAddresses || '').split(',')).length;
-  return addressCount;
-};
 
 /**
  *
@@ -51,34 +44,7 @@ export const getBonds = async (id, tableDataSource) => {
     bondsArray.push(bond);
   }
 
-  /**
-   * FOR AGENT ID
-   * 1. get the bond value
-   * 2. get the number of input addresses
-   * 3. multiply the number of past addresses with the bond value
-   *
-   * @example
-   * input: [agentId1 => 2 address, agentId2 => 3 address]
-   * bonds: [100, 200]
-   * output: 2 * 100 + 3 * 200 = 800
-   */
-
-  let totalBonds = 0;
-  (tableDataSource || []).forEach((data) => {
-    const { agentAddresses, bond } = data;
-
-    /**
-     * get the number of addresses
-     * g1. ['0x123', '0x456'] => 2
-     * eg2. ['0x123', '0x456', ''] => 2 // empty string (falsy) is ignored
-     */
-    const numberOfAgentAddress = getNumberOfAgentAddress(agentAddresses);
-
-    // multiply the number of addresses with the bond value of the agentId
-    totalBonds += numberOfAgentAddress * bond;
-  });
-
-  return { slots: slotsArray, bonds: bondsArray, totalBonds };
+  return transformSlotsAndBonds(slotsArray, bondsArray, tableDataSource);
 };
 
 /* ----- common functions ----- */
@@ -96,14 +62,6 @@ export const getServiceOwner = async (id) => {
   const contract = getServiceContract();
   const response = await contract.methods.ownerOf(id).call();
   return response;
-};
-
-export const getTokenDetailsRequest = async (serviceId) => {
-  const contract = getServiceRegistryTokenUtilityContract();
-  const deposit = await contract.methods
-    .mapServiceIdTokenDeposit(serviceId)
-    .call();
-  return deposit;
 };
 
 const hasSufficientTokenRequest = async ({ account, chainId, serviceId }) => {
@@ -181,10 +139,36 @@ export const onActivateRegistration = async (account, id, deposit) => {
 };
 
 /* ----- step 2 functions ----- */
+/**
+ * @typedef {Object} DataSource
+ * @property {string} key
+ * @property {string} agentId
+ * @property {number} availableSlots
+ * @property {number} totalSlots
+ * @property {number} bond
+ * @property {string} agentAddresses
+ *
+ */
+/**
+ *
+ * @param {String} id
+ * @param {String[]} agentIds
+ * @returns {Promise<DataSource[]>}
+ *
+ * @example
+ * {
+ *   agentAddresses: null
+ *   agentId: "2"
+ *   availableSlots: 0
+ *   bond: "1000000000000000"
+ *   key: "2"
+ *   totalSlots: "4"
+ * }
+ */
 export const getServiceTableDataSource = async (id, agentIds) => {
   const contract = getServiceContract();
-  const response = await getBonds(id);
-  const { slots, bonds } = response;
+  const { slots, bonds } = await getBonds(id);
+
   /**
    * for each agent Id, we call instances = getInstancesForAgentId(serviceId, agentId):
    * instances.numAgentInstances will give the number of occupied instances slots, so in
@@ -202,15 +186,12 @@ export const getServiceTableDataSource = async (id, agentIds) => {
     }),
   );
 
-  const dateSource = agentIds.map((aid, i) => ({
-    key: aid,
-    agentId: aid,
-    availableSlots: Number(slots[i]) - Number(numAgentInstancesArray[i]),
-    totalSlots: slots[i],
-    bond: bonds[i],
-    agentAddresses: null,
-  }));
-
+  const dateSource = transformDatasourceForServiceTable({
+    agentIds,
+    numAgentInstances: numAgentInstancesArray,
+    slots,
+    bonds,
+  });
   return dateSource;
 };
 
@@ -319,55 +300,6 @@ export const getAgentInstanceAndOperator = async (id) => {
 export const onStep5Unbond = async (account, id) => {
   const contract = getServiceManagerContract();
   const fn = contract.methods.unbond(id).send({ from: account });
-  const response = await sendTransaction(fn, account);
-  return response;
-};
-
-/* ----- operator whitelist functions ----- */
-export const checkIfServiceRequiresWhitelisting = async (serviceId) => {
-  const contract = getOperatorWhitelistContract();
-  // if true: it is whitelisted by default
-  // else we can whitelist using the input field
-  const response = await contract.methods
-    .mapServiceIdOperatorsCheck(serviceId)
-    .call();
-  return response;
-};
-
-export const checkIfServiceIsWhitelisted = async (
-  serviceId,
-  operatorAddress,
-) => {
-  const contract = getOperatorWhitelistContract();
-  const response = await contract.methods
-    .isOperatorWhitelisted(serviceId, operatorAddress)
-    .call();
-  return response;
-};
-
-export const setOperatorsStatusesRequest = async ({
-  account,
-  serviceId,
-  operatorAddresses,
-  operatorStatuses,
-}) => {
-  const contract = getOperatorWhitelistContract();
-  const fn = contract.methods
-    .setOperatorsStatuses(serviceId, operatorAddresses, operatorStatuses, true)
-    .send({ from: account });
-  const response = await sendTransaction(fn, account);
-  return response;
-};
-
-export const setOperatorsCheckRequest = async ({
-  account,
-  serviceId,
-  isChecked,
-}) => {
-  const contract = getOperatorWhitelistContract();
-  const fn = contract.methods
-    .setOperatorsCheck(serviceId, isChecked)
-    .send({ from: account });
   const response = await sendTransaction(fn, account);
   return response;
 };

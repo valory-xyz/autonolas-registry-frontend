@@ -1,25 +1,25 @@
-/* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react';
 import {
   Button, Typography, Input, Form,
 } from 'antd';
+import PropTypes from 'prop-types';
 import {
   notifyError,
   notifySuccess,
   notifyWarning,
 } from '@autonolas/frontend-library';
 
-import { DynamicFieldsForm } from 'common-util/DynamicFieldsForm';
-import { addressValidator } from 'common-util/functions';
-import { useHelpers } from 'common-util/hooks';
+import { addressValidator } from '../../functions';
+import { useHelpers } from '../../hooks';
+import { DynamicFieldsForm } from '../../DynamicFieldsForm';
 import {
   checkIfServiceIsWhitelisted,
   setOperatorsStatusesRequest,
-} from './ServiceState/utils';
+} from '../utils';
 
 const { Text } = Typography;
 
-export const OperatorWhitelist = ({ isWhiteListed, setOpWhitelist, id }) => {
+export const OperatorWhitelist = ({ id, isWhiteListed, setOpWhitelist }) => {
   const { account, chainId } = useHelpers();
   const [form] = Form.useForm();
 
@@ -30,8 +30,8 @@ export const OperatorWhitelist = ({ isWhiteListed, setOpWhitelist, id }) => {
       await setOpWhitelist(id);
     };
 
-    if (id) getData();
-  }, [id, chainId]);
+    if (id && setOpWhitelist) getData();
+  }, [id, chainId, setOpWhitelist]);
 
   const onCheck = async (values) => {
     try {
@@ -53,43 +53,50 @@ export const OperatorWhitelist = ({ isWhiteListed, setOpWhitelist, id }) => {
     }
   };
 
+  if (!isWhiteListed) return null;
   return (
     <>
-      {isWhiteListed && (
-        <>
-          <Text>Check if Operator Address is whitelisted?</Text>
-          <Form
-            layout="inline"
-            form={form}
-            name="operator_address_form"
-            autoComplete="off"
-            onFinish={onCheck}
-          >
-            <Form.Item
-              label="Operator Address"
-              name="operatorAddress"
-              rules={[
-                { required: true, message: 'Please input the address' },
-                addressValidator,
-              ]}
-            >
-              <Input />
-            </Form.Item>
+      <Text>Check if Operator Address is whitelisted?</Text>
+      <Form
+        layout="inline"
+        form={form}
+        name="operator_address_form"
+        autoComplete="off"
+        onFinish={onCheck}
+      >
+        <Form.Item
+          label="Operator Address"
+          name="operatorAddress"
+          rules={[
+            { required: true, message: 'Please input the address' },
+            addressValidator,
+          ]}
+        >
+          <Input />
+        </Form.Item>
 
-            <Form.Item>
-              <Button
-                htmlType="submit"
-                loading={isCheckLoading}
-                disabled={!account}
-              >
-                Check
-              </Button>
-            </Form.Item>
-          </Form>
-        </>
-      )}
+        <Form.Item>
+          <Button
+            htmlType="submit"
+            loading={isCheckLoading}
+            disabled={!account}
+          >
+            Check
+          </Button>
+        </Form.Item>
+      </Form>
     </>
   );
+};
+OperatorWhitelist.propTypes = {
+  id: PropTypes.string,
+  isWhiteListed: PropTypes.bool,
+  setOpWhitelist: PropTypes.func,
+};
+OperatorWhitelist.defaultProps = {
+  id: '',
+  isWhiteListed: false,
+  setOpWhitelist: null,
 };
 
 export const SetOperatorStatus = ({ id, setOpWhitelist }) => {
@@ -127,4 +134,12 @@ export const SetOperatorStatus = ({ id, setOpWhitelist }) => {
       </Text>
     </>
   );
+};
+SetOperatorStatus.propTypes = {
+  id: PropTypes.string,
+  setOpWhitelist: PropTypes.func,
+};
+SetOperatorStatus.defaultProps = {
+  id: '',
+  setOpWhitelist: null,
 };

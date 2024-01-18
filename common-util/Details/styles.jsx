@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { Typography, Image } from 'antd';
+import { ArrowRightOutlined } from '@ant-design/icons';
 import { COLOR } from '@autonolas/frontend-library';
 
 export const DetailsTitle = styled(Typography.Title)`
@@ -22,17 +23,6 @@ export const Header = styled.div`
   }
 `;
 
-export const InfoSubHeader = styled.div`
-  display: flex;
-  align-items: center;
-  font-weight: 700;
-  margin-bottom: 0.25rem;
-  color: ${COLOR.BLACK};
-  .ant-btn {
-    font-size: 18px;
-  }
-`;
-
 export const Info = styled.div`
   word-break: break-all;
   li {
@@ -51,7 +41,7 @@ export const NftImageContainer = styled(Image)`
   border: 1px solid ${COLOR.BORDER_GREY};
 `;
 
-export const ServiceStatus = styled.div`
+export const ServiceStatusContainer = styled.div`
   display: inline-block;
   &.active svg {
     fill: ${COLOR.GREEN_4};
@@ -84,4 +74,11 @@ export const SectionContainer = styled.div`
   .ant-form-item-label > label {
     left: -4px;
   }
+`;
+
+export const ArrowLink = styled(ArrowRightOutlined)`
+  width: 14px;
+  transform: rotate(320deg);
+  position: relative;
+  top: -4px;
 `;

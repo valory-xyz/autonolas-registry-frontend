@@ -7,8 +7,11 @@ import { useHelpers } from 'common-util/hooks';
 import { SendTransactionButton } from 'common-util/TransactionHelpers/SendTransactionButton';
 import { onStep5Unbond } from '../utils';
 
-const Unbond = ({
-  serviceId, updateDetails, getButton, getOtherBtnProps,
+export const Unbond = ({
+  serviceId,
+  updateDetails,
+  getButton,
+  getOtherBtnProps,
 }) => {
   const { account } = useHelpers();
   const operators = useSelector(
@@ -62,5 +65,3 @@ Unbond.propTypes = {
 };
 
 Unbond.defaultProps = {};
-
-export default Unbond;

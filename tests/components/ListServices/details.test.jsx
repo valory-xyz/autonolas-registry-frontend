@@ -8,7 +8,7 @@ import {
   getAgentInstanceAndOperator,
   getServiceAgentInstances,
   getBonds,
-} from 'common-util/Details/ServiceState/utils';
+} from 'components/ListServices/ServiceState/utils';
 import {
   getServiceDetails,
   getServiceHashes,

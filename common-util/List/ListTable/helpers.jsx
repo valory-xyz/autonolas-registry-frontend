@@ -8,7 +8,6 @@ import { AddressLink } from '@autonolas/frontend-library';
 import {
   NAV_TYPES,
   SERVICE_STATE,
-  SOLANA_CHAIN_NAMES,
   TOTAL_VIEW_COUNT,
 } from 'util/constants';
 
@@ -81,32 +80,13 @@ export const getTableColumns = (
         dataIndex: 'owner',
         key: 'owner',
         width: 200,
-        render: (text) => {
-          // TODO: move to autonolas/frontend-library
-          const isSolana = chainName === SOLANA_CHAIN_NAMES.DEVNET
-            || chainName === SOLANA_CHAIN_NAMES.MAINNET;
-
-          if (isSolana) {
-            return (
-              <AddressLink
-                text={text}
-                suffixCount={isMobile ? 4 : 6}
-                onClick={() => {
-                  if (chainName === SOLANA_CHAIN_NAMES.DEVNET) {
-                    window.open(
-                      `https://solscan.io/account/${text}?cluster=devnet`,
-                      '_blank',
-                    );
-                  } else {
-                    window.open(`https://solscan.io/account/${text}`, '_blank');
-                  }
-                }}
-              />
-            );
-          }
-
-          return <AddressLink text={text} suffixCount={isMobile ? 4 : 6} />;
-        },
+        render: (text) => (
+          <AddressLink
+            text={text}
+            chainName={chainName}
+            suffixCount={isMobile ? 4 : 6}
+          />
+        ),
       },
       {
         title: 'State',

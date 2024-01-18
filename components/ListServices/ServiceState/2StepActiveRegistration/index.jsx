@@ -9,21 +9,21 @@ import {
 
 import { useHelpers } from 'common-util/hooks';
 import { SendTransactionButton } from 'common-util/TransactionHelpers/SendTransactionButton';
+import { useSvmBonds } from 'components/ListServices/useSvmService';
 import {
   getBonds,
   getTokenBondRequest,
-  getNumberOfAgentAddress,
   checkAndApproveToken,
   onStep2RegisterAgents,
   checkIfAgentInstancesAreValid,
 } from '../utils';
-import ActiveRegistrationTable from './ActiveRegistrationTable';
+import { getNumberOfAgentAddress } from '../../helpers';
+import { ActiveRegistrationTable } from './ActiveRegistrationTable';
 
 const { Text } = Typography;
-
 const STEP = 2;
 
-const ActiveRegistration = ({
+export const ActiveRegistration = ({
   serviceId,
   dataSource,
   setDataSource,
@@ -34,7 +34,10 @@ const ActiveRegistration = ({
   isEthToken,
   updateDetails,
 }) => {
-  const { account, chainId, doesNetworkHaveValidServiceManagerToken } = useHelpers();
+  const {
+    isSvm, account, chainId, doesNetworkHaveValidServiceManagerToken,
+  } = useHelpers();
+  const { getSvmBonds } = useSvmBonds();
 
   const [totalBonds, setTotalBond] = useState(null);
   const [ethTokenBonds, setEthTokenBonds] = useState([]);
@@ -49,10 +52,9 @@ const ActiveRegistration = ({
     (async () => {
       if (serviceId) {
         try {
-          const { totalBonds: totalBondsRes } = await getBonds(
-            serviceId,
-            dataSource,
-          );
+          const { totalBonds: totalBondsRes } = isSvm
+            ? await getSvmBonds(serviceId, dataSource)
+            : await getBonds(serviceId, dataSource);
           if (isMounted) {
             setTotalBond(totalBondsRes);
           }
@@ -62,7 +64,8 @@ const ActiveRegistration = ({
         }
       }
 
-      if (serviceId && !isEthToken && doesNetworkHaveValidServiceManagerToken) {
+      // TODO: for SVM, check while contract write
+      if (serviceId && !isEthToken && doesNetworkHaveValidServiceManagerToken && !isSvm) {
         const response = await getTokenBondRequest(serviceId, dataSource);
         setEthTokenBonds(response);
       }
@@ -77,6 +80,8 @@ const ActiveRegistration = ({
     serviceId,
     dataSource,
     isEthToken,
+    isSvm,
+    getSvmBonds,
   ]);
 
   const handleStep2RegisterAgents = async () => {
@@ -223,5 +228,3 @@ ActiveRegistration.propTypes = {
 ActiveRegistration.defaultProps = {
   serviceId: null,
 };
-
-export default ActiveRegistration;

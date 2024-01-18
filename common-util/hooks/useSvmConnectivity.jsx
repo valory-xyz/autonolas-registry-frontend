@@ -18,7 +18,7 @@ export const useSvmConnectivity = () => {
   const { connection } = useConnection();
   const wallet = useAnchorWallet();
 
-  const { chainName } = useHelpers();
+  const { chainName, isSvm } = useHelpers();
 
   const solanaAddresses = useMemo(
     () => (chainName === SOLANA_CHAIN_NAMES.MAINNET
@@ -27,17 +27,28 @@ export const useSvmConnectivity = () => {
     [chainName],
   );
 
-  const anchorProvider = new AnchorProvider(connection, wallet, {
-    commitment: 'processed',
-  });
+  const anchorProvider = useMemo(
+    () => new AnchorProvider(connection, wallet, {
+      commitment: 'processed',
+    }),
+    [connection, wallet],
+  );
 
-  const programId = new PublicKey(solanaAddresses.serviceRegistry);
-  const program = new Program(idl, programId, anchorProvider);
+  const programId = useMemo(
+    () => new PublicKey(solanaAddresses.serviceRegistry),
+    [solanaAddresses.serviceRegistry],
+  );
+
+  const program = useMemo(
+    () => new Program(idl, programId, anchorProvider),
+    [anchorProvider, programId],
+  );
 
   return {
     walletPublicKey: wallet?.publicKey,
     connection,
     program,
     solanaAddresses,
+    hasNoSvmPublicKey: isSvm ? !wallet?.publicKey : false,
   };
 };

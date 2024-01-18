@@ -22,7 +22,7 @@ const STEP = 3;
 const OPTION_1 = 'Creates a new service multisig with currently registered agent instances';
 const OPTION_2 = 'Updates an existent service multisig with currently registered agent instances. Please note that the only service multisig owner must be the current service owner address';
 
-const StepThreePayload = ({
+export const FinishedRegistration = ({
   isOwner,
   serviceId,
   owner: serviceOwner,
@@ -34,13 +34,29 @@ const StepThreePayload = ({
   getButton,
   updateDetails,
 }) => {
-  const { account, chainId } = useHelpers();
+  const { account, chainId, isSvm } = useHelpers();
 
   const [form] = Form.useForm();
   const [radioValue, setRadioValue] = useState(null);
   const [agentInstances, setAgentInstances] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isTerminating, setIsTerminating] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+    (async () => {
+      if (!isSvm) {
+        const response = await getServiceAgentInstances(serviceId);
+        if (isMounted) {
+          setAgentInstances(response);
+        }
+      }
+    })();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [serviceId, chainId, isSvm]);
 
   const handleStep3Deploy = async (radioValuePassed, payload) => {
     try {
@@ -80,20 +96,6 @@ const StepThreePayload = ({
     handleStep3Deploy(radioValue, payload);
   };
 
-  useEffect(() => {
-    let isMounted = true;
-    (async () => {
-      const response = await getServiceAgentInstances(serviceId);
-      if (isMounted) {
-        setAgentInstances(response);
-      }
-    })();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [serviceId, chainId]);
-
   const onFinishFailed = (errorInfo) => {
     console.log('Failed:', errorInfo); /* eslint-disable-line no-console */
   };
@@ -108,25 +110,27 @@ const StepThreePayload = ({
 
   return (
     <div className="step-3-finished-registration">
-      <Radio.Group
-        value={radioValue}
-        onChange={(e) => setRadioValue(e.target.value)}
-        disabled={btnProps.disabled}
-        className="mt-8"
-      >
-        {options.map((multisigAddress) => (
-          <div className="mb-12" key={`mutisig-${multisigAddress}`}>
-            <RadioLabel disabled={btnProps.disabled}>
-              {multisigAddress === isMultiSig && OPTION_1}
-              {multisigAddress !== isMultiSig && OPTION_2}
-            </RadioLabel>
+      {options?.length ? (
+        <Radio.Group
+          value={radioValue}
+          onChange={(e) => setRadioValue(e.target.value)}
+          disabled={btnProps.disabled}
+          className="mt-8"
+        >
+          {options.map((multisigAddress) => (
+            <div className="mb-12" key={`mutisig-${multisigAddress}`}>
+              <RadioLabel disabled={btnProps.disabled}>
+                {multisigAddress === isMultiSig && OPTION_1}
+                {multisigAddress !== isMultiSig && OPTION_2}
+              </RadioLabel>
 
-            <Radio key={multisigAddress} value={multisigAddress}>
-              {multisigAddress}
-            </Radio>
-          </div>
-        ))}
-      </Radio.Group>
+              <Radio key={multisigAddress} value={multisigAddress}>
+                {multisigAddress}
+              </Radio>
+            </div>
+          ))}
+        </Radio.Group>
+      ) : null}
 
       {/* form should be shown only if 1st radio button is selected
       2nd radio button means everything will be handled by the backend */}
@@ -286,7 +290,7 @@ const StepThreePayload = ({
   );
 };
 
-StepThreePayload.propTypes = {
+FinishedRegistration.propTypes = {
   isOwner: PropTypes.bool.isRequired,
   serviceId: PropTypes.string.isRequired,
   multisig: PropTypes.string.isRequired,
@@ -300,9 +304,7 @@ StepThreePayload.propTypes = {
   updateDetails: PropTypes.func.isRequired,
 };
 
-StepThreePayload.defaultProps = {
+FinishedRegistration.defaultProps = {
   canShowMultisigSameAddress: false,
   handleTerminate: () => {},
 };
-
-export default StepThreePayload;
