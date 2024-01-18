@@ -111,7 +111,7 @@ const Service = ({ account }) => {
 
   return (
     <>
-      <Title level={2}>Service</Title>
+      <Title level={2} className="mt-0">Service</Title>
       {isAllLoading ? (
         <Loader />
       ) : (

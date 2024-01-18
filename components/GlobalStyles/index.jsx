@@ -44,6 +44,9 @@ const GlobalStyle = createGlobalStyle`
   .mb-12 {
     margin-bottom: 12px;
   }
+  .mt-0 {
+    margin-top: 0px;
+  }
   .mt-8 {
     margin-top: 8px;
   }
