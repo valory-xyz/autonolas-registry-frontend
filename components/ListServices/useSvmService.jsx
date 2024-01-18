@@ -186,7 +186,7 @@ const transformServiceData = (service, index) => {
   };
 };
 
-export const useGetServiceDetails = () => {
+export const useGetSvmServiceDetails = () => {
   const { getData } = useSvmDataFetch();
 
   const getSvmServiceDetails = useCallback(
@@ -202,7 +202,7 @@ export const useGetServiceDetails = () => {
 
 // returns the list of services
 const useGetServices = () => {
-  const { getSvmServiceDetails } = useGetServiceDetails();
+  const { getSvmServiceDetails } = useGetSvmServiceDetails();
 
   const getSvmServices = useCallback(
     async (total) => {
@@ -222,7 +222,7 @@ const useGetServices = () => {
 
 // return the list of services for the given account
 const useGetMyServices = () => {
-  const { getSvmServiceDetails } = useGetServiceDetails();
+  const { getSvmServiceDetails } = useGetSvmServiceDetails();
 
   const getMySvmServices = useCallback(
     async (account, total) => {

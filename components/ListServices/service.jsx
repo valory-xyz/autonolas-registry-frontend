@@ -18,18 +18,18 @@ import { getServiceManagerContract } from 'common-util/Contracts';
 import { sendTransaction } from 'common-util/functions';
 import { useHelpers } from 'common-util/hooks';
 import RegisterForm from './RegisterForm';
-import {
-  getAgentParams,
-  getServiceDetails,
-  getTokenAddressRequest,
-} from './utils';
+import { getAgentParams, getTokenAddressRequest } from './utils';
 import { FormContainer } from '../styles';
+import { useGetServiceDetails } from './useService';
 
 const { Title } = Typography;
 
 const Service = ({ account }) => {
   const router = useRouter();
-  const { chainId, chainName, doesNetworkHaveValidServiceManagerToken } = useHelpers();
+  const {
+    chainId, chainName, doesNetworkHaveValidServiceManagerToken, isSvm,
+  } = useHelpers();
+  const getDetails = useGetServiceDetails();
 
   const [isAllLoading, setAllLoading] = useState(false);
   const [serviceInfo, setServiceInfo] = useState({});
@@ -40,28 +40,35 @@ const Service = ({ account }) => {
   const id = router?.query?.id;
 
   useEffect(() => {
-    (async () => {
-      if (account && id) {
-        try {
-          setAllLoading(true);
-          setServiceInfo({});
+    const getData = async () => {
+      try {
+        setAllLoading(true);
+        setServiceInfo({});
 
-          const result = await getServiceDetails(id);
-          setAllLoading(false);
-          setServiceInfo(result);
+        const result = await getDetails(id);
+        setAllLoading(false);
+        setServiceInfo(result);
 
-          // get token address for L1 only network
-          // because L2 network do not have token address
-          if (doesNetworkHaveValidServiceManagerToken) {
-            const token = await getTokenAddressRequest(id);
-            setEthTokenAddress(token);
-          }
-        } catch (e) {
-          console.error(e);
+        // get token address for L1 only network
+        // because L2 network do not have token address
+        if (doesNetworkHaveValidServiceManagerToken && !isSvm) {
+          const token = await getTokenAddressRequest(id);
+          setEthTokenAddress(token);
         }
+      } catch (e) {
+        console.error(e);
       }
-    })();
-  }, [account, chainId, id, doesNetworkHaveValidServiceManagerToken]);
+    };
+
+    if (account && id) getData();
+  }, [
+    account,
+    chainId,
+    isSvm,
+    id,
+    doesNetworkHaveValidServiceManagerToken,
+    getDetails,
+  ]);
 
   /* helper functions */
   const handleSubmit = (values) => {
@@ -111,7 +118,9 @@ const Service = ({ account }) => {
 
   return (
     <>
-      <Title level={2} className="mt-0">Service</Title>
+      <Title level={2} className="mt-0">
+        Service
+      </Title>
       {isAllLoading ? (
         <Loader />
       ) : (
