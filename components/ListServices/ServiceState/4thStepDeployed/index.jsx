@@ -21,7 +21,9 @@ export const Deployed = ({
   updateDetails,
 }) => {
   const dispatch = useDispatch();
-  const { account, chainId, isSvm } = useHelpers();
+  const {
+    account, chainId, isSvm, chainName,
+  } = useHelpers();
   const data = useSelector(
     (state) => state?.service?.serviceState?.agentInstancesAndOperators,
   );
@@ -69,7 +71,11 @@ export const Deployed = ({
                 dataIndex: 'agentInstance',
                 key: 'agentInstance',
                 render: (text) => (
-                  <AddressLink text={text} suffixCount={isMobile ? 4 : 6} />
+                  <AddressLink
+                    text={text}
+                    chainName={chainName}
+                    suffixCount={isMobile ? 4 : 6}
+                  />
                 ),
               },
               {
@@ -77,7 +83,11 @@ export const Deployed = ({
                 dataIndex: 'operatorAddress',
                 key: 'operatorAddress',
                 render: (text) => (
-                  <AddressLink text={text} suffixCount={isMobile ? 4 : 6} />
+                  <AddressLink
+                    text={text}
+                    chainName={chainName}
+                    suffixCount={isMobile ? 4 : 6}
+                  />
                 ),
               },
             ]}
