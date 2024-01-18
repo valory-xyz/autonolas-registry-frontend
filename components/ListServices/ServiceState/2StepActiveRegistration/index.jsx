@@ -9,6 +9,7 @@ import {
 
 import { useHelpers } from 'common-util/hooks';
 import { SendTransactionButton } from 'common-util/TransactionHelpers/SendTransactionButton';
+import { useSvmBonds } from 'components/ListServices/useSvmService';
 import {
   getBonds,
   getTokenBondRequest,
@@ -36,6 +37,7 @@ export const ActiveRegistration = ({
   const {
     isSvm, account, chainId, doesNetworkHaveValidServiceManagerToken,
   } = useHelpers();
+  const { getSvmBonds } = useSvmBonds();
 
   const [totalBonds, setTotalBond] = useState(null);
   const [ethTokenBonds, setEthTokenBonds] = useState([]);
@@ -48,13 +50,11 @@ export const ActiveRegistration = ({
     // hence need to check if the component is actually mounted
     let isMounted = true;
     (async () => {
-      // TODO: remove this check once SVM integration is ready
-      if (serviceId && !isSvm) {
+      if (serviceId) {
         try {
-          const { totalBonds: totalBondsRes } = await getBonds(
-            serviceId,
-            dataSource,
-          );
+          const { totalBonds: totalBondsRes } = isSvm
+            ? await getSvmBonds(serviceId, dataSource)
+            : await getBonds(serviceId, dataSource);
           if (isMounted) {
             setTotalBond(totalBondsRes);
           }
@@ -64,7 +64,8 @@ export const ActiveRegistration = ({
         }
       }
 
-      if (serviceId && !isEthToken && doesNetworkHaveValidServiceManagerToken) {
+      // TODO: for SVM, check while contract write
+      if (serviceId && !isEthToken && doesNetworkHaveValidServiceManagerToken && !isSvm) {
         const response = await getTokenBondRequest(serviceId, dataSource);
         setEthTokenBonds(response);
       }
@@ -80,6 +81,7 @@ export const ActiveRegistration = ({
     dataSource,
     isEthToken,
     isSvm,
+    getSvmBonds,
   ]);
 
   const handleStep2RegisterAgents = async () => {

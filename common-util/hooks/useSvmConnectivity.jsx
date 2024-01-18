@@ -18,7 +18,7 @@ export const useSvmConnectivity = () => {
   const { connection } = useConnection();
   const wallet = useAnchorWallet();
 
-  const { chainName } = useHelpers();
+  const { chainName, isSvm } = useHelpers();
 
   const solanaAddresses = useMemo(
     () => (chainName === SOLANA_CHAIN_NAMES.MAINNET
@@ -49,5 +49,6 @@ export const useSvmConnectivity = () => {
     connection,
     program,
     solanaAddresses,
+    hasNoSvmPublicKey: isSvm ? !wallet?.publicKey : false,
   };
 };

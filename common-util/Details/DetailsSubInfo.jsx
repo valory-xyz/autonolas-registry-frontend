@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Button, Typography, Alert } from 'antd';
-import { NA } from '@autonolas/frontend-library';
 import PropTypes from 'prop-types';
+import { NA } from '@autonolas/frontend-library';
 
 import {
   DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS,
@@ -27,7 +27,7 @@ import {
 const { Link, Text } = Typography;
 
 /**
- * Displays service status (active/inactive)
+ * Displays "service" status (active/inactive)
  */
 const ServiceStatus = ({ serviceState }) => (
   <ServiceStatusContainer
@@ -101,9 +101,9 @@ export const DetailsSubInfo = ({
   serviceThreshold,
   serviceCurrentState,
 
-  onUpdateHash,
-  setIsModalVisible,
-  onDependencyClick,
+  openUpdateHashModal,
+  handleHashUpdate,
+  navigateToDependency,
 }) => {
   const { isSvm, doesNetworkHaveValidServiceManagerToken } = useHelpers();
   const [tokenAddress, setTokenAddress] = useState(null);
@@ -187,19 +187,19 @@ export const DetailsSubInfo = ({
     const updateHashButton = isOwner ? (
       <>
         &nbsp;•&nbsp;
-        {onUpdateHash && (
-          <Button type="primary" ghost onClick={() => setIsModalVisible(true)}>
+        {handleHashUpdate && (
+          <Button type="primary" ghost onClick={openUpdateHashModal}>
             Update Hash
           </Button>
         )}
       </>
     ) : null;
 
-    const getDependencyValue = () => {
+    const getDependencyList = () => {
       if ((componentAndAgentDependencies || []).length === 0) return 'None';
       return componentAndAgentDependencies.map((e) => (
         <li key={`${type}-dependency-${e}`}>
-          <Button type="link" onClick={() => onDependencyClick(e)}>
+          <Button type="link" onClick={() => navigateToDependency(e)}>
             {e}
           </Button>
         </li>
@@ -220,7 +220,7 @@ export const DetailsSubInfo = ({
       {
         title: 'Component Dependencies',
         dataTestId: 'details-dependency',
-        value: getDependencyValue(),
+        value: getDependencyList(),
       },
     ];
   };
@@ -312,9 +312,9 @@ DetailsSubInfo.propTypes = {
   componentAndAgentDependencies: PropTypes.arrayOf(PropTypes.string),
   serviceThreshold: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   serviceCurrentState: PropTypes.string,
-  onUpdateHash: PropTypes.func,
-  setIsModalVisible: PropTypes.func,
-  onDependencyClick: PropTypes.func,
+  handleHashUpdate: PropTypes.func,
+  openUpdateHashModal: PropTypes.func,
+  navigateToDependency: PropTypes.func,
 };
 
 DetailsSubInfo.defaultProps = {
@@ -326,7 +326,7 @@ DetailsSubInfo.defaultProps = {
   componentAndAgentDependencies: [],
   serviceThreshold: '',
   serviceCurrentState: '',
-  onUpdateHash: null,
-  setIsModalVisible: null,
-  onDependencyClick: null,
+  handleHashUpdate: null,
+  openUpdateHashModal: null,
+  navigateToDependency: null,
 };

@@ -3,6 +3,8 @@ import { useRouter } from 'next/router';
 
 import Details from 'common-util/Details';
 import { useHelpers } from 'common-util/hooks';
+import { useSvmConnectivity } from 'common-util/hooks/useSvmConnectivity';
+
 import {
   getServiceDetails,
   getServiceOwner,
@@ -14,11 +16,13 @@ import {
   useTokenUri,
 } from './useSvmService';
 import { ServiceState } from './ServiceState';
+import { EmptyMessage } from '../styles';
 
 const Service = () => {
   const router = useRouter();
   const id = router?.query?.id;
   const { links, isSvm } = useHelpers();
+  const { hasNoSvmPublicKey } = useSvmConnectivity();
   const { getSvmServiceDetails } = useGetServiceDetails();
   const { getSvmServiceOwner } = useServiceOwner();
   const { getSvmTokenUri } = useTokenUri();
@@ -44,12 +48,20 @@ const Service = () => {
     router.push(`${links.UPDATE_SERVICE}/${id}`);
   }, [id, router, links]);
 
-  const onDependencyClick = useCallback(
+  const navigateToDependency = useCallback(
     (e) => {
       router.push(`${links.AGENTS}/${e}`);
     },
     [router, links],
   );
+
+  if (hasNoSvmPublicKey) {
+    return (
+      <EmptyMessage>
+        Please connect a wallet that hold SOL to view this page.
+      </EmptyMessage>
+    );
+  }
 
   return (
     <Details
@@ -59,7 +71,7 @@ const Service = () => {
       getOwner={getOwner}
       getTokenUri={getTokenUri}
       handleUpdate={handleUpdate}
-      onDependencyClick={onDependencyClick}
+      navigateToDependency={navigateToDependency}
       renderServiceState={({ isOwner, details, updateDetails }) => (
         <ServiceState
           isOwner={isOwner}

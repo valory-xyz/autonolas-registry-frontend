@@ -38,7 +38,7 @@ export const getBase16Validator = (value, hashType = HASH_PREFIXES.type1) => {
 export const IpfsHashGenerationModal = ({
   visible,
   type,
-  onUpdateHash,
+  handleHashUpdate,
   handleCancel,
   callback,
 }) => {
@@ -89,7 +89,7 @@ export const IpfsHashGenerationModal = ({
 
       const values = form.validateFields();
       const hash = await getNewHash(values);
-      await onUpdateHash(hash);
+      await handleHashUpdate(hash);
       notifySuccess('Hash updated');
 
       if (callback) {
@@ -124,9 +124,9 @@ export const IpfsHashGenerationModal = ({
             htmlType="submit"
             type="primary"
             loading={isHashLoading}
-            onClick={onUpdateHash ? handleUpdate : handleOk}
+            onClick={handleHashUpdate ? handleUpdate : handleOk}
           >
-            {onUpdateHash
+            {handleHashUpdate
               ? 'Save File & Update Hash'
               : 'Save File & Generate Hash'}
           </Button>
@@ -223,13 +223,13 @@ export const IpfsHashGenerationModal = ({
 IpfsHashGenerationModal.propTypes = {
   visible: PropTypes.bool.isRequired,
   type: PropTypes.string,
-  onUpdateHash: PropTypes.func,
+  handleHashUpdate: PropTypes.func,
   handleCancel: PropTypes.func.isRequired,
   callback: PropTypes.func,
 };
 
 IpfsHashGenerationModal.defaultProps = {
   type: '',
-  onUpdateHash: null,
+  handleHashUpdate: null,
   callback: null,
 };

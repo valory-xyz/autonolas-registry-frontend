@@ -22,15 +22,17 @@ export const PreRegistration = ({
   updateDetails,
 }) => {
   const router = useRouter();
-  const { account, chainId, links } = useHelpers();
-  const [isActivating, setIsUpdateLoading] = useState(false);
+  const {
+    account, chainId, links, isSvm,
+  } = useHelpers();
+  const [isActivating, setIsActivating] = useState(false);
 
   const handleStep1Registration = async () => {
     try {
-      setIsUpdateLoading(true);
+      setIsActivating(true);
       // if not eth, check if the user has sufficient token balance
       // and if not, approve the token
-      if (!isEthToken) {
+      if (!isEthToken && !isSvm) {
         await checkAndApproveToken({
           account,
           chainId,
@@ -54,7 +56,7 @@ export const PreRegistration = ({
     } catch (e) {
       console.error(e);
     } finally {
-      setIsUpdateLoading(false);
+      setIsActivating(false);
     }
   };
 

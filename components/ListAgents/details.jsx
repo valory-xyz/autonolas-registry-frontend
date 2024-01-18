@@ -32,8 +32,8 @@ const Agent = () => {
       getDetails={getDetails}
       getOwner={getOwner}
       getTokenUri={getTokenUri}
-      onUpdateHash={onUpdateHash}
-      onDependencyClick={(e) => router.push(`${links.COMPONENTS}/${e}`)}
+      handleHashUpdate={onUpdateHash}
+      navigateToDependency={(e) => router.push(`${links.COMPONENTS}/${e}`)}
     />
   );
 };

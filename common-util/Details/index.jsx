@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import capitalize from 'lodash/capitalize';
 import {
@@ -23,10 +23,10 @@ const Details = ({
   type,
   getDetails,
   getTokenUri,
-  handleUpdate,
   getOwner,
-  onUpdateHash,
-  onDependencyClick,
+  handleUpdate,
+  handleHashUpdate,
+  navigateToDependency,
   renderServiceState,
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -45,6 +45,10 @@ const Details = ({
   // Update button to be show only if the connected account is the owner
   // and only for agent and component
   const canShowUpdateBtn = isOwner && type !== NAV_TYPES.SERVICE;
+
+  const openUpdateHashModal = useCallback(() => {
+    setIsModalVisible(true);
+  }, []);
 
   if (isLoading) {
     return <Loader timeoutMessage="Details couldn’t be loaded" />;
@@ -85,9 +89,9 @@ const Details = ({
             componentAndAgentDependencies={get(info, 'dependencies')}
             serviceThreshold={get(info, 'threshold') || NA}
             serviceCurrentState={get(info, 'state') || NA}
-            onUpdateHash={onUpdateHash}
-            setIsModalVisible={setIsModalVisible}
-            onDependencyClick={onDependencyClick}
+            handleHashUpdate={handleHashUpdate}
+            setIsModalVisible={openUpdateHashModal}
+            navigateToDependency={navigateToDependency}
           />
         </Col>
 
@@ -110,7 +114,7 @@ const Details = ({
         <IpfsHashGenerationModal
           visible={isModalVisible}
           type={type}
-          onUpdateHash={onUpdateHash}
+          handleHashUpdate={handleHashUpdate}
           handleCancel={() => setIsModalVisible(false)}
         />
       )}
@@ -125,8 +129,8 @@ Details.propTypes = {
   getTokenUri: PropTypes.func,
   getOwner: PropTypes.func,
   handleUpdate: PropTypes.func,
-  onUpdateHash: PropTypes.func,
-  onDependencyClick: PropTypes.func,
+  handleHashUpdate: PropTypes.func,
+  navigateToDependency: PropTypes.func,
   renderServiceState: PropTypes.func,
 };
 
@@ -134,8 +138,8 @@ Details.defaultProps = {
   handleUpdate: null,
   getTokenUri: () => {},
   getOwner: () => {},
-  onUpdateHash: () => {},
-  onDependencyClick: () => {},
+  handleHashUpdate: () => {},
+  navigateToDependency: () => {},
   renderServiceState: null,
 };
 
