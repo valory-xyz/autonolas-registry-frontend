@@ -58,7 +58,7 @@ const Service = () => {
   if (hasNoSvmPublicKey) {
     return (
       <EmptyMessage>
-        Please connect a wallet that hold SOL to view this page.
+        To view this page, connect a wallet that holds SOL
       </EmptyMessage>
     );
   }
