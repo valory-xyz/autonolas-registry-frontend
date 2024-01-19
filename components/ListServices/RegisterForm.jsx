@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 import PropTypes from 'prop-types';
-import get from 'lodash/get';
 import { Button, Form, Input } from 'antd';
 import { isValidAddress, notifyError } from '@autonolas/frontend-library';
 
@@ -42,6 +41,55 @@ const agentIdValidator = (form, value) => {
   return Promise.resolve();
 };
 
+// This function validates the owner address based on the network type
+const validateOwnerAddress = async (isSvm, listType, value) => {
+  if (isSvm) {
+    if (isValidSolanaPublicKey(value)) return Promise.resolve();
+
+    return Promise.reject(
+      new Error(
+        `Please input a valid SVM public key for the ${listType} Owner`,
+      ),
+    );
+  }
+
+  if (isValidAddress(value)) return Promise.resolve();
+
+  return Promise.reject(
+    new Error(`Please input a valid address for the ${listType} Owner`),
+  );
+};
+
+// This function validates the threshold based on the no. of slots
+const validateThreshold = (form, getFieldValue, value) => {
+  if (!value || !getFieldValue('agent_num_slots')) {
+    Promise.resolve();
+  }
+
+  // eg: 1, 2, 1 and sumOfSlots = 4
+  const sumOfSlots = form
+    .getFieldValue('agent_num_slots')
+    .split(',')
+    .reduce((sum, num) => sum + parseInt(num.trim(), 10), 0);
+
+  // eg: 2/3 * 4 = 2.66
+  // Now, threshold should be at least 2.66 and not exceed the sum of no. of slots
+  // ie. threshold >= 2.66 && threshold <= 4
+  const threshold = parseInt(value, 10);
+  if (threshold >= (2 / 3) * sumOfSlots && threshold <= sumOfSlots) {
+    return Promise.resolve();
+  }
+
+  return Promise.reject(
+    new Error(
+      'Threshold must be at least 2/3 and not exceed the sum of no. of slots',
+    ),
+  );
+};
+
+/**
+ * Service creation form
+ */
 const RegisterForm = ({
   isLoading,
   listType,
@@ -70,68 +118,30 @@ const RegisterForm = ({
     setFields([{ name: ['hash'], value: generatedHash || null }]);
   };
 
-  const validateOwnerAddress = async (_, value) => {
-    if (isSvm) {
-      if (isValidSolanaPublicKey(value)) return Promise.resolve();
-
-      return Promise.reject(
-        new Error(
-          `Please input a valid SVM public key for the ${listType} Owner`,
-        ),
-      );
-    }
-
-    if (isValidAddress(value)) return Promise.resolve();
-
-    return Promise.reject(
-      new Error(`Please input a valid address for the ${listType} Owner`),
-    );
-  };
-
-  // This function validates the owner address based on the network type
-  const validateThreshold = (getFieldValue, value) => {
-    if (!value || !getFieldValue('agent_num_slots')) {
-      Promise.resolve();
-    }
-
-    // eg: 1, 2, 1 and sumOfSlots = 4
-    const sumOfSlots = form
-      .getFieldValue('agent_num_slots')
-      .split(',')
-      .reduce((sum, num) => sum + parseInt(num.trim(), 10), 0);
-
-    // eg: 2/3 * 4 = 2.66
-    // Now, threshold should be at least 2.66 and not exceed the sum of no. of slots
-    // ie. threshold >= 2.66 && threshold <= 4
-    const threshold = parseInt(value, 10);
-    if (threshold >= (2 / 3) * sumOfSlots && threshold <= sumOfSlots) {
-      return Promise.resolve();
-    }
-
-    return Promise.reject(
-      new Error(
-        'Threshold must be at least 2/3 and not exceed the sum of no. of slots',
-      ),
-    );
-  };
-
   useDeepCompareEffect(() => {
     if (isUpdateForm) {
-      const agentNumSlots = (formInitialValues.agentParams || [])
-        .map((param) => param[0])
-        .join(', ');
-      const bonds = (formInitialValues.agentParams || [])
-        .map((param) => param[1])
-        .join(', ');
+      const agentNumSlots = isSvm
+        ? formInitialValues.slots?.join(', ')
+        : (formInitialValues.agentParams || [])
+          .map((param) => param[0])
+          .join(', ');
+      const bonds = isSvm
+        ? formInitialValues.bonds?.join(', ')
+        : (formInitialValues.agentParams || [])
+          .map((param) => param[1])
+          .join(', ');
 
+      // console.log('formInitialValues', formInitialValues);
       setFields([
         { name: ['owner_address'], value: formInitialValues.owner || null },
-        {
-          name: ['hash'],
-          // remove 0x prefix as it is already coming from backend
-          // If not removed, it will throw error
-          value: get(formInitialValues, 'configHash')?.replace(/0x/i, ''),
-        },
+        // TODO: below config hash is not decoded properly
+        // {
+        //   name: ['hash'],
+        //   // remove 0x prefix as it is already coming from backend
+        //   // If not removed, it will throw error
+        //   value: formInitialValues?.configHash?.replace(/0x/i, ''),
+        // },
+
         {
           name: ['agent_ids'],
           value: formInitialValues.agentIds
@@ -211,7 +221,7 @@ const RegisterForm = ({
               message: `Please input the address of the ${listType} Owner`,
             },
             () => ({
-              validator: validateOwnerAddress,
+              validator: (_, value) => validateOwnerAddress(isSvm, listType, value),
             }),
           ]}
         >
@@ -381,7 +391,7 @@ const RegisterForm = ({
             { required: true, message: 'Please input the threshold' },
             ({ getFieldValue }) => ({
               validator(_, value) {
-                return validateThreshold(getFieldValue, value);
+                return validateThreshold(form, getFieldValue, value);
               },
             }),
           ]}
@@ -419,6 +429,14 @@ RegisterForm.propTypes = {
     agentNumSlots: PropTypes.arrayOf(PropTypes.string),
     agentParams: PropTypes.arrayOf(PropTypes.shape({})),
     threshold: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+
+    // the values below are present for SVM only 👇
+    bonds: PropTypes.arrayOf(
+      PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    ),
+    slots: PropTypes.arrayOf(
+      PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    ),
   }),
   handleSubmit: PropTypes.func.isRequired,
   ethTokenAddress: PropTypes.string,

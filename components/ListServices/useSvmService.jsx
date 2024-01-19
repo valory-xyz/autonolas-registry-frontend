@@ -1,3 +1,8 @@
+/**
+ * useSvmService.jsx
+ * This file contains the hooks to fetch data from the SVM (Solana)
+ */
+
 import { useCallback } from 'react';
 import { BorshCoder } from '@project-serum/anchor';
 import {
@@ -174,7 +179,30 @@ const useGetTotalForMyServices = () => {
 const transformServiceData = (service, index) => {
   const owner = service.serviceOwner?.toString();
   const stateName = Object.keys(service.state || {})[0];
-  const publicKey = new PublicKey(service.multisig);
+  const multisigUnit32 = new PublicKey(service.multisig);
+  const configHashUnit32 = new PublicKey(service.configHash);
+
+  // convert configHash u32 to hex string
+  const decodedConfigHash = Buffer.from(service.configHash, 'utf8').toString('hex');
+  const backToBuffer = Buffer.from(decodedConfigHash, 'hex');
+
+  console.log({
+    service,
+    justHash: service.configHash,
+    configHashUnit32,
+    // a: configHashUnit32.encode(),
+    // b: configHashUnit32.toBuffer(),
+    // c: configHashUnit32.toBytes(),
+    // d: configHashUnit32.toString(),
+    // f: configHashUnit32.toJSON(),
+    final: service.configHash.toString('utf8'),
+    decodedConfigHash,
+    backToBuffer,
+  });
+
+  // const publicKey = new PublicKey(serializedValue);
+  // return publicKey.toBase58();
+  // console.log("publicKey", publicKey.toBase58())
 
   // TODO: transform more data for service details page
   return {
@@ -182,7 +210,9 @@ const transformServiceData = (service, index) => {
     id: index,
     owner,
     state: SERVICE_STATE_KEY_MAP[stateName],
-    multisig: publicKey.toBase58(),
+    multisig: multisigUnit32.toBase58(),
+    bonds: service.bonds.map((e) => Number(e)),
+    // configHash: configHashUnit32.toBase58(),
   };
 };
 

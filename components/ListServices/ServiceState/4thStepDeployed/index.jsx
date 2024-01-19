@@ -107,7 +107,11 @@ export const Deployed = ({
             ]}
           />
         )}
-        <div>{`Safe contract address: ${multisig}`}</div>
+        <div>
+          {`${
+            isSvm ? 'Squads' : 'Safe'
+          } contract address: ${multisig}`}
+        </div>
         {getButton(
           <SendTransactionButton
             onClick={handleTerminate}
