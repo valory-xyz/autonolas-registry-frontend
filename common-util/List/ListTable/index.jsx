@@ -23,7 +23,7 @@ const ListTable = ({
   extra,
 }) => {
   const { chainName, isSvm } = useHelpers();
-  const { hasNoSvmPublicKey } = useSvmConnectivity();
+  const { hasNoSvmPublicKey, walletPublicKey } = useSvmConnectivity();
   /**
    * no pagination on search as we won't know total beforehand
    */
@@ -57,6 +57,7 @@ const ListTable = ({
     onUpdateClick,
     isMobile,
     chainName,
+    walletPublicKey,
   });
   const dataSource = getData(type, list, { current: currentPage });
   const pagination = {

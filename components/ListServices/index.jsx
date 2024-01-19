@@ -205,6 +205,7 @@ const ListServices = () => {
     setCurrentPage,
     onViewClick,
     searchValue,
+    onUpdateClick: (serviceId) => router.push(`${links.UPDATE_SERVICE}/${serviceId}`),
   };
 
   const myServiceList = searchValue
@@ -249,7 +250,6 @@ const ListServices = () => {
               {...tableCommonProps}
               list={myServiceList}
               isPaginationRequired={!isSvm}
-              onUpdateClick={(serviceId) => router.push(`${links.UPDATE_SERVICE}/${serviceId}`)}
               isAccountRequired
             />
           ),
