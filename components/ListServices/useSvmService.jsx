@@ -176,7 +176,7 @@ const useGetTotalForMyServices = () => {
  * @param {Service}
  *
  */
-const transformServiceData = (service, index) => {
+const transformServiceData = (service, serviceId) => {
   const owner = service.serviceOwner?.toString();
   const stateName = Object.keys(service.state || {})[0];
   // convert to base58 ie. readable format
@@ -184,10 +184,10 @@ const transformServiceData = (service, index) => {
   // convert configHash u32 to hex string
   const decodedConfigHash = Buffer.from(service.configHash, 'utf8').toString('hex');
 
-  // TODO: transform more data for service details page
+  // TODO: transform more data for service state management
   return {
     ...service,
-    id: index,
+    id: serviceId,
     owner,
     state: SERVICE_STATE_KEY_MAP[stateName],
     multisig,

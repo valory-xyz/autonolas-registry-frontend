@@ -18,9 +18,9 @@ import { useHelpers } from 'common-util/hooks';
 import { useSvmConnectivity } from 'common-util/hooks/useSvmConnectivity';
 import RegisterForm from './helpers/RegisterForm';
 import { getAgentParams, getTokenAddressRequest } from './utils';
-import { FormContainer } from '../styles';
 import { useGetServiceDetails } from './useService';
 import { buildSvmArgsToMintOrUpdate } from './helpers/functions';
+import { FormContainer } from '../styles';
 
 const { Title } = Typography;
 
