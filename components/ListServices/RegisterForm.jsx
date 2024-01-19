@@ -41,7 +41,9 @@ const agentIdValidator = (form, value) => {
   return Promise.resolve();
 };
 
-// This function validates the owner address based on the network type
+/**
+ * validates the owner address based on the network type
+ */
 const validateOwnerAddress = async (isSvm, listType, value) => {
   if (isSvm) {
     if (isValidSolanaPublicKey(value)) return Promise.resolve();
@@ -60,7 +62,9 @@ const validateOwnerAddress = async (isSvm, listType, value) => {
   );
 };
 
-// This function validates the threshold based on the no. of slots
+/**
+ * validates the threshold based on the no. of slots
+ */
 const validateThreshold = (form, getFieldValue, value) => {
   if (!value || !getFieldValue('agent_num_slots')) {
     Promise.resolve();
@@ -131,17 +135,14 @@ const RegisterForm = ({
           .map((param) => param[1])
           .join(', ');
 
-      // console.log('formInitialValues', formInitialValues);
       setFields([
         { name: ['owner_address'], value: formInitialValues.owner || null },
-        // TODO: below config hash is not decoded properly
-        // {
-        //   name: ['hash'],
-        //   // remove 0x prefix as it is already coming from backend
-        //   // If not removed, it will throw error
-        //   value: formInitialValues?.configHash?.replace(/0x/i, ''),
-        // },
-
+        {
+          name: ['hash'],
+          // remove 0x prefix as it is already coming from backend
+          // If not removed, it will throw error
+          value: formInitialValues?.configHash?.replace(/0x/i, ''),
+        },
         {
           name: ['agent_ids'],
           value: formInitialValues.agentIds

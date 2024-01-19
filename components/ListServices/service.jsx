@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { Typography } from 'antd';
 import {
   notifySuccess,
@@ -17,18 +15,26 @@ import { convertStringToArray, AlertError } from 'common-util/List/ListCommon';
 import { getServiceManagerContract } from 'common-util/Contracts';
 import { sendTransaction } from 'common-util/functions';
 import { useHelpers } from 'common-util/hooks';
+import { useSvmConnectivity } from 'common-util/hooks/useSvmConnectivity';
 import RegisterForm from './RegisterForm';
 import { getAgentParams, getTokenAddressRequest } from './utils';
 import { FormContainer } from '../styles';
 import { useGetServiceDetails } from './useService';
+import { buildSvmArgsToMintOrUpdate } from './helpers/functions';
 
 const { Title } = Typography;
 
-const Service = ({ account }) => {
+const UpdateService = () => {
   const router = useRouter();
   const {
-    chainId, chainName, doesNetworkHaveValidServiceManagerToken, isSvm,
+    account,
+    chainId,
+    chainName,
+    doesNetworkHaveValidServiceManagerToken,
+    isSvm,
+    vmType,
   } = useHelpers();
+  const { solanaAddresses, walletPublicKey, program } = useSvmConnectivity();
   const getDetails = useGetServiceDetails();
 
   const [isAllLoading, setAllLoading] = useState(false);
@@ -70,33 +76,54 @@ const Service = ({ account }) => {
     getDetails,
   ]);
 
-  /* helper functions */
+  const buildSvmUpdateFn = async (values) => {
+    const args = [...buildSvmArgsToMintOrUpdate(values), `${id}`];
+
+    const fn = program.methods
+      .update(...args)
+      .accounts({ dataAccount: solanaAddresses.storageAccount })
+      .remainingAccounts([
+        { pubkey: walletPublicKey, isSigner: true, isWritable: true },
+      ]);
+
+    return fn;
+  };
+
+  const buildEvmUpdateFn = (values) => {
+    const token = values.token === DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS
+      ? DEFAULT_SERVICE_CREATION_ETH_TOKEN
+      : values.token;
+
+    const contract = getServiceManagerContract();
+
+    const commonParams = [
+      `0x${values.hash}`,
+      convertStringToArray(values.agent_ids),
+      getAgentParams(values),
+      values.threshold,
+      values.service_id,
+    ];
+
+    // token wil be passed only if the connected network has service manager token
+    const params = doesNetworkHaveValidServiceManagerToken
+      ? [token, ...commonParams]
+      : [...commonParams];
+
+    return contract.methods.update(...params).send({ from: account });
+  };
+
   const handleSubmit = (values) => {
     const submitData = async () => {
       setIsUpdating(true);
       setError(null);
 
-      const token = values.token === DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS
-        ? DEFAULT_SERVICE_CREATION_ETH_TOKEN
-        : values.token;
-
-      const contract = getServiceManagerContract();
-
-      const commonParams = [
-        `0x${values.hash}`,
-        convertStringToArray(values.agent_ids),
-        getAgentParams(values),
-        values.threshold,
-        values.service_id,
-      ];
-
-      // token wil be passed only if the connected network has service manager token
-      const params = doesNetworkHaveValidServiceManagerToken
-        ? [token, ...commonParams]
-        : [...commonParams];
-
-      const fn = contract.methods.update(...params).send({ from: account });
-      sendTransaction(fn, account)
+      const fn = isSvm
+        ? await buildSvmUpdateFn(values)
+        : await buildEvmUpdateFn(values);
+      sendTransaction(fn, account || undefined, {
+        vmType,
+        registryAddress: solanaAddresses.serviceRegistry,
+      })
         .then(() => {
           notifySuccess('Service updated');
         })
@@ -109,9 +136,7 @@ const Service = ({ account }) => {
         });
     };
 
-    if (account) {
-      submitData();
-    }
+    if (account) submitData();
   };
 
   const handleCancel = () => router.push(`/${chainName}/services`);
@@ -141,17 +166,4 @@ const Service = ({ account }) => {
   );
 };
 
-Service.propTypes = {
-  account: PropTypes.string,
-};
-
-Service.defaultProps = {
-  account: null,
-};
-
-const mapStateToProps = (state) => {
-  const { account } = state.setup;
-  return { account };
-};
-
-export default connect(mapStateToProps, {})(Service);
+export default UpdateService;

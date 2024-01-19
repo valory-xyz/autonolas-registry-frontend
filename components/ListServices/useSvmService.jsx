@@ -18,7 +18,7 @@ import { useSvmConnectivity } from 'common-util/hooks/useSvmConnectivity';
 import {
   transformDatasourceForServiceTable,
   transformSlotsAndBonds,
-} from './helpers';
+} from './helpers/functions';
 
 /**
  * deseralize the program data
@@ -179,30 +179,10 @@ const useGetTotalForMyServices = () => {
 const transformServiceData = (service, index) => {
   const owner = service.serviceOwner?.toString();
   const stateName = Object.keys(service.state || {})[0];
-  const multisigUnit32 = new PublicKey(service.multisig);
-  const configHashUnit32 = new PublicKey(service.configHash);
-
+  // convert to base58 ie. readable format
+  const multisig = (new PublicKey(service.multisig)).toBase58();
   // convert configHash u32 to hex string
   const decodedConfigHash = Buffer.from(service.configHash, 'utf8').toString('hex');
-  const backToBuffer = Buffer.from(decodedConfigHash, 'hex');
-
-  console.log({
-    service,
-    justHash: service.configHash,
-    configHashUnit32,
-    // a: configHashUnit32.encode(),
-    // b: configHashUnit32.toBuffer(),
-    // c: configHashUnit32.toBytes(),
-    // d: configHashUnit32.toString(),
-    // f: configHashUnit32.toJSON(),
-    final: service.configHash.toString('utf8'),
-    decodedConfigHash,
-    backToBuffer,
-  });
-
-  // const publicKey = new PublicKey(serializedValue);
-  // return publicKey.toBase58();
-  // console.log("publicKey", publicKey.toBase58())
 
   // TODO: transform more data for service details page
   return {
@@ -210,9 +190,9 @@ const transformServiceData = (service, index) => {
     id: index,
     owner,
     state: SERVICE_STATE_KEY_MAP[stateName],
-    multisig: multisigUnit32.toBase58(),
+    multisig,
     bonds: service.bonds.map((e) => Number(e)),
-    // configHash: configHashUnit32.toBase58(),
+    configHash: decodedConfigHash,
   };
 };
 
