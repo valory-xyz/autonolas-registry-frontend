@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic';
 
-const UpdateService = dynamic(() => import('components/ListServices/service'), {
+const UpdateService = dynamic(() => import('components/ListServices/update'), {
   ssr: false,
 });
 

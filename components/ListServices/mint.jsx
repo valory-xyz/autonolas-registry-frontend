@@ -16,7 +16,7 @@ import { sendTransaction } from 'common-util/functions';
 import { checkIfERC721Receive } from 'common-util/functions/requests';
 import { useHelpers } from 'common-util/hooks';
 import { useSvmConnectivity } from 'common-util/hooks/useSvmConnectivity';
-import RegisterForm from './RegisterForm';
+import RegisterForm from './helpers/RegisterForm';
 import { getAgentParams } from './utils';
 import { buildSvmArgsToMintOrUpdate } from './helpers/functions';
 import { FormContainer } from '../styles';

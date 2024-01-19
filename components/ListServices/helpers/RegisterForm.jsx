@@ -124,11 +124,15 @@ const RegisterForm = ({
 
   useDeepCompareEffect(() => {
     if (isUpdateForm) {
+      // For SVM, slots and bonds are returned as part of the details but
+      // for EVM, they are present in `agentParams` array.
+      // So, 1st element is array of slots and 2nd element is array of bonds
       const agentNumSlots = isSvm
         ? formInitialValues.slots?.join(', ')
         : (formInitialValues.agentParams || [])
           .map((param) => param[0])
           .join(', ');
+
       const bonds = isSvm
         ? formInitialValues.bonds?.join(', ')
         : (formInitialValues.agentParams || [])
