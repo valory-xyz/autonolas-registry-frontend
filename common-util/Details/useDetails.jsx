@@ -28,10 +28,10 @@ export const useDetails = ({
         const tempDetails = await getDetails(id);
         setInfo(tempDetails);
 
-        const ownerAccount = await getOwner();
+        const ownerAccount = await getOwner(id);
         setDetailsOwner(ownerAccount || '');
 
-        const tempTokenUri = await getTokenUri();
+        const tempTokenUri = await getTokenUri(id);
         setTokenUri(tempTokenUri);
       } catch (e) {
         console.error(e);
