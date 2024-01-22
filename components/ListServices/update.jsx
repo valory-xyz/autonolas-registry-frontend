@@ -66,12 +66,15 @@ const UpdateService = () => {
       }
     };
 
-    if (account && id) getData();
+    if ((isSvm && walletPublicKey && id) || (account && id)) {
+      getData();
+    }
   }, [
     account,
     chainId,
     isSvm,
     id,
+    walletPublicKey,
     doesNetworkHaveValidServiceManagerToken,
     getDetails,
   ]);
