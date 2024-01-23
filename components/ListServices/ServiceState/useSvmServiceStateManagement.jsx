@@ -9,20 +9,41 @@ import { onActivateRegistration } from './utils';
 
 export const useGetActivateRegistration = () => {
   const { isSvm, vmType } = useHelpers();
-  const { solanaAddresses, walletPublicKey, program } = useSvmConnectivity();
+  const {
+    solanaAddresses, walletPublicKey, program, wallet,
+  } = useSvmConnectivity();
 
   return useCallback(
     async (id, account, deposit) => {
       console.log('useGetActivateRegistration', id, account, deposit);
 
-      const serviceRegistryPublicKeyInstance = new PublicKey(solanaAddresses.serviceRegistry);
+      const [pda] = await PublicKey.findProgramAddress(
+        [Buffer.from('pdaEscrow', 'utf-8')],
+        program.programId,
+      );
+
+      const pdaEscrow = pda;
+      // const pdaEscrow = pda.toBase58();
+      console.log('pda', pda);
+
+      const serviceRegistryPublicKeyInstance = new PublicKey(
+        solanaAddresses.serviceRegistry,
+      );
+      // const pdaEscrow = await PublicKey.findProgramAddressSync(
+      //   [
+      //     Buffer.from('escrow'),
+      //     serviceRegistryPublicKeyInstance.toBuffer(),
+      //     new PublicKey(id).toBuffer(),
+      //   ],
+      //   serviceRegistryPublicKeyInstance,
+      // );
 
       if (isSvm) {
         const fn = program.methods
           .activateRegistration(id)
           .accounts({
             dataAccount: solanaAddresses.storageAccount,
-            systemProgram: SystemProgram.programId,
+            // systemProgram: SystemProgram.programId,
             // systemProgram: deposit,
             // systemProgram: SystemProgram.transfer({
             //   fromPubkey: walletPublicKey,
@@ -33,12 +54,12 @@ export const useGetActivateRegistration = () => {
           .remainingAccounts([
             { pubkey: walletPublicKey, isSigner: true, isWritable: true },
             {
-              pubkey: serviceRegistryPublicKeyInstance,
+              pubkey: pdaEscrow,
               isSigner: false,
               isWritable: true,
             },
           ])
-          .signers([walletPublicKey]);
+          .signers([wallet]);
 
         const response = await sendTransaction(fn, account || undefined, {
           vmType,
