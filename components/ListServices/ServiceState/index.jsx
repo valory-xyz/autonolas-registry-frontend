@@ -127,11 +127,6 @@ export const ServiceState = ({
   const getButton = (button, otherArgs) => {
     const { message, condition = isOwner, step } = otherArgs || {};
 
-    let messageToDisplay = message || 'Only the service owner can take this action';
-
-    // TODO: remove this check once SVM integration is ready
-    if (isSvm) messageToDisplay = 'Not yet available on SVM';
-
     // if not the current step, just return the button without showing tooltip
     if (step !== currentStep + 1) return button;
 
@@ -139,7 +134,11 @@ export const ServiceState = ({
     if (condition) return button;
 
     return (
-      <Tooltip title={messageToDisplay} placement="right" align="center">
+      <Tooltip
+        title={message || 'Only the service owner can take this action'}
+        placement="right"
+        align="center"
+      >
         {button}
       </Tooltip>
     );
