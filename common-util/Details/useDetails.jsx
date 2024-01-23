@@ -1,4 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
+import {
+  useState, useEffect, useCallback, useMemo,
+} from 'react';
 import {
   notifyError,
   NA,
@@ -6,11 +8,13 @@ import {
 } from '@autonolas/frontend-library';
 
 import { useHelpers } from '../hooks';
+import { useSvmConnectivity } from '../hooks/useSvmConnectivity';
 
 export const useDetails = ({
   id, type, getDetails, getOwner, getTokenUri,
 }) => {
-  const { account, chainId } = useHelpers();
+  const { account, chainId, isSvm } = useHelpers();
+  const { walletPublicKey } = useSvmConnectivity();
 
   const [isLoading, setIsLoading] = useState(true);
   const [info, setInfo] = useState({});
@@ -57,12 +61,26 @@ export const useDetails = ({
     }
   }, [id, type, getDetails]);
 
+  const isOwner = useMemo(() => {
+    if (isSvm) {
+      if (walletPublicKey && ownerAddress) {
+        return areAddressesEqual(walletPublicKey, ownerAddress);
+      }
+      return false;
+    }
+
+    if (account && ownerAddress) {
+      return areAddressesEqual(account, ownerAddress);
+    }
+    return false;
+  }, [account, ownerAddress, isSvm, walletPublicKey]);
+
   return {
     isLoading,
     info,
     ownerAddress,
     tokenUri,
-    isOwner: account ? areAddressesEqual(account, ownerAddress) : false,
+    isOwner,
     updateDetails,
   };
 };

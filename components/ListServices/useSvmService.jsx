@@ -54,7 +54,8 @@ const deseralizeProgramData = (serializedValue, decodeTypeName) => {
   return decodedResult;
 };
 
-const useSvmDataFetch = () => {
+// TODO: move to common-util to read and write
+export const useSvmDataFetch = () => {
   const {
     walletPublicKey, connection, program, solanaAddresses,
   } = useSvmConnectivity();

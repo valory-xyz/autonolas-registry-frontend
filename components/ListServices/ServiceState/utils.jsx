@@ -126,7 +126,7 @@ export const mintTokenRequest = async ({ account, serviceId }) => {
   return null;
 };
 
-export const onActivateRegistration = async (account, id, deposit) => {
+export const onActivateRegistration = async (id, account, deposit) => {
   const contract = getServiceManagerContract();
   const fn = contract.methods.activateRegistration(id).send({
     from: account,
