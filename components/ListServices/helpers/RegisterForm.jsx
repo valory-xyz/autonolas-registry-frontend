@@ -244,7 +244,7 @@ const RegisterForm = ({
             type="link"
             onClick={handlePrefillAddress}
             className="pl-0"
-            disabled={isVmWalletAbsent}
+            disabled={isVmWalletAbsent || isUpdateForm}
           >
             Prefill Address
           </Button>
@@ -407,7 +407,12 @@ const RegisterForm = ({
         </Form.Item>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit" loading={isLoading}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            loading={isLoading}
+            disabled={!account}
+          >
             Submit
           </Button>
         </Form.Item>
