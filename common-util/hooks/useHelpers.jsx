@@ -52,6 +52,7 @@ export const useHelpers = () => {
     chainName,
     isL1OnlyNetwork: isL1OnlyNetworkFn(chainId),
     isL1Network: isL1NetworkFn(chainId),
+    // TODO: remove this - this is not required as every network has a service manager token
     doesNetworkHaveValidServiceManagerToken:
       doesNetworkHaveValidServiceManagerTokenFn(chainId),
     links: updatedLinks,

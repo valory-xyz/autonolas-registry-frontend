@@ -54,8 +54,10 @@ export const ADDRESSES = {
   },
   // polygon mumbai
   80001: {
-    serviceManager: '0x43d28764bB39936185c84906983fB57A8A905a4F',
+    serviceManagerToken: '0xE16adc7777B7C2a0d35033bd3504C028AB28EE8b',
     serviceRegistryL2: '0xf805DfF246CC208CD2F08ffaD242b7C32bc93623',
+    serviceRegistryTokenUtility: '0x131b5551c81e9B3E89E9ACE30A5B3D45144E3e42',
+    operatorWhitelist: '0x118173028162C1b7c6Bf8488bd5dA2abd7c30F9D',
   },
   // local
   31337: {

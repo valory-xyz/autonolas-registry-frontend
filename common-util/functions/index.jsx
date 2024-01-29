@@ -171,11 +171,18 @@ export const checkIfGnosisSafe = async (account, provider) => {
 
 /**
  * Checks if the network has "Service Manager Token".
- * For now mainnet, goerli, gnosis & chiado has service manager token.
+ * For now mainnet, goerli, gnosis, chiado, polygon & polygon mumbai
+ * has service manager token.
  */
 export const doesNetworkHaveValidServiceManagerTokenFn = (chainId) => {
   const isL1 = isL1OnlyNetworkFn(chainId);
-  return isL1 || chainId === 100 || chainId === 10200;
+  return (
+    isL1
+    || chainId === 100
+    || chainId === 10200
+    || chainId === 137
+    || chainId === 80001
+  );
 };
 
 export const isAddressProhibited = (address) => {
