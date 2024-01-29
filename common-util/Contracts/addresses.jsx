@@ -22,8 +22,10 @@ const GNOSIS_ADDRESSES = {
 };
 
 const POLYGON_ADDRESSES = {
-  serviceManager: '0x3C1fF68f5aa342D296d4DEe4Bb1cACCA912D95fE',
+  serviceManagerToken: '0x04b0007b2aFb398015B76e5f22993a1fddF83644',
   serviceRegistryL2: '0xE3607b00E75f6405248323A9417ff6b39B244b50',
+  serviceRegistryTokenUtility: '0xa45E64d13A30a51b91ae0eb182e88a40e9b18eD8',
+  operatorWhitelist: '0x526E064cB694E8f5B7DB299158e17F33055B3943',
 };
 
 // get addresses from scripts/deployment folder in autonolas-registries repo
