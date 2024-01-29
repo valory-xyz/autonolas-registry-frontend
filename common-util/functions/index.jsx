@@ -135,14 +135,10 @@ const isMethodsBuilderInstance = (builderIns, registryAddress) => {
  * @param {string} extra.registryAddress - The address of the registry contract.
  *
  */
-export const sendTransaction = (
-  method,
-  account,
-  { vmType, registryAddress },
-) => {
-  if (vmType === VM_TYPE.SVM) {
+export const sendTransaction = (method, account, extra) => {
+  if (extra?.vmType === VM_TYPE.SVM) {
     // Check if something resembling an SVM method is being passed
-    if (!isMethodsBuilderInstance(method, registryAddress)) {
+    if (!isMethodsBuilderInstance(method, extra?.registryAddress)) {
       notifyError('Invalid method object');
       throw new Error('Invalid method object');
     }
