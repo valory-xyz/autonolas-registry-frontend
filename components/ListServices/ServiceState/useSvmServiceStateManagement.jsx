@@ -17,39 +17,19 @@ export const useGetActivateRegistration = () => {
     async (id, account, deposit) => {
       console.log('useGetActivateRegistration', id, account, deposit);
 
-      const [pda] = await PublicKey.findProgramAddress(
-        [Buffer.from('pdaEscrow', 'utf-8')],
-        program.programId,
-      );
-
-      const pdaEscrow = pda;
-      // const pdaEscrow = pda.toBase58();
-      console.log('pda', pda);
-
-      const serviceRegistryPublicKeyInstance = new PublicKey(
-        solanaAddresses.serviceRegistry,
-      );
-      // const pdaEscrow = await PublicKey.findProgramAddressSync(
-      //   [
-      //     Buffer.from('escrow'),
-      //     serviceRegistryPublicKeyInstance.toBuffer(),
-      //     new PublicKey(id).toBuffer(),
-      //   ],
-      //   serviceRegistryPublicKeyInstance,
-      // );
-
       if (isSvm) {
-        const fn = program.methods
+        const [pda] = await PublicKey.findProgramAddress(
+          [Buffer.from('pdaEscrow', 'utf-8')],
+          solanaAddresses.serviceRegistry,
+          // program.programId,
+        );
+
+        const pdaEscrow = pda;
+
+        const fn = await program.methods
           .activateRegistration(id)
           .accounts({
             dataAccount: solanaAddresses.storageAccount,
-            // systemProgram: SystemProgram.programId,
-            // systemProgram: deposit,
-            // systemProgram: SystemProgram.transfer({
-            //   fromPubkey: walletPublicKey,
-            //   toPubkey: solanaAddresses.serviceRegistry,
-            //   lamports: deposit,
-            // }),
           })
           .remainingAccounts([
             { pubkey: walletPublicKey, isSigner: true, isWritable: true },
@@ -59,14 +39,19 @@ export const useGetActivateRegistration = () => {
               isWritable: true,
             },
           ])
-          .signers([wallet]);
+          .signers([wallet])
+          .rpc();
 
-        const response = await sendTransaction(fn, account || undefined, {
-          vmType,
-          registryAddress: solanaAddresses.serviceRegistry,
-        });
+        console.log('fn', fn);
 
-        return response;
+        // const response = await sendTransaction(fn, account || undefined, {
+        //   vmType,
+        //   registryAddress: solanaAddresses.serviceRegistry,
+        // });
+
+        // return response;
+
+        return null;
       }
 
       const response = await onActivateRegistration(id, account, deposit);
@@ -74,31 +59,26 @@ export const useGetActivateRegistration = () => {
     },
     [isSvm, solanaAddresses, walletPublicKey, program, vmType],
   );
-
-  // const abcd = async (id, account, deposit) => {
-  //   console.log('useGetActivateRegistration', id, account, deposit);
-
-  //   if (isSvm) {
-  //     const response = await program.methods
-  //       .activateRegistration(id)
-  //       .accounts({ dataAccount: solanaAddresses.storageAccount })
-  //       .remainingAccounts([
-  //         { pubkey: walletPublicKey, isSigner: true, isWritable: true },
-  //       ]);
-
-  //     return response;
-  //   }
-
-  //   const response = await onActivateRegistration(id, account, deposit);
-  //   return response;
-  // };
-
-  // return abcd;
-  // return (...args) => console.log('useGetActivateRegistration', args);
-
-  // return a function that returns a function
-  // return () => {
-  //   console.log('useGetActivateRegistration');
-  //   return () => console.log('useGetActivateRegistration');
-  // };
 };
+
+// const [pda] = await PublicKey.findProgramAddress(
+//   [Buffer.from('pdaEscrow', 'utf-8')],
+//   program.programId,
+// );
+
+// const pdaEscrow = pda;
+
+// const fn = program.methods
+//   .activateRegistration(id)
+//   .accounts({
+//     dataAccount: solanaAddresses.storageAccount,
+//   })
+//   .remainingAccounts([
+//     { pubkey: walletPublicKey, isSigner: true, isWritable: true },
+//     {
+//       pubkey: pdaEscrow,
+//       isSigner: false,
+//       isWritable: true,
+//     },
+//   ])
+//   .signers([wallet]);
