@@ -6,38 +6,36 @@ import { useHelpers } from 'common-util/hooks';
 import { sendTransaction } from 'common-util/functions';
 import { notifySuccess, notifyError } from '@autonolas/frontend-library';
 import { onActivateRegistration } from './utils';
+import { useSvmPdaEscrow } from '../useSvmService';
 
 export const useGetActivateRegistration = () => {
   const { isSvm, vmType } = useHelpers();
   const {
     solanaAddresses, walletPublicKey, program, wallet,
   } = useSvmConnectivity();
+  const { getSvmPdaEscrow } = useSvmPdaEscrow();
 
   return useCallback(
     async (id, account, deposit) => {
-      console.log('useGetActivateRegistration', id, account, deposit);
+      // console.log('useGetActivateRegistration', id, account, deposit);
 
       if (isSvm) {
-        const [pda] = await PublicKey.findProgramAddress(
-          [Buffer.from('pdaEscrow', 'utf-8')],
-          solanaAddresses.serviceRegistry,
-          // program.programId,
-        );
+        // const [pda] = await PublicKey.findProgramAddress(
+        //   [Buffer.from('pdaEscrow', 'utf-8')],
+        //   program.programId,
+        // );
+        // const pdaEscrow = pda;
 
-        const pdaEscrow = pda;
+        // const pdaEscrow = await getSvmPdaEscrow();
+        const pdaEscrow = new PublicKey(solanaAddresses.pda);
+        console.log('pdaEscrow', pdaEscrow);
 
         const fn = await program.methods
           .activateRegistration(id)
-          .accounts({
-            dataAccount: solanaAddresses.storageAccount,
-          })
+          .accounts({ dataAccount: solanaAddresses.storageAccount })
           .remainingAccounts([
             { pubkey: walletPublicKey, isSigner: true, isWritable: true },
-            {
-              pubkey: pdaEscrow,
-              isSigner: false,
-              isWritable: true,
-            },
+            { pubkey: pdaEscrow, isSigner: false, isWritable: true },
           ])
           .signers([wallet])
           .rpc();

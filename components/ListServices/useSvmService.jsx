@@ -41,9 +41,14 @@ const deseralizeProgramData = (serializedValue, decodeTypeName) => {
     return strippedValue;
   }
 
-  if (decodeTypeName === 'publicKey' || decodeTypeName === 'string') {
+  if (decodeTypeName === 'publicKey') {
     const publicKey = new PublicKey(serializedValue);
     return publicKey.toBase58();
+  }
+
+  if (decodeTypeName === 'rawPublicKey') {
+    const publicKey = new PublicKey(serializedValue);
+    return publicKey;
   }
 
   const borshCoder = new BorshCoder(idl);
@@ -399,4 +404,15 @@ export const useAgentInstanceAndOperator = () => {
   );
 
   return { getSvmAgentInstanceAndOperator };
+};
+
+export const useSvmPdaEscrow = () => {
+  const { getData } = useSvmDataFetch();
+
+  const getSvmPdaEscrow = useCallback(async () => {
+    const pdaEscrow = await getData('pdaEscrow', [], 'rawPublicKey');
+    return pdaEscrow;
+  }, [getData]);
+
+  return { getSvmPdaEscrow };
 };

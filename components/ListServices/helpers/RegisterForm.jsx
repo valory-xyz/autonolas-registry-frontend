@@ -437,7 +437,9 @@ RegisterForm.propTypes = {
     name: PropTypes.string,
     description: PropTypes.string,
     configHash: PropTypes.string,
-    agentIds: PropTypes.arrayOf(PropTypes.string),
+    agentIds: PropTypes.arrayOf(
+      PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    ),
     agentNumSlots: PropTypes.arrayOf(PropTypes.string),
     agentParams: PropTypes.arrayOf(PropTypes.shape({})),
     threshold: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
