@@ -5,7 +5,6 @@ import {
   getChainIdOrDefaultToMainnet as getChainIdOrDefaultToMainnetFn,
   getIsValidChainId as getIsValidChainIdFn,
   sendTransaction as sendTransactionFn,
-  isL1OnlyNetwork as isL1OnlyNetworkFn,
   notifyWarning,
   notifyError,
 } from '@autonolas/frontend-library';
@@ -49,6 +48,7 @@ export const getProvider = () => {
   }
 
   if (typeof window === 'undefined') {
+    /* eslint-disable-next-line no-console */
     console.warn(
       'No provider found, fetching RPC URL from first supported chain',
     );
@@ -171,19 +171,11 @@ export const checkIfGnosisSafe = async (account, provider) => {
 
 /**
  * Checks if the network has "Service Manager Token".
- * For now mainnet, goerli, gnosis, chiado, polygon & polygon mumbai
- * has service manager token.
+ * NOTE: Initially, only mainnet and goerli had service manager token,
+ * but now all networks have service manager token. Hence, this function
+ * defaults to true BUT can be overridden for specific networks in the future.
  */
-export const doesNetworkHaveValidServiceManagerTokenFn = (chainId) => {
-  const isL1 = isL1OnlyNetworkFn(chainId);
-  return (
-    isL1
-    || chainId === 100
-    || chainId === 10200
-    || chainId === 137
-    || chainId === 80001
-  );
-};
+export const doesNetworkHaveValidServiceManagerTokenFn = (chainId) => !!chainId;
 
 export const isAddressProhibited = (address) => {
   const addresses = prohibitedAddresses.map((e) => toLower(e));
