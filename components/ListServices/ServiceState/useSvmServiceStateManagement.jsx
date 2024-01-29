@@ -28,16 +28,16 @@ export const useGetActivateRegistration = () => {
 
         // const pdaEscrow = await getSvmPdaEscrow();
         const pdaEscrow = new PublicKey(solanaAddresses.pda);
-        console.log('pdaEscrow', pdaEscrow);
+        console.log('pdaEscrow', pdaEscrow, id);
 
         const fn = await program.methods
           .activateRegistration(id)
           .accounts({ dataAccount: solanaAddresses.storageAccount })
           .remainingAccounts([
-            { pubkey: walletPublicKey, isSigner: true, isWritable: true },
+            { pubkey: wallet.publicKey, isSigner: true, isWritable: true },
             { pubkey: pdaEscrow, isSigner: false, isWritable: true },
           ])
-          .signers([wallet])
+          // .signers([wallet])
           .rpc();
 
         console.log('fn', fn);
