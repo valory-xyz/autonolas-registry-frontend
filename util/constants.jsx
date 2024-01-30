@@ -83,7 +83,6 @@ export const VM_TYPE = {
 export const SOLANA_CHAIN_NAMES = {
   MAINNET: 'solana',
   DEVNET: 'solana-devnet',
-  TESTNET: 'solana-testnet',
 };
 
 /**

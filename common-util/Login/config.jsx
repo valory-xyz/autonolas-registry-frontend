@@ -113,18 +113,9 @@ const SVM_SOLANA_DEVNET_CHAIN = {
   vmType: VM_TYPE.SVM,
 };
 
-const SVM_SOLANA_TESTNET_CHAIN = {
-  id: null,
-  networkDisplayName: 'Solana Testnet',
-  networkName: SOLANA_CHAIN_NAMES.TESTNET,
-  clusterName: 'testnet',
-  vmType: VM_TYPE.SVM,
-};
-
 export const SVM_SUPPORTED_CHAINS = [
   { ...SVM_SOLANA_CHAIN },
   { ...SVM_SOLANA_DEVNET_CHAIN },
-  { ...SVM_SOLANA_TESTNET_CHAIN },
 ];
 
 const DEFAULT_SVM_CLUSTER = 'mainnet-beta';
@@ -141,15 +132,6 @@ export const getSvmEndpoint = (networkName) => {
   if (chain?.networkName === SOLANA_CHAIN_NAMES.MAINNET) {
     return process.env.NEXT_PUBLIC_SOLANA_MAINNET_BETA_URL;
   }
-  if (chain?.networkName === SOLANA_CHAIN_NAMES.TESTNET) {
-    return 'https://api.testnet.solana.com';
-  }
-  // if (chain?.networkName === SOLANA_CHAIN_NAMES.DEVNET) {
-  // return 'https://api.devnet.solana.com'; // working but not the sendTransaction
-  // return 'https://rpc.ankr.com/solana_devnet';
-  // return 'https://api-devnet.helius.xyz';
-  // return process.env.NEXT_PUBLIC_SOLANA_DEVNET_URL;
-  // }
   return chain ? web3.clusterApiUrl(chain.clusterName) : web3.clusterApiUrl(DEFAULT_SVM_CLUSTER);
 };
 
@@ -171,7 +153,6 @@ export const ALL_SUPPORTED_CHAINS = [
       'gnosis-chiado',
       'polygon-mumbai',
       'solana-devnet',
-      'solana-testnet',
     ];
 
     const aIndex = chainOrder.indexOf(a.networkName);
