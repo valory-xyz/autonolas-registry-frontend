@@ -11,6 +11,8 @@ import {
   goerli,
   polygonMumbai,
   gnosisChiado,
+  arbitrum,
+  // arbitrumSepolia
 } from 'wagmi/chains';
 import { SafeConnector } from 'wagmi/connectors/safe';
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
@@ -28,6 +30,8 @@ export const SUPPORTED_CHAINS = [
   gnosisChiado,
   polygon,
   polygonMumbai,
+  arbitrum,
+  // arbitrumSepolia
 ];
 
 const { publicClient, webSocketPublicClient, chains } = configureChains(
