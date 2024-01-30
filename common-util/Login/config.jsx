@@ -12,7 +12,7 @@ import {
   polygonMumbai,
   gnosisChiado,
   arbitrum,
-  // arbitrumSepolia
+  arbitrumSepolia,
 } from 'wagmi/chains';
 import { SafeConnector } from 'wagmi/connectors/safe';
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
@@ -31,7 +31,7 @@ export const SUPPORTED_CHAINS = [
   polygon,
   polygonMumbai,
   arbitrum,
-  // arbitrumSepolia
+  arbitrumSepolia,
 ];
 
 const { publicClient, webSocketPublicClient, chains } = configureChains(
@@ -136,7 +136,9 @@ export const getSvmEndpoint = (networkName) => {
   if (chain?.networkName === SOLANA_CHAIN_NAMES.MAINNET) {
     return process.env.NEXT_PUBLIC_SOLANA_MAINNET_BETA_URL;
   }
-  return chain ? web3.clusterApiUrl(chain.clusterName) : web3.clusterApiUrl(DEFAULT_SVM_CLUSTER);
+  return chain
+    ? web3.clusterApiUrl(chain.clusterName)
+    : web3.clusterApiUrl(DEFAULT_SVM_CLUSTER);
 };
 
 /**
@@ -145,25 +147,25 @@ export const getSvmEndpoint = (networkName) => {
 export const ALL_SUPPORTED_CHAINS = [
   ...EVM_SUPPORTED_CHAINS,
   ...SVM_SUPPORTED_CHAINS,
-].sort(
-  (a, b) => {
-    // sort in this order
-    const chainOrder = [
-      'ethereum',
-      'gnosis',
-      'polygon',
-      'solana',
-      'goerli',
-      'gnosis-chiado',
-      'polygon-mumbai',
-      'solana-devnet',
-    ];
+].sort((a, b) => {
+  // sort in this order
+  const chainOrder = [
+    'ethereum',
+    'gnosis',
+    'polygon',
+    'solana',
+    'arbitrum',
+    'goerli',
+    'gnosis-chiado',
+    'polygon-mumbai',
+    'solana-devnet',
+    'arbitrum-sepolia',
+  ];
 
-    const aIndex = chainOrder.indexOf(a.networkName);
-    const bIndex = chainOrder.indexOf(b.networkName);
+  const aIndex = chainOrder.indexOf(a.networkName);
+  const bIndex = chainOrder.indexOf(b.networkName);
 
-    if (aIndex === bIndex) return 0;
-    if (aIndex > bIndex) return 1;
-    return -1;
-  },
-);
+  if (aIndex === bIndex) return 0;
+  if (aIndex > bIndex) return 1;
+  return -1;
+});
