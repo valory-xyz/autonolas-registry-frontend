@@ -211,15 +211,15 @@ export const checkIfAgentInstancesAreValid = async ({
   }
 
   // check if the agent instances are valid
-  const ifValidPromiseArray = agentInstances.map(async (agentInstance) => {
-    const isValid = await contract.methods
+  const agentInstanceAddresses = agentInstances.map(async (agentInstance) => {
+    const eachAgentInstance = await contract.methods
       .mapAgentInstanceOperators(agentInstance)
       .call();
-    return isValid;
+    return eachAgentInstance;
   });
 
-  const ifValidArray = (await Promise.all(ifValidPromiseArray)).some(
-    (isValid) => isValid === DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS,
+  const ifValidArray = (await Promise.all(agentInstanceAddresses)).some(
+    (eachAgentInstance) => eachAgentInstance === DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS,
   );
 
   if (!ifValidArray) {

@@ -6,13 +6,15 @@ import {
 import get from 'lodash/get';
 
 import { useHelpers } from 'common-util/hooks';
-import { getServiceTableDataSource, onTerminate, checkIfEth } from './utils';
+import { useSvmConnectivity } from 'common-util/hooks/useSvmConnectivity';
+import { getServiceTableDataSource, checkIfEth } from './utils';
 import { PreRegistration } from './1StepPreRegistration';
 import { ActiveRegistration } from './2StepActiveRegistration';
 import { FinishedRegistration } from './3rdStepFinishedRegistration';
 import { Deployed } from './4thStepDeployed';
 import { Unbond } from './5StepUnbond';
 import { useSvmServiceTableDataSource } from '../useSvmService';
+import { useTerminate } from './useSvmServiceStateManagement';
 import { InfoSubHeader, GenericLabel, ServiceStateContainer } from './styles';
 
 const SERVICE_STATE_HELPER_LABELS = {
@@ -62,8 +64,10 @@ export const ServiceState = ({
   const {
     account, chainId, isSvm, doesNetworkHaveValidServiceManagerToken,
   } = useHelpers();
+  const { walletPublicKey } = useSvmConnectivity();
   const [currentStep, setCurrentStep] = useState(1);
   const [dataSource, setDataSource] = useState([]);
+  const onTerminate = useTerminate();
 
   // by default, assume it's an eth token
   // if svm, then it's not an eth token
@@ -152,7 +156,7 @@ export const ServiceState = ({
     } catch (e) {
       console.error(e);
     }
-  }, [account, id, updateDetails]);
+  }, [account, id, updateDetails, onTerminate]);
 
   /**
    *
@@ -163,7 +167,10 @@ export const ServiceState = ({
   const getOtherBtnProps = (step, extra) => {
     const { isDisabled } = extra || {};
     return {
-      disabled: currentStep + 1 !== step || !!isDisabled || !account,
+      disabled:
+        currentStep + 1 !== step
+        || !!isDisabled
+        || (isSvm ? !walletPublicKey : !account),
     };
   };
 

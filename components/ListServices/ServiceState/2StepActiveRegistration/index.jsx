@@ -10,15 +10,10 @@ import {
 import { useHelpers } from 'common-util/hooks';
 import { SendTransactionButton } from 'common-util/TransactionHelpers/SendTransactionButton';
 import { useSvmBonds } from 'components/ListServices/useSvmService';
-import {
-  getBonds,
-  getTokenBondRequest,
-  checkAndApproveToken,
-  onStep2RegisterAgents,
-  checkIfAgentInstancesAreValid,
-} from '../utils';
+import { getBonds, getTokenBondRequest, checkAndApproveToken } from '../utils';
 import { getNumberOfAgentAddress } from '../../helpers/functions';
 import { ActiveRegistrationTable } from './ActiveRegistrationTable';
+import { useRegisterAgents } from '../useSvmServiceStateManagement';
 
 const { Text } = Typography;
 const STEP = 2;
@@ -45,6 +40,8 @@ export const ActiveRegistration = ({
   const [isRegistering, setIsRegistering] = useState(false);
   const [isTerminating, setIsTerminating] = useState(false);
 
+  const { checkIfAgentInstancesAreValid, registerAgents } = useRegisterAgents();
+
   useEffect(() => {
     // react will throw an warning if we use setState after the component is unmounted,
     // hence need to check if the component is actually mounted
@@ -65,7 +62,12 @@ export const ActiveRegistration = ({
       }
 
       // TODO: for SVM, check while contract write
-      if (serviceId && !isEthToken && doesNetworkHaveValidServiceManagerToken && !isSvm) {
+      if (
+        serviceId
+        && !isEthToken
+        && doesNetworkHaveValidServiceManagerToken
+        && !isSvm
+      ) {
         const response = await getTokenBondRequest(serviceId, dataSource);
         setEthTokenBonds(response);
       }
@@ -113,13 +115,13 @@ export const ActiveRegistration = ({
       return address;
     });
 
-    const agentInstances = trimArray(instances || []);
+    const agentInstances = trimArray(instances);
     try {
       setIsRegistering(true);
 
       // if not eth, check if the user has sufficient token balance
       // and if not, approve the token
-      if (!isEthToken) {
+      if (!isEthToken && !isSvm) {
         await checkAndApproveToken({
           account,
           chainId,
@@ -134,7 +136,7 @@ export const ActiveRegistration = ({
       });
 
       if (isValid) {
-        await onStep2RegisterAgents({
+        await registerAgents({
           account,
           serviceId,
           agentIds: ids,
@@ -165,10 +167,10 @@ export const ActiveRegistration = ({
   return (
     <div className="step-2-active-registration">
       <ActiveRegistrationTable
-        data={dataSource}
-        setDataSource={setDataSource}
         isDisabled={btnProps.disabled}
-        setIsValidAgentAddress={setIsValidAgentAddress}
+        data={dataSource}
+        handleDataSource={setDataSource}
+        handleAgentAddress={setIsValidAgentAddress}
         bordered
       />
       <Text type="secondary">
