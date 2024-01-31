@@ -148,7 +148,7 @@ export const ALL_SUPPORTED_CHAINS = [
   ...EVM_SUPPORTED_CHAINS,
   ...SVM_SUPPORTED_CHAINS,
 ].sort((a, b) => {
-  // sort in this order
+  // NOTE: sort in this order only for the purpose of the dropdown
   const chainOrder = [
     'ethereum',
     'gnosis',

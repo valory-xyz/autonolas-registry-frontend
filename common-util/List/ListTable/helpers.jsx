@@ -6,7 +6,6 @@ import { SearchOutlined } from '@ant-design/icons';
 import { AddressLink } from '@autonolas/frontend-library';
 
 import { NAV_TYPES, SERVICE_STATE, TOTAL_VIEW_COUNT } from 'util/constants';
-import { SUPPORTED_CHAINS } from 'common-util/Login';
 
 const { Title } = Typography;
 
@@ -19,7 +18,6 @@ export const getTableColumns = (
   const addressLinkProps = {
     chainId,
     suffixCount: isMobile ? 4 : 6,
-    supportedChains: SUPPORTED_CHAINS,
   };
 
   if (type === NAV_TYPES.COMPONENT || type === NAV_TYPES.AGENT) {
