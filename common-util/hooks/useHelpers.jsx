@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { isNumber } from 'lodash';
 import { useNetwork } from 'wagmi';
+import { useAnchorWallet } from '@solana/wallet-adapter-react';
 import {
   isL1OnlyNetwork as isL1OnlyNetworkFn,
   isL1Network as isL1NetworkFn,
@@ -11,6 +12,8 @@ import { URL, VM_TYPE } from 'util/constants';
 import { doesNetworkHaveValidServiceManagerTokenFn } from '../functions';
 
 export const useHelpers = () => {
+  const wallet = useAnchorWallet();
+
   const account = useSelector((state) => state?.setup?.account);
   const vmType = useSelector((state) => state?.setup?.vmType);
 
@@ -45,7 +48,7 @@ export const useHelpers = () => {
   const isSvm = vmType === VM_TYPE.SVM;
 
   return {
-    account,
+    account: isSvm ? wallet?.publicKey : account,
     vmType,
     chainId,
     chainDisplayName,
