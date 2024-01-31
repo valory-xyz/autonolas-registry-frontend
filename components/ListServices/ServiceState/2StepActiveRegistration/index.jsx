@@ -17,7 +17,7 @@ import {
   onStep2RegisterAgents,
   checkIfAgentInstancesAreValid,
 } from '../utils';
-import { getNumberOfAgentAddress } from '../../helpers';
+import { getNumberOfAgentAddress } from '../../helpers/functions';
 import { ActiveRegistrationTable } from './ActiveRegistrationTable';
 
 const { Text } = Typography;

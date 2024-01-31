@@ -1,3 +1,8 @@
+/**
+ * useSvmService.jsx
+ * This file contains the hooks to fetch data from the SVM (Solana)
+ */
+
 import { useCallback } from 'react';
 import { BorshCoder } from '@project-serum/anchor';
 import {
@@ -13,7 +18,7 @@ import { useSvmConnectivity } from 'common-util/hooks/useSvmConnectivity';
 import {
   transformDatasourceForServiceTable,
   transformSlotsAndBonds,
-} from './helpers';
+} from './helpers/functions';
 
 /**
  * deseralize the program data
@@ -171,22 +176,27 @@ const useGetTotalForMyServices = () => {
  * @param {Service}
  *
  */
-const transformServiceData = (service, index) => {
+const transformServiceData = (service, serviceId) => {
   const owner = service.serviceOwner?.toString();
   const stateName = Object.keys(service.state || {})[0];
-  const publicKey = new PublicKey(service.multisig);
+  // convert to base58 ie. readable format
+  const multisig = (new PublicKey(service.multisig)).toBase58();
+  // convert configHash u32 to hex string
+  const decodedConfigHash = Buffer.from(service.configHash, 'utf8').toString('hex');
 
-  // TODO: transform more data for service details page
+  // TODO: transform more data for service state management
   return {
     ...service,
-    id: index,
+    id: serviceId,
     owner,
     state: SERVICE_STATE_KEY_MAP[stateName],
-    multisig: publicKey.toBase58(),
+    multisig,
+    bonds: service.bonds.map((e) => Number(e)),
+    configHash: decodedConfigHash,
   };
 };
 
-export const useGetServiceDetails = () => {
+export const useGetSvmServiceDetails = () => {
   const { getData } = useSvmDataFetch();
 
   const getSvmServiceDetails = useCallback(
@@ -202,7 +212,7 @@ export const useGetServiceDetails = () => {
 
 // returns the list of services
 const useGetServices = () => {
-  const { getSvmServiceDetails } = useGetServiceDetails();
+  const { getSvmServiceDetails } = useGetSvmServiceDetails();
 
   const getSvmServices = useCallback(
     async (total) => {
@@ -222,7 +232,7 @@ const useGetServices = () => {
 
 // return the list of services for the given account
 const useGetMyServices = () => {
-  const { getSvmServiceDetails } = useGetServiceDetails();
+  const { getSvmServiceDetails } = useGetSvmServiceDetails();
 
   const getMySvmServices = useCallback(
     async (account, total) => {

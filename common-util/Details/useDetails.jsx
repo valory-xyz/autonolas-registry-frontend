@@ -25,13 +25,13 @@ export const useDetails = ({
       setInfo([]);
 
       try {
-        const tempDetails = await getDetails();
+        const tempDetails = await getDetails(id);
         setInfo(tempDetails);
 
-        const ownerAccount = await getOwner();
+        const ownerAccount = await getOwner(id);
         setDetailsOwner(ownerAccount || '');
 
-        const tempTokenUri = await getTokenUri();
+        const tempTokenUri = await getTokenUri(id);
         setTokenUri(tempTokenUri);
       } catch (e) {
         console.error(e);
@@ -49,13 +49,13 @@ export const useDetails = ({
    */
   const updateDetails = useCallback(async () => {
     try {
-      const details = await getDetails();
+      const details = await getDetails(id);
       setInfo(details);
     } catch (e) {
       console.error(e);
       notifyError(`Error fetching ${type} details`);
     }
-  }, [type, getDetails]);
+  }, [id, type, getDetails]);
 
   return {
     isLoading,

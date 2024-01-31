@@ -4,8 +4,8 @@ import { useRouter } from 'next/router';
 import { render, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { act } from 'react-dom/test-utils';
-import Service from 'components/ListServices/service';
-import { FORM_NAME } from 'components/ListServices/RegisterForm';
+import Update from 'components/ListServices/update';
+import { FORM_NAME } from 'components/ListServices/helpers/RegisterForm';
 import {
   getServiceContract,
   getServiceManagerContract,
@@ -75,7 +75,7 @@ describe.skip('listServices/service.jsx', () => {
   it('should update the service successfully', async () => {
     expect.hasAssertions();
     const { container, getByRole } = render(
-      wrapProvider(<Service isUpdateForm />),
+      wrapProvider(<Update isUpdateForm />),
     );
 
     await waitFor(async () => {
