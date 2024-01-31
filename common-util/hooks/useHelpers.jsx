@@ -48,6 +48,12 @@ export const useHelpers = () => {
   const isSvm = vmType === VM_TYPE.SVM;
 
   return {
+    /**
+    * @type {string | import("@solana/web3.js").PublicKey}
+     * account - selected in the dropdown
+     * If SVM, account is the public key of the phantom wallet
+     * else account is the address of the selected wallet
+     */
     account: isSvm ? wallet?.publicKey : account,
     vmType,
     chainId,
