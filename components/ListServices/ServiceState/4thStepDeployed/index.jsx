@@ -72,10 +72,11 @@ export const Deployed = ({
 
   const addressLinkProps = useMemo(
     () => ({
+      chainId,
       chainName,
       suffixCount: isMobile ? 4 : 6,
     }),
-    [chainName, isMobile],
+    [chainName, isMobile, chainId],
   );
 
   return (

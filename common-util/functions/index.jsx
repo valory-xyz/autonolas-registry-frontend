@@ -135,11 +135,8 @@ const isMethodsBuilderInstance = (builderIns, registryAddress) => {
  * @param {string} extra.registryAddress - The address of the registry contract.
  *
  */
-export const sendTransaction = (
-  method,
-  account,
-  { vmType, registryAddress },
-) => {
+export const sendTransaction = (method, account, extra) => {
+  const { vmType, registryAddress } = extra || {};
   if (vmType === VM_TYPE.SVM) {
     // Check if something resembling an SVM method is being passed
     if (!isMethodsBuilderInstance(method, registryAddress)) {
@@ -175,7 +172,13 @@ export const checkIfGnosisSafe = async (account, provider) => {
  */
 export const doesNetworkHaveValidServiceManagerTokenFn = (chainId) => {
   const isL1 = isL1OnlyNetworkFn(chainId);
-  return isL1 || chainId === 100 || chainId === 10200;
+  return (
+    isL1
+    || chainId === 100
+    || chainId === 10200
+    || chainId === 42161
+    || chainId === 421614
+  );
 };
 
 export const isAddressProhibited = (address) => {

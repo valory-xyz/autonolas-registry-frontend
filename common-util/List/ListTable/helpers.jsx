@@ -5,20 +5,23 @@ import {
 import { SearchOutlined } from '@ant-design/icons';
 import { AddressLink } from '@autonolas/frontend-library';
 
-import {
-  NAV_TYPES,
-  SERVICE_STATE,
-  TOTAL_VIEW_COUNT,
-} from 'util/constants';
+import { NAV_TYPES, SERVICE_STATE, TOTAL_VIEW_COUNT } from 'util/constants';
+import { SUPPORTED_CHAINS } from 'common-util/Login';
 
 const { Title } = Typography;
 
 export const getTableColumns = (
   type,
   {
-    onViewClick, onUpdateClick, isMobile, chainName,
+    onViewClick, onUpdateClick, isMobile, chainName, chainId,
   },
 ) => {
+  const addressLinkProps = {
+    chainId,
+    suffixCount: isMobile ? 4 : 6,
+    supportedChains: SUPPORTED_CHAINS,
+  };
+
   if (type === NAV_TYPES.COMPONENT || type === NAV_TYPES.AGENT) {
     return [
       {
@@ -32,18 +35,14 @@ export const getTableColumns = (
         dataIndex: 'owner',
         key: 'owner',
         width: 160,
-        render: (text) => (
-          <AddressLink text={text} suffixCount={isMobile ? 4 : 6} />
-        ),
+        render: (text) => <AddressLink {...addressLinkProps} text={text} />,
       },
       {
         title: 'Hash',
         dataIndex: 'hash',
         key: 'hash',
         width: 180,
-        render: (text) => (
-          <AddressLink text={text} suffixCount={isMobile ? 4 : 6} isIpfsLink />
-        ),
+        render: (text) => <AddressLink {...addressLinkProps} text={text} />,
       },
       {
         title: 'No. of component dependencies',
@@ -82,9 +81,9 @@ export const getTableColumns = (
         width: 200,
         render: (text) => (
           <AddressLink
+            {...addressLinkProps}
             text={text}
             chainName={chainName}
-            suffixCount={isMobile ? 4 : 6}
           />
         ),
       },
