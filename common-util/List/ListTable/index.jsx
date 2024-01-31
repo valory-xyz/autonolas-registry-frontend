@@ -22,7 +22,9 @@ const ListTable = ({
   onUpdateClick,
   extra,
 }) => {
-  const { chainName, isSvm, chainId } = useHelpers();
+  const {
+    chainName, account, isSvm, chainId,
+  } = useHelpers();
   const { hasNoSvmPublicKey } = useSvmConnectivity();
   /**
    * no pagination on search as we won't know total beforehand
@@ -58,6 +60,7 @@ const ListTable = ({
     isMobile,
     chainName,
     chainId,
+    account,
   });
   const dataSource = getData(type, list, { current: currentPage });
   const pagination = {

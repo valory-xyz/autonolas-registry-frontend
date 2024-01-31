@@ -5,44 +5,23 @@ import Details from 'common-util/Details';
 import { useHelpers } from 'common-util/hooks';
 import { useSvmConnectivity } from 'common-util/hooks/useSvmConnectivity';
 
-import {
-  getServiceDetails,
-  getServiceOwner,
-  getTokenUri as getEvmTokenUri,
-} from './utils';
-import {
-  useGetServiceDetails,
-  useServiceOwner,
-  useTokenUri,
-} from './useSvmService';
 import { ServiceState } from './ServiceState';
 import { EmptyMessage } from '../styles';
+import {
+  useGetServiceDetails,
+  useGetServiceOwner,
+  useGetServiceTokenUri,
+} from './useService';
 
 const Service = () => {
   const router = useRouter();
   const id = router?.query?.id;
-  const { links, isSvm } = useHelpers();
+  const { links } = useHelpers();
   const { hasNoSvmPublicKey } = useSvmConnectivity();
-  const { getSvmServiceDetails } = useGetServiceDetails();
-  const { getSvmServiceOwner } = useServiceOwner();
-  const { getSvmTokenUri } = useTokenUri();
 
-  const getDetails = useCallback(async () => {
-    const e = isSvm
-      ? await getSvmServiceDetails(id)
-      : await getServiceDetails(id);
-    return e;
-  }, [id, isSvm, getSvmServiceDetails]);
-
-  const getOwner = useCallback(async () => {
-    const e = isSvm ? await getSvmServiceOwner(id) : await getServiceOwner(id);
-    return e;
-  }, [id, isSvm, getSvmServiceOwner]);
-
-  const getTokenUri = useCallback(async () => {
-    const e = isSvm ? await getSvmTokenUri(id) : await getEvmTokenUri(id);
-    return e;
-  }, [id, isSvm, getSvmTokenUri]);
+  const getDetails = useGetServiceDetails();
+  const getOwner = useGetServiceOwner();
+  const getTokenUri = useGetServiceTokenUri();
 
   const handleUpdate = useCallback(() => {
     router.push(`${links.UPDATE_SERVICE}/${id}`);

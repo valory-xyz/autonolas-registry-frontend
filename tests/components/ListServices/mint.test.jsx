@@ -3,7 +3,7 @@ import { render, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { getServiceManagerContract } from 'common-util/Contracts';
 import MintService from 'components/ListServices/mint';
-import { FORM_NAME } from 'components/ListServices/RegisterForm';
+import { FORM_NAME } from 'components/ListServices/helpers/RegisterForm';
 import { wrapProvider, dummyAddress, mockV1Hash } from '../../helpers';
 import { fillIpfsGenerationModal } from '../../helpers/prefillForm';
 

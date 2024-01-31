@@ -14,7 +14,7 @@ import { getTokenDetailsRequest } from 'common-util/Details/utils';
 import {
   transformDatasourceForServiceTable,
   transformSlotsAndBonds,
-} from '../helpers';
+} from '../helpers/functions';
 
 /* ----- helper functions ----- */
 
