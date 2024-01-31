@@ -408,7 +408,7 @@ const RegisterForm = ({
             type="primary"
             htmlType="submit"
             loading={isLoading}
-            disabled={isSvm ? !walletPublicKey : !account}
+            disabled={!account}
           >
             Submit
           </Button>

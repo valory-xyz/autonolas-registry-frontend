@@ -108,9 +108,45 @@ export const FinishedRegistration = ({
 
   const btnProps = getOtherBtnProps(STEP);
 
+  console.log('btnProps', options);
+
   return (
     <div className="step-3-finished-registration">
-      {options?.length ? (
+      {isSvm ? (
+        <Form
+          layout="inline"
+          name="mult-sig-form"
+          autoComplete="off"
+          preserve={false}
+          style={{ marginBottom: 8 }}
+          id="myForm"
+        >
+          <Form.Item
+            label="To"
+            name="addressTo"
+            rules={[{ required: false }]}
+            initialValue="0"
+          >
+            <Input size="small" />
+          </Form.Item>
+
+          <Form.Item>
+            {getButton(
+              <Button
+                type="primary"
+                htmlType="submit"
+                loading={isSubmitting}
+                {...getOtherBtnProps(STEP, {
+                  isDisabled: !radioValue || !isOwner,
+                })}
+              >
+                Submit
+              </Button>,
+              { step: STEP },
+            )}
+          </Form.Item>
+        </Form>
+      ) : (
         <Radio.Group
           value={radioValue}
           onChange={(e) => setRadioValue(e.target.value)}
@@ -130,11 +166,11 @@ export const FinishedRegistration = ({
             </div>
           ))}
         </Radio.Group>
-      ) : null}
+      )}
 
       {/* form should be shown only if 1st radio button is selected
       2nd radio button means everything will be handled by the backend */}
-      {radioValue === isMultiSig && (
+      {!isSvm && radioValue === isMultiSig && (
         <RegistryForm
           form={form}
           layout="vertical"
@@ -229,7 +265,7 @@ export const FinishedRegistration = ({
       )}
 
       {/* submits the data for 2nd radio button (ie. 2nd multisig option) */}
-      {radioValue !== isMultiSig && (
+      {!isSvm && radioValue !== isMultiSig && (
         <div className="mb-12 mt-8">
           {getButton(
             <SendTransactionButton

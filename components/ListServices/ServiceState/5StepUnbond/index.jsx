@@ -37,7 +37,8 @@ export const Unbond = ({
    * else the user should not be able to unbond it
    */
   const isValidOperator = (operators || []).some(
-    (e) => (e.agentInstance || '').toLowerCase() === (account || '').toLowerCase(),
+    // toString() is used to convert PublicKey to string (if it is PublicKey)
+    (e) => e.agentInstance?.toLowerCase() === account?.toString().toLowerCase(),
   );
 
   return getButton(
