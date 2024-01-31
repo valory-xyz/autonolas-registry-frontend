@@ -34,7 +34,7 @@ const UpdateService = () => {
     isSvm,
     vmType,
   } = useHelpers();
-  const { solanaAddresses, walletPublicKey, program } = useSvmConnectivity();
+  const { solanaAddresses, program } = useSvmConnectivity();
   const getDetails = useGetServiceDetails();
 
   const [isAllLoading, setAllLoading] = useState(false);
@@ -66,15 +66,12 @@ const UpdateService = () => {
       }
     };
 
-    if ((isSvm && walletPublicKey && id) || (account && id)) {
-      getData();
-    }
+    if (account && id) getData();
   }, [
     account,
     chainId,
     isSvm,
     id,
-    walletPublicKey,
     doesNetworkHaveValidServiceManagerToken,
     getDetails,
   ]);
@@ -86,7 +83,7 @@ const UpdateService = () => {
       .update(...args)
       .accounts({ dataAccount: solanaAddresses.storageAccount })
       .remainingAccounts([
-        { pubkey: walletPublicKey, isSigner: true, isWritable: true },
+        { pubkey: account, isSigner: true, isWritable: true },
       ]);
 
     return fn;

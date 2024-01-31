@@ -12,7 +12,6 @@ import { IpfsHashGenerationModal } from 'common-util/List/IpfsHashGenerationModa
 import { RegistryForm } from 'common-util/TransactionHelpers/RegistryForm';
 import { isValidSolanaPublicKey } from 'common-util/functions';
 import { useHelpers } from 'common-util/hooks';
-import { useSvmConnectivity } from 'common-util/hooks/useSvmConnectivity';
 import { ComplexLabel } from 'common-util/List/styles';
 
 export const FORM_NAME = 'serviceRegisterForm';
@@ -103,7 +102,6 @@ const RegisterForm = ({
   handleSubmit,
 }) => {
   const { account, doesNetworkHaveValidServiceManagerToken, isSvm } = useHelpers();
-  const { walletPublicKey } = useSvmConnectivity();
 
   const [form] = Form.useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -193,15 +191,14 @@ const RegisterForm = ({
   };
 
   const hashValue = form.getFieldValue('hash');
-  const isVmWalletAbsent = isSvm ? !walletPublicKey : !account;
 
   const handlePrefillAddress = () => {
-    if (isVmWalletAbsent) {
+    if (!account) {
       notifyError('Connect a wallet');
       return;
     }
 
-    form.setFieldsValue({ owner_address: isSvm ? walletPublicKey : account });
+    form.setFieldsValue({ owner_address: account });
   };
 
   return (
@@ -244,7 +241,7 @@ const RegisterForm = ({
             type="link"
             onClick={handlePrefillAddress}
             className="pl-0"
-            disabled={isVmWalletAbsent || isUpdateForm}
+            disabled={!account || isUpdateForm}
           >
             Prefill Address
           </Button>

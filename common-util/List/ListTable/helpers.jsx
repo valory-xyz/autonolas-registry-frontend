@@ -12,7 +12,7 @@ const { Title } = Typography;
 export const getTableColumns = (
   type,
   {
-    onViewClick, onUpdateClick, isMobile, chainName, walletPublicKey,
+    onViewClick, onUpdateClick, isMobile, chainName, account,
   },
 ) => {
   if (type === NAV_TYPES.COMPONENT || type === NAV_TYPES.AGENT) {
@@ -99,7 +99,7 @@ export const getTableColumns = (
         render: (_text, record) => {
           // only show update button for pre-registration state
           const canUpdate = ['1'].includes(record.state)
-            && areAddressesEqual(record.owner, walletPublicKey);
+            && areAddressesEqual(record.owner, account);
 
           return (
             <Space size="middle">
