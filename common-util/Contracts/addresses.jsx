@@ -87,8 +87,8 @@ export const ADDRESSES = {
 };
 
 /**
- * Other details
- * Addresses: https://github.com/safe-global/safe-deployments/tree/main/src/assets/v1.3.0
+ * check addresses here - GnosisSafeMultisig
+ * Addresses: https://github.com/valory-xyz/autonolas-registries/blob/main/docs/configuration.json
  */
 export const multisigAddresses = {
   1: ['0x46C0D07F55d4F9B5Eed2Fc9680B5953e5fd7b461'],
@@ -105,6 +105,10 @@ export const multisigAddresses = {
   [LOCAL_FORK_ID_POLYGON]: ['0x3d77596beb0f130a4415df3D2D8232B3d3D31e44'],
 };
 
+/**
+ * check addresses here - GnosisSafeSameAddressMultisig
+ * Addresses: https://github.com/valory-xyz/autonolas-registries/blob/main/docs/configuration.json
+ */
 export const multisigSameAddresses = {
   1: ['0xfa517d01DaA100cB1932FA4345F68874f7E7eF46'],
   5: ['0x06467Cb835da623384a22aa902647784C1c9f5Ae'],
@@ -120,6 +124,8 @@ export const multisigSameAddresses = {
   [LOCAL_FORK_ID_POLYGON]: ['0xd8BCC126ff31d2582018715d5291A508530587b0'],
 };
 
+// check addresses here
+// https://github.com/safe-global/safe-deployments/blob/main/src/assets/v1.3.0/multi_send_call_only.json
 export const safeMultiSend = {
   1: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
   5: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
@@ -135,6 +141,8 @@ export const safeMultiSend = {
   [LOCAL_FORK_ID_POLYGON]: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
 };
 
+// check addresses here
+// https://github.com/safe-global/safe-deployments/blob/main/src/assets/v1.3.0/compatibility_fallback_handler.json
 export const FALLBACK_HANDLER = {
   1: '0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4',
   5: '0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4',
