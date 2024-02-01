@@ -231,6 +231,7 @@ export const ServiceState = ({
           isShowAgentInstanceVisible={currentStep !== 0}
           multisig={multisig}
           currentStep={currentStep}
+          handleTerminate={handleTerminate}
           {...commonProps}
         />
       ),
