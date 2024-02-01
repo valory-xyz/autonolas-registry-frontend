@@ -9,6 +9,7 @@ import {
   checkIfAgentInstancesAreValid as checkIfAgentInstancesAreValidEvm,
   onStep2RegisterAgents,
   onTerminate,
+  // onStep3Deploy,
 } from './utils';
 // import { useSvmDataFetch } from '../useSvmService';
 
@@ -147,6 +148,30 @@ export const useRegisterAgents = () => {
     checkIfAgentInstancesAreValid,
     registerAgents,
   };
+};
+
+export const useFinishRegistration = () => {
+  const { vmType, account } = useHelpers();
+  const { solanaAddresses, walletPublicKey, program } = useSvmConnectivity();
+
+  return useCallback(
+    async (id, multisigKey) => {
+      const fn = program.methods
+        .deploy(id, new PublicKey(multisigKey))
+        .accounts({ dataAccount: solanaAddresses.storageAccount })
+        .remainingAccounts([
+          { pubkey: walletPublicKey, isSigner: true, isWritable: true },
+        ]);
+
+      const response = await sendTransaction(fn, account || undefined, {
+        vmType,
+        registryAddress: solanaAddresses.serviceRegistry,
+      });
+
+      return response;
+    },
+    [solanaAddresses, walletPublicKey, program, vmType, account],
+  );
 };
 
 export const useTerminate = () => {
