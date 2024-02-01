@@ -50,7 +50,7 @@ const MintService = () => {
     return fn;
   };
 
-  const buildEvmParams = async (values) => {
+  const buildEvmParams = (values) => {
     const commonParams = [
       `0x${values.hash}`,
       convertStringToArray(values.agent_ids),
@@ -108,7 +108,7 @@ const MintService = () => {
     }
 
     try {
-      const result = sendTransaction(fn, account || undefined, {
+      const result = await sendTransaction(fn, account || undefined, {
         vmType,
         registryAddress: solanaAddresses.serviceRegistry,
       });

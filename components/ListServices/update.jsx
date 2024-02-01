@@ -122,8 +122,8 @@ const UpdateService = () => {
         if (isSvm) {
           fn = await buildSvmUpdateFn(values);
         } else {
-          const params = buildEvmParams(values);
           const contract = getServiceManagerContract();
+          const params = buildEvmParams(values);
           const updateFn = contract.methods.update(...params);
           const estimatedGas = await getEstimatedGasLimit(updateFn, account);
           fn = updateFn.send({ from: account, gasLimit: estimatedGas });
