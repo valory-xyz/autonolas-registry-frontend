@@ -50,9 +50,7 @@ const MintService = () => {
     return fn;
   };
 
-  const buildEvmCreateFn = async (values) => {
-    const contract = getServiceManagerContract();
-
+  const buildEvmParams = async (values) => {
     const commonParams = [
       `0x${values.hash}`,
       convertStringToArray(values.agent_ids),
@@ -70,10 +68,7 @@ const MintService = () => {
       ]
       : [values.owner_address, ...commonParams];
 
-    const createFn = contract.methods.create(...params);
-    const estimatedGas = await getEstimatedGasLimit(createFn, account);
-    const fn = createFn.send({ from: account, gasLimit: estimatedGas });
-    return fn;
+    return params;
   };
 
   const handleSubmit = async (values) => {
@@ -105,7 +100,11 @@ const MintService = () => {
         console.error(e);
       }
 
-      fn = await buildEvmCreateFn(values);
+      const contract = getServiceManagerContract();
+      const params = buildEvmParams(values);
+      const createFn = contract.methods.create(...params);
+      const estimatedGas = await getEstimatedGasLimit(createFn, account);
+      fn = createFn.send({ from: account, gasLimit: estimatedGas });
     }
 
     try {
