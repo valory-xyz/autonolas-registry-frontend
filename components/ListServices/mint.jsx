@@ -13,7 +13,10 @@ import {
 } from 'common-util/List/ListCommon';
 import { getServiceManagerContract } from 'common-util/Contracts';
 import { sendTransaction } from 'common-util/functions';
-import { checkIfERC721Receive } from 'common-util/functions/requests';
+import {
+  checkIfERC721Receive,
+  getEstimatedGasLimit,
+} from 'common-util/functions/requests';
 import { useHelpers } from 'common-util/hooks';
 import { useSvmConnectivity } from 'common-util/hooks/useSvmConnectivity';
 import RegisterForm from './helpers/RegisterForm';
@@ -67,7 +70,10 @@ const MintService = () => {
       ]
       : [values.owner_address, ...commonParams];
 
-    return contract.methods.create(...params).send({ from: account });
+    const createFn = contract.methods.create(...params);
+    const estimatedGas = await getEstimatedGasLimit(createFn, account);
+    const fn = createFn.send({ from: account, gasLimit: estimatedGas });
+    return fn;
   };
 
   const handleSubmit = async (values) => {
@@ -102,22 +108,20 @@ const MintService = () => {
       fn = await buildEvmCreateFn(values);
     }
 
-    sendTransaction(fn, account || undefined, {
-      vmType,
-      registryAddress: solanaAddresses.serviceRegistry,
-    })
-      .then((result) => {
-        setInformation(result);
-        notifySuccess('Service minted');
-      })
-      .catch((e) => {
-        setError(e);
-        console.error(e);
-        notifyError("Couldn't mint service");
-      })
-      .finally(() => {
-        setIsMinting(false);
+    try {
+      const result = sendTransaction(fn, account || undefined, {
+        vmType,
+        registryAddress: solanaAddresses.serviceRegistry,
       });
+      setInformation(result);
+      notifySuccess('Service minted');
+    } catch (e) {
+      setError(e);
+      console.error(e);
+      notifyError("Couldn't mint service");
+    } finally {
+      setIsMinting(false);
+    }
   };
 
   return (
