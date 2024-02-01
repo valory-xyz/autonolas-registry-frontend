@@ -9,6 +9,7 @@ import {
   checkIfAgentInstancesAreValid as checkIfAgentInstancesAreValidEvm,
   onStep2RegisterAgents,
   onTerminate,
+  onStep5Unbond,
   // onStep3Deploy,
 } from './utils';
 // import { useSvmDataFetch } from '../useSvmService';
@@ -174,6 +175,41 @@ export const useFinishRegistration = () => {
   );
 };
 
+export const useUnbond = () => {
+  const { vmType, isSvm, account } = useHelpers();
+  const { solanaAddresses, walletPublicKey, program } = useSvmConnectivity();
+
+  return useCallback(
+    async (id) => {
+      if (isSvm) {
+        const pdaEscrow = new PublicKey(solanaAddresses.pda);
+
+        const fn = program.methods
+          .unbond(id)
+          .accounts({ dataAccount: solanaAddresses.storageAccount })
+          .remainingAccounts([
+            { pubkey: walletPublicKey, isSigner: true, isWritable: true },
+            { pubkey: pdaEscrow, isSigner: false, isWritable: true },
+          ]);
+
+        const response = await sendTransaction(fn, account || undefined, {
+          vmType,
+          registryAddress: solanaAddresses.serviceRegistry,
+        });
+
+        return response;
+      }
+
+      const response = await onStep5Unbond(account, id);
+      return response;
+    },
+    [solanaAddresses, walletPublicKey, program, vmType, isSvm, account],
+  );
+};
+
+/**
+ * hook to terminate service in all steps
+ */
 export const useTerminate = () => {
   const { isSvm, vmType } = useHelpers();
   const { solanaAddresses, program, walletPublicKey } = useSvmConnectivity();
