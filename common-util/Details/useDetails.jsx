@@ -72,6 +72,7 @@ export const useDetails = ({
     if (account && ownerAddress) {
       return areAddressesEqual(account, ownerAddress);
     }
+
     return false;
   }, [account, ownerAddress, isSvm, walletPublicKey]);
 
