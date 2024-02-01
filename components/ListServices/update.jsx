@@ -90,12 +90,10 @@ const UpdateService = () => {
     return fn;
   };
 
-  const buildEvmUpdateFn = async (values) => {
+  const buildEvmParams = (values) => {
     const token = values.token === DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS
       ? DEFAULT_SERVICE_CREATION_ETH_TOKEN
       : values.token;
-
-    const contract = getServiceManagerContract();
 
     const commonParams = [
       `0x${values.hash}`,
@@ -110,20 +108,7 @@ const UpdateService = () => {
       ? [token, ...commonParams]
       : [...commonParams];
 
-    const updateFn = contract.methods.update(...params);
-    // console.log('updateFn', updateFn);
-    const estimatedGas = await getEstimatedGasLimit(updateFn, account);
-    // console.log('estimatedGas', estimatedGas);
-    // const fn = updateFn.send({ from: account, gasLimit: estimatedGas });
-    // console.log('fn', fn);
-
-    // const fn = contract.methods.update(...params).send({ from: account });
-    // console.log('fn', fn);
-    // return fn;
-    return contract.methods.update(...params).send({
-      from: account,
-      gasLimit: estimatedGas,
-    });
+    return params;
   };
 
   const handleSubmit = (values) => {
@@ -132,14 +117,22 @@ const UpdateService = () => {
       setError(null);
 
       try {
-        const fn = isSvm
-          ? await buildSvmUpdateFn(values)
-          : await buildEvmUpdateFn(values);
-        const response = await sendTransaction(fn, account || undefined, {
+        let fn = null;
+
+        if (isSvm) {
+          fn = await buildSvmUpdateFn(values);
+        } else {
+          const params = buildEvmParams(values);
+          const contract = getServiceManagerContract();
+          const updateFn = contract.methods.update(...params);
+          const estimatedGas = await getEstimatedGasLimit(updateFn, account);
+          fn = updateFn.send({ from: account, gasLimit: estimatedGas });
+        }
+
+        await sendTransaction(fn, account || undefined, {
           vmType,
           registryAddress: solanaAddresses.serviceRegistry,
         });
-        console.log('response', response);
         notifySuccess('Service updated');
       } catch (e) {
         console.error(e);
