@@ -12,9 +12,14 @@ const { Title } = Typography;
 export const getTableColumns = (
   type,
   {
-    onViewClick, onUpdateClick, isMobile, chainName, account,
+    onViewClick, onUpdateClick, isMobile, chainName, account, chainId,
   },
 ) => {
+  const addressLinkProps = {
+    chainId,
+    suffixCount: isMobile ? 4 : 6,
+  };
+
   if (type === NAV_TYPES.COMPONENT || type === NAV_TYPES.AGENT) {
     return [
       {
@@ -28,18 +33,14 @@ export const getTableColumns = (
         dataIndex: 'owner',
         key: 'owner',
         width: 160,
-        render: (text) => (
-          <AddressLink text={text} suffixCount={isMobile ? 4 : 6} />
-        ),
+        render: (text) => <AddressLink {...addressLinkProps} text={text} />,
       },
       {
         title: 'Hash',
         dataIndex: 'hash',
         key: 'hash',
         width: 180,
-        render: (text) => (
-          <AddressLink text={text} suffixCount={isMobile ? 4 : 6} isIpfsLink />
-        ),
+        render: (text) => <AddressLink {...addressLinkProps} text={text} />,
       },
       {
         title: 'No. of component dependencies',
@@ -78,9 +79,9 @@ export const getTableColumns = (
         width: 200,
         render: (text) => (
           <AddressLink
+            {...addressLinkProps}
             text={text}
             chainName={chainName}
-            suffixCount={isMobile ? 4 : 6}
           />
         ),
       },

@@ -12,6 +12,7 @@ import {
   DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS,
 } from 'util/constants';
 import { convertStringToArray, AlertError } from 'common-util/List/ListCommon';
+import { getEstimatedGasLimit } from 'common-util/functions/requests';
 import { getServiceManagerContract } from 'common-util/Contracts';
 import { sendTransaction } from 'common-util/functions';
 import { useHelpers } from 'common-util/hooks';
@@ -89,12 +90,10 @@ const UpdateService = () => {
     return fn;
   };
 
-  const buildEvmUpdateFn = (values) => {
+  const buildEvmParams = (values) => {
     const token = values.token === DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS
       ? DEFAULT_SERVICE_CREATION_ETH_TOKEN
       : values.token;
-
-    const contract = getServiceManagerContract();
 
     const commonParams = [
       `0x${values.hash}`,
@@ -109,7 +108,7 @@ const UpdateService = () => {
       ? [token, ...commonParams]
       : [...commonParams];
 
-    return contract.methods.update(...params).send({ from: account });
+    return params;
   };
 
   const handleSubmit = (values) => {
@@ -117,23 +116,30 @@ const UpdateService = () => {
       setIsUpdating(true);
       setError(null);
 
-      const fn = isSvm
-        ? await buildSvmUpdateFn(values)
-        : await buildEvmUpdateFn(values);
-      sendTransaction(fn, account || undefined, {
-        vmType,
-        registryAddress: solanaAddresses.serviceRegistry,
-      })
-        .then(() => {
-          notifySuccess('Service updated');
-        })
-        .catch((e) => {
-          console.error(e);
-          notifyError('Error updating service');
-        })
-        .finally(() => {
-          setIsUpdating(false);
+      try {
+        let fn = null;
+
+        if (isSvm) {
+          fn = await buildSvmUpdateFn(values);
+        } else {
+          const contract = getServiceManagerContract();
+          const params = buildEvmParams(values);
+          const updateFn = contract.methods.update(...params);
+          const estimatedGas = await getEstimatedGasLimit(updateFn, account);
+          fn = updateFn.send({ from: account, gasLimit: estimatedGas });
+        }
+
+        await sendTransaction(fn, account || undefined, {
+          vmType,
+          registryAddress: solanaAddresses.serviceRegistry,
         });
+        notifySuccess('Service updated');
+      } catch (e) {
+        console.error(e);
+        notifyError('Error updating service');
+      } finally {
+        setIsUpdating(false);
+      }
     };
 
     if (account) submitData();

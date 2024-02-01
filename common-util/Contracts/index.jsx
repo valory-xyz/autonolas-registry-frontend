@@ -36,6 +36,8 @@ export const RPC_URLS = {
   10200: process.env.NEXT_PUBLIC_GNOSIS_CHIADO_URL,
   80001: process.env.NEXT_PUBLIC_POLYGON_MUMBAI_URL,
   31337: process.env.NEXT_PUBLIC_AUTONOLAS_URL,
+  42161: process.env.NEXT_PUBLIC_ARBITRUM_URL,
+  421614: process.env.NEXT_PUBLIC_ARBITRUM_SEPOLIA_URL,
   [LOCAL_FORK_ID]: 'http://localhost:8545',
   [LOCAL_FORK_ID_GNOSIS]: 'http://localhost:8545',
   [LOCAL_FORK_ID_POLYGON]: 'http://localhost:8545',
