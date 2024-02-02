@@ -14,8 +14,6 @@ import {
 } from './utils';
 // import { useSvmDataFetch } from '../useSvmService';
 
-// TODO: fix all the .rpc and use sendTransaction instead
-
 export const useGetActivateRegistration = () => {
   const { isSvm, vmType } = useHelpers();
   const { solanaAddresses, walletPublicKey, program } = useSvmConnectivity();
@@ -49,10 +47,7 @@ export const useGetActivateRegistration = () => {
 };
 
 export const useRegisterAgents = () => {
-  const {
-    isSvm,
-    // vmType
-  } = useHelpers();
+  const { isSvm, vmType } = useHelpers();
   const { solanaAddresses, walletPublicKey, program } = useSvmConnectivity();
   // const { getData } = useSvmDataFetch();
 
@@ -103,28 +98,25 @@ export const useRegisterAgents = () => {
       if (isSvm) {
         const pdaEscrow = new PublicKey(solanaAddresses.pda);
 
-        const agIns = agentInstances.map(
+        const instancesPublicKey = agentInstances.map(
           (agentInstance) => new PublicKey(agentInstance),
         );
-        const agIds = agentIds.map((agentId) => `${agentId}`);
-        // console.log({ serviceId, agIns, agIds });
+        const agentIdsInString = agentIds.map((agentId) => `${agentId}`);
 
-        const fn = await program.methods
-          .registerAgents(serviceId, agIns, agIds)
+        const fn = program.methods
+          .registerAgents(serviceId, instancesPublicKey, agentIdsInString)
           .accounts({ dataAccount: solanaAddresses.storageAccount })
           .remainingAccounts([
             { pubkey: walletPublicKey, isSigner: true, isWritable: true },
             { pubkey: pdaEscrow, isSigner: false, isWritable: true },
-          ])
-          .rpc();
+          ]);
 
-        // const response = await sendTransaction(fn, account || undefined, {
-        //   vmType,
-        //   registryAddress: solanaAddresses.serviceRegistry,
-        // });
+        const response = await sendTransaction(fn, account || undefined, {
+          vmType,
+          registryAddress: solanaAddresses.serviceRegistry,
+        });
 
-        // return response;
-        return fn;
+        return response;
       }
 
       const response = await onStep2RegisterAgents({
@@ -136,13 +128,7 @@ export const useRegisterAgents = () => {
       });
       return response;
     },
-    [
-      isSvm,
-      solanaAddresses,
-      walletPublicKey,
-      program,
-      // vmType
-    ],
+    [isSvm, solanaAddresses, walletPublicKey, program, vmType],
   );
 
   return {

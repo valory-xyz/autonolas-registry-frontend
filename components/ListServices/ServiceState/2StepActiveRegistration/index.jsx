@@ -18,6 +18,42 @@ import { useRegisterAgents } from '../useSvmServiceStateManagement';
 const { Text } = Typography;
 const STEP = 2;
 
+const getIdsAndAgentInstances = (dataSource) => {
+  const trimArray = (string) => (string || [])
+    .join()
+    .split(',')
+    .map((e) => e.trim());
+
+  const ids = [];
+
+  // filter out instances that are empty
+  const filteredDataSource = dataSource.filter(
+    ({ agentAddresses }) => !!agentAddresses,
+  );
+
+  const instances = filteredDataSource.map(({ agentAddresses, agentId }) => {
+    /**
+     * constructs agentIds:
+     * If there are 2 addresses of instances, then the agentIds will be [1, 1]
+     * example: agentAddresses = ['0x123', '0x456']
+     * agentId = 1
+     * ids = [1, 1]
+     */
+    const address = (agentAddresses || '').trim();
+    for (let i = 0; i < trimArray([address]).length; i += 1) {
+      ids.push(agentId);
+    }
+
+    return address;
+  });
+
+  const agentInstances = trimArray(instances);
+  return { ids, agentInstances };
+};
+
+/**
+ * ActiveRegistration component
+ */
 export const ActiveRegistration = ({
   serviceId,
   dataSource,
@@ -61,7 +97,6 @@ export const ActiveRegistration = ({
         }
       }
 
-      // TODO: for SVM, check while contract write
       if (
         serviceId
         && !isEthToken
@@ -87,46 +122,15 @@ export const ActiveRegistration = ({
   ]);
 
   const handleStep2RegisterAgents = async () => {
-    const trimArray = (string) => (string || [])
-      .join()
-      .split(',')
-      .map((e) => e.trim());
+    const { ids, agentInstances } = getIdsAndAgentInstances(dataSource);
 
-    const ids = [];
-
-    // filter out instances that are empty
-    const filteredDataSource = dataSource.filter(
-      ({ agentAddresses }) => !!agentAddresses,
-    );
-
-    const instances = filteredDataSource.map(({ agentAddresses, agentId }) => {
-      /**
-       * constructs agentIds:
-       * If there are 2 addresses of instances, then the agentIds will be [1, 1]
-       * example: agentAddresses = ['0x123', '0x456']
-       * agentId = 1
-       * ids = [1, 1]
-       */
-      const address = (agentAddresses || '').trim();
-      for (let i = 0; i < trimArray([address]).length; i += 1) {
-        ids.push(agentId);
-      }
-
-      return address;
-    });
-
-    const agentInstances = trimArray(instances);
     try {
       setIsRegistering(true);
 
       // if not eth, check if the user has sufficient token balance
       // and if not, approve the token
       if (!isEthToken && !isSvm) {
-        await checkAndApproveToken({
-          account,
-          chainId,
-          serviceId,
-        });
+        await checkAndApproveToken({ account, chainId, serviceId });
       }
 
       // check if the agent instances are valid
@@ -143,11 +147,13 @@ export const ActiveRegistration = ({
           agentInstances,
           dataSource,
         });
-        notifySuccess('Registered Successfully');
+
         await updateDetails();
+        notifySuccess('Registered successfully');
       }
     } catch (e) {
       console.error(e);
+      notifyError('Error while registering agents, please try again');
     } finally {
       setIsRegistering(false);
     }
@@ -173,15 +179,22 @@ export const ActiveRegistration = ({
         handleAgentAddress={setIsValidAgentAddress}
         bordered
       />
-      <Text type="secondary">
-        {`Adding instances will cause a bond of ${totalBondEthToken} ETH`}
-        {!isEthToken && (
-          <>{` and ${convertToEth((totalTokenBonds || 0).toString())} token`}</>
-        )}
-      </Text>
+
+      {/* TODO: ask Aleks if this is required for SVM */}
+      {!isSvm && (
+        <Text type="secondary">
+          {`Adding instances will cause a bond of ${totalBondEthToken} ETH`}
+          {!isEthToken && (
+            <>
+              {` and ${convertToEth((totalTokenBonds || 0).toString())} token`}
+            </>
+          )}
+        </Text>
+      )}
 
       {/* "Register agents" can be clicked by anyone */}
       <SendTransactionButton
+        className="mt-16"
         onClick={handleStep2RegisterAgents}
         {...btnProps}
         loading={isRegistering}

@@ -19,7 +19,6 @@ export const Deployed = ({
   isOwner,
   getButton,
   getOtherBtnProps,
-  updateDetails,
   handleTerminate,
 }) => {
   const dispatch = useDispatch();
@@ -63,7 +62,6 @@ export const Deployed = ({
     try {
       setIsTerminating(true);
       await handleTerminate(account, serviceId);
-      await updateDetails();
     } catch (e) {
       console.error(e);
     } finally {
@@ -110,9 +108,7 @@ export const Deployed = ({
           />
         )}
         <div>
-          {`${
-            isSvm ? 'Squads' : 'Safe'
-          } contract address: ${multisig}`}
+          {`${isSvm ? 'Squads' : 'Safe'} contract address: ${multisig}`}
         </div>
         {getButton(
           <SendTransactionButton

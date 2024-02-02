@@ -2,7 +2,11 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import { Space } from 'antd';
-import { isLocalNetwork } from '@autonolas/frontend-library';
+import {
+  isLocalNetwork,
+  notifyError,
+  notifySuccess,
+} from '@autonolas/frontend-library';
 
 import { useHelpers } from 'common-util/hooks';
 import { SendTransactionButton } from 'common-util/TransactionHelpers/SendTransactionButton';
@@ -51,8 +55,11 @@ export const PreRegistration = ({
         isEthToken ? securityDeposit : '1',
       );
       await updateDetails();
+
+      notifySuccess('Activated successfully');
     } catch (e) {
       console.error(e);
+      notifyError('Error while activating registration, please try again');
     } finally {
       setIsActivating(false);
     }

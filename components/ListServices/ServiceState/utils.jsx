@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { notifySuccess, notifyError } from '@autonolas/frontend-library';
+import { notifyError } from '@autonolas/frontend-library';
 
 import { DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS } from 'util/constants';
 import {
@@ -54,7 +54,6 @@ export const onTerminate = async (account, id) => {
     from: account,
   });
   const response = await sendTransaction(fn, account);
-  notifySuccess('Terminated Successfully');
   return response;
 };
 
@@ -134,7 +133,6 @@ export const onActivateRegistration = async (id, account, deposit) => {
   });
 
   const response = await sendTransaction(fn, account);
-  notifySuccess('Activated Successfully');
   return response;
 };
 

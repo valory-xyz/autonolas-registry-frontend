@@ -25,8 +25,9 @@ export const Unbond = ({
     try {
       setIsUnbonding(true);
       await onStep5Unbond(serviceId);
-      notifySuccess('Unbonded');
+
       await updateDetails();
+      notifySuccess('Unbonded successfully');
     } catch (e) {
       console.error(e);
       notifyError('Error while unbonding, please try again');

@@ -43,9 +43,9 @@ const SvmFinishedRegistration = ({
     try {
       setIsSubmitting(true);
       await onSvmStep3Deploy(serviceId, values.addressTo);
-      notifySuccess('Deployed');
 
       updateDetails();
+      notifySuccess('Deployed');
     } catch (error) {
       console.error(error);
       notifyError('Error occurred while deploying. Please try again.');
@@ -170,7 +170,8 @@ export const FinishedRegistration = ({
     try {
       setIsSubmitting(true);
       await onStep3Deploy(account, serviceId, radioValuePassed, payload);
-      notifySuccess('Deployed');
+
+      notifySuccess('Deployed successfully');
       await updateDetails();
     } catch (e) {
       console.error(e);
@@ -250,6 +251,7 @@ export const FinishedRegistration = ({
         terminateBtn={terminateBtn}
         serviceId={serviceId}
         multisig={multisig}
+        updateDetails={updateDetails}
       />
     );
   }
@@ -421,7 +423,7 @@ FinishedRegistration.propTypes = {
   owner: PropTypes.string.isRequired,
   threshold: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
     .isRequired,
-  handleTerminate: PropTypes.func,
+  handleTerminate: PropTypes.func.isRequired,
   getButton: PropTypes.func.isRequired,
   canShowMultisigSameAddress: PropTypes.bool,
   getOtherBtnProps: PropTypes.func.isRequired,
@@ -430,5 +432,4 @@ FinishedRegistration.propTypes = {
 
 FinishedRegistration.defaultProps = {
   canShowMultisigSameAddress: false,
-  handleTerminate: () => {},
 };

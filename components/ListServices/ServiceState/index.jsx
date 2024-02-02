@@ -4,6 +4,7 @@ import {
   Button, Steps, Tooltip, Image,
 } from 'antd';
 import get from 'lodash/get';
+import { notifyError, notifySuccess } from '@autonolas/frontend-library';
 
 import { useHelpers } from 'common-util/hooks';
 import { useSvmConnectivity } from 'common-util/hooks/useSvmConnectivity';
@@ -153,8 +154,10 @@ export const ServiceState = ({
     try {
       await onTerminate(account, id);
       await updateDetails();
+      notifySuccess('Terminated successfully');
     } catch (e) {
       console.error(e);
+      notifyError('Error while terminating, please try again');
     }
   }, [account, id, updateDetails, onTerminate]);
 
