@@ -50,6 +50,5 @@ export const useSvmConnectivity = () => {
     program,
     solanaAddresses,
     hasNoSvmPublicKey: isSvm ? !wallet?.publicKey : false,
-    wallet,
   };
 };

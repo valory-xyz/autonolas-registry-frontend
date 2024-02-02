@@ -256,5 +256,3 @@ ActiveRegistrationTable.propTypes = {
 };
 
 ActiveRegistrationTable.defaultProps = {};
-
-// BtsmiEEvnSuUnKxqXj2PZRYpPJAc7C34mGz8gtJ1DAaH

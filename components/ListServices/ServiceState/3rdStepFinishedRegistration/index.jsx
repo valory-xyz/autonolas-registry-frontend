@@ -45,7 +45,7 @@ const SvmFinishedRegistration = ({
       await onSvmStep3Deploy(serviceId, values.addressTo);
 
       updateDetails();
-      notifySuccess('Deployed');
+      notifySuccess('Deployed successfully');
     } catch (error) {
       console.error(error);
       notifyError('Error occurred while deploying. Please try again.');
@@ -64,7 +64,7 @@ const SvmFinishedRegistration = ({
         autoComplete="off"
         id="svmFinishedRegistrationForm"
         name="svm-finished-registration-form"
-        style={{ marginBottom: 8 }}
+        className="mb-8"
       >
         <Form.Item
           label="Multisig Address"
@@ -113,10 +113,6 @@ const SvmFinishedRegistration = ({
   );
 };
 
-SvmFinishedRegistration.defaultProps = {
-  terminateBtn: null,
-};
-
 SvmFinishedRegistration.propTypes = {
   multisig: PropTypes.string.isRequired,
   isOwner: PropTypes.bool.isRequired,
@@ -125,6 +121,10 @@ SvmFinishedRegistration.propTypes = {
   serviceId: PropTypes.string.isRequired,
   getOtherBtnProps: PropTypes.func.isRequired,
   updateDetails: PropTypes.func.isRequired,
+};
+
+SvmFinishedRegistration.defaultProps = {
+  terminateBtn: null,
 };
 
 /**
@@ -171,8 +171,8 @@ export const FinishedRegistration = ({
       setIsSubmitting(true);
       await onStep3Deploy(account, serviceId, radioValuePassed, payload);
 
-      notifySuccess('Deployed successfully');
       await updateDetails();
+      notifySuccess('Deployed successfully');
     } catch (e) {
       console.error(e);
     } finally {
@@ -258,25 +258,27 @@ export const FinishedRegistration = ({
 
   return (
     <div className="step-3-finished-registration">
-      <Radio.Group
-        value={radioValue}
-        onChange={(e) => setRadioValue(e.target.value)}
-        disabled={btnProps.disabled}
-        className="mt-8"
-      >
-        {options.map((multisigAddress) => (
-          <div className="mb-12" key={`mutisig-${multisigAddress}`}>
-            <RadioLabel disabled={btnProps.disabled}>
-              {multisigAddress === isMultiSig && OPTION_1}
-              {multisigAddress !== isMultiSig && OPTION_2}
-            </RadioLabel>
+      {options?.length ? (
+        <Radio.Group
+          value={radioValue}
+          onChange={(e) => setRadioValue(e.target.value)}
+          disabled={btnProps.disabled}
+          className="mt-8"
+        >
+          {options.map((multisigAddress) => (
+            <div className="mb-12" key={`mutisig-${multisigAddress}`}>
+              <RadioLabel disabled={btnProps.disabled}>
+                {multisigAddress === isMultiSig && OPTION_1}
+                {multisigAddress !== isMultiSig && OPTION_2}
+              </RadioLabel>
 
-            <Radio key={multisigAddress} value={multisigAddress}>
-              {multisigAddress}
-            </Radio>
-          </div>
-        ))}
-      </Radio.Group>
+              <Radio key={multisigAddress} value={multisigAddress}>
+                {multisigAddress}
+              </Radio>
+            </div>
+          ))}
+        </Radio.Group>
+      ) : null}
 
       {/* form should be shown only if 1st radio button is selected
       2nd radio button means everything will be handled by the backend */}

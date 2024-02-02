@@ -209,14 +209,16 @@ export const checkIfAgentInstancesAreValid = async ({
   }
 
   // check if the agent instances are valid
-  const agentInstanceAddresses = agentInstances.map(async (agentInstance) => {
-    const eachAgentInstance = await contract.methods
-      .mapAgentInstanceOperators(agentInstance)
-      .call();
-    return eachAgentInstance;
-  });
+  const agentInstanceAddressesPromises = agentInstances.map(
+    async (agentInstance) => {
+      const eachAgentInstance = await contract.methods
+        .mapAgentInstanceOperators(agentInstance)
+        .call();
+      return eachAgentInstance;
+    },
+  );
 
-  const ifValidArray = (await Promise.all(agentInstanceAddresses)).some(
+  const ifValidArray = (await Promise.all(agentInstanceAddressesPromises)).some(
     (eachAgentInstance) => eachAgentInstance === DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS,
   );
 

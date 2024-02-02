@@ -49,6 +49,7 @@ export const getProvider = () => {
   }
 
   if (typeof window === 'undefined') {
+    /* eslint-disable-next-line no-console */
     console.warn(
       'No provider found, fetching RPC URL from first supported chain',
     );
@@ -105,29 +106,21 @@ export const getChainIdOrDefaultToMainnet = (chainId) => {
  * @returns {boolean} - True if the object is a MethodsBuilder object, false otherwise.
  */
 const isMethodsBuilderInstance = (builderIns, registryAddress) => {
-  console.log('isMethodsBuilderInstance', builderIns, registryAddress);
-
   if (typeof builderIns !== 'object' || builderIns === null) {
     throw new Error('sendTransaction: Input must be an object.');
   }
-  console.log('1');
 
   const programId = '_programId' in builderIns ? builderIns?._programId?.toString() : null; // eslint-disable-line no-underscore-dangle
-
-  console.log('2');
 
   // Check if the programId is the same as the registry address
   const hasProgramId = programId === registryAddress;
 
   // Check for a complex property with a specific structure,
   // eslint-disable-next-line no-underscore-dangle
-  const hasValidArgs = Array.isArray(builderIns._args) && builderIns._args.length === 6;
-
-  console.log('4', { hasProgramId, hasValidArgs, args: builderIns._args });
+  const isArgsArray = Array.isArray(builderIns._args);
 
   // Return true if both characteristic properties are as expected
-  return true;
-  // return hasProgramId && hasValidArgs;
+  return hasProgramId && isArgsArray;
 };
 
 /**

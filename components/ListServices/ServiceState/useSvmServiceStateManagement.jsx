@@ -10,10 +10,11 @@ import {
   onStep2RegisterAgents,
   onTerminate,
   onStep5Unbond,
-  // onStep3Deploy,
 } from './utils';
-// import { useSvmDataFetch } from '../useSvmService';
 
+/**
+ * step 1 - activate registration
+ */
 export const useGetActivateRegistration = () => {
   const { isSvm, vmType } = useHelpers();
   const { solanaAddresses, walletPublicKey, program } = useSvmConnectivity();
@@ -46,10 +47,12 @@ export const useGetActivateRegistration = () => {
   );
 };
 
+/**
+ * step 2 - register agents
+ */
 export const useRegisterAgents = () => {
   const { isSvm, vmType } = useHelpers();
   const { solanaAddresses, walletPublicKey, program } = useSvmConnectivity();
-  // const { getData } = useSvmDataFetch();
 
   const checkIfAgentInstancesAreValid = useCallback(
     async ({ account, agentInstances }) => {
@@ -131,12 +134,12 @@ export const useRegisterAgents = () => {
     [isSvm, solanaAddresses, walletPublicKey, program, vmType],
   );
 
-  return {
-    checkIfAgentInstancesAreValid,
-    registerAgents,
-  };
+  return { checkIfAgentInstancesAreValid, registerAgents };
 };
 
+/**
+ * step 3 - deploy
+ */
 export const useFinishRegistration = () => {
   const { vmType, account } = useHelpers();
   const { solanaAddresses, walletPublicKey, program } = useSvmConnectivity();
@@ -161,6 +164,9 @@ export const useFinishRegistration = () => {
   );
 };
 
+/**
+ * step 5 - unbond
+ */
 export const useUnbond = () => {
   const { vmType, isSvm, account } = useHelpers();
   const { solanaAddresses, walletPublicKey, program } = useSvmConnectivity();

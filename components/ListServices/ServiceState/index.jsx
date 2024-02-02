@@ -7,7 +7,6 @@ import get from 'lodash/get';
 import { notifyError, notifySuccess } from '@autonolas/frontend-library';
 
 import { useHelpers } from 'common-util/hooks';
-import { useSvmConnectivity } from 'common-util/hooks/useSvmConnectivity';
 import { getServiceTableDataSource, checkIfEth } from './utils';
 import { PreRegistration } from './1StepPreRegistration';
 import { ActiveRegistration } from './2StepActiveRegistration';
@@ -65,7 +64,6 @@ export const ServiceState = ({
   const {
     account, chainId, isSvm, doesNetworkHaveValidServiceManagerToken,
   } = useHelpers();
-  const { walletPublicKey } = useSvmConnectivity();
   const [currentStep, setCurrentStep] = useState(1);
   const [dataSource, setDataSource] = useState([]);
   const onTerminate = useTerminate();
@@ -170,10 +168,7 @@ export const ServiceState = ({
   const getOtherBtnProps = (step, extra) => {
     const { isDisabled } = extra || {};
     return {
-      disabled:
-        currentStep + 1 !== step
-        || !!isDisabled
-        || (isSvm ? !walletPublicKey : !account),
+      disabled: currentStep + 1 !== step || !!isDisabled || !account,
     };
   };
 

@@ -46,11 +46,6 @@ const deseralizeProgramData = (serializedValue, decodeTypeName) => {
     return publicKey.toBase58();
   }
 
-  if (decodeTypeName === 'rawPublicKey') {
-    const publicKey = new PublicKey(serializedValue);
-    return publicKey;
-  }
-
   const borshCoder = new BorshCoder(idl);
   const decodedResult = borshCoder.types.decode(
     decodeTypeName,
@@ -186,11 +181,12 @@ const transformServiceData = (service, serviceId) => {
   const owner = service.serviceOwner?.toString();
   const stateName = Object.keys(service.state || {})[0];
   // convert to base58 ie. readable format
-  const multisig = (new PublicKey(service.multisig)).toBase58();
+  const multisig = new PublicKey(service.multisig).toBase58();
   // convert configHash u32 to hex string
-  const decodedConfigHash = Buffer.from(service.configHash, 'utf8').toString('hex');
+  const decodedConfigHash = Buffer.from(service.configHash, 'utf8').toString(
+    'hex',
+  );
 
-  // TODO: transform more data for service state management
   return {
     ...service,
     id: serviceId,
@@ -404,15 +400,4 @@ export const useAgentInstanceAndOperator = () => {
   );
 
   return { getSvmAgentInstanceAndOperator };
-};
-
-export const useSvmPdaEscrow = () => {
-  const { getData } = useSvmDataFetch();
-
-  const getSvmPdaEscrow = useCallback(async () => {
-    const pdaEscrow = await getData('pdaEscrow', [], 'rawPublicKey');
-    return pdaEscrow;
-  }, [getData]);
-
-  return { getSvmPdaEscrow };
 };
