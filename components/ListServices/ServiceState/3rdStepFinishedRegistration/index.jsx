@@ -27,12 +27,12 @@ const OPTION_2 = 'Updates an existent service multisig with currently registered
 
 const SvmFinishedRegistration = ({
   isOwner,
+  serviceId,
   multisig,
-  terminateBtn,
+  updateDetails,
   getButton,
   getOtherBtnProps,
-  serviceId,
-  updateDetails,
+  terminateBtn,
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -245,13 +245,13 @@ export const FinishedRegistration = ({
   if (isSvm) {
     return (
       <SvmFinishedRegistration
-        getButton={getButton}
-        getOtherBtnProps={getOtherBtnProps}
         isOwner={isOwner}
-        terminateBtn={terminateBtn}
         serviceId={serviceId}
         multisig={multisig}
         updateDetails={updateDetails}
+        getButton={getButton}
+        getOtherBtnProps={getOtherBtnProps}
+        terminateBtn={terminateBtn}
       />
     );
   }
@@ -286,7 +286,7 @@ export const FinishedRegistration = ({
         <RegistryForm
           form={form}
           layout="vertical"
-          name="mult-sig-form"
+          name="finished-registration-form"
           autoComplete="off"
           preserve={false}
           id="finishedRegistrationForm"
