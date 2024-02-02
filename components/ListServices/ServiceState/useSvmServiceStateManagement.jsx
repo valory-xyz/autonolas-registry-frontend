@@ -1,6 +1,8 @@
 import { useCallback } from 'react';
 import { PublicKey } from '@solana/web3.js';
+import { notifyError } from '@autonolas/frontend-library';
 
+import { SVM_EMPTY_ADDRESS } from 'util/constants';
 import { useSvmConnectivity } from 'common-util/hooks/useSvmConnectivity';
 import { useHelpers } from 'common-util/hooks';
 import { sendTransaction } from 'common-util/functions';
@@ -11,6 +13,7 @@ import {
   onTerminate,
   onStep5Unbond,
 } from './utils';
+import { useSvmDataFetch } from '../useSvmService';
 
 /**
  * step 1 - activate registration
@@ -53,31 +56,48 @@ export const useGetActivateRegistration = () => {
 export const useRegisterAgents = () => {
   const { isSvm, vmType } = useHelpers();
   const { solanaAddresses, walletPublicKey, program } = useSvmConnectivity();
+  const { getData } = useSvmDataFetch();
 
+  // check the logic for below method in utils.jsx => checkIfAgentInstancesAreValid
+  // and should be same for both EVM and SVM
   const checkIfAgentInstancesAreValid = useCallback(
     async ({ account, agentInstances }) => {
       if (isSvm) {
-        // const fn = await program.methods
-        //   .mapAgentInstanceOperators(walletPublicKey)
-        //   .accounts({ dataAccount: solanaAddresses.storageAccount })
-        //   .remainingAccounts([
-        //     { pubkey: walletPublicKey, isSigner: true, isWritable: true },
-        //   ]);
+        const operator = await getData(
+          'mapAgentInstanceOperators',
+          [walletPublicKey],
+          'publicKey',
+        );
 
-        // const operator = await sendTransaction(fn, account || undefined, {
-        //   vmType,
-        //   registryAddress: solanaAddresses.serviceRegistry,
-        // });
+        if (operator !== SVM_EMPTY_ADDRESS) {
+          notifyError(
+            'The operator is registered as an agent instance already.',
+          );
+          return false;
+        }
 
-        // TODO: do we need to check the operator is registered as an agent instance already for SVM
-        // const operator = await getData(
-        //   'mapAgentInstanceOperators',
-        //   [walletPublicKey],
-        //   'publicKey',
-        // );
+        const agentInstanceAddressesPromises = agentInstances.map(
+          async (agentInstance) => {
+            const eachAgentInstance = await getData(
+              'mapAgentInstanceOperators',
+              [new PublicKey(agentInstance)],
+              'publicKey',
+            );
+            return eachAgentInstance;
+          },
+        );
 
-        // console.log(operator);
-        // return response;
+        const agentInstanceAddresses = await Promise.all(
+          agentInstanceAddressesPromises,
+        );
+        const ifValidArray = agentInstanceAddresses.some(
+          (eachAgentInstance) => eachAgentInstance === SVM_EMPTY_ADDRESS,
+        );
+
+        if (!ifValidArray) {
+          notifyError('The agent instance address is already registered.');
+          return false;
+        }
 
         return true;
       }
@@ -88,10 +108,7 @@ export const useRegisterAgents = () => {
       });
       return response;
     },
-    [
-      isSvm,
-      //  solanaAddresses, walletPublicKey, program, vmType
-    ],
+    [isSvm, walletPublicKey, getData],
   );
 
   const registerAgents = useCallback(

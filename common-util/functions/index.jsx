@@ -208,4 +208,11 @@ export const isPageWithSolana = (path) => {
   return SVM_SUPPORTED_CHAINS.some(checkPath);
 };
 
-export const isValidSolanaPublicKey = (publicKey) => PublicKey.isOnCurve(publicKey);
+export const isValidSolanaPublicKey = (publicKey) => {
+  try {
+    const isValid = PublicKey.isOnCurve(publicKey);
+    return isValid;
+  } catch (e) {
+    return false;
+  }
+};
