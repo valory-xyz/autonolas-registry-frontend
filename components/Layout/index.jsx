@@ -13,6 +13,7 @@ import { PAGES_TO_LOAD_WITHOUT_CHAINID } from 'util/constants';
 import { useHelpers } from 'common-util/hooks';
 import { ALL_SUPPORTED_CHAINS, getSvmEndpoint } from 'common-util/Login/config';
 import { useHandleRoute } from 'common-util/hooks/useHandleRoute';
+import { useMemo } from 'react';
 import { LogoSvg, LogoIconSvg } from '../Logos';
 import {
   CustomLayout,
@@ -21,8 +22,6 @@ import {
   RightMenu,
   SelectContainer,
 } from './styles';
-
-const wallets = [new PhantomWalletAdapter()];
 
 const Login = dynamic(() => import('../Login'), { ssr: false });
 const NavigationMenu = dynamic(() => import('./Menu'), { ssr: false });
@@ -122,6 +121,7 @@ Layout.defaultProps = { children: null };
 const LayoutWithWalletProvider = (props) => {
   const { chainName, isSvm } = useHelpers();
   const endpoint = getSvmEndpoint(chainName);
+  const wallets = useMemo(() => [new PhantomWalletAdapter()], []);
 
   return (
     <ConnectionProvider endpoint={endpoint}>

@@ -148,8 +148,41 @@ export const useSvmDataFetch = () => {
 // returns the total number of services
 const useGetTotalForAllServices = () => {
   const { getData } = useSvmDataFetch();
+  const {
+    program, programId, connection, solanaAddresses,
+  } = useSvmConnectivity();
 
   const getTotalForAllSvmServices = useCallback(async () => {
+    // TRY
+    // const totalCount = await program.methods.totalSupply.fetch();
+    // .view();
+
+    // console.log(await program.views.totalSupply({
+    //   accounts: {
+    //     dataAccount: solanaAddresses.storageAccount,
+    //   },
+    // }));
+
+    // const abcd = await program.methods.totalSupply().accounts({
+    //   dataAccount: solanaAddresses.storageAccount,
+    // }).signers().rpc();
+
+    const abcd = await connection.getProgramAccounts(programId);
+
+    console.log(abcd);
+
+    abcd.map((e) => {
+      const kk = e.account.data;
+      // convert unit8array to json
+      const b64 = Buffer.from(kk).toString('base64');
+      b64.toString('utf-8');
+      console.log(b64);
+
+      return kk;
+    });
+    // console.log('totalCount', totalCount);
+
+    // actually
     const total = await getData('totalSupply', [], null, { noDecode: true });
     return total;
   }, [getData]);
