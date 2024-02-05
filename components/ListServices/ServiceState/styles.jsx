@@ -17,12 +17,9 @@ export const ServiceStateContainer = styled.div`
     }
   }
   .step-2-active-registration {
-    .ant-table-wrapper {
-    }
     .ant-typography {
       display: block;
       font-size: 14px;
-      margin-bottom: 1rem;
     }
     .ant-table,
     .ant-input {

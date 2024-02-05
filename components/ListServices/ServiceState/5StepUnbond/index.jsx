@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { notifySuccess } from '@autonolas/frontend-library';
+import { notifyError, notifySuccess } from '@autonolas/frontend-library';
 
 import { useHelpers } from 'common-util/hooks';
 import { SendTransactionButton } from 'common-util/TransactionHelpers/SendTransactionButton';
-import { onStep5Unbond } from '../utils';
+import { useUnbond } from '../useSvmServiceStateManagement';
 
 export const Unbond = ({
   serviceId,
@@ -17,16 +17,20 @@ export const Unbond = ({
   const operators = useSelector(
     (state) => state?.service?.serviceState?.agentInstancesAndOperators,
   );
+  const onStep5Unbond = useUnbond();
+
   const [isUnbonding, setIsUnbonding] = useState(false);
 
   const onUnbond = async () => {
     try {
       setIsUnbonding(true);
-      await onStep5Unbond(account, serviceId);
-      notifySuccess('Unbonded');
+      await onStep5Unbond(serviceId);
+
       await updateDetails();
+      notifySuccess('Unbonded successfully');
     } catch (e) {
       console.error(e);
+      notifyError('Error while unbonding, please try again');
     } finally {
       setIsUnbonding(false);
     }
@@ -37,7 +41,8 @@ export const Unbond = ({
    * else the user should not be able to unbond it
    */
   const isValidOperator = (operators || []).some(
-    (e) => (e.agentInstance || '').toLowerCase() === (account || '').toLowerCase(),
+    // toString() is used to convert PublicKey to string (if it is PublicKey)
+    (e) => e.agentInstance?.toLowerCase() === account?.toString().toLowerCase(),
   );
 
   return getButton(

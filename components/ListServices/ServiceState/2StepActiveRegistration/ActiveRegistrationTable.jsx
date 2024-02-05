@@ -9,6 +9,7 @@ import { isValidAddress } from '@autonolas/frontend-library';
 import styled from 'styled-components';
 
 import { useHelpers } from 'common-util/hooks';
+import { isValidSolanaPublicKey } from 'common-util/functions';
 
 const TableContainer = styled.div`
   .ant-form-item-explain-error {
@@ -45,12 +46,13 @@ const EditableCell = ({
   record,
   handleSave,
   isDisabled,
-  setIsValidAgentAddress,
+  handleAgentAddress,
   hasAtleastOneAgentInstanceAddress,
   ...restProps
 }) => {
   const form = useContext(EditableContext);
   const inputRef = useRef(null);
+  const { isSvm } = useHelpers();
 
   useEffect(() => {
     if (record) {
@@ -58,7 +60,7 @@ const EditableCell = ({
     } else {
       form.setFieldsValue({ [dataIndex]: null });
     }
-  }, [record]);
+  }, [dataIndex, record, form]);
 
   let childNode = children;
   const slots = record?.availableSlots || 0;
@@ -71,10 +73,10 @@ const EditableCell = ({
       const values = await form.validateFields();
       handleSave({ ...record, ...values });
       if (hasAtleastOneAgentInstanceAddress) {
-        setIsValidAgentAddress(true);
+        handleAgentAddress(true);
       }
     } catch (info) {
-      setIsValidAgentAddress(false);
+      handleAgentAddress(false);
       window.console.log('Save failed:', info);
     }
   };
@@ -82,7 +84,7 @@ const EditableCell = ({
   if (editable) {
     childNode = slots > 0 ? (
       <Form.Item
-        style={{ margin: 0 }}
+        className="m-0"
         name={dataIndex}
         rules={[
           {
@@ -101,7 +103,9 @@ const EditableCell = ({
               const addressList = value?.split(',').map((v) => v.trim());
 
               // check if all addresses are valid
-              const areAllAddressesValid = addressList?.every((address) => isValidAddress(address));
+              const areAllAddressesValid = addressList?.every((address) => (isSvm
+                ? isValidSolanaPublicKey(address)
+                : isValidAddress(address)));
 
               // check if there are any duplicate addresses
               const uniqueAddresses = [...new Set(addressList)];
@@ -145,9 +149,9 @@ const EditableCell = ({
  */
 export const ActiveRegistrationTable = ({
   data,
-  setDataSource,
+  handleDataSource,
   isDisabled,
-  setIsValidAgentAddress,
+  handleAgentAddress,
 }) => {
   const router = useRouter();
   const { isL1Network, links } = useHelpers();
@@ -159,8 +163,8 @@ export const ActiveRegistrationTable = ({
   );
 
   useEffect(() => {
-    setIsValidAgentAddress(hasAtleastOneAgentInstanceAddress);
-  }, [hasAtleastOneAgentInstanceAddress]);
+    handleAgentAddress(hasAtleastOneAgentInstanceAddress);
+  }, [handleAgentAddress, hasAtleastOneAgentInstanceAddress]);
 
   const STEP_2_TABLE_COLUMNS = [
     {
@@ -204,7 +208,7 @@ export const ActiveRegistrationTable = ({
     const index = newData.findIndex((item) => row.key === item.key);
     const item = newData[index];
     newData.splice(index, 1, { ...item, ...row });
-    setDataSource(newData);
+    handleDataSource(newData);
   };
 
   const components = {
@@ -225,7 +229,7 @@ export const ActiveRegistrationTable = ({
         title: c.title,
         isDisabled,
         handleSave,
-        setIsValidAgentAddress,
+        handleAgentAddress,
         hasAtleastOneAgentInstanceAddress,
       }),
     };

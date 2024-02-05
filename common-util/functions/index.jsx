@@ -49,6 +49,7 @@ export const getProvider = () => {
   }
 
   if (typeof window === 'undefined') {
+    /* eslint-disable-next-line no-console */
     console.warn(
       'No provider found, fetching RPC URL from first supported chain',
     );
@@ -116,10 +117,10 @@ const isMethodsBuilderInstance = (builderIns, registryAddress) => {
 
   // Check for a complex property with a specific structure,
   // eslint-disable-next-line no-underscore-dangle
-  const hasValidArgs = Array.isArray(builderIns._args) && builderIns._args.length === 6;
+  const isArgsArray = Array.isArray(builderIns._args);
 
   // Return true if both characteristic properties are as expected
-  return hasProgramId && hasValidArgs;
+  return hasProgramId && isArgsArray;
 };
 
 /**
@@ -207,4 +208,11 @@ export const isPageWithSolana = (path) => {
   return SVM_SUPPORTED_CHAINS.some(checkPath);
 };
 
-export const isValidSolanaPublicKey = (publicKey) => PublicKey.isOnCurve(publicKey);
+export const isValidSolanaPublicKey = (publicKey) => {
+  try {
+    const isValid = PublicKey.isOnCurve(publicKey);
+    return isValid;
+  } catch (e) {
+    return false;
+  }
+};
