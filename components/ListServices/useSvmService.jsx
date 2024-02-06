@@ -69,6 +69,9 @@ export const useSvmDataFetch = () => {
 
         if (!walletPublicKey || !program) return null;
 
+        console.log(walletPublicKey);
+        console.log(program);
+
         const latestBlock = await connection.getLatestBlockhash();
 
         // Build the instruction
@@ -211,6 +214,7 @@ const useGetTotalForMyServices = () => {
  *
  */
 const transformServiceData = (service, serviceId) => {
+  if (!service) return null;
   const owner = service.serviceOwner?.toString();
   const stateName = Object.keys(service.state || {})[0];
   // convert to base58 ie. readable format
@@ -237,6 +241,7 @@ export const useGetSvmServiceDetails = () => {
   const getSvmServiceDetails = useCallback(
     async (id) => {
       const details = await getData('getService', [id], 'Service');
+      console.log('details', details);
       return transformServiceData(details, id);
     },
     [getData],
@@ -347,7 +352,7 @@ export const useSvmBonds = () => {
 
       const bondsArray = [];
       const slotsArray = [];
-      for (let i = 0; i < response.numAgentIds; i += 1) {
+      for (let i = 0; i < response?.numAgentIds; i += 1) {
         /**
          * agentParams = [{ slots: 2, bond: 2000 }, { slots: 3, bond: 4000 }]
          * slotsArray = [2, 3]

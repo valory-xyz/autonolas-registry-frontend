@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useAnchorWallet, useConnection } from '@solana/wallet-adapter-react';
 import { Program, AnchorProvider } from '@project-serum/anchor';
-import { PublicKey } from '@solana/web3.js';
+import { Keypair, PublicKey } from '@solana/web3.js';
 
 import { SOLANA_CHAIN_NAMES } from 'util/constants';
 import idl from 'common-util/AbiAndAddresses/ServiceRegistrySolana.json';
@@ -28,9 +28,13 @@ export const useSvmConnectivity = () => {
   );
 
   const anchorProvider = useMemo(
-    () => new AnchorProvider(connection, wallet, {
-      commitment: 'processed',
-    }),
+    () => {
+      const currentWallet = window.solana ? wallet : Keypair.generate();
+
+      return new AnchorProvider(connection, currentWallet, {
+        commitment: 'processed',
+      });
+    },
     [connection, wallet],
   );
 
@@ -48,6 +52,7 @@ export const useSvmConnectivity = () => {
     walletPublicKey: wallet?.publicKey,
     connection,
     program,
+    programId,
     solanaAddresses,
     hasNoSvmPublicKey: isSvm ? !wallet?.publicKey : false,
   };
