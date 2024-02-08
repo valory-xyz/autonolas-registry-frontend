@@ -116,10 +116,10 @@ const isMethodsBuilderInstance = (builderIns, registryAddress) => {
 
   // Check for a complex property with a specific structure,
   // eslint-disable-next-line no-underscore-dangle
-  const hasValidArgs = Array.isArray(builderIns._args) && builderIns._args.length === 6;
+  const isArgsArray = Array.isArray(builderIns._args);
 
   // Return true if both characteristic properties are as expected
-  return hasProgramId && hasValidArgs;
+  return hasProgramId && isArgsArray;
 };
 
 /**
@@ -136,9 +136,10 @@ const isMethodsBuilderInstance = (builderIns, registryAddress) => {
  *
  */
 export const sendTransaction = (method, account, extra) => {
-  if (extra?.vmType === VM_TYPE.SVM) {
+  const { vmType, registryAddress } = extra || {};
+  if (vmType === VM_TYPE.SVM) {
     // Check if something resembling an SVM method is being passed
-    if (!isMethodsBuilderInstance(method, extra?.registryAddress)) {
+    if (!isMethodsBuilderInstance(method, registryAddress)) {
       notifyError('Invalid method object');
       throw new Error('Invalid method object');
     }
@@ -199,4 +200,11 @@ export const isPageWithSolana = (path) => {
   return SVM_SUPPORTED_CHAINS.some(checkPath);
 };
 
-export const isValidSolanaPublicKey = (publicKey) => PublicKey.isOnCurve(publicKey);
+export const isValidSolanaPublicKey = (publicKey) => {
+  try {
+    const isValid = PublicKey.isOnCurve(publicKey);
+    return isValid;
+  } catch (e) {
+    return false;
+  }
+};

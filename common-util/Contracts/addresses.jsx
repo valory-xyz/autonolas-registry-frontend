@@ -59,6 +59,20 @@ export const ADDRESSES = {
     serviceRegistryTokenUtility: '0x131b5551c81e9B3E89E9ACE30A5B3D45144E3e42',
     operatorWhitelist: '0x118173028162C1b7c6Bf8488bd5dA2abd7c30F9D',
   },
+  // arbitrum
+  42161: {
+    serviceManagerToken: '0x34C895f302D0b5cf52ec0Edd3945321EB0f83dd5',
+    serviceRegistryL2: '0xE3607b00E75f6405248323A9417ff6b39B244b50',
+    serviceRegistryTokenUtility: '0x3d77596beb0f130a4415df3D2D8232B3d3D31e44',
+    operatorWhitelist: '0x3C1fF68f5aa342D296d4DEe4Bb1cACCA912D95fE',
+  },
+  // arbitrum sepolia
+  421614: {
+    serviceManagerToken: '0x5BA58970c2Ae16Cf6218783018100aF2dCcFc915',
+    serviceRegistryL2: '0x31D3202d8744B16A120117A053459DDFAE93c855',
+    serviceRegistryTokenUtility: '0xeB49bE5DF00F74bd240DE4535DDe6Bc89CEfb994',
+    operatorWhitelist: '0x29086141ecdc310058fc23273F8ef7881d20C2f7',
+  },
   // local
   31337: {
     agentRegistry: '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512',
@@ -77,8 +91,8 @@ export const ADDRESSES = {
 };
 
 /**
- * Other details
- * Addresses: https://github.com/safe-global/safe-deployments/tree/main/src/assets/v1.3.0
+ * check addresses here - GnosisSafeMultisig
+ * Addresses: https://github.com/valory-xyz/autonolas-registries/blob/main/docs/configuration.json
  */
 export const multisigAddresses = {
   1: ['0x46C0D07F55d4F9B5Eed2Fc9680B5953e5fd7b461'],
@@ -88,11 +102,17 @@ export const multisigAddresses = {
   10200: ['0xeB49bE5DF00F74bd240DE4535DDe6Bc89CEfb994'],
   80001: ['0x9dEc6B62c197268242A768dc3b153AE7a2701396'],
   31337: ['0x0E801D84Fa97b50751Dbf25036d067dCf18858bF'],
+  42161: ['0x63e66d7ad413C01A7b49C7FF4e3Bb765C4E4bd1b'],
+  421614: ['0x19936159B528C66750992C3cBcEd2e71cF4E4824'],
   [LOCAL_FORK_ID]: ['0x46C0D07F55d4F9B5Eed2Fc9680B5953e5fd7b461'],
   [LOCAL_FORK_ID_GNOSIS]: ['0x3C1fF68f5aa342D296d4DEe4Bb1cACCA912D95fE'],
   [LOCAL_FORK_ID_POLYGON]: ['0x3d77596beb0f130a4415df3D2D8232B3d3D31e44'],
 };
 
+/**
+ * check addresses here - GnosisSafeSameAddressMultisig
+ * Addresses: https://github.com/valory-xyz/autonolas-registries/blob/main/docs/configuration.json
+ */
 export const multisigSameAddresses = {
   1: ['0xfa517d01DaA100cB1932FA4345F68874f7E7eF46'],
   5: ['0x06467Cb835da623384a22aa902647784C1c9f5Ae'],
@@ -101,11 +121,15 @@ export const multisigSameAddresses = {
   10200: ['0xE16adc7777B7C2a0d35033bd3504C028AB28EE8b'],
   80001: ['0xd6AA4Ec948d84f6Db8EEf25104CeE0Ecd280C74e'],
   31337: ['0x8f86403A4DE0BB5791fa46B8e795C547942fE4Cf'],
+  42161: ['0xBb7e1D6Cb6F243D6bdE81CE92a9f2aFF7Fbe7eac'],
+  421614: ['0x10100e74b7F706222F8A7C0be9FC7Ae1717Ad8B2'],
   [LOCAL_FORK_ID]: ['0xfa517d01DaA100cB1932FA4345F68874f7E7eF46'],
   [LOCAL_FORK_ID_GNOSIS]: ['0x6e7f594f680f7aBad18b7a63de50F0FeE47dfD06'],
   [LOCAL_FORK_ID_POLYGON]: ['0xd8BCC126ff31d2582018715d5291A508530587b0'],
 };
 
+// check addresses here
+// https://github.com/safe-global/safe-deployments/blob/main/src/assets/v1.3.0/multi_send_call_only.json
 export const safeMultiSend = {
   1: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
   5: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
@@ -114,11 +138,15 @@ export const safeMultiSend = {
   10200: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
   80001: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
   31337: ['0x9d4454B023096f34B160D6B654540c56A1F81688'],
+  42161: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
+  421614: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
   [LOCAL_FORK_ID]: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
   [LOCAL_FORK_ID_GNOSIS]: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
   [LOCAL_FORK_ID_POLYGON]: ['0x40A2aCCbd92BCA938b02010E17A5b8929b49130D'],
 };
 
+// check addresses here
+// https://github.com/safe-global/safe-deployments/blob/main/src/assets/v1.3.0/compatibility_fallback_handler.json
 export const FALLBACK_HANDLER = {
   1: '0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4',
   5: '0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4',
@@ -127,6 +155,8 @@ export const FALLBACK_HANDLER = {
   10200: '0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4',
   80001: '0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4',
   31337: '0x0000000000000000000000000000000000000000',
+  42161: '0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4',
+  421614: '0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4',
   [LOCAL_FORK_ID]: '0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4',
   [LOCAL_FORK_ID_GNOSIS]: '0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4',
   [LOCAL_FORK_ID_POLYGON]: '0xf48f2B2d2a534e402487b3ee7C18c33Aec0Fe5e4',
@@ -139,9 +169,11 @@ export const FALLBACK_HANDLER = {
 export const SOLANA_ADDRESSES = {
   serviceRegistry: 'AU428Z7KbjRMjhmqWmQwUta2AvydbpfEZNBh8dStHTDi',
   storageAccount: 'AjHVkc5XV7wiH3KyqznfCGvMofmBQL8agF6HxCjn6H1R',
+  pda: 'Gtb5et18X9b63Yex1wpPtKezeXznqDiqJ3zXh1WAqRxK',
 };
 
 export const SOLANA_DEVNET_ADDRESSES = {
   serviceRegistry: 'AU428Z7KbjRMjhmqWmQwUta2AvydbpfEZNBh8dStHTDi',
   storageAccount: '2afUAb8aRfcUentfGone5L2J5DeKz9PsSj4zs1WZREUf',
+  pda: 'Gtb5et18X9b63Yex1wpPtKezeXznqDiqJ3zXh1WAqRxK',
 };

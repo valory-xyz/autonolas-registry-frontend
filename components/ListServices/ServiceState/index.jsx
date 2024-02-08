@@ -4,15 +4,17 @@ import {
   Button, Steps, Tooltip, Image,
 } from 'antd';
 import get from 'lodash/get';
+import { notifyError, notifySuccess } from '@autonolas/frontend-library';
 
 import { useHelpers } from 'common-util/hooks';
-import { getServiceTableDataSource, onTerminate, checkIfEth } from './utils';
+import { getServiceTableDataSource, checkIfEth } from './utils';
 import { PreRegistration } from './1StepPreRegistration';
 import { ActiveRegistration } from './2StepActiveRegistration';
 import { FinishedRegistration } from './3rdStepFinishedRegistration';
 import { Deployed } from './4thStepDeployed';
 import { Unbond } from './5StepUnbond';
 import { useSvmServiceTableDataSource } from '../useSvmService';
+import { useTerminate } from './useSvmServiceStateManagement';
 import { InfoSubHeader, GenericLabel, ServiceStateContainer } from './styles';
 
 const SERVICE_STATE_HELPER_LABELS = {
@@ -64,6 +66,7 @@ export const ServiceState = ({
   } = useHelpers();
   const [currentStep, setCurrentStep] = useState(1);
   const [dataSource, setDataSource] = useState([]);
+  const onTerminate = useTerminate();
 
   // by default, assume it's an eth token
   // if svm, then it's not an eth token
@@ -127,11 +130,6 @@ export const ServiceState = ({
   const getButton = (button, otherArgs) => {
     const { message, condition = isOwner, step } = otherArgs || {};
 
-    let messageToDisplay = message || 'Only the service owner can take this action';
-
-    // TODO: remove this check once SVM integration is ready
-    if (isSvm) messageToDisplay = 'Not yet available on SVM';
-
     // if not the current step, just return the button without showing tooltip
     if (step !== currentStep + 1) return button;
 
@@ -139,7 +137,11 @@ export const ServiceState = ({
     if (condition) return button;
 
     return (
-      <Tooltip title={messageToDisplay} placement="right" align="center">
+      <Tooltip
+        title={message || 'Only the service owner can take this action'}
+        placement="right"
+        align="center"
+      >
         {button}
       </Tooltip>
     );
@@ -150,10 +152,12 @@ export const ServiceState = ({
     try {
       await onTerminate(account, id);
       await updateDetails();
+      notifySuccess('Terminated successfully');
     } catch (e) {
       console.error(e);
+      notifyError('Error while terminating, please try again');
     }
-  }, [account, id, updateDetails]);
+  }, [account, id, updateDetails, onTerminate]);
 
   /**
    *
@@ -225,6 +229,7 @@ export const ServiceState = ({
           isShowAgentInstanceVisible={currentStep !== 0}
           multisig={multisig}
           currentStep={currentStep}
+          handleTerminate={handleTerminate}
           {...commonProps}
         />
       ),

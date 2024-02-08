@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { Tabs } from 'antd';
 import { useRouter } from 'next/router';
 import { notifyError } from '@autonolas/frontend-library';
@@ -12,7 +12,6 @@ import {
 } from 'common-util/List/ListTable/helpers';
 import { getMyListOnPagination } from 'common-util/ContractUtils/myList';
 import { useHelpers } from 'common-util/hooks';
-import { useSvmConnectivity } from 'common-util/hooks/useSvmConnectivity';
 import {
   getServices,
   getFilteredServices,
@@ -31,15 +30,9 @@ const ListServices = () => {
     isMyTab(hash) ? MY_SERVICES : ALL_SERVICES,
   );
 
-  const { walletPublicKey } = useSvmConnectivity();
   const {
-    account: ethAccount, chainName, links, isSvm,
+    account, chainName, links, isSvm,
   } = useHelpers();
-
-  const account = useMemo(() => {
-    if (isSvm) return walletPublicKey;
-    return ethAccount;
-  }, [ethAccount, isSvm, walletPublicKey]);
 
   /**
    * extra tab content & view click
@@ -205,6 +198,7 @@ const ListServices = () => {
     setCurrentPage,
     onViewClick,
     searchValue,
+    onUpdateClick: (serviceId) => router.push(`${links.UPDATE_SERVICE}/${serviceId}`),
   };
 
   const myServiceList = searchValue
@@ -249,7 +243,6 @@ const ListServices = () => {
               {...tableCommonProps}
               list={myServiceList}
               isPaginationRequired={!isSvm}
-              onUpdateClick={(serviceId) => router.push(`${links.UPDATE_SERVICE}/${serviceId}`)}
               isAccountRequired
             />
           ),

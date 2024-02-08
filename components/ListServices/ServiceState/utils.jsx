@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { notifySuccess, notifyError } from '@autonolas/frontend-library';
+import { notifyError } from '@autonolas/frontend-library';
 
 import { DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS } from 'util/constants';
 import {
@@ -14,7 +14,7 @@ import { getTokenDetailsRequest } from 'common-util/Details/utils';
 import {
   transformDatasourceForServiceTable,
   transformSlotsAndBonds,
-} from '../helpers';
+} from '../helpers/functions';
 
 /* ----- helper functions ----- */
 
@@ -54,7 +54,6 @@ export const onTerminate = async (account, id) => {
     from: account,
   });
   const response = await sendTransaction(fn, account);
-  notifySuccess('Terminated Successfully');
   return response;
 };
 
@@ -126,7 +125,7 @@ export const mintTokenRequest = async ({ account, serviceId }) => {
   return null;
 };
 
-export const onActivateRegistration = async (account, id, deposit) => {
+export const onActivateRegistration = async (id, account, deposit) => {
   const contract = getServiceManagerContract();
   const fn = contract.methods.activateRegistration(id).send({
     from: account,
@@ -134,7 +133,6 @@ export const onActivateRegistration = async (account, id, deposit) => {
   });
 
   const response = await sendTransaction(fn, account);
-  notifySuccess('Activated Successfully');
   return response;
 };
 
@@ -211,15 +209,17 @@ export const checkIfAgentInstancesAreValid = async ({
   }
 
   // check if the agent instances are valid
-  const ifValidPromiseArray = agentInstances.map(async (agentInstance) => {
-    const isValid = await contract.methods
-      .mapAgentInstanceOperators(agentInstance)
-      .call();
-    return isValid;
-  });
+  const agentInstanceAddressesPromises = agentInstances.map(
+    async (agentInstance) => {
+      const eachAgentInstance = await contract.methods
+        .mapAgentInstanceOperators(agentInstance)
+        .call();
+      return eachAgentInstance;
+    },
+  );
 
-  const ifValidArray = (await Promise.all(ifValidPromiseArray)).some(
-    (isValid) => isValid === DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS,
+  const ifValidArray = (await Promise.all(agentInstanceAddressesPromises)).some(
+    (eachAgentInstance) => eachAgentInstance === DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS,
   );
 
   if (!ifValidArray) {

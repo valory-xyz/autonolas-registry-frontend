@@ -9,7 +9,7 @@ import { useScreen } from 'common-util/hooks/useScreen';
 import { useHelpers } from 'common-util/hooks/useHelpers';
 import { SendTransactionButton } from 'common-util/TransactionHelpers/SendTransactionButton';
 import { useAgentInstanceAndOperator } from '../../useSvmService';
-import { getAgentInstanceAndOperator, onTerminate } from '../utils';
+import { getAgentInstanceAndOperator } from '../utils';
 
 export const Deployed = ({
   serviceId,
@@ -19,7 +19,7 @@ export const Deployed = ({
   isOwner,
   getButton,
   getOtherBtnProps,
-  updateDetails,
+  handleTerminate,
 }) => {
   const dispatch = useDispatch();
   const {
@@ -58,11 +58,10 @@ export const Deployed = ({
     getSvmAgentInstanceAndOperator,
   ]);
 
-  const handleTerminate = async () => {
+  const onTerminate = async () => {
     try {
       setIsTerminating(true);
-      await onTerminate(account, serviceId);
-      await updateDetails();
+      await handleTerminate(account, serviceId);
     } catch (e) {
       console.error(e);
     } finally {
@@ -72,10 +71,11 @@ export const Deployed = ({
 
   const addressLinkProps = useMemo(
     () => ({
+      chainId,
       chainName,
       suffixCount: isMobile ? 4 : 6,
     }),
-    [chainName, isMobile],
+    [chainName, isMobile, chainId],
   );
 
   return (
@@ -107,10 +107,12 @@ export const Deployed = ({
             ]}
           />
         )}
-        <div>{`Safe contract address: ${multisig}`}</div>
+        <div>
+          {`${isSvm ? 'Squads' : 'Safe'} contract address: ${multisig}`}
+        </div>
         {getButton(
           <SendTransactionButton
-            onClick={handleTerminate}
+            onClick={onTerminate}
             loading={isTerminating}
             {...getOtherBtnProps(4, { isDisabled: !isOwner })}
           >
@@ -132,6 +134,7 @@ Deployed.propTypes = {
   getOtherBtnProps: PropTypes.func.isRequired,
   updateDetails: PropTypes.func.isRequired,
   isOwner: PropTypes.bool,
+  handleTerminate: PropTypes.func.isRequired,
 };
 
 Deployed.defaultProps = {

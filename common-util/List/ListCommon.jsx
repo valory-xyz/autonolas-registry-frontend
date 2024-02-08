@@ -28,7 +28,7 @@ MyLink.propTypes = {
 export const commaMessage = 'Each comma must be followed by a space ("1, 2" not "1,2").';
 
 export const DependencyLabel = ({ type }) => {
-  const { isL1Network } = useHelpers();
+  const { isL1Network, isSvm } = useHelpers();
   const dependencyHelperText = `Must be in ascending order – newest ${
     type === 'service' ? 'agents' : 'components'
   } last, oldest first. ${commaMessage}`;
@@ -40,7 +40,9 @@ export const DependencyLabel = ({ type }) => {
           {!isL1Network && (
             <>
               (Make sure your agent ID is already registered in the Agent
-              Registry on ethereum)
+              Registry on&nbsp;
+              {isSvm ? 'Solana' : 'Ethereum'}
+              )
               <br />
             </>
           )}

@@ -2,15 +2,16 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import { Space } from 'antd';
-import { isLocalNetwork } from '@autonolas/frontend-library';
+import {
+  isLocalNetwork,
+  notifyError,
+  notifySuccess,
+} from '@autonolas/frontend-library';
 
 import { useHelpers } from 'common-util/hooks';
 import { SendTransactionButton } from 'common-util/TransactionHelpers/SendTransactionButton';
-import {
-  checkAndApproveToken,
-  mintTokenRequest,
-  onActivateRegistration,
-} from '../utils';
+import { checkAndApproveToken, mintTokenRequest } from '../utils';
+import { useGetActivateRegistration } from '../useSvmServiceStateManagement';
 
 export const PreRegistration = ({
   serviceId,
@@ -26,6 +27,7 @@ export const PreRegistration = ({
     account, chainId, links, isSvm,
   } = useHelpers();
   const [isActivating, setIsActivating] = useState(false);
+  const onActivateRegistration = useGetActivateRegistration();
 
   const handleStep1Registration = async () => {
     try {
@@ -48,13 +50,16 @@ export const PreRegistration = ({
 
       // any amount if not ETH token substitute with 1
       await onActivateRegistration(
-        account,
         serviceId,
+        account,
         isEthToken ? securityDeposit : '1',
       );
       await updateDetails();
+
+      notifySuccess('Activated successfully');
     } catch (e) {
       console.error(e);
+      notifyError('Error while activating registration, please try again');
     } finally {
       setIsActivating(false);
     }

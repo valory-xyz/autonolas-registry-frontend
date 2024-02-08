@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Typography } from 'antd';
 import { notifyError, notifySuccess } from '@autonolas/frontend-library';
-import { BN } from '@project-serum/anchor';
 
 import {
   DEFAULT_SERVICE_CREATION_ETH_TOKEN,
@@ -14,11 +13,15 @@ import {
 } from 'common-util/List/ListCommon';
 import { getServiceManagerContract } from 'common-util/Contracts';
 import { sendTransaction } from 'common-util/functions';
-import { checkIfERC721Receive } from 'common-util/functions/requests';
+import {
+  checkIfERC721Receive,
+  getEstimatedGasLimit,
+} from 'common-util/functions/requests';
 import { useHelpers } from 'common-util/hooks';
 import { useSvmConnectivity } from 'common-util/hooks/useSvmConnectivity';
-import RegisterForm from './RegisterForm';
+import RegisterForm from './helpers/RegisterForm';
 import { getAgentParams } from './utils';
+import { buildSvmArgsToMintOrUpdate } from './helpers/functions';
 import { FormContainer } from '../styles';
 
 const { Title } = Typography;
@@ -27,53 +30,49 @@ const MintService = () => {
   const {
     account, doesNetworkHaveValidServiceManagerToken, vmType, isSvm,
   } = useHelpers();
-  const { solanaAddresses, walletPublicKey, program } = useSvmConnectivity();
+  const { solanaAddresses, program } = useSvmConnectivity();
 
   const [isMinting, setIsMinting] = useState(false);
   const [error, setError] = useState(null);
   const [information, setInformation] = useState(null);
 
-  const buildSvmFn = async (values) => {
-    const {
-      owner_address: ownerAddress,
-      hash,
-      agent_ids: agentIdsSrc,
-      agent_num_slots: slotsSrc,
-      bonds,
-      threshold: thresholdStr,
-    } = values;
+  const buildSvmCreateFn = async (values) => {
+    const { owner_address: ownerAddress } = values;
 
-    const serviceOwnerPublicKey = ownerAddress;
-    // Convert hash to bytes32 Buffer
-    const configHash = Buffer.from(hash, 'hex');
-    // Convert agent_ids to an array
-    const agentIds = convertStringToArray(agentIdsSrc);
-    // Use agent_num_slots to define slots
-    const slots = convertStringToArray(slotsSrc).map(Number);
-    // Convert bonds to an array of BN
-    const bondsArray = convertStringToArray(bonds).map((bond) => new BN(bond));
-    // numberfy threshold
-    const threshold = Number(thresholdStr);
-
+    const args = [ownerAddress, ...buildSvmArgsToMintOrUpdate(values)];
     const fn = program.methods
-      .create(
-        serviceOwnerPublicKey,
-        configHash,
-        agentIds,
-        slots,
-        bondsArray,
-        threshold,
-      )
+      .create(...args)
       .accounts({ dataAccount: solanaAddresses.storageAccount })
       .remainingAccounts([
-        { pubkey: serviceOwnerPublicKey, isSigner: true, isWritable: true },
+        { pubkey: ownerAddress, isSigner: true, isWritable: true },
       ]);
 
     return fn;
   };
 
+  const buildEvmParams = (values) => {
+    const commonParams = [
+      `0x${values.hash}`,
+      convertStringToArray(values.agent_ids),
+      getAgentParams(values),
+      values.threshold,
+    ];
+
+    const params = doesNetworkHaveValidServiceManagerToken
+      ? [
+        values.owner_address,
+        values.token === DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS
+          ? DEFAULT_SERVICE_CREATION_ETH_TOKEN
+          : values.token,
+        ...commonParams,
+      ]
+      : [values.owner_address, ...commonParams];
+
+    return params;
+  };
+
   const handleSubmit = async (values) => {
-    if (isSvm ? !walletPublicKey : !account) {
+    if (!account) {
       notifyError('Wallet not connected');
       return;
     }
@@ -85,7 +84,7 @@ const MintService = () => {
     let fn;
 
     if (isSvm) {
-      fn = await buildSvmFn(values);
+      fn = await buildSvmCreateFn(values);
     } else {
       try {
         const isValid = await checkIfERC721Receive(
@@ -102,43 +101,26 @@ const MintService = () => {
       }
 
       const contract = getServiceManagerContract();
-
-      const commonParams = [
-        `0x${values.hash}`,
-        convertStringToArray(values.agent_ids),
-        getAgentParams(values),
-        values.threshold,
-      ];
-
-      const params = doesNetworkHaveValidServiceManagerToken
-        ? [
-          values.owner_address,
-          values.token === DEFAULT_SERVICE_CREATION_ETH_TOKEN_ZEROS
-            ? DEFAULT_SERVICE_CREATION_ETH_TOKEN
-            : values.token,
-          ...commonParams,
-        ]
-        : [values.owner_address, ...commonParams];
-
-      fn = contract.methods.create(...params).send({ from: account });
+      const params = buildEvmParams(values);
+      const createFn = contract.methods.create(...params);
+      const estimatedGas = await getEstimatedGasLimit(createFn, account);
+      fn = createFn.send({ from: account, gasLimit: estimatedGas });
     }
 
-    sendTransaction(fn, account || undefined, {
-      vmType,
-      registryAddress: solanaAddresses.serviceRegistry,
-    })
-      .then((result) => {
-        setInformation(result);
-        notifySuccess('Service minted');
-      })
-      .catch((e) => {
-        setError(e);
-        console.error(e);
-        notifyError("Couldn't mint service");
-      })
-      .finally(() => {
-        setIsMinting(false);
+    try {
+      const result = await sendTransaction(fn, account || undefined, {
+        vmType,
+        registryAddress: solanaAddresses.serviceRegistry,
       });
+      setInformation(result);
+      notifySuccess('Service minted');
+    } catch (e) {
+      setError(e);
+      console.error(e);
+      notifyError("Couldn't mint service");
+    } finally {
+      setIsMinting(false);
+    }
   };
 
   return (
