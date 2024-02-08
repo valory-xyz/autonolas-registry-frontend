@@ -22,8 +22,10 @@ const GNOSIS_ADDRESSES = {
 };
 
 const POLYGON_ADDRESSES = {
-  serviceManager: '0x3C1fF68f5aa342D296d4DEe4Bb1cACCA912D95fE',
+  serviceManagerToken: '0x04b0007b2aFb398015B76e5f22993a1fddF83644',
   serviceRegistryL2: '0xE3607b00E75f6405248323A9417ff6b39B244b50',
+  serviceRegistryTokenUtility: '0xa45E64d13A30a51b91ae0eb182e88a40e9b18eD8',
+  operatorWhitelist: '0x526E064cB694E8f5B7DB299158e17F33055B3943',
 };
 
 // get addresses from scripts/deployment folder in autonolas-registries repo
@@ -52,8 +54,10 @@ export const ADDRESSES = {
   },
   // polygon mumbai
   80001: {
-    serviceManager: '0x43d28764bB39936185c84906983fB57A8A905a4F',
+    serviceManagerToken: '0xE16adc7777B7C2a0d35033bd3504C028AB28EE8b',
     serviceRegistryL2: '0xf805DfF246CC208CD2F08ffaD242b7C32bc93623',
+    serviceRegistryTokenUtility: '0x131b5551c81e9B3E89E9ACE30A5B3D45144E3e42',
+    operatorWhitelist: '0x118173028162C1b7c6Bf8488bd5dA2abd7c30F9D',
   },
   // arbitrum
   42161: {
