@@ -15,6 +15,7 @@ import {
   arbitrumSepolia,
   baseSepolia,
   base,
+  optimismSepolia,
 } from 'wagmi/chains';
 import { SafeConnector } from 'wagmi/connectors/safe';
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
@@ -36,6 +37,7 @@ export const SUPPORTED_CHAINS = [
   arbitrumSepolia,
   base,
   baseSepolia,
+  optimismSepolia,
 ];
 
 const { publicClient, webSocketPublicClient, chains } = configureChains(
@@ -166,6 +168,7 @@ export const ALL_SUPPORTED_CHAINS = [
     'solana-devnet',
     'arbitrum-sepolia',
     'base-sepolia',
+    'optimism-sepolia',
   ];
 
   const aIndex = chainOrder.indexOf(a.networkName);

@@ -11,6 +11,20 @@ const getCspHeader = (browserName) => {
     'https://verify.walletconnect.org',
     'https://verify.walletconnect.com',
   ];
+
+  // const RPC_URLS = [
+  // process.env.NEXT_PUBLIC_MAINNET_URL,
+  // process.env.NEXT_PUBLIC_GOERLI_URL,
+  // process.env.NEXT_PUBLIC_GNOSIS_URL,
+  // process.env.NEXT_PUBLIC_POLYGON_URL,
+  // process.env.NEXT_PUBLIC_GNOSIS_CHIADO_URL,
+  // process.env.NEXT_PUBLIC_POLYGON_MUMBAI_URL,
+  // process.env.NEXT_PUBLIC_AUTONOLAS_URL,
+  // process.env.NEXT_PUBLIC_ARBITRUM_URL,
+  // process.env.NEXT_PUBLIC_ARBITRUM_SEPOLIA_URL,
+  // process.env.NEXT_PUBLIC_BASE_SEPOLIA_URL,
+  // ];
+
   const connectSrc = [
     "'self'",
     ...walletconnectSrc,
@@ -20,8 +34,6 @@ const getCspHeader = (browserName) => {
     'wss://relay.walletconnect.org/',
     'wss://relay.walletconnect.com/',
     'https://explorer-api.walletconnect.com/',
-    'https://eth-mainnet.g.alchemy.com/v2/',
-    'https://eth-goerli.g.alchemy.com/v2/',
     'https://gno.getblock.io/',
     'https://polygon-mainnet.g.alchemy.com/v2/',
     'https://polygon-mumbai-bor.publicnode.com/',
@@ -31,7 +43,7 @@ const getCspHeader = (browserName) => {
     'https://safe-transaction-gnosis-chain.safe.global/api/',
     'https://safe-transaction-polygon.safe.global/api/',
     'https://vercel.live/',
-    'https://api.devnet.solana.com',
+    'https://api.devnet.solana.com/',
     'wss://api.devnet.solana.com/',
     'https://api.mainnet-beta.solana.com/',
     'wss://api.mainnet-beta.solana.com/',
@@ -40,7 +52,9 @@ const getCspHeader = (browserName) => {
     'https://arb1.arbitrum.io/rpc/',
     'https://sepolia-rollup.arbitrum.io/rpc',
     'https://rpc.gnosischain.com/',
-    'https://sepolia.base.org',
+    'https://sepolia.base.org/',
+    'https://sepolia.optimism.io/',
+    // ...RPC_URLS,
   ];
 
   if (isDev) {

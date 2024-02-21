@@ -28,6 +28,13 @@ const POLYGON_ADDRESSES = {
   operatorWhitelist: '0x526E064cB694E8f5B7DB299158e17F33055B3943',
 };
 
+const SEPOLIA_ADDRESSES = {
+  serviceManagerToken: '0x5BA58970c2Ae16Cf6218783018100aF2dCcFc915',
+  serviceRegistryL2: '0x31D3202d8744B16A120117A053459DDFAE93c855',
+  serviceRegistryTokenUtility: '0xeB49bE5DF00F74bd240DE4535DDe6Bc89CEfb994',
+  operatorWhitelist: '0x29086141ecdc310058fc23273F8ef7881d20C2f7',
+};
+
 // get addresses from scripts/deployment folder in autonolas-registries repo
 export const ADDRESSES = {
   1: MAINNET_ADDRESSES,
@@ -40,6 +47,13 @@ export const ADDRESSES = {
     serviceRegistry: '0x1cEe30D08943EB58EFF84DD1AB44a6ee6FEff63a',
     serviceRegistryTokenUtility: '0x6d9b08701Af43D68D991c074A27E4d90Af7f2276',
     operatorWhitelist: '0x0338893fB1A1D9Df03F72CC53D8f786487d3D03E',
+  },
+  // optimistic
+  10: {
+    serviceManagerToken: '',
+    serviceRegistryL2: '',
+    serviceRegistryTokenUtility: '',
+    operatorWhitelist: '',
   },
   // gnosis
   100: GNOSIS_ADDRESSES,
@@ -73,23 +87,32 @@ export const ADDRESSES = {
     serviceRegistryTokenUtility: '0xeB49bE5DF00F74bd240DE4535DDe6Bc89CEfb994',
     operatorWhitelist: '0x29086141ecdc310058fc23273F8ef7881d20C2f7',
   },
-  // optimistic
-  10: {},
+
   // optimisticSepolia
-  11155420: {},
-  // base
-  8453: {},
-  // baseSepolia
-  84532: {
-    serviceManagerToken: '0x5BA58970c2Ae16Cf6218783018100aF2dCcFc915',
-    serviceRegistryL2: '0x31D3202d8744B16A120117A053459DDFAE93c855',
-    serviceRegistryTokenUtility: '0xeB49bE5DF00F74bd240DE4535DDe6Bc89CEfb994',
-    operatorWhitelist: '0x29086141ecdc310058fc23273F8ef7881d20C2f7',
+  11155420: SEPOLIA_ADDRESSES,
+  // TODO: base
+  8453: {
+    serviceManagerToken: '',
+    serviceRegistryL2: '',
+    serviceRegistryTokenUtility: '',
+    operatorWhitelist: '',
   },
-  // celo (TODO)
-  42220: {},
-  // celoAlfajores - testnet for celo (TODO)
-  44787: {},
+  // baseSepolia
+  84532: SEPOLIA_ADDRESSES,
+  // TODO: celo
+  42220: {
+    serviceManagerToken: '',
+    serviceRegistryL2: '',
+    serviceRegistryTokenUtility: '',
+    operatorWhitelist: '',
+  },
+  // TODO: celoAlfajores - testnet for celo
+  44787: {
+    serviceManagerToken: '',
+    serviceRegistryL2: '',
+    serviceRegistryTokenUtility: '',
+    operatorWhitelist: '',
+  },
   // local
   31337: {
     agentRegistry: '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512',
