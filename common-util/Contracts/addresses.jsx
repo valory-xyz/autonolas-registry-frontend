@@ -52,7 +52,7 @@ export const ADDRESSES = {
     serviceRegistryTokenUtility: '0xc2c7E40674f1C7Bb99eFe5680Efd79842502bED4',
     operatorWhitelist: '0x6f7661F52fE1919996d0A4F68D09B344093a349d',
   },
-  // polygon mumbai
+  // polygon mumbai - testnet for polygon
   80001: {
     serviceManagerToken: '0xE16adc7777B7C2a0d35033bd3504C028AB28EE8b',
     serviceRegistryL2: '0xf805DfF246CC208CD2F08ffaD242b7C32bc93623',
@@ -66,13 +66,30 @@ export const ADDRESSES = {
     serviceRegistryTokenUtility: '0x3d77596beb0f130a4415df3D2D8232B3d3D31e44',
     operatorWhitelist: '0x3C1fF68f5aa342D296d4DEe4Bb1cACCA912D95fE',
   },
-  // arbitrum sepolia
+  // arbitrum sepolia - testnet for arbitrum
   421614: {
     serviceManagerToken: '0x5BA58970c2Ae16Cf6218783018100aF2dCcFc915',
     serviceRegistryL2: '0x31D3202d8744B16A120117A053459DDFAE93c855',
     serviceRegistryTokenUtility: '0xeB49bE5DF00F74bd240DE4535DDe6Bc89CEfb994',
     operatorWhitelist: '0x29086141ecdc310058fc23273F8ef7881d20C2f7',
   },
+  // optimistic
+  10: {},
+  // optimisticSepolia
+  11155420: {},
+  // base
+  8453: {},
+  // baseSepolia
+  84532: {
+    serviceManagerToken: '0x5BA58970c2Ae16Cf6218783018100aF2dCcFc915',
+    serviceRegistryL2: '0x31D3202d8744B16A120117A053459DDFAE93c855',
+    serviceRegistryTokenUtility: '0xeB49bE5DF00F74bd240DE4535DDe6Bc89CEfb994',
+    operatorWhitelist: '0x29086141ecdc310058fc23273F8ef7881d20C2f7',
+  },
+  // celo (TODO)
+  42220: {},
+  // celoAlfajores - testnet for celo (TODO)
+  44787: {},
   // local
   31337: {
     agentRegistry: '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512',

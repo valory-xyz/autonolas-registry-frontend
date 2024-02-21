@@ -40,6 +40,7 @@ const getCspHeader = (browserName) => {
     'https://arb1.arbitrum.io/rpc/',
     'https://sepolia-rollup.arbitrum.io/rpc',
     'https://rpc.gnosischain.com/',
+    'https://sepolia.base.org',
   ];
 
   if (isDev) {

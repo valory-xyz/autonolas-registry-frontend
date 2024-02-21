@@ -38,6 +38,7 @@ export const RPC_URLS = {
   31337: process.env.NEXT_PUBLIC_AUTONOLAS_URL,
   42161: process.env.NEXT_PUBLIC_ARBITRUM_URL,
   421614: process.env.NEXT_PUBLIC_ARBITRUM_SEPOLIA_URL,
+  84532: process.env.NEXT_PUBLIC_BASE_SEPOLIA_URL,
   [LOCAL_FORK_ID]: 'http://localhost:8545',
   [LOCAL_FORK_ID_GNOSIS]: 'http://localhost:8545',
   [LOCAL_FORK_ID_POLYGON]: 'http://localhost:8545',

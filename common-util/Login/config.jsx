@@ -13,6 +13,8 @@ import {
   gnosisChiado,
   arbitrum,
   arbitrumSepolia,
+  baseSepolia,
+  base,
 } from 'wagmi/chains';
 import { SafeConnector } from 'wagmi/connectors/safe';
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
@@ -32,6 +34,8 @@ export const SUPPORTED_CHAINS = [
   polygonMumbai,
   arbitrum,
   arbitrumSepolia,
+  base,
+  baseSepolia,
 ];
 
 const { publicClient, webSocketPublicClient, chains } = configureChains(
@@ -155,11 +159,13 @@ export const ALL_SUPPORTED_CHAINS = [
     'polygon',
     'solana',
     'arbitrum',
+    'base',
     'goerli',
     'gnosis-chiado',
     'polygon-mumbai',
     'solana-devnet',
     'arbitrum-sepolia',
+    'base-sepolia',
   ];
 
   const aIndex = chainOrder.indexOf(a.networkName);
