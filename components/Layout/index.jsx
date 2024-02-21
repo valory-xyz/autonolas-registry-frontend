@@ -1,8 +1,10 @@
+import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
 import { Layout as AntdLayout, Select } from 'antd';
-import { useScreen } from '@autonolas/frontend-library';
+import { VM_TYPE, useScreen } from '@autonolas/frontend-library';
 import {
   ConnectionProvider,
   WalletProvider,
@@ -21,8 +23,6 @@ import {
   RightMenu,
   SelectContainer,
 } from './styles';
-
-const wallets = [new PhantomWalletAdapter()];
 
 const Login = dynamic(() => import('../Login'), { ssr: false });
 const NavigationMenu = dynamic(() => import('./Menu'), { ssr: false });
@@ -119,13 +119,17 @@ const Layout = ({ children }) => {
 Layout.propTypes = { children: PropTypes.element };
 Layout.defaultProps = { children: null };
 
+// NOTE: cannout use useHelpers in this component
+// because Provider needs to be initialized before.
 const LayoutWithWalletProvider = (props) => {
-  const { chainName, isSvm } = useHelpers();
+  const chainName = useSelector((state) => state?.setup?.chainName);
+  const vmType = useSelector((state) => state?.setup?.vmType);
   const endpoint = getSvmEndpoint(chainName);
+  const wallets = useMemo(() => [new PhantomWalletAdapter()], []);
 
   return (
     <ConnectionProvider endpoint={endpoint}>
-      <WalletProvider wallets={wallets} autoConnect={isSvm}>
+      <WalletProvider wallets={wallets} autoConnect={vmType === VM_TYPE.SVM}>
         <Layout {...props}>{props.children}</Layout>
       </WalletProvider>
     </ConnectionProvider>
