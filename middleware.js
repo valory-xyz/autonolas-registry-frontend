@@ -12,19 +12,6 @@ const getCspHeader = (browserName) => {
     'https://verify.walletconnect.com',
   ];
 
-  // const RPC_URLS = [
-  // process.env.NEXT_PUBLIC_MAINNET_URL,
-  // process.env.NEXT_PUBLIC_GOERLI_URL,
-  // process.env.NEXT_PUBLIC_GNOSIS_URL,
-  // process.env.NEXT_PUBLIC_POLYGON_URL,
-  // process.env.NEXT_PUBLIC_GNOSIS_CHIADO_URL,
-  // process.env.NEXT_PUBLIC_POLYGON_MUMBAI_URL,
-  // process.env.NEXT_PUBLIC_AUTONOLAS_URL,
-  // process.env.NEXT_PUBLIC_ARBITRUM_URL,
-  // process.env.NEXT_PUBLIC_ARBITRUM_SEPOLIA_URL,
-  // process.env.NEXT_PUBLIC_BASE_SEPOLIA_URL,
-  // ];
-
   const connectSrc = [
     "'self'",
     ...walletconnectSrc,
@@ -54,7 +41,6 @@ const getCspHeader = (browserName) => {
     'https://rpc.gnosischain.com/',
     'https://sepolia.base.org/',
     'https://sepolia.optimism.io/',
-    // ...RPC_URLS,
   ];
 
   if (isDev) {
