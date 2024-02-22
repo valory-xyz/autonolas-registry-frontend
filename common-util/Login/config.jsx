@@ -104,6 +104,7 @@ export const EVM_SUPPORTED_CHAINS = SUPPORTED_CHAINS.map((chain) => {
 
   const getNetworkDisplayName = () => {
     if (name === 'OP Mainnet') return 'Optimism';
+    if (name === 'Alfajores') return 'Celo Alfajores';
     return name;
   };
 
