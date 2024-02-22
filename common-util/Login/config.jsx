@@ -17,7 +17,7 @@ import {
   base,
   optimismSepolia,
   celoAlfajores,
-  celo,
+  // celo,
   optimism,
 } from 'wagmi/chains';
 import { SafeConnector } from 'wagmi/connectors/safe';
@@ -42,7 +42,7 @@ export const SUPPORTED_CHAINS = [
   baseSepolia,
   optimism,
   optimismSepolia,
-  celo,
+  // celo,
   celoAlfajores,
 ];
 
@@ -174,7 +174,7 @@ export const ALL_SUPPORTED_CHAINS = [
     'arbitrum',
     'base',
     'optimism',
-    'celo',
+    // 'celo',
     'goerli',
     'gnosis-chiado',
     'polygon-mumbai',
