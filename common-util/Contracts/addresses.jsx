@@ -90,12 +90,11 @@ export const ADDRESSES = {
 
   // optimisticSepolia
   11155420: SEPOLIA_ADDRESSES,
-  // TODO: base
   8453: {
-    serviceManagerToken: '',
-    serviceRegistryL2: '',
-    serviceRegistryTokenUtility: '',
-    operatorWhitelist: '',
+    serviceManagerToken: '0x63e66d7ad413C01A7b49C7FF4e3Bb765C4E4bd1b',
+    serviceRegistryL2: '0x3C1fF68f5aa342D296d4DEe4Bb1cACCA912D95fE',
+    serviceRegistryTokenUtility: '0x34C895f302D0b5cf52ec0Edd3945321EB0f83dd5',
+    operatorWhitelist: '0x29086141ecdc310058fc23273F8ef7881d20C2f7',
   },
   // baseSepolia
   84532: SEPOLIA_ADDRESSES,
@@ -106,12 +105,11 @@ export const ADDRESSES = {
     serviceRegistryTokenUtility: '',
     operatorWhitelist: '',
   },
-  // TODO: celoAlfajores - testnet for celo
   44787: {
-    serviceManagerToken: '',
-    serviceRegistryL2: '',
-    serviceRegistryTokenUtility: '',
-    operatorWhitelist: '',
+    serviceManagerToken: '0x5BA58970c2Ae16Cf6218783018100aF2dCcFc915',
+    serviceRegistryL2: '0x31D3202d8744B16A120117A053459DDFAE93c855',
+    serviceRegistryTokenUtility: '0xeB49bE5DF00F74bd240DE4535DDe6Bc89CEfb994',
+    operatorWhitelist: '0x29086141ecdc310058fc23273F8ef7881d20C2f7',
   },
   // local
   31337: {

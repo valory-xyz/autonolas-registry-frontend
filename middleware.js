@@ -41,6 +41,7 @@ const getCspHeader = (browserName) => {
     'https://rpc.gnosischain.com/',
     'https://sepolia.base.org/',
     'https://sepolia.optimism.io/',
+    'https://alfajores-forno.celo-testnet.org',
   ];
 
   if (isDev) {
