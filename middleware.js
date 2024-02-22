@@ -39,8 +39,10 @@ const getCspHeader = (browserName) => {
     'https://arb1.arbitrum.io/rpc/',
     'https://sepolia-rollup.arbitrum.io/rpc',
     'https://rpc.gnosischain.com/',
+    'https://mainnet.base.org/',
     'https://sepolia.base.org/',
     'https://sepolia.optimism.io/',
+    'https://forno.celo.org',
     'https://alfajores-forno.celo-testnet.org',
   ];
 

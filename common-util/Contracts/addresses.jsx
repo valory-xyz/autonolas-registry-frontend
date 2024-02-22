@@ -28,7 +28,14 @@ const POLYGON_ADDRESSES = {
   operatorWhitelist: '0x526E064cB694E8f5B7DB299158e17F33055B3943',
 };
 
-const SEPOLIA_ADDRESSES = {
+/**
+ * Addresses for testing for networks
+ * - sepolia
+ * - arbitrum
+ * - optimistic
+ * - celo
+ */
+const COMMON_TEST_ADDRESSES = {
   serviceManagerToken: '0x5BA58970c2Ae16Cf6218783018100aF2dCcFc915',
   serviceRegistryL2: '0x31D3202d8744B16A120117A053459DDFAE93c855',
   serviceRegistryTokenUtility: '0xeB49bE5DF00F74bd240DE4535DDe6Bc89CEfb994',
@@ -59,6 +66,13 @@ export const ADDRESSES = {
   100: GNOSIS_ADDRESSES,
   // polygon
   137: POLYGON_ADDRESSES,
+  // base
+  8453: {
+    serviceManagerToken: '0x63e66d7ad413C01A7b49C7FF4e3Bb765C4E4bd1b',
+    serviceRegistryL2: '0x3C1fF68f5aa342D296d4DEe4Bb1cACCA912D95fE',
+    serviceRegistryTokenUtility: '0x34C895f302D0b5cf52ec0Edd3945321EB0f83dd5',
+    operatorWhitelist: '0x3d77596beb0f130a4415df3D2D8232B3d3D31e44',
+  },
   // chiado
   10200: {
     serviceManagerToken: '0xc965a32185590Eb5a5fffDba29E96126b7650eDe',
@@ -73,6 +87,8 @@ export const ADDRESSES = {
     serviceRegistryTokenUtility: '0x131b5551c81e9B3E89E9ACE30A5B3D45144E3e42',
     operatorWhitelist: '0x118173028162C1b7c6Bf8488bd5dA2abd7c30F9D',
   },
+  // base sepolia - testnet for base
+  84532: COMMON_TEST_ADDRESSES,
   // arbitrum
   42161: {
     serviceManagerToken: '0x34C895f302D0b5cf52ec0Edd3945321EB0f83dd5',
@@ -81,24 +97,9 @@ export const ADDRESSES = {
     operatorWhitelist: '0x3C1fF68f5aa342D296d4DEe4Bb1cACCA912D95fE',
   },
   // arbitrum sepolia - testnet for arbitrum
-  421614: {
-    serviceManagerToken: '0x5BA58970c2Ae16Cf6218783018100aF2dCcFc915',
-    serviceRegistryL2: '0x31D3202d8744B16A120117A053459DDFAE93c855',
-    serviceRegistryTokenUtility: '0xeB49bE5DF00F74bd240DE4535DDe6Bc89CEfb994',
-    operatorWhitelist: '0x29086141ecdc310058fc23273F8ef7881d20C2f7',
-  },
-
+  421614: COMMON_TEST_ADDRESSES,
   // optimistic sepolia - testnet for optimistic
-  11155420: SEPOLIA_ADDRESSES,
-  // base
-  8453: {
-    serviceManagerToken: '0x63e66d7ad413C01A7b49C7FF4e3Bb765C4E4bd1b',
-    serviceRegistryL2: '0x3C1fF68f5aa342D296d4DEe4Bb1cACCA912D95fE',
-    serviceRegistryTokenUtility: '0x34C895f302D0b5cf52ec0Edd3945321EB0f83dd5',
-    operatorWhitelist: '0x3d77596beb0f130a4415df3D2D8232B3d3D31e44',
-  },
-  // base sepolia - testnet for base
-  84532: SEPOLIA_ADDRESSES,
+  11155420: COMMON_TEST_ADDRESSES,
   // TODO: celo (waiting for BE to provide addresses)
   42220: {
     serviceManagerToken: '',
@@ -107,12 +108,7 @@ export const ADDRESSES = {
     operatorWhitelist: '',
   },
   // alfajores - testnet for celo
-  44787: {
-    serviceManagerToken: '0x5BA58970c2Ae16Cf6218783018100aF2dCcFc915',
-    serviceRegistryL2: '0x31D3202d8744B16A120117A053459DDFAE93c855',
-    serviceRegistryTokenUtility: '0xeB49bE5DF00F74bd240DE4535DDe6Bc89CEfb994',
-    operatorWhitelist: '0x29086141ecdc310058fc23273F8ef7881d20C2f7',
-  },
+  44787: COMMON_TEST_ADDRESSES,
   // local
   31337: {
     agentRegistry: '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512',
