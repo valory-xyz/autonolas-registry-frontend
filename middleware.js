@@ -11,6 +11,7 @@ const getCspHeader = (browserName) => {
     'https://verify.walletconnect.org',
     'https://verify.walletconnect.com',
   ];
+
   const connectSrc = [
     "'self'",
     ...walletconnectSrc,
@@ -31,7 +32,7 @@ const getCspHeader = (browserName) => {
     'https://safe-transaction-gnosis-chain.safe.global/api/',
     'https://safe-transaction-polygon.safe.global/api/',
     'https://vercel.live/',
-    'https://api.devnet.solana.com',
+    'https://api.devnet.solana.com/',
     'wss://api.devnet.solana.com/',
     'https://api.mainnet-beta.solana.com/',
     'wss://api.mainnet-beta.solana.com/',
@@ -40,6 +41,12 @@ const getCspHeader = (browserName) => {
     'https://arb1.arbitrum.io/rpc/',
     'https://sepolia-rollup.arbitrum.io/rpc',
     'https://rpc.gnosischain.com/',
+    'https://mainnet.base.org/',
+    'https://sepolia.base.org/',
+    'https://mainnet.optimism.io',
+    'https://sepolia.optimism.io/',
+    'https://forno.celo.org',
+    'https://alfajores-forno.celo-testnet.org',
   ];
 
   if (isDev) {
