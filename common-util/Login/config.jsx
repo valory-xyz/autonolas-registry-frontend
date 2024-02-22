@@ -17,6 +17,8 @@ import {
   base,
   optimismSepolia,
   celoAlfajores,
+  celo,
+  optimism,
 } from 'wagmi/chains';
 import { SafeConnector } from 'wagmi/connectors/safe';
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
@@ -38,7 +40,9 @@ export const SUPPORTED_CHAINS = [
   arbitrumSepolia,
   base,
   baseSepolia,
+  optimism,
   optimismSepolia,
+  celo,
   celoAlfajores,
 ];
 
@@ -98,9 +102,14 @@ export const EVM_SUPPORTED_CHAINS = SUPPORTED_CHAINS.map((chain) => {
     return network;
   };
 
+  const getNetworkDisplayName = () => {
+    if (name === 'OP Mainnet') return 'Optimism';
+    return name;
+  };
+
   return {
     id,
-    networkDisplayName: name,
+    networkDisplayName: getNetworkDisplayName(),
     networkName: getNetworkName(),
     vmType: VM_TYPE.EVM,
   };
@@ -164,6 +173,8 @@ export const ALL_SUPPORTED_CHAINS = [
     'solana',
     'arbitrum',
     'base',
+    'optimism',
+    'celo',
     'goerli',
     'gnosis-chiado',
     'polygon-mumbai',

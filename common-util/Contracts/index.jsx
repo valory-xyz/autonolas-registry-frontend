@@ -31,8 +31,10 @@ import { ADDRESSES } from './addresses';
 export const RPC_URLS = {
   1: process.env.NEXT_PUBLIC_MAINNET_URL,
   5: process.env.NEXT_PUBLIC_GOERLI_URL,
+  10: process.env.NEXT_PUBLIC_OPTIMISM_URL,
   100: process.env.NEXT_PUBLIC_GNOSIS_URL,
   137: process.env.NEXT_PUBLIC_POLYGON_URL,
+  8453: process.env.NEXT_PUBLIC_BASE_URL,
   10200: process.env.NEXT_PUBLIC_GNOSIS_CHIADO_URL,
   44787: process.env.NEXT_PUBLIC_CELO_ALFAJORES_URL,
   80001: process.env.NEXT_PUBLIC_POLYGON_MUMBAI_URL,

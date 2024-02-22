@@ -50,10 +50,10 @@ export const ADDRESSES = {
   },
   // optimistic
   10: {
-    serviceManagerToken: '',
-    serviceRegistryL2: '',
-    serviceRegistryTokenUtility: '',
-    operatorWhitelist: '',
+    serviceManagerToken: '0xFbBEc0C8b13B38a9aC0499694A69a10204c5E2aB',
+    serviceRegistryL2: '0x3d77596beb0f130a4415df3D2D8232B3d3D31e44',
+    serviceRegistryTokenUtility: '0xBb7e1D6Cb6F243D6bdE81CE92a9f2aFF7Fbe7eac',
+    operatorWhitelist: '0x63e66d7ad413C01A7b49C7FF4e3Bb765C4E4bd1b',
   },
   // gnosis
   100: GNOSIS_ADDRESSES,
@@ -88,23 +88,25 @@ export const ADDRESSES = {
     operatorWhitelist: '0x29086141ecdc310058fc23273F8ef7881d20C2f7',
   },
 
-  // optimisticSepolia
+  // optimistic sepolia - testnet for optimistic
   11155420: SEPOLIA_ADDRESSES,
+  // base
   8453: {
     serviceManagerToken: '0x63e66d7ad413C01A7b49C7FF4e3Bb765C4E4bd1b',
     serviceRegistryL2: '0x3C1fF68f5aa342D296d4DEe4Bb1cACCA912D95fE',
     serviceRegistryTokenUtility: '0x34C895f302D0b5cf52ec0Edd3945321EB0f83dd5',
-    operatorWhitelist: '0x29086141ecdc310058fc23273F8ef7881d20C2f7',
+    operatorWhitelist: '0x3d77596beb0f130a4415df3D2D8232B3d3D31e44',
   },
-  // baseSepolia
+  // base sepolia - testnet for base
   84532: SEPOLIA_ADDRESSES,
-  // TODO: celo
+  // TODO: celo (waiting for BE to provide addresses)
   42220: {
     serviceManagerToken: '',
     serviceRegistryL2: '',
     serviceRegistryTokenUtility: '',
     operatorWhitelist: '',
   },
+  // alfajores - testnet for celo
   44787: {
     serviceManagerToken: '0x5BA58970c2Ae16Cf6218783018100aF2dCcFc915',
     serviceRegistryL2: '0x31D3202d8744B16A120117A053459DDFAE93c855',
