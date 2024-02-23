@@ -1,7 +1,9 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useAnchorWallet, useConnection } from '@solana/wallet-adapter-react';
 import { Program, AnchorProvider } from '@project-serum/anchor';
-import { Keypair, PublicKey } from '@solana/web3.js';
+import { Keypair } from '@solana/web3.js';
+import NodeWallet from '@project-serum/anchor/dist/cjs/nodewallet';
+import { web3, setProvider } from '@coral-xyz/anchor';
 
 import { SOLANA_CHAIN_NAMES } from 'util/constants';
 import idl from 'common-util/AbiAndAddresses/ServiceRegistrySolana.json';
@@ -10,6 +12,11 @@ import {
   SOLANA_DEVNET_ADDRESSES,
 } from 'common-util/Contracts/addresses';
 import { useHelpers } from './index';
+
+const NODE_WALLET = new NodeWallet(Keypair.generate());
+
+// const TEMP_PUBLIC_KEY = Keypair.generate().publicKey;
+const TEMP_PUBLIC_KEY = new web3.PublicKey(process.env.NEXT_PUBLIC_SVM_PUBLIC_KEY);
 
 /**
  * hook to get svm info
@@ -27,33 +34,67 @@ export const useSvmConnectivity = () => {
     [chainName],
   );
 
-  const anchorProvider = useMemo(
-    () => {
-      const currentWallet = window.solana ? wallet : Keypair.generate();
+  const customProvider = useMemo(() => {
+    const isNodeProvider = true;
 
-      return new AnchorProvider(connection, currentWallet, {
+    if (isNodeProvider) {
+      return new AnchorProvider(connection, NODE_WALLET, {
         commitment: 'processed',
       });
-    },
-    [connection, wallet],
-  );
+    }
+
+    const currentWallet = window.solana ? wallet : Keypair.generate();
+    return new AnchorProvider(connection, currentWallet, {
+      commitment: 'processed',
+    });
+  }, [connection, wallet]);
+
+  setProvider(customProvider);
 
   const programId = useMemo(
-    () => new PublicKey(solanaAddresses.serviceRegistry),
+    () => new web3.PublicKey(solanaAddresses.serviceRegistry),
     [solanaAddresses.serviceRegistry],
   );
 
   const program = useMemo(
-    () => new Program(idl, programId, anchorProvider),
-    [anchorProvider, programId],
+    () => new Program(idl, programId, customProvider),
+    [customProvider, programId],
   );
 
+  const walletPublicKey = useMemo(
+    () => wallet?.publicKey || TEMP_PUBLIC_KEY,
+    [wallet],
+  );
+
+  // console.log(walletPublicKey.toString());
+
+  // useEffect(() => {
+  //   if (!solanaAddresses.storageAccount) return;
+  //   console.log(solanaAddresses.storageAccount);
+  //   const dataAccount = (solanaAddresses.storageAccount);
+  //   // const dataAccount = new web3.PublicKey(solanaAddresses.storageAccount);
+
+  //   program.methods
+  //     .getService(1)
+  //     .accounts({
+  //       dataAccount,
+  //     })
+  //     .view()
+  //     .then((e) => {
+  //       console.log(e);
+  //     })
+  //     .catch((e) => {
+  //       console.log(e);
+  //     });
+  // }, [wallet, program, solanaAddresses.storageAccount]);
+
   return {
-    walletPublicKey: wallet?.publicKey,
+    walletPublicKey,
     connection,
     program,
     programId,
     solanaAddresses,
     hasNoSvmPublicKey: isSvm ? !wallet?.publicKey : false,
+    // nodeProvider,
   };
 };
