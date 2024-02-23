@@ -179,7 +179,6 @@ const useGetTotalForMyServices = () => {
  *
  */
 const transformServiceData = (service, serviceId) => {
-  if (!service) return null;
   const owner = service.serviceOwner?.toString();
   const stateName = Object.keys(service.state || {})[0];
   // convert to base58 ie. readable format

@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useAnchorWallet, useConnection } from '@solana/wallet-adapter-react';
 import { Program, AnchorProvider } from '@project-serum/anchor';
-import { Keypair } from '@solana/web3.js';
+import { Keypair, PublicKey } from '@solana/web3.js';
 import NodeWallet from '@project-serum/anchor/dist/cjs/nodewallet';
 import { web3, setProvider } from '@coral-xyz/anchor';
 
@@ -38,9 +38,11 @@ export const useSvmConnectivity = () => {
     const isNodeProvider = true;
 
     if (isNodeProvider) {
-      return new AnchorProvider(connection, NODE_WALLET, {
+      const provider = new AnchorProvider(connection, NODE_WALLET, {
         commitment: 'processed',
       });
+      setProvider(provider);
+      return provider;
     }
 
     const currentWallet = window.solana ? wallet : Keypair.generate();
@@ -49,10 +51,8 @@ export const useSvmConnectivity = () => {
     });
   }, [connection, wallet]);
 
-  setProvider(customProvider);
-
   const programId = useMemo(
-    () => new web3.PublicKey(solanaAddresses.serviceRegistry),
+    () => new PublicKey(solanaAddresses.serviceRegistry),
     [solanaAddresses.serviceRegistry],
   );
 
