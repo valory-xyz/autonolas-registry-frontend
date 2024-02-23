@@ -5,7 +5,6 @@
 
 import { useCallback } from 'react';
 import { BorshCoder } from '@project-serum/anchor';
-
 import {
   TransactionMessage,
   VersionedTransaction,
@@ -315,7 +314,7 @@ export const useSvmBonds = () => {
 
       const bondsArray = [];
       const slotsArray = [];
-      for (let i = 0; i < response?.numAgentIds; i += 1) {
+      for (let i = 0; i < response.numAgentIds; i += 1) {
         /**
          * agentParams = [{ slots: 2, bond: 2000 }, { slots: 3, bond: 4000 }]
          * slotsArray = [2, 3]
@@ -349,7 +348,7 @@ export const useSvmServiceTableDataSource = () => {
             [id, agentId],
             'getInstancesForAgentId_returns',
           );
-          return info?.numAgentInstances;
+          return info.numAgentInstances;
         }),
       );
 
