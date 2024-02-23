@@ -24,9 +24,11 @@ const TEMP_PUBLIC_KEY = new web3.PublicKey(
 export const useSvmConnectivity = () => {
   const { connection } = useConnection();
   const wallet = useAnchorWallet();
-
   const { chainName } = useHelpers();
 
+  const actualWallet = useMemo(() => wallet?.publicKey || null, [wallet]);
+
+  // program addresses
   const solanaAddresses = useMemo(
     () => (chainName === SOLANA_CHAIN_NAMES.MAINNET
       ? SOLANA_ADDRESSES
@@ -34,10 +36,10 @@ export const useSvmConnectivity = () => {
     [chainName],
   );
 
+  // provider for anchor, if wallet is not connected, use node wallet
+  // (node wallet is used read-only operations, like fetching data from blockchain)
   const customProvider = useMemo(() => {
-    const isNodeProvider = true;
-
-    if (isNodeProvider) {
+    if (!actualWallet) {
       const provider = new AnchorProvider(connection, NODE_WALLET, {
         commitment: 'processed',
       });
@@ -49,7 +51,7 @@ export const useSvmConnectivity = () => {
     return new AnchorProvider(connection, currentWallet, {
       commitment: 'processed',
     });
-  }, [connection, wallet]);
+  }, [connection, wallet, actualWallet]);
 
   const programId = useMemo(
     () => new PublicKey(solanaAddresses.serviceRegistry),
@@ -62,8 +64,8 @@ export const useSvmConnectivity = () => {
   );
 
   const walletPublicKey = useMemo(
-    () => wallet?.publicKey || TEMP_PUBLIC_KEY,
-    [wallet],
+    () => actualWallet || TEMP_PUBLIC_KEY,
+    [actualWallet],
   );
 
   return {
