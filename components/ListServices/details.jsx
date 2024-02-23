@@ -3,10 +3,8 @@ import { useRouter } from 'next/router';
 
 import Details from 'common-util/Details';
 import { useHelpers } from 'common-util/hooks';
-// import { useSvmConnectivity } from 'common-util/hooks/useSvmConnectivity';
 
 import { ServiceState } from './ServiceState';
-// import { EmptyMessage } from '../styles';
 import {
   useGetServiceDetails,
   useGetServiceOwner,
@@ -17,7 +15,6 @@ const Service = () => {
   const router = useRouter();
   const id = router?.query?.id;
   const { links } = useHelpers();
-  // const { hasNoSvmPublicKey } = useSvmConnectivity();
 
   const getDetails = useGetServiceDetails();
   const getOwner = useGetServiceOwner();
@@ -33,14 +30,6 @@ const Service = () => {
     },
     [router, links],
   );
-
-  // if (hasNoSvmPublicKey) {
-  //   return (
-  //     <EmptyMessage>
-  //       To view this page, connect a wallet that holds SOL
-  //     </EmptyMessage>
-  //   );
-  // }
 
   return (
     <Details

@@ -3,23 +3,19 @@
  * This file contains the hooks to fetch data from the SVM (Solana)
  */
 
-import { useCallback, useMemo } from 'react';
-import { AnchorProvider, BorshCoder, web3 } from '@project-serum/anchor';
-import { Program } from '@coral-xyz/anchor';
+import { useCallback } from 'react';
+import { BorshCoder } from '@project-serum/anchor';
 
 import {
   TransactionMessage,
   VersionedTransaction,
   PublicKey,
-  Keypair,
 } from '@solana/web3.js';
 import { areAddressesEqual } from '@autonolas/frontend-library';
 
 import { SERVICE_STATE_KEY_MAP } from 'util/constants';
 import idl from 'common-util/AbiAndAddresses/ServiceRegistrySolana.json';
 import { useSvmConnectivity } from 'common-util/hooks/useSvmConnectivity';
-import { useConnection } from '@solana/wallet-adapter-react';
-import NodeWallet from '@project-serum/anchor/dist/cjs/nodewallet';
 import {
   transformDatasourceForServiceTable,
   transformSlotsAndBonds,
@@ -74,9 +70,6 @@ export const useSvmDataFetch = () => {
 
         if (!walletPublicKey || !program) return null;
 
-        // console.log(walletPublicKey);
-        // console.log(program);
-
         const latestBlock = await connection.getLatestBlockhash();
 
         // Build the instruction
@@ -92,12 +85,8 @@ export const useSvmDataFetch = () => {
         }).compileToV0Message();
         const tx = new VersionedTransaction(txMessage);
 
-        console.log(tx);
-
         // Simulate the transaction.
         const transactionSimulation = await connection.simulateTransaction(tx);
-
-        console.log('transactionSimulation ', transactionSimulation);
 
         // Log all the transaction logs.
         const transactionLogs = transactionSimulation.value.logs;
@@ -160,41 +149,8 @@ export const useSvmDataFetch = () => {
 // returns the total number of services
 const useGetTotalForAllServices = () => {
   const { getData } = useSvmDataFetch();
-  const {
-    program, programId, connection, solanaAddresses,
-  } = useSvmConnectivity();
 
   const getTotalForAllSvmServices = useCallback(async () => {
-    // TRY
-    // const totalCount = await program.methods.totalSupply.fetch();
-    // .view();
-
-    // console.log(await program.views.totalSupply({
-    //   accounts: {
-    //     dataAccount: solanaAddresses.storageAccount,
-    //   },
-    // }));
-
-    // const abcd = await program.methods.totalSupply().accounts({
-    //   dataAccount: solanaAddresses.storageAccount,
-    // }).signers().rpc();
-
-    const abcd = await connection.getProgramAccounts(programId);
-
-    console.log(abcd);
-
-    abcd.map((e) => {
-      const kk = e.account.data;
-      // convert unit8array to json
-      const b64 = Buffer.from(kk).toString('base64');
-      b64.toString('utf-8');
-      console.log(b64);
-
-      return kk;
-    });
-    // console.log('totalCount', totalCount);
-
-    // actually
     const total = await getData('totalSupply', [], null, { noDecode: true });
     return total;
   }, [getData]);
@@ -244,63 +200,12 @@ const transformServiceData = (service, serviceId) => {
   };
 };
 
-// const PROGRAM_ID = new web3.PublicKey('');
-// const NODE_WALLET = new NodeWallet(Keypair.generate());
-// const key = new PublicKey('');
-
-// export const useGetSvmServiceDetails = () => {
-//   const { getData } = useSvmDataFetch();
-//   const {
-//     walletPublicKey, solanaAddresses,
-//   } = useSvmConnectivity();
-//   const { connection } = useConnection();
-
-//   const nodeProvider = useMemo(() => new AnchorProvider(
-//     connection,
-//     NODE_WALLET,
-//     {
-//       commitment: 'processed',
-//     },
-//   ), [connection]);
-//   // console.log('key', key);
-
-//   const getSvmServiceDetails = useCallback(
-//     async (id) => {
-//       const program = new Program(idl, PROGRAM_ID, nodeProvider);
-
-//       console.log('HERRREEEE', id);
-//       try {
-//         // const details = await getData('getService', [id], 'Service');
-//         const details = await program.methods
-//           .getService(id)
-//           .accounts({ dataAccount: key })
-//           // .view();
-//           // .signers()
-//           .rpc();
-
-//         console.log('details', details);
-//         // return transformServiceData(details, id);
-
-//         return null;
-//       } catch (error) {
-//         console.log('Error getting service details', error);
-//         console.error(error);
-//       }
-//       return null;
-//     },
-//     [getData],
-//   );
-
-//   return { getSvmServiceDetails };
-// };
-
 export const useGetSvmServiceDetails = () => {
   const { getData } = useSvmDataFetch();
 
   const getSvmServiceDetails = useCallback(
     async (id) => {
       const details = await getData('getService', [id], 'Service');
-      console.log('details', details);
       return transformServiceData(details, id);
     },
     [getData],

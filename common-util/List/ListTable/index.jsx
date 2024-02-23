@@ -5,7 +5,6 @@ import { Loader, useScreen } from '@autonolas/frontend-library';
 import { TOTAL_VIEW_COUNT } from 'util/constants';
 import { ListEmptyMessage } from 'common-util/List/ListCommon';
 import { useHelpers } from 'common-util/hooks';
-import { useSvmConnectivity } from 'common-util/hooks/useSvmConnectivity';
 import { getData, getTableColumns } from './helpers';
 
 const ListTable = ({
@@ -25,7 +24,6 @@ const ListTable = ({
   const {
     chainName, account, isSvm, chainId,
   } = useHelpers();
-  const { hasNoSvmPublicKey } = useSvmConnectivity();
   /**
    * no pagination on search as we won't know total beforehand
    */
@@ -34,22 +32,11 @@ const ListTable = ({
 
   const { scrollX } = extra;
 
-  // if svm & no public key, show Loader with connect wallet message
-  const isAccountRequiredForList = isAccountRequired || hasNoSvmPublicKey;
-
-  if (isLoading || hasNoSvmPublicKey) {
-    const connectWalletMessage = isSvm
-      ? 'connect a wallet that holds SOL'
-      : 'connect wallet';
-
-    const notConnectedMessage = isAccountRequiredForList
-      ? `To see your ${type}s, ${connectWalletMessage}.`
-      : '';
-
+  if (isLoading) {
     return (
       <Loader
-        isAccountRequired={isAccountRequiredForList}
-        notConnectedMessage={notConnectedMessage}
+        isAccountRequired={isAccountRequired}
+        notConnectedMessage={`To see your ${type}s, connect wallet.`}
       />
     );
   }
