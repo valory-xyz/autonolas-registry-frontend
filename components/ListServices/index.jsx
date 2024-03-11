@@ -99,12 +99,12 @@ const ListServices = () => {
   }, [
     account,
     chainName,
-    // currentTab,
-    // searchValue,
-    // isSvm,
-    // getTotalForAllSvmServices,
-    // getTotalForMySvmServices,
-    // getSvmServices,
+    currentTab,
+    searchValue,
+    isSvm,
+    getTotalForAllSvmServices,
+    getTotalForMySvmServices,
+    getSvmServices,
   ]);
 
   // fetch the list (All services, My Services) - WITHOUT search
@@ -117,7 +117,7 @@ const ListServices = () => {
         if (currentTab === ALL_SERVICES) {
           setList([]);
           const everyComps = isSvm
-            ? await getSvmServices(total)
+            ? await getSvmServices(total, currentPage)
             : await getServices(total, currentPage);
           setList(everyComps);
         }
@@ -206,6 +206,8 @@ const ListServices = () => {
   const myServiceList = searchValue
     ? list
     : getMyListOnPagination({ total, nextPage: currentPage, list });
+
+  console.log('total list - ', list);
 
   return (
     <Tabs

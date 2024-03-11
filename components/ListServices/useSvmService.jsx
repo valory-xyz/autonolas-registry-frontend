@@ -12,7 +12,7 @@ import {
 } from '@solana/web3.js';
 import { areAddressesEqual } from '@autonolas/frontend-library';
 
-import { SERVICE_STATE_KEY_MAP } from 'util/constants';
+import { SERVICE_STATE_KEY_MAP, TOTAL_VIEW_COUNT } from 'util/constants';
 import idl from 'common-util/AbiAndAddresses/ServiceRegistrySolana.json';
 import { useSvmConnectivity } from 'common-util/hooks/useSvmConnectivity';
 import {
@@ -89,12 +89,16 @@ export const useSvmDataFetch = () => {
           recentBlockhash: latestBlock.blockhash,
           instructions: [instruction],
         }).compileToV0Message();
+
+        // Create a versioned transaction
         const tx = new VersionedTransaction(txMessage);
 
         console.log('tx', tx);
 
         // Simulate the transaction.
-        const transactionSimulation = await connection.simulateTransaction(tx);
+        const transactionSimulation = await connection.simulateTransaction(tx, {
+          commitment: 'confirmed',
+        });
         console.log('transactionSimulation', transactionSimulation);
 
         // Log all the transaction logs.
@@ -165,7 +169,7 @@ const useGetTotalForAllServices = () => {
   console.log('getData', 'here');
   const getTotalForAllSvmServices = useCallback(async () => {
     const total = await getData('totalSupply', [], null, { noDecode: true });
-    // const total = 1;
+    // const total = 5;
     console.log('total', total);
     return total;
   }, [getData]);
@@ -194,6 +198,8 @@ const useGetTotalForMyServices = () => {
  *
  */
 const transformServiceData = (service, serviceId) => {
+  console.log('transformServiceData - ', service);
+  if (!service) return {};
   const owner = service.serviceOwner?.toString();
   const stateName = Object.keys(service.state || {})[0];
   // convert to base58 ie. readable format
@@ -235,9 +241,12 @@ const useGetServices = () => {
   const { getSvmServiceDetails } = useGetSvmServiceDetails();
 
   const getSvmServices = useCallback(
-    async (total) => {
+    async (total, nextPage, fetchAll = false) => {
       const promises = [];
-      for (let i = 1; i <= total; i += 1) {
+      const first = fetchAll ? 1 : (nextPage - 1) * TOTAL_VIEW_COUNT + 1;
+      const last = fetchAll ? total : Math.min(nextPage * TOTAL_VIEW_COUNT, total);
+
+      for (let i = first; i <= last; i += 1) {
         promises.push(getSvmServiceDetails(i));
       }
 
