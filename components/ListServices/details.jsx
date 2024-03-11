@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import Details from 'common-util/Details';
 import { useHelpers } from 'common-util/hooks';
 
-import { ServiceState } from './ServiceState';
+// import { ServiceState } from './ServiceState';
 import {
   useGetServiceDetails,
   useGetServiceOwner,
@@ -14,7 +14,10 @@ import {
 const Service = () => {
   const router = useRouter();
   const id = router?.query?.id;
+
   const { links } = useHelpers();
+
+  console.log('Service - re-render & id = ', id);
 
   const getDetails = useGetServiceDetails();
   const getOwner = useGetServiceOwner();
@@ -30,6 +33,7 @@ const Service = () => {
     },
     [router, links],
   );
+  // console.log('Service - re-render & id = ', id);
 
   return (
     <Details
@@ -40,14 +44,14 @@ const Service = () => {
       getTokenUri={getTokenUri}
       handleUpdate={handleUpdate}
       navigateToDependency={navigateToDependency}
-      renderServiceState={({ isOwner, details, updateDetails }) => (
-        <ServiceState
-          isOwner={isOwner}
-          id={id}
-          details={details}
-          updateDetails={updateDetails}
-        />
-      )}
+      // renderServiceState={({ isOwner, details, updateDetails }) => (
+      //   <ServiceState
+      //     isOwner={isOwner}
+      //     id={id}
+      //     details={details}
+      //     updateDetails={updateDetails}
+      //   />
+      // )}
     />
   );
 };

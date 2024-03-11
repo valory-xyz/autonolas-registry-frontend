@@ -71,6 +71,8 @@ const ListServices = () => {
       try {
         let totalTemp = null;
 
+        console.log('currentTab', currentTab, account, isSvm);
+
         if (currentTab === ALL_SERVICES) {
           totalTemp = isSvm
             ? await getTotalForAllSvmServices(account)
@@ -97,12 +99,12 @@ const ListServices = () => {
   }, [
     account,
     chainName,
-    currentTab,
-    searchValue,
-    isSvm,
-    getTotalForAllSvmServices,
-    getTotalForMySvmServices,
-    getSvmServices,
+    // currentTab,
+    // searchValue,
+    // isSvm,
+    // getTotalForAllSvmServices,
+    // getTotalForMySvmServices,
+    // getSvmServices,
   ]);
 
   // fetch the list (All services, My Services) - WITHOUT search

@@ -6,7 +6,7 @@ import { useCallback } from 'react';
 import { useHelpers } from 'common-util/hooks';
 import { notifyError } from '@autonolas/frontend-library';
 
-import { getServiceDetails, getServiceOwner, getTokenUri } from './utils';
+// import { getServiceDetails, getServiceOwner, getTokenUri } from './utils';
 import {
   useGetSvmServiceDetails,
   useServiceOwner,
@@ -25,10 +25,14 @@ export const useGetServiceDetails = () => {
     async (id) => {
       if (!id) notifyError('No service id provided');
 
-      const e = isSvm
-        ? await getSvmServiceDetails(id)
-        : await getServiceDetails(id);
-      return e;
+      console.log('useGetServiceDetails called: ', id);
+
+      return null;
+
+      // const e = isSvm
+      //   ? await getSvmServiceDetails(id)
+      //   : await getServiceDetails(id);
+      // return e;
     },
     [isSvm, getSvmServiceDetails],
   );
@@ -42,17 +46,21 @@ export const useGetServiceOwner = () => {
   const { isSvm } = useHelpers();
   const { getSvmServiceOwner } = useServiceOwner();
 
-  return useCallback(
-    async (id) => {
-      if (!id) notifyError('No service id provided');
+  return useCallback((id) => {
+    console.log('service Owner called: ', id);
+  }, [isSvm, getSvmServiceOwner]);
 
-      const e = isSvm
-        ? await getSvmServiceOwner(id)
-        : await getServiceOwner(id);
-      return e;
-    },
-    [isSvm, getSvmServiceOwner],
-  );
+  // return useCallback(
+  //   async (id) => {
+  //     if (!id) notifyError('No service id provided');
+
+  //     const e = isSvm
+  //       ? await getSvmServiceOwner(id)
+  //       : await getServiceOwner(id);
+  //     return e;
+  //   },
+  //   [isSvm, getSvmServiceOwner],
+  // );
 };
 
 /**
@@ -63,13 +71,17 @@ export const useGetServiceTokenUri = () => {
   const { isSvm } = useHelpers();
   const { getSvmTokenUri } = useTokenUri();
 
-  return useCallback(
-    async (id) => {
-      if (!id) notifyError('No service id provided');
+  return useCallback((id) => {
+    console.log('token URI called: ', id);
+  }, [isSvm, getSvmTokenUri]);
 
-      const e = isSvm ? await getSvmTokenUri(id) : await getTokenUri(id);
-      return e;
-    },
-    [isSvm, getSvmTokenUri],
-  );
+  // return useCallback(
+  //   async (id) => {
+  //     if (!id) notifyError('No service id provided');
+
+  //     const e = isSvm ? await getSvmTokenUri(id) : await getTokenUri(id);
+  //     return e;
+  //   },
+  //   [isSvm, getSvmTokenUri],
+  // );
 };

@@ -25,6 +25,8 @@ export const useDetails = ({
   // token uri
   useEffect(() => {
     const getData = async () => {
+      console.log('~~~~~ useDetails - getData called');
+
       setIsLoading(true);
       setInfo([]);
 

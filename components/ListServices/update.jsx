@@ -36,6 +36,8 @@ const UpdateService = () => {
     vmType,
   } = useHelpers();
   const { solanaAddresses, program } = useSvmConnectivity();
+
+  const id = router?.query?.id;
   const getDetails = useGetServiceDetails();
 
   const [isAllLoading, setAllLoading] = useState(false);
@@ -43,8 +45,6 @@ const UpdateService = () => {
   const [error, setError] = useState(null);
   const [ethTokenAddress, setEthTokenAddress] = useState(null);
   const [isUpdating, setIsUpdating] = useState(false);
-
-  const id = router?.query?.id;
 
   useEffect(() => {
     const getData = async () => {

@@ -75,6 +75,13 @@ export const useSvmDataFetch = () => {
         const instruction = await program.methods[fn](...(fnArgs || []))
           .accounts({ dataAccount: solanaAddresses.storageAccount })
           .instruction();
+        console.log('instruction', instruction);
+
+        // console.log(
+        //   await program.methods[fn](...(fnArgs || []))
+        //     .accounts({ dataAccount: solanaAddresses.storageAccount })
+        //     .view(),
+        // );
 
         // Build a versioned transaction with the instruction
         const txMessage = new TransactionMessage({
@@ -84,15 +91,21 @@ export const useSvmDataFetch = () => {
         }).compileToV0Message();
         const tx = new VersionedTransaction(txMessage);
 
+        console.log('tx', tx);
+
         // Simulate the transaction.
         const transactionSimulation = await connection.simulateTransaction(tx);
+        console.log('transactionSimulation', transactionSimulation);
 
         // Log all the transaction logs.
         const transactionLogs = transactionSimulation.value.logs;
 
+        console.log('transactionLogs', transactionLogs);
+
         return transactionLogs;
       } catch (error) {
         window.console.warn('Error getting transaction logs');
+        console.error(error);
         throw error;
       }
     },
@@ -149,8 +162,11 @@ export const useSvmDataFetch = () => {
 const useGetTotalForAllServices = () => {
   const { getData } = useSvmDataFetch();
 
+  console.log('getData', 'here');
   const getTotalForAllSvmServices = useCallback(async () => {
     const total = await getData('totalSupply', [], null, { noDecode: true });
+    // const total = 1;
+    console.log('total', total);
     return total;
   }, [getData]);
 
@@ -203,6 +219,8 @@ export const useGetSvmServiceDetails = () => {
 
   const getSvmServiceDetails = useCallback(
     async (id) => {
+      console.log('getDetails for SVM');
+
       const details = await getData('getService', [id], 'Service');
       return transformServiceData(details, id);
     },
