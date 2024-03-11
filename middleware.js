@@ -47,6 +47,8 @@ const getCspHeader = (browserName) => {
     'https://sepolia.optimism.io/',
     'https://forno.celo.org',
     'https://alfajores-forno.celo-testnet.org',
+    'https://mainnet.helius-rpc.com/',
+    'https://explorer-api.mainnet-beta.solana.com/',
   ];
 
   if (isDev) {
