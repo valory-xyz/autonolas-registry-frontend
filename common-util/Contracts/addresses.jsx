@@ -80,6 +80,20 @@ export const ADDRESSES = {
     serviceRegistryTokenUtility: '0xc2c7E40674f1C7Bb99eFe5680Efd79842502bED4',
     operatorWhitelist: '0x6f7661F52fE1919996d0A4F68D09B344093a349d',
   },
+  // arbitrum
+  42161: {
+    serviceManagerToken: '0x34C895f302D0b5cf52ec0Edd3945321EB0f83dd5',
+    serviceRegistryL2: '0xE3607b00E75f6405248323A9417ff6b39B244b50',
+    serviceRegistryTokenUtility: '0x3d77596beb0f130a4415df3D2D8232B3d3D31e44',
+    operatorWhitelist: '0x3C1fF68f5aa342D296d4DEe4Bb1cACCA912D95fE',
+  },
+  // celo
+  42220: {
+    serviceManagerToken: '0x34C895f302D0b5cf52ec0Edd3945321EB0f83dd5',
+    serviceRegistryL2: '0xE3607b00E75f6405248323A9417ff6b39B244b50',
+    serviceRegistryTokenUtility: '0x3d77596beb0f130a4415df3D2D8232B3d3D31e44',
+    operatorWhitelist: '0x3C1fF68f5aa342D296d4DEe4Bb1cACCA912D95fE',
+  },
   // polygon mumbai - testnet for polygon
   80001: {
     serviceManagerToken: '0xE16adc7777B7C2a0d35033bd3504C028AB28EE8b',
@@ -89,25 +103,11 @@ export const ADDRESSES = {
   },
   // base sepolia - testnet for base
   84532: COMMON_TEST_ADDRESSES,
-  // arbitrum
-  42161: {
-    serviceManagerToken: '0x34C895f302D0b5cf52ec0Edd3945321EB0f83dd5',
-    serviceRegistryL2: '0xE3607b00E75f6405248323A9417ff6b39B244b50',
-    serviceRegistryTokenUtility: '0x3d77596beb0f130a4415df3D2D8232B3d3D31e44',
-    operatorWhitelist: '0x3C1fF68f5aa342D296d4DEe4Bb1cACCA912D95fE',
-  },
   // arbitrum sepolia - testnet for arbitrum
   421614: COMMON_TEST_ADDRESSES,
   // optimistic sepolia - testnet for optimistic
   11155420: COMMON_TEST_ADDRESSES,
-  // TODO: celo (waiting for BE to provide addresses)
-  42220: {
-    serviceManagerToken: '',
-    serviceRegistryL2: '',
-    serviceRegistryTokenUtility: '',
-    operatorWhitelist: '',
-  },
-  // alfajores - testnet for celo
+  // celo alfajores - testnet for celo
   44787: COMMON_TEST_ADDRESSES,
   // local
   31337: {
