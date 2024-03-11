@@ -125,7 +125,7 @@ export const DetailsSubInfo = ({
 
   // get token address for service
   useEffect(() => {
-    const getData = async () => {
+    const fetchData = async () => {
       if (type === NAV_TYPES.SERVICE) {
         try {
           const response = await getTokenDetailsRequest(id);
@@ -138,7 +138,7 @@ export const DetailsSubInfo = ({
 
     // token details is only available for L1 networks
     if (id && doesNetworkHaveValidServiceManagerToken && !isSvm) {
-      getData();
+      fetchData();
     }
   }, [id, type, isSvm, doesNetworkHaveValidServiceManagerToken]);
 

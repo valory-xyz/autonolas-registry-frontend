@@ -71,8 +71,6 @@ const ListServices = () => {
       try {
         let totalTemp = null;
 
-        console.log('currentTab', currentTab, account, isSvm);
-
         if (currentTab === ALL_SERVICES) {
           totalTemp = isSvm
             ? await getTotalForAllSvmServices(account)
@@ -206,8 +204,6 @@ const ListServices = () => {
   const myServiceList = searchValue
     ? list
     : getMyListOnPagination({ total, nextPage: currentPage, list });
-
-  console.log('total list - ', list);
 
   return (
     <Tabs

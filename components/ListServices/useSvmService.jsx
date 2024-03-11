@@ -54,10 +54,11 @@ const deseralizeProgramData = (serializedValue, decodeTypeName) => {
   return decodedResult;
 };
 
-// TODO: move to common-util to read and write
+// TODO: move to common-util
+// hook to only READ data from the SVM (Solana)
 export const useSvmDataFetch = () => {
   const {
-    walletPublicKey, connection, program, solanaAddresses,
+    tempWalletPublicKey, connection, program, solanaAddresses,
   } = useSvmConnectivity();
 
   const getTransactionLogs = useCallback(
@@ -67,7 +68,7 @@ export const useSvmDataFetch = () => {
           throw new Error('function is not provided');
         }
 
-        if (!walletPublicKey || !program) return null;
+        if (!tempWalletPublicKey || !program) return null;
 
         const latestBlock = await connection.getLatestBlockhash();
 
@@ -75,17 +76,10 @@ export const useSvmDataFetch = () => {
         const instruction = await program.methods[fn](...(fnArgs || []))
           .accounts({ dataAccount: solanaAddresses.storageAccount })
           .instruction();
-        console.log('instruction', instruction);
-
-        // console.log(
-        //   await program.methods[fn](...(fnArgs || []))
-        //     .accounts({ dataAccount: solanaAddresses.storageAccount })
-        //     .view(),
-        // );
 
         // Build a versioned transaction with the instruction
         const txMessage = new TransactionMessage({
-          payerKey: walletPublicKey,
+          payerKey: tempWalletPublicKey,
           recentBlockhash: latestBlock.blockhash,
           instructions: [instruction],
         }).compileToV0Message();
@@ -93,19 +87,13 @@ export const useSvmDataFetch = () => {
         // Create a versioned transaction
         const tx = new VersionedTransaction(txMessage);
 
-        console.log('tx', tx);
-
         // Simulate the transaction.
         const transactionSimulation = await connection.simulateTransaction(tx, {
           commitment: 'confirmed',
         });
-        console.log('transactionSimulation', transactionSimulation);
 
         // Log all the transaction logs.
         const transactionLogs = transactionSimulation.value.logs;
-
-        console.log('transactionLogs', transactionLogs);
-
         return transactionLogs;
       } catch (error) {
         window.console.warn('Error getting transaction logs');
@@ -113,7 +101,7 @@ export const useSvmDataFetch = () => {
         throw error;
       }
     },
-    [connection, program, walletPublicKey, solanaAddresses],
+    [connection, program, tempWalletPublicKey, solanaAddresses],
   );
 
   /**
@@ -124,7 +112,7 @@ export const useSvmDataFetch = () => {
    * ServiceRegistrySolana.json for the type names
    * @param {object} extraOptions extra options
    */
-  const getData = useCallback(
+  const readSvmData = useCallback(
     async (fn, fnArgs, decodeTypeName = null, extraOptions = {}) => {
       const { noDecode = false } = extraOptions;
 
@@ -157,22 +145,21 @@ export const useSvmDataFetch = () => {
     [getTransactionLogs, program],
   );
 
-  return { getData };
+  return { readSvmData };
 };
 
 // *********** HOOKS TO FETCH SERVICES DATA ***********
 
 // returns the total number of services
 const useGetTotalForAllServices = () => {
-  const { getData } = useSvmDataFetch();
+  const { readSvmData } = useSvmDataFetch();
 
-  console.log('getData', 'here');
   const getTotalForAllSvmServices = useCallback(async () => {
-    const total = await getData('totalSupply', [], null, { noDecode: true });
-    // const total = 5;
-    console.log('total', total);
+    const total = await readSvmData('totalSupply', [], null, {
+      noDecode: true,
+    });
     return total;
-  }, [getData]);
+  }, [readSvmData]);
 
   return { getTotalForAllSvmServices };
 };
@@ -198,7 +185,6 @@ const useGetTotalForMyServices = () => {
  *
  */
 const transformServiceData = (service, serviceId) => {
-  console.log('transformServiceData - ', service);
   if (!service) return {};
   const owner = service.serviceOwner?.toString();
   const stateName = Object.keys(service.state || {})[0];
@@ -221,16 +207,14 @@ const transformServiceData = (service, serviceId) => {
 };
 
 export const useGetSvmServiceDetails = () => {
-  const { getData } = useSvmDataFetch();
+  const { readSvmData } = useSvmDataFetch();
 
   const getSvmServiceDetails = useCallback(
     async (id) => {
-      console.log('getDetails for SVM');
-
-      const details = await getData('getService', [id], 'Service');
+      const details = await readSvmData('getService', [id], 'Service');
       return transformServiceData(details, id);
     },
-    [getData],
+    [readSvmData],
   );
 
   return { getSvmServiceDetails };
@@ -244,7 +228,9 @@ const useGetServices = () => {
     async (total, nextPage, fetchAll = false) => {
       const promises = [];
       const first = fetchAll ? 1 : (nextPage - 1) * TOTAL_VIEW_COUNT + 1;
-      const last = fetchAll ? total : Math.min(nextPage * TOTAL_VIEW_COUNT, total);
+      const last = fetchAll
+        ? total
+        : Math.min(nextPage * TOTAL_VIEW_COUNT, total);
 
       for (let i = first; i <= last; i += 1) {
         promises.push(getSvmServiceDetails(i));
@@ -299,28 +285,28 @@ export const useServiceInfo = () => {
 };
 
 export const useServiceOwner = () => {
-  const { getData } = useSvmDataFetch();
+  const { readSvmData } = useSvmDataFetch();
 
   const getSvmServiceOwner = useCallback(
     async (id) => {
-      const owner = await getData('ownerOf', [id], 'publicKey');
+      const owner = await readSvmData('ownerOf', [id], 'publicKey');
       return owner;
     },
-    [getData],
+    [readSvmData],
   );
 
   return { getSvmServiceOwner };
 };
 
 export const useTokenUri = () => {
-  const { getData } = useSvmDataFetch();
+  const { readSvmData } = useSvmDataFetch();
 
   const getSvmTokenUri = useCallback(
     async (id) => {
-      const tokenUri = await getData('tokenUri', [id], 'string');
+      const tokenUri = await readSvmData('tokenUri', [id], 'string');
       return tokenUri;
     },
-    [getData],
+    [readSvmData],
   );
 
   return { getSvmTokenUri };
@@ -329,11 +315,11 @@ export const useTokenUri = () => {
 // *********** HOOKS TO FETCH SERVICES STATE DATA ***********
 
 export const useSvmBonds = () => {
-  const { getData } = useSvmDataFetch();
+  const { readSvmData } = useSvmDataFetch();
 
   const getSvmBonds = useCallback(
     async (id, tableDataSource) => {
-      const response = await getData(
+      const response = await readSvmData(
         'getAgentParams',
         [id],
         'getAgentParams_returns',
@@ -354,14 +340,14 @@ export const useSvmBonds = () => {
 
       return transformSlotsAndBonds(slotsArray, bondsArray, tableDataSource);
     },
-    [getData],
+    [readSvmData],
   );
 
   return { getSvmBonds };
 };
 
 export const useSvmServiceTableDataSource = () => {
-  const { getData } = useSvmDataFetch();
+  const { readSvmData } = useSvmDataFetch();
   const { getSvmBonds } = useSvmBonds();
 
   const getSvmServiceTableDataSource = useCallback(
@@ -370,7 +356,7 @@ export const useSvmServiceTableDataSource = () => {
 
       const numAgentInstances = await Promise.all(
         agentIds.map(async (agentId) => {
-          const info = await getData(
+          const info = await readSvmData(
             'getInstancesForAgentId',
             [id, agentId],
             'getInstancesForAgentId_returns',
@@ -388,7 +374,7 @@ export const useSvmServiceTableDataSource = () => {
 
       return dataSource;
     },
-    [getData, getSvmBonds],
+    [readSvmData, getSvmBonds],
   );
 
   return { getSvmServiceTableDataSource };
@@ -396,11 +382,11 @@ export const useSvmServiceTableDataSource = () => {
 
 /* ----- step 4 functions ----- */
 export const useAgentInstanceAndOperator = () => {
-  const { getData } = useSvmDataFetch();
+  const { readSvmData } = useSvmDataFetch();
 
   const getSvmAgentInstanceAndOperator = useCallback(
     async (id) => {
-      const response = await getData(
+      const response = await readSvmData(
         'getAgentInstances',
         [id],
         'getAgentInstances_returns',
@@ -408,7 +394,7 @@ export const useAgentInstanceAndOperator = () => {
 
       const data = await Promise.all(
         (response?.agentInstances || []).map(async (agentInstance, index) => {
-          const operatorAddress = await getData(
+          const operatorAddress = await readSvmData(
             'mapAgentInstanceOperators',
             [agentInstance],
             'publicKey',
@@ -423,7 +409,7 @@ export const useAgentInstanceAndOperator = () => {
 
       return data;
     },
-    [getData],
+    [readSvmData],
   );
 
   return { getSvmAgentInstanceAndOperator };

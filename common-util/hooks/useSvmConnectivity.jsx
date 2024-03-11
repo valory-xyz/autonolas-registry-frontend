@@ -70,6 +70,10 @@ export const useSvmConnectivity = () => {
 
   return {
     walletPublicKey,
+    /**
+     * Public key of the wallet used for read-only operations
+     */
+    tempWalletPublicKey: TEMP_PUBLIC_KEY,
     connection,
     program,
     programId,

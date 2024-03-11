@@ -29,11 +29,11 @@ const useOperatorWhitelist = (id) => {
 
   // Get operator whitelist
   useEffect(() => {
-    const getData = async () => {
+    const fetchData = async () => {
       await setOpWhitelist();
     };
 
-    if (id && doesNetworkHaveValidServiceManagerToken && !isSvm) getData();
+    if (id && doesNetworkHaveValidServiceManagerToken && !isSvm) fetchData();
   }, [id, setOpWhitelist, doesNetworkHaveValidServiceManagerToken, isSvm]);
 
   return {

@@ -3,7 +3,11 @@ import {
   Input, Space, Button, Typography,
 } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
-import { AddressLink, areAddressesEqual } from '@autonolas/frontend-library';
+import {
+  AddressLink,
+  areAddressesEqual,
+  NA,
+} from '@autonolas/frontend-library';
 
 import { NAV_TYPES, SERVICE_STATE, TOTAL_VIEW_COUNT } from 'util/constants';
 
@@ -77,20 +81,26 @@ export const getTableColumns = (
         dataIndex: 'owner',
         key: 'owner',
         width: 200,
-        render: (text) => (
-          <AddressLink
-            {...addressLinkProps}
-            text={text}
-            chainName={chainName}
-          />
-        ),
+        render: (text) => {
+          if (!text || text === NA) return NA;
+          return (
+            <AddressLink
+              {...addressLinkProps}
+              text={text}
+              chainName={chainName}
+            />
+          );
+        },
       },
       {
         title: 'State',
         dataIndex: 'state',
         key: 'state',
         width: 150,
-        render: (e) => <>{SERVICE_STATE[e]}</>,
+        render: (e) => {
+          if (!e) return NA;
+          return SERVICE_STATE[e];
+        },
       },
       {
         width: isMobile ? 40 : 220,
@@ -123,7 +133,7 @@ export const getTableColumns = (
   return [];
 };
 
-export const getData = (type, rawData, { current }) => {
+export const fetchDataSource = (type, rawData, { current }) => {
   /**
    * @example
    * TOTAL_VIEW_COUNT = 10, current = 1
@@ -140,10 +150,10 @@ export const getData = (type, rawData, { current }) => {
   if (type === NAV_TYPES.COMPONENT) {
     data = rawData.map((item, index) => ({
       id: item.id || `${startIndex + index}`,
-      description: item.description || '-',
-      developer: item.developer || '-',
-      owner: item.owner || '-',
-      hash: item.unitHash || '-',
+      description: item.description || NA,
+      developer: item.developer || NA,
+      owner: item.owner || NA,
+      hash: item.unitHash || NA,
       dependency: (item.dependencies || []).length,
     }));
   }
@@ -151,10 +161,10 @@ export const getData = (type, rawData, { current }) => {
   if (type === NAV_TYPES.AGENT) {
     data = rawData.map((item, index) => ({
       id: item.id || `${startIndex + index}`,
-      description: item.description || '-',
-      developer: item.developer || '-',
-      owner: item.owner || '-',
-      hash: item.unitHash || '-',
+      description: item.description || NA,
+      developer: item.developer || NA,
+      owner: item.owner || NA,
+      hash: item.unitHash || NA,
       dependency: (item.dependencies || []).length,
     }));
   }
@@ -162,8 +172,8 @@ export const getData = (type, rawData, { current }) => {
   if (type === NAV_TYPES.SERVICE) {
     data = rawData.map((item, index) => ({
       id: item.id || `${startIndex + index}`,
-      developer: item.developer || '-',
-      owner: item.owner || '-',
+      developer: item.developer || NA,
+      owner: item.owner || NA,
       active: `${item.active}`,
       state: item.state,
     }));

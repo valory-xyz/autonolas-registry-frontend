@@ -19,8 +19,6 @@ export const useMetadata = (tokenUri) => {
   // fetch metadata from IPFS
   useEffect(() => {
     const getMetadata = async () => {
-      console.log('useMetadata - useEffect called');
-
       setMetadataState(HASH_DETAILS_STATE.IS_LOADING);
       try {
         const ipfsUrl = getAutonolasTokenUri(tokenUri);

@@ -5,7 +5,7 @@ import { Loader, useScreen } from '@autonolas/frontend-library';
 import { TOTAL_VIEW_COUNT } from 'util/constants';
 import { ListEmptyMessage } from 'common-util/List/ListCommon';
 import { useHelpers } from 'common-util/hooks';
-import { getData, getTableColumns } from './helpers';
+import { fetchDataSource, getTableColumns } from './helpers';
 
 const ListTable = ({
   isLoading,
@@ -49,7 +49,7 @@ const ListTable = ({
     chainId,
     account,
   });
-  const dataSource = getData(type, list, { current: currentPage });
+  const dataSource = fetchDataSource(type, list, { current: currentPage });
   const pagination = {
     total,
     current: currentPage,
