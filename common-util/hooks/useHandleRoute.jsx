@@ -4,7 +4,11 @@ import { useRouter } from 'next/router';
 import { toLower } from 'lodash';
 
 import { setVmInfo, setChainId } from 'store/setup/actions';
-import { PAGES_TO_LOAD_WITHOUT_CHAINID, URL } from 'util/constants';
+import {
+  PAGES_TO_LOAD_WITHOUT_CHAINID,
+  SOLANA_CHAIN_NAMES,
+  URL,
+} from 'util/constants';
 import { useHelpers } from 'common-util/hooks';
 import {
   ALL_SUPPORTED_CHAINS,
@@ -15,9 +19,12 @@ import {
   isPageWithSolana,
 } from 'common-util/functions';
 
-const isValidNetworkName = (name) => ALL_SUPPORTED_CHAINS.some(
-  (e) => toLower(e.networkName) === toLower(name),
-);
+const isValidNetworkName = (name) => {
+  const isValid = ALL_SUPPORTED_CHAINS.some(
+    (e) => toLower(e.networkName) === toLower(name),
+  );
+  return isValid;
+};
 
 const getChainIdFromPath = (networkName) => EVM_SUPPORTED_CHAINS.find(
   (e) => toLower(e.networkName) === toLower(networkName),
@@ -140,10 +147,17 @@ export const useHandleRoute = () => {
   }, [path, networkNameFromUrl, isL1Network, router]);
 
   const onHomeClick = () => {
+    const isSvm = networkNameFromUrl === SOLANA_CHAIN_NAMES.DEVNET
+      || networkNameFromUrl === SOLANA_CHAIN_NAMES.MAINNET;
+
+    const getListName = () => {
+      if (isSvm) return 'services';
+      if (isL1Network) return 'components';
+      return 'services';
+    };
+
     if (networkNameFromUrl) {
-      router.push(
-        `/${networkNameFromUrl}/${isL1Network ? 'components' : 'services'}`,
-      );
+      router.push(`/${networkNameFromUrl}/${getListName()}`);
     } else {
       router.push('/ethereum/components');
     }

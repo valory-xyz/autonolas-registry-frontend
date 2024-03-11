@@ -33,6 +33,10 @@ const ListTable = ({
   const { scrollX } = extra;
 
   if (isLoading) {
+    if (isSvm) {
+      return <Loader />;
+    }
+
     return (
       <Loader
         isAccountRequired={isAccountRequired}
