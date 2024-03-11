@@ -57,6 +57,7 @@ const deseralizeProgramData = (serializedValue, decodeTypeName) => {
 // TODO: move to common-util
 // hook to only READ data from the SVM (Solana)
 export const useSvmDataFetch = () => {
+  // NOTE: Using `tempWalletPublicKey` to read data from the program
   const {
     tempWalletPublicKey, connection, program, solanaAddresses,
   } = useSvmConnectivity();
