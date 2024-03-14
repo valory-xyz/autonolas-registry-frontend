@@ -114,7 +114,11 @@ export const getTableColumns = (
 
           return (
             <Space size="middle">
-              <Button type="link" onClick={() => onViewClick(record.id)}>
+              <Button
+                type="link"
+                onClick={() => onViewClick(record.id)}
+                disabled={record.owner === NA}
+              >
                 View
               </Button>
 
