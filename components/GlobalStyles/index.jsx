@@ -25,7 +25,7 @@ const GlobalStyle = createGlobalStyle`
   html {
     /* uncomment for dark mode */
     /* background-color: ${COLOR.WHITE}; */
-    /* filter: invert(1) hue-rotate(180deg); */
+    /* filter: invert(0.85) hue-rotate(180deg); */
   }
 
   /* common */

@@ -53,6 +53,7 @@ const Layout = ({ children }) => {
 
         <SelectContainer style={{ marginRight: isMobile ? 8 : 0 }}>
           <Select
+            showSearch
             className="show-scrollbar"
             style={{ width: isMobile ? 140 : 200 }}
             value={chainName}
@@ -82,13 +83,20 @@ const Layout = ({ children }) => {
 
                   // reload the page if vmType is different
                   // ie. user switched from svm to eth or vice versa
-                  if (vmType !== currentChainInfo.vmType) {
+                  if (
+                    vmType === VM_TYPE.SVM
+                    || vmType !== currentChainInfo.vmType
+                  ) {
                     window.open(replacedPath, '_self');
                   } else {
                     router.push(replacedPath);
                   }
                 }
               }
+            }}
+            filterOption={(input, option) => {
+              const { label } = option;
+              return label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
             }}
           />
         </SelectContainer>

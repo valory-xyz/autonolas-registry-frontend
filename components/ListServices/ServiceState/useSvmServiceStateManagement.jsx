@@ -56,14 +56,14 @@ export const useGetActivateRegistration = () => {
 export const useRegisterAgents = () => {
   const { isSvm, vmType } = useHelpers();
   const { solanaAddresses, walletPublicKey, program } = useSvmConnectivity();
-  const { getData } = useSvmDataFetch();
+  const { readSvmData } = useSvmDataFetch();
 
   // check the logic for below method in utils.jsx => checkIfAgentInstancesAreValid
   // and should be same for both EVM and SVM
   const checkIfAgentInstancesAreValid = useCallback(
     async ({ account, agentInstances }) => {
       if (isSvm) {
-        const operator = await getData(
+        const operator = await readSvmData(
           'mapAgentInstanceOperators',
           [walletPublicKey],
           'publicKey',
@@ -78,7 +78,7 @@ export const useRegisterAgents = () => {
 
         const agentInstanceAddressesPromises = agentInstances.map(
           async (agentInstance) => {
-            const eachAgentInstance = await getData(
+            const eachAgentInstance = await readSvmData(
               'mapAgentInstanceOperators',
               [new PublicKey(agentInstance)],
               'publicKey',
@@ -108,7 +108,7 @@ export const useRegisterAgents = () => {
       });
       return response;
     },
-    [isSvm, walletPublicKey, getData],
+    [isSvm, walletPublicKey, readSvmData],
   );
 
   const registerAgents = useCallback(

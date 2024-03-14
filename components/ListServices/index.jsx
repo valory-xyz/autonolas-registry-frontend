@@ -73,7 +73,7 @@ const ListServices = () => {
 
         if (currentTab === ALL_SERVICES) {
           totalTemp = isSvm
-            ? await getTotalForAllSvmServices(account)
+            ? await getTotalForAllSvmServices()
             : await getTotalForAllServices();
         } else if (currentTab === MY_SERVICES && account) {
           totalTemp = isSvm
@@ -115,7 +115,7 @@ const ListServices = () => {
         if (currentTab === ALL_SERVICES) {
           setList([]);
           const everyComps = isSvm
-            ? await getSvmServices(total)
+            ? await getSvmServices(total, currentPage)
             : await getServices(total, currentPage);
           setList(everyComps);
         }
@@ -233,11 +233,13 @@ const ListServices = () => {
         {
           key: ALL_SERVICES,
           label: 'All',
+          disabled: isLoading,
           children: <ListTable {...tableCommonProps} list={list} />,
         },
         {
           key: MY_SERVICES,
           label: 'My Services',
+          disabled: isLoading,
           children: (
             <ListTable
               {...tableCommonProps}

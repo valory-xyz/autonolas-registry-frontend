@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 module.exports = {
   reactStrictMode: true,
   compiler: {
@@ -7,6 +8,12 @@ module.exports = {
     '*': {
       maxChunkSize: 30000,
     },
+  },
+  webpack(config) {
+    config.resolve.fallback = {
+      fs: false,
+    };
+    return config;
   },
   redirects: async () => [
     {
