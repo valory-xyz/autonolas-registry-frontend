@@ -10,6 +10,7 @@ import {
   VersionedTransaction,
   PublicKey,
 } from '@solana/web3.js';
+import { memoize } from 'lodash';
 import { areAddressesEqual } from '@autonolas/frontend-library';
 
 import { SERVICE_STATE_KEY_MAP, TOTAL_VIEW_COUNT } from 'util/constants';
@@ -19,6 +20,11 @@ import {
   transformDatasourceForServiceTable,
   transformSlotsAndBonds,
 } from './helpers/functions';
+
+const getLatestBlockhash = memoize(async (connection) => {
+  const block = await connection.getLatestBlockhash();
+  return block;
+});
 
 /**
  * deseralize the program data
@@ -71,7 +77,7 @@ export const useSvmDataFetch = () => {
 
         if (!tempWalletPublicKey || !program) return null;
 
-        const latestBlock = await connection.getLatestBlockhash();
+        const latestBlock = await getLatestBlockhash(connection);
 
         // Build the instruction
         const instruction = await program.methods[fn](...(fnArgs || []))
