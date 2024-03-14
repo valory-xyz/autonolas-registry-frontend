@@ -125,7 +125,7 @@ const ListComponents = () => {
    */
   useEffect(() => {
     (async () => {
-      if (!isSvm && searchValue) {
+      if (searchValue) {
         setIsLoading(true);
         setList([]);
 
@@ -145,7 +145,7 @@ const ListComponents = () => {
         }
       }
     })();
-  }, [account, chainId, searchValue, currentTab, isSvm]);
+  }, [account, chainId, searchValue, currentTab]);
 
   const tableCommonProps = {
     type: NAV_TYPES.COMPONENT,

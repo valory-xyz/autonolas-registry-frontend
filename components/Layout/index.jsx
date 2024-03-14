@@ -83,7 +83,10 @@ const Layout = ({ children }) => {
 
                   // reload the page if vmType is different
                   // ie. user switched from svm to eth or vice versa
-                  if (vmType === VM_TYPE.SVM) {
+                  if (
+                    vmType === VM_TYPE.SVM
+                    || vmType !== currentChainInfo.vmType
+                  ) {
                     window.open(replacedPath, '_self');
                   } else {
                     router.push(replacedPath);
